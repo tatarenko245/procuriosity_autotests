@@ -1,0 +1,14 @@
+pytest==6.2.4
+selenium==3.141.0
+pytest-html
+pytest-sugar
+kafka-python
+requests
+testrail
+allure-pytest
+pytest-rerunfailures
+pytest-testconfig
+pytest-logger
+xlrd
+deepdiff
+cassandra-driver
