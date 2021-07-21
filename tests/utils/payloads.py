@@ -3,8 +3,127 @@
 import random
 from allure_commons._allure import step
 
+from tests.conftest import GlobalClassCreateEi
 from tests.utils.date_class import Date
-from tests.utils.data_of_enum import locality_scheme, typeOfBuyer, mainGeneralActivity, mainSectoralActivity
+from tests.utils.data_of_enum import locality_scheme, typeOfBuyer, mainGeneralActivity, mainSectoralActivity, \
+    cpv_goods_high_level, cpv_works_high_level, cpv_services_high_level, cpv_category
+from tests.utils.fixtures_and_functions import generate_items_array, get_value_from_classification_cpv_dictionary_xls, \
+    get_new_classification_id
+
+
+class Ei:
+    def __init__(self):
+        ei_period = Date().expenditure_item_period()
+        category = random.choice(cpv_category)
+        self.tender_classification_id = None
+        if category == "goods":
+            self.tender_classification_id = random.choice(cpv_goods_high_level)
+        elif category == "works":
+            self.tender_classification_id = random.choice(cpv_works_high_level)
+        elif category == "services":
+            self.tender_classification_id = random.choice(cpv_services_high_level)
+        self.payload = {
+            "tender": {
+                "title": "EI_FULL_WORKS",
+                "classification": {
+                    "id": self.tender_classification_id
+                },
+
+            },
+            "planning": {
+                "budget": {
+
+                    "period": {
+                        "startDate": ei_period[0],
+                        "endDate": ei_period[1]
+                    }
+                }
+            },
+            "buyer": {
+                "name": "LLC Petrusenko",
+                "identifier": {
+                    "id": "380632074071",
+                    "scheme": "MD-IDNO",
+                    "legalName": "LLC Petrusenko"
+                },
+                "address": {
+                    "streetAddress": "Zakrevskogo",
+                    "addressDetails": {
+                        "country": {
+                            "id": "MD"
+                        },
+                        "region": {
+                            "id": "1700000"
+                        },
+                        "locality": {
+                            "scheme": "CUATM",
+                            "id": "1701000",
+                            "description": "description"
+                        }
+                    }
+                },
+                "contactPoint": {
+                    "name": "Petrusenko Svitlana",
+                    "email": "svetik@gmail.com",
+                    "telephone": "888999666"
+                }
+            }
+        }
+
+    def obligatory_model(self):
+        return self.payload
+
+    def add_items(self, quantity=2):
+        item_object = {
+            "id": "1",
+            "description": "item 1",
+            "classification": {
+                "id": "45100000-8"
+            },
+            "additionalClassifications": [
+                {
+                    "id": "AA12-4"
+                }
+            ],
+            "deliveryAddress": {
+                "streetAddress": "хрещатик",
+                "postalCode": "02235",
+                "addressDetails": {
+                    "country": {
+                        "id": "MD"
+
+                    },
+                    "region": {
+                        "id": "1700000"
+
+                    },
+                    "locality": {
+                        "id": "1701000",
+                        "description": "ОПИСАНИЕ33pizza",
+                        "scheme": f'{random.choice(locality_scheme)}'
+                    }
+
+                }
+            },
+            "quantity": 1,
+            "unit": {
+                "id": "10"
+
+            }
+        }
+        items_array = generate_items_array(
+            quantity_of_object=quantity,
+            item_object=item_object,
+            tender_classification_id=self.tender_classification_id
+        )
+        temp_tender_classification_id = get_new_classification_id(items_array)
+        new_tender_classification = get_value_from_classification_cpv_dictionary_xls(
+            cpv=temp_tender_classification_id,
+            language=GlobalClassCreateEi.language
+        )
+        self.payload['tender']['items'] = items_array
+        self.payload['tender']['classification']['id'] = new_tender_classification[0]
+        return self.payload
 
 
 class Payload:
