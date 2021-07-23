@@ -2,7 +2,7 @@ import fnmatch
 
 import requests
 
-from tests.utils.fixtures_and_functions import is_it_uuid
+from tests.utils.functions import is_it_uuid
 
 
 class KafkaMessage:

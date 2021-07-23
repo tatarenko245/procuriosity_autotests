@@ -12,3 +12,4 @@ pytest-logger
 xlrd
 deepdiff
 cassandra-driver
+pytest-testrail
