@@ -71,6 +71,9 @@ class GlobalClassCreateEi:
     cassandra_cluster = None
     cassandra_username = None
     cassandra_password = None
+    access_token = None
+    host_for_bpe = None
+    check_message = None
 
 
 class GlobalClassCreateFs:
