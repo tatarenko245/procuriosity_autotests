@@ -1,3 +1,4 @@
+import allure
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import Cluster
 
@@ -33,3 +34,13 @@ class CassandraSession:
                self.ocds_keyspace.execute(f"DELETE FROM notice_budget_release WHERE cp_id='{ei_id}';"), \
                self.ocds_keyspace.execute(f"DELETE FROM notice_budget_offset WHERE cp_id='{ei_id}';"), \
                self.ocds_keyspace.execute(f"DELETE FROM notice_budget_compiled_release WHERE cp_id='{ei_id}';")
+
+    @allure.step('Steps from Casandra DataBase')
+    def get_orchestrator_operation_step_by_x_operation_id(self, operation_id):
+        rows_1 = self.ocds_keyspace.execute(
+            f"SELECT * FROM orchestrator_operation WHERE operation_id = '{operation_id}';").one()
+        process_id = rows_1.process_id
+        steps = f"SELECT * FROM {self.ocds_keyspace.execute}.orchestrator_operation_step " \
+               f"WHERE process_id = '{process_id}' ALLOW FILTERING;"
+        allure.attach(steps, "Cassandra DataBase: steps of process")
+        return steps

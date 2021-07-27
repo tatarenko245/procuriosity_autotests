@@ -1,5 +1,7 @@
 # файл з самим тестом
 import copy
+
+import allure
 import requests
 from deepdiff import DeepDiff
 from tests.conftest import GlobalClassCreateEi
@@ -54,6 +56,7 @@ class TestCheckThePossibilityToCreateEIOnObligatoryDataModel:
             actual_result=str(GlobalClassCreateEi.check_message)
         )
 
+    @allure.step('Check Ei release')
     def test_check_ei_release_in_public_point(self):
         actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
                                                    f"{GlobalClassCreateEi.message['data']['ocid']}").json()
@@ -66,6 +69,8 @@ class TestCheckThePossibilityToCreateEIOnObligatoryDataModel:
             payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
             language=GlobalClassCreateEi.language
         ).obligatory_data_model()
+        allure.attach(actual_ei_release_model, "Actual Ei release")
+        allure.attach(expected_ei_release_model, "Expected Ei release")
         compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
         assert compare_actual_result_and_expected_result(
             expected_result=str({}),
@@ -86,8 +91,13 @@ class TestCheckThePossibilityToCreateEIOnObligatoryDataModel:
                 database.cleanup_steps_of_process(
                     operation_id=GlobalClassCreateEi.operation_id
                 )
+                allure.attach("TestCase passed: Database is empty")
             else:
-                pass
+                CassandraSession(
+                    cassandra_username=GlobalClassCreateEi.cassandra_username,
+                    cassandra_password=GlobalClassCreateEi.cassandra_password,
+                    cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
+                ).get_orchestrator_operation_step_by_x_operation_id(operation_id=GlobalClassCreateEi.operation_id)
         except ValueError:
             print("Check the message in kafka topic")
 
@@ -135,6 +145,7 @@ class TestCheckThePossibilityToCreateEIOnFullDataModel:
             actual_result=str(GlobalClassCreateEi.check_message)
         )
 
+    @allure.step('Check Ei release')
     def test_check_ei_release_in_public_point(self):
         actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
                                                    f"{GlobalClassCreateEi.message['data']['ocid']}").json()
@@ -150,6 +161,8 @@ class TestCheckThePossibilityToCreateEIOnFullDataModel:
         release.full_data_data_model()
         expected_ei_release_model = release.add_tender_with_items_array(
             actual_items_array=actual_ei_release_model['releases'][0]['tender']['items'])
+        allure.attach(actual_ei_release_model, "Actual Ei release")
+        allure.attach(expected_ei_release_model, "Expected Ei release")
         compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
         assert compare_actual_result_and_expected_result(
             expected_result=str({}),

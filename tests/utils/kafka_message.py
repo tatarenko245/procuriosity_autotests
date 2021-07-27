@@ -1,6 +1,8 @@
 import datetime
 import fnmatch
+import json
 
+import allure
 import requests
 
 from tests.utils.functions import is_it_uuid
@@ -10,6 +12,7 @@ class KafkaMessage:
     def __init__(self, operation_id):
         self.operation_id = operation_id
 
+    @allure.step('Receive message in feed-point')
     def get_message_from_kafka(self):
         kafka_host = 'http://82.144.223.29:5000'
         kafka_message = requests.get(
@@ -37,6 +40,7 @@ class KafkaMessage:
                 url=kafka_host + '/x-operation-id/' + self.operation_id
             ).json()
         del kafka_message['_id']
+        allure.attach(json.dumps(kafka_message), 'Message in feed-point')
         return kafka_message
 
 

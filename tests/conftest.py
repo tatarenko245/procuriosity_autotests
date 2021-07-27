@@ -1,5 +1,5 @@
 # Содержит в себе фикстуры. Фикстуры - это функции, которые мы запускаем до или после теста
-
+import allure
 import pytest
 
 
@@ -13,48 +13,59 @@ def pytest_addoption(parser):
     parser.addoption("--cassandra_password", action="store", type=str)
 
 
+@allure.step('Set up: country')
 @pytest.fixture(scope="session")
 def country(request):
     """Handler for --additional_value parameter"""
+    allure.attach(request.config.getoption("--country"), "Country")
     return request.config.getoption("--country")
 
 
+@allure.step('Set up: language')
 @pytest.fixture(scope="session")
 def language(request):
     """Handler for --additional_value parameter"""
-
+    allure.attach(request.config.getoption("--language"), "Language")
     return request.config.getoption("--language")
 
 
+@allure.step('Set up: environment')
 @pytest.fixture(scope="session")
 def environment(request):
     """Handler for --additional_value parameter"""
+    allure.attach(request.config.getoption("--environment"), "Environment")
     return request.config.getoption("--environment")
 
 
+@allure.step('Set up: Cassandra username')
 @pytest.fixture(scope="session")
 def cassandra_username(request):
     """Handler for --additional_value parameter"""
+    allure.attach(request.config.getoption("--cassandra_username"), "Cassandra username")
     return request.config.getoption("--cassandra_username")
 
 
+@allure.step('Set up: Cassandra password')
 @pytest.fixture(scope="session")
 def cassandra_password(request):
     """Handler for --additional_value parameter"""
+    allure.attach(request.config.getoption("--cassandra_password"), "Cassandra password")
     return request.config.getoption("--cassandra_password")
 
 
+@allure.step('Set up: pmd')
 @pytest.fixture(scope="session")
 def pmd(request):
     """Handler for --additional_value parameter"""
-
+    allure.attach(request.config.getoption("--pmd"), "pmd")
     return request.config.getoption("--pmd")
 
 
+@allure.step('Set up: Tag')
 @pytest.fixture(scope="session")
 def tag(request):
     """Handler for --additional_value parameter"""
-
+    allure.attach(request.config.getoption("--tag"), "tag")
     return request.config.getoption("--tag")
 
 
