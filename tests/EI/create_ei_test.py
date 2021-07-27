@@ -69,8 +69,8 @@ class TestCheckThePossibilityToCreateEIOnObligatoryDataModel:
             payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
             language=GlobalClassCreateEi.language
         ).obligatory_data_model()
-        allure.attach(actual_ei_release_model, "Actual Ei release")
-        allure.attach(expected_ei_release_model, "Expected Ei release")
+        allure.attach(str(actual_ei_release_model), "Actual Ei release")
+        allure.attach(str(expected_ei_release_model), "Expected Ei release")
         compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
         assert compare_actual_result_and_expected_result(
             expected_result=str({}),
@@ -161,8 +161,8 @@ class TestCheckThePossibilityToCreateEIOnFullDataModel:
         release.full_data_data_model()
         expected_ei_release_model = release.add_tender_with_items_array(
             actual_items_array=actual_ei_release_model['releases'][0]['tender']['items'])
-        allure.attach(actual_ei_release_model, "Actual Ei release")
-        allure.attach(expected_ei_release_model, "Expected Ei release")
+        allure.attach(str(actual_ei_release_model), "Actual Ei release")
+        allure.attach(str(expected_ei_release_model), "Expected Ei release")
         compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
         assert compare_actual_result_and_expected_result(
             expected_result=str({}),
