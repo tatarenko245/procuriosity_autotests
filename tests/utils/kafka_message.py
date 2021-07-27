@@ -1,3 +1,4 @@
+import datetime
 import fnmatch
 
 import requests
@@ -15,22 +16,29 @@ class KafkaMessage:
             url=kafka_host + '/x-operation-id/' + self.operation_id
         )
         if kafka_message.status_code == 404:
-            while kafka_message.status_code == 404:
+            date = datetime.datetime.now()
+            date_new = datetime.datetime.now() + datetime.timedelta(seconds=15)
+
+            while date < date_new:
                 kafka_message = requests.get(
                     url=kafka_host + '/x-operation-id/' + self.operation_id
                 )
+                date = datetime.datetime.now()
                 if kafka_message.status_code == 200:
                     kafka_message = requests.get(
                         url=kafka_host + '/x-operation-id/' + self.operation_id
                     ).json()
                     del kafka_message['_id']
                     return kafka_message
+            print('The message was not found in Kafka topic')
+
         if kafka_message.status_code == 200:
             kafka_message = requests.get(
                 url=kafka_host + '/x-operation-id/' + self.operation_id
             ).json()
-            del kafka_message['_id']
-            return kafka_message
+        del kafka_message['_id']
+        return kafka_message
+
 
     @staticmethod
     def create_ei_message_is_successful(environment, kafka_message):
@@ -54,6 +62,7 @@ class KafkaMessage:
             return True
         else:
             return False
+
 
     @staticmethod
     def create_fs_message_is_successful(environment, kafka_message):
