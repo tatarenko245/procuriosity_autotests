@@ -82,7 +82,6 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                 database.cleanup_steps_of_process(
                     operation_id=GlobalClassCreateEi.operation_id
                 )
-                allure.attach("TestCase passed: Database is empty")
             else:
                 CassandraSession(
                     cassandra_username=GlobalClassCreateEi.cassandra_username,
