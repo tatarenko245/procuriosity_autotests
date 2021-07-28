@@ -15,7 +15,8 @@ from tests.utils.releases_models import EiRelease
 from tests.utils.requests import Requests
 
 
-@allure.parent_suite('Check status code and message from Kafka topic after EI creation')
+@allure.parent_suite('Create EI')
+@allure.testcase('Check status code and message from Kafka topic after EI creation')
 class TestCheckStatusCodeAndMessageFromKafkaTopic:
     @allure.step('Take EI payload based on full data model')
     def test_setup(self, environment, country, language, cassandra_username, cassandra_password):
