@@ -15,8 +15,8 @@ from tests.utils.releases_models import EiRelease
 from tests.utils.requests import Requests
 
 
+@allure.feature('Check status code and message from Kafka topic after EI creation')
 class TestCheckStatusCodeAndMessageFromKafkaTopic:
-    @allure.step('Check status code and message from Kafka topic after EI creation')
     @allure.step('Take EI payload based on full data model')
     def test_setup(self, environment, country, language, cassandra_username, cassandra_password):
         GlobalClassCreateEi.country = country
@@ -89,8 +89,8 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
             print("Check the message in kafka topic")
 
 
+@allure.feature('Check EI release data after Ei creation based on full data model')
 class TestCheckEiReleaseDataAfterEiCreationBasedOnFullDataModel:
-    @allure.step('Check EI release data after Ei creation based on full data model')
     @allure.step('Take EI payload based on full data model')
     def test_setup(self, environment, country, language, cassandra_username, cassandra_password):
         GlobalClassCreateEi.country = country
@@ -164,8 +164,8 @@ class TestCheckEiReleaseDataAfterEiCreationBasedOnFullDataModel:
             print("Check the message in kafka topic")
 
 
+@allure.feature('Check EI release after Ei creation on model without optional fields')
 class TestCheckEiReleaseAfterEiCreationOnModelWithoutOptionalFields:
-    @allure.step('Check EI release after Ei creation on model without optional fields')
     @allure.step('Take EI payload based on full data model')
     def test_setup(self, environment, country, language, cassandra_username, cassandra_password):
         GlobalClassCreateEi.country = country
@@ -238,8 +238,8 @@ class TestCheckEiReleaseAfterEiCreationOnModelWithoutOptionalFields:
             print("Check the message in kafka topic")
 
 
+@allure.feature('Check EI release data after Ei creation based on full data model with 3 items objects')
 class TestCheckEiReleaseDataAfterEiCreationBasedOnFullDataModelWith3ItemsObjects:
-    @allure.step('Check EI release data after Ei creation based on full data model with 3 items objects')
     @allure.step('Take EI payload based on full data model')
     def test_setup(self, environment, country, language, cassandra_username, cassandra_password):
         GlobalClassCreateEi.country = country
