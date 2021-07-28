@@ -15,13 +15,16 @@ from tests.utils.releases_models import EiRelease
 from tests.utils.requests import Requests
 
 
-@allure.parent_suite('Create EI')
-@allure.suite('VOT ONO')
+
+@allure.suite('Create EI')
+@allure.sub_suite('Check status code and message from Kafka topic after EI creation')
+@allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/edit#gid=0',
                  name='Create EI')
 class TestCheckStatusCodeAndMessageFromKafkaTopic:
+    @allure.feature('vot ono2')
     @allure.step('Take EI payload based on full data model')
-    def test_setup(self, environment, country, language, cassandra_username, cassandra_password):
+    def test_a_setup(self, environment, country, language, cassandra_username, cassandra_password):
         GlobalClassCreateEi.country = country
         GlobalClassCreateEi.language = language
         GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -67,7 +70,7 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
             actual_result=str(GlobalClassCreateEi.check_message)
         )
 
-    def test_teardown(self):
+    def test_z_teardown(self):
         try:
             if GlobalClassCreateEi.check_message is True:
                 database = CassandraSession(
