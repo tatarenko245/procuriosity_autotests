@@ -16,7 +16,9 @@ from tests.utils.requests import Requests
 
 
 @allure.parent_suite('Create EI')
-@allure.testcase('Check status code and message from Kafka topic after EI creation')
+@allure.suite('VOT ONO')
+@allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/edit#gid=0',
+                 name='Create EI')
 class TestCheckStatusCodeAndMessageFromKafkaTopic:
     @allure.step('Take EI payload based on full data model')
     def test_setup(self, environment, country, language, cassandra_username, cassandra_password):
@@ -88,7 +90,6 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                 ).get_orchestrator_operation_step_by_x_operation_id(operation_id=GlobalClassCreateEi.operation_id)
         except ValueError:
             print("Check the message in kafka topic")
-
 
 # @allure.feature('Check EI release data after Ei creation based on full data model')
 # class TestCheckEiReleaseDataAfterEiCreationBasedOnFullDataModel:
