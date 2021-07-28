@@ -24,7 +24,7 @@ from tests.utils.requests import Requests
 @allure.feature('Open procedure')
 class TestCheckStatusCodeAndMessageFromKafkaTopic:
 
-    @allure.description('Take EI payload based on full data model')
+    @allure.id('Take EI payload based on full data model')
     def test_a_setup(self, environment, country, language, cassandra_username, cassandra_password):
         GlobalClassCreateEi.country = country
         GlobalClassCreateEi.language = language
