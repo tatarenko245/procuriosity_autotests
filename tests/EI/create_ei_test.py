@@ -15,14 +15,15 @@ from tests.utils.releases_models import EiRelease
 from tests.utils.requests import Requests
 
 
-
+@allure.parent_suite('BPE: Create EI')
 @allure.suite('Create EI')
 @allure.sub_suite('Check status code and message from Kafka topic after EI creation')
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/edit#gid=0',
                  name='Create EI')
+@allure.feature('Open procedure')
 class TestCheckStatusCodeAndMessageFromKafkaTopic:
-    @allure.feature('vot ono2')
+
     @allure.step('Take EI payload based on full data model')
     def test_a_setup(self, environment, country, language, cassandra_username, cassandra_password):
         GlobalClassCreateEi.country = country

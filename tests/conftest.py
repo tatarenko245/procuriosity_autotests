@@ -15,42 +15,52 @@ def pytest_addoption(parser):
 
 @allure.step('Set up: country')
 @pytest.fixture(scope="session")
+# @pytest.fixture(autouse=True)
 def country(request):
     """Handler for --additional_value parameter"""
-    allure.attach(request.config.getoption("--country"), "Country")
-    return request.config.getoption("--country")
+    country = request.config.getoption("--country")
+    allure.attach(country, "Country")
+    return country
 
 
 @allure.step('Set up: language')
 @pytest.fixture(scope="session")
+# @pytest.fixture(autouse=True)
 def language(request):
     """Handler for --additional_value parameter"""
-    allure.attach(request.config.getoption("--language"), "Language")
-    return request.config.getoption("--language")
+    language = request.config.getoption("--language")
+    allure.attach(language, "Language")
+    return language
 
 
 @allure.step('Set up: environment')
 @pytest.fixture(scope="session")
+# @pytest.fixture(autouse=True)
 def environment(request):
     """Handler for --additional_value parameter"""
-    allure.attach(request.config.getoption("--environment"), "Environment")
-    return request.config.getoption("--environment")
+    environment = request.config.getoption("--environment")
+    allure.attach(environment, "Environment")
+    return environment
 
 
 @allure.step('Set up: Cassandra username')
 @pytest.fixture(scope="session")
+# @pytest.fixture(autouse=True)
 def cassandra_username(request):
     """Handler for --additional_value parameter"""
-    allure.attach(request.config.getoption("--cassandra_username"), "Cassandra username")
-    return request.config.getoption("--cassandra_username")
+    cassandra_username = request.config.getoption("--cassandra_username")
+    allure.attach(cassandra_username, "Cassandra username")
+    return cassandra_username
 
 
 @allure.step('Set up: Cassandra password')
 @pytest.fixture(scope="session")
+# @pytest.fixture(autouse=True)
 def cassandra_password(request):
     """Handler for --additional_value parameter"""
-    allure.attach(request.config.getoption("--cassandra_password"), "Cassandra password")
-    return request.config.getoption("--cassandra_password")
+    cassandra_password = request.config.getoption("--cassandra_password")
+    allure.attach(cassandra_password, "Cassandra password")
+    return cassandra_password
 
 
 @allure.step('Set up: pmd')
@@ -85,7 +95,7 @@ class GlobalClassCreateEi:
     access_token = None
     host_for_bpe = None
     check_message = None
-    payload = None
+
 
 
 class GlobalClassCreateFs:
