@@ -85,6 +85,7 @@ class GlobalClassCreateEi:
     access_token = None
     host_for_bpe = None
     check_message = None
+    payload = None
 
 
 class GlobalClassCreateFs:

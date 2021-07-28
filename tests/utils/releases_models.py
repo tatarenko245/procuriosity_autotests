@@ -222,8 +222,22 @@ class EiRelease:
                 self.payload_for_create_ei['tender']['classification']['id'][0:2] == "92" or \
                 self.payload_for_create_ei['tender']['classification']['id'][0:2] == "98":
             main_procurement_category = "services"
-        tender_classification_id = get_value_from_classification_cpv_dictionary_xls(
-            generate_tender_classification_id(self.payload_for_create_ei['tender']['items']), self.language)
+
+        list_of_keys = list()
+        for o in self.payload_for_create_ei['tender']['items']:
+            for id_ in o['classification']:
+                if id_ == "id":
+                    list_of_keys.append(id_)
+        quantity = len(list_of_keys)
+        if quantity < 2:
+            tender_classification_id = get_value_from_classification_cpv_dictionary_xls(
+                self.release['releases'][0]['tender']['classification']['id'], self.language)
+
+
+        else:
+            tender_classification_id = get_value_from_classification_cpv_dictionary_xls(
+                generate_tender_classification_id(self.payload_for_create_ei['tender']['items']), self.language)
+
         self.release['releases'][0]['tender']['mainProcurementCategory'] = main_procurement_category
         self.release['releases'][0]['tender']['classification']['id'] = tender_classification_id[0]
         self.release['releases'][0]['tender']['classification']['description'] = tender_classification_id[1]
@@ -248,7 +262,7 @@ class EiRelease:
                 language=self.language
             )
             if self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
-                    'addressDetails']['locality']['scheme'] == "CUATM":
+                'addressDetails']['locality']['scheme'] == "CUATM":
                 item_locality_data = get_value_from_locality_csv(
                     locality=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
                         'addressDetails']['locality']['id'],
@@ -273,7 +287,7 @@ class EiRelease:
                 self.release['releases'][0]['tender']['items'][quantity - 1][
                     'deliveryAddress']['addressDetails']['locality']['id'] = \
                     self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
-                    'addressDetails']['locality']['id']
+                        'addressDetails']['locality']['id']
 
                 self.release['releases'][0]['tender']['items'][quantity - 1][
                     'deliveryAddress']['addressDetails']['locality']['scheme'] = \
