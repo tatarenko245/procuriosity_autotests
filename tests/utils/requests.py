@@ -9,7 +9,7 @@ from allure_commons._allure import step
 
 class Requests:
     @staticmethod
-    @allure.step('Create EI')
+    @allure.step('Prepared request: create EI')
     def create_ei(host_of_request, access_token, x_operation_id, country, language, payload):
         ei = requests.post(
             url=host_of_request + "/do/ei",

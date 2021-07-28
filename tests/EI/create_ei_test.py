@@ -1,5 +1,6 @@
 # файл з самим тестом
 import copy
+import json
 
 import allure
 import requests
@@ -39,9 +40,9 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                 GlobalClassCreateEi.host_for_bpe).get_access_token_for_platform_one()
             GlobalClassCreateEi.operation_id = PlatformAuthorization(GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
-        with allure.step('ake EI payload based on full data model'):
+        with allure.step('Take EI payload based on full data model'):
             GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(EiPayload().add_optionals_fields())
-            allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
+            allure.attach(str(json.dumps(GlobalClassCreateEi.payload_for_create_ei)), 'Payload')
 
         with allure.step('Send request to create EI'):
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
