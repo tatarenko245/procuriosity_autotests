@@ -24,23 +24,24 @@ from tests.utils.requests import Requests
 @allure.feature('Open procedure')
 class TestCheckStatusCodeAndMessageFromKafkaTopic:
 
-    @allure.step('Take EI payload based on full data model')
+
     def test_a_setup(self, environment, country, language, cassandra_username, cassandra_password):
-        GlobalClassCreateEi.country = country
-        GlobalClassCreateEi.language = language
-        GlobalClassCreateEi.cassandra_username = cassandra_username
-        GlobalClassCreateEi.cassandra_password = cassandra_password
-        GlobalClassCreateEi.environment = environment
-        GlobalClassCreateEi.hosts = Environment().choose_environment(GlobalClassCreateEi.environment)
-        GlobalClassCreateEi.host_for_bpe = GlobalClassCreateEi.hosts[1]
-        GlobalClassCreateEi.host_for_service = GlobalClassCreateEi.hosts[2]
-        GlobalClassCreateEi.cassandra_cluster = GlobalClassCreateEi.hosts[0]
-        GlobalClassCreateEi.access_token = PlatformAuthorization(
-            GlobalClassCreateEi.host_for_bpe).get_access_token_for_platform_one()
-        GlobalClassCreateEi.operation_id = PlatformAuthorization(GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
-            GlobalClassCreateEi.access_token)
-        GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(EiPayload().add_optionals_fields())
-        allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
+        with allure.step('Take EI payload based on full data model'):
+            GlobalClassCreateEi.country = country
+            GlobalClassCreateEi.language = language
+            GlobalClassCreateEi.cassandra_username = cassandra_username
+            GlobalClassCreateEi.cassandra_password = cassandra_password
+            GlobalClassCreateEi.environment = environment
+            GlobalClassCreateEi.hosts = Environment().choose_environment(GlobalClassCreateEi.environment)
+            GlobalClassCreateEi.host_for_bpe = GlobalClassCreateEi.hosts[1]
+            GlobalClassCreateEi.host_for_service = GlobalClassCreateEi.hosts[2]
+            GlobalClassCreateEi.cassandra_cluster = GlobalClassCreateEi.hosts[0]
+            GlobalClassCreateEi.access_token = PlatformAuthorization(
+                GlobalClassCreateEi.host_for_bpe).get_access_token_for_platform_one()
+            GlobalClassCreateEi.operation_id = PlatformAuthorization(GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
+                GlobalClassCreateEi.access_token)
+            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(EiPayload().add_optionals_fields())
+            allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
 
     @allure.step('Send request to create EI')
     def test_check_status_code_of_request(self):
