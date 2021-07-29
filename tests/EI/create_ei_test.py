@@ -38,7 +38,8 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
             GlobalClassCreateEi.cassandra_cluster = GlobalClassCreateEi.hosts[0]
             GlobalClassCreateEi.access_token = PlatformAuthorization(
                 GlobalClassCreateEi.host_for_bpe).get_access_token_for_platform_one()
-            GlobalClassCreateEi.operation_id = PlatformAuthorization(GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
+            GlobalClassCreateEi.operation_id = PlatformAuthorization(
+                GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
         with allure.step('# 2. Take EI payload based on full data model'):
             GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(EiPayload().add_optionals_fields())
@@ -69,34 +70,34 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
             )
             allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
             with allure.step('# 4.2. Check message in feed point'):
+                try:
+                    if GlobalClassCreateEi.check_message is True:
+                        database = CassandraSession(
+                            cassandra_username=GlobalClassCreateEi.cassandra_username,
+                            cassandra_password=GlobalClassCreateEi.cassandra_password,
+                            cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
+                        )
+                        database.create_ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.message['data']['ocid']
+                        )
+                        database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id
+                        )
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = CassandraSession(
+                                cassandra_username=GlobalClassCreateEi.cassandra_username,
+                                cassandra_password=GlobalClassCreateEi.cassandra_password,
+                                cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
+                            ).get_orchestrator_operation_step_by_x_operation_id(
+                                operation_id=GlobalClassCreateEi.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    print("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
                     expected_result=str(True),
                     actual_result=str(GlobalClassCreateEi.check_message)
                 )
-        try:
-            if GlobalClassCreateEi.check_message is True:
-                database = CassandraSession(
-                    cassandra_username=GlobalClassCreateEi.cassandra_username,
-                    cassandra_password=GlobalClassCreateEi.cassandra_password,
-                    cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
-                )
-                database.create_ei_process_cleanup_table_of_services(
-                    ei_id=GlobalClassCreateEi.message['data']['ocid']
-                )
-                database.cleanup_steps_of_process(
-                    operation_id=GlobalClassCreateEi.operation_id
-                )
-            else:
-                with allure.step('# Steps from Casandra DataBase'):
-                    steps = CassandraSession(
-                        cassandra_username=GlobalClassCreateEi.cassandra_username,
-                        cassandra_password=GlobalClassCreateEi.cassandra_password,
-                        cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
-                    ).get_orchestrator_operation_step_by_x_operation_id(operation_id=GlobalClassCreateEi.operation_id)
-                    allure.attach(steps, "Cassandra DataBase: steps of process")
-        except ValueError:
-            print("Check the message in kafka topic")
-
 
 # @allure.feature('Check EI release data after Ei creation based on full data model')
 # class TestCheckEiReleaseDataAfterEiCreationBasedOnFullDataModel:
