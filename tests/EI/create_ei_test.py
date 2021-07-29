@@ -62,10 +62,12 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                 kafka_message=GlobalClassCreateEi.message
             )
             allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
+            allure.title('Check status code')
             assert compare_actual_result_and_expected_result(
                 expected_result=str(202),
                 actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
             )
+            allure.title('Check message in feed point')
             assert compare_actual_result_and_expected_result(
                 expected_result=str(True),
                 actual_result=str(GlobalClassCreateEi.check_message)
