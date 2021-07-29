@@ -1,10 +1,7 @@
 # файл з самим тестом
 import copy
 import json
-
 import allure
-import requests
-from deepdiff import DeepDiff
 from tests.conftest import GlobalClassCreateEi
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
@@ -12,7 +9,6 @@ from tests.utils.functions import compare_actual_result_and_expected_result
 from tests.utils.payloads import EiPayload
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.releases_models import EiRelease
 from tests.utils.requests import Requests
 
 
@@ -43,7 +39,6 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                 GlobalClassCreateEi.access_token)
         with allure.step('# 2. Take EI payload based on full data model'):
             GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(EiPayload().add_optionals_fields())
-            del GlobalClassCreateEi.payload_for_create_ei['tender']
             allure.attach(str(json.dumps(GlobalClassCreateEi.payload_for_create_ei)), 'Payload')
 
         with allure.step('# 3. Send request to create EI'):
