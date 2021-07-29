@@ -42,6 +42,7 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                 GlobalClassCreateEi.access_token)
         with allure.step('# 2. Take EI payload based on full data model'):
             GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(EiPayload().add_optionals_fields())
+            del GlobalClassCreateEi.payload_for_create_ei['tender']
             allure.attach(str(json.dumps(GlobalClassCreateEi.payload_for_create_ei)), 'Payload')
 
         with allure.step('# 3. Send request to create EI'):
