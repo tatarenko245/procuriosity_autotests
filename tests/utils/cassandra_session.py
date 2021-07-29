@@ -1,3 +1,5 @@
+import copy
+
 import allure
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import Cluster
@@ -41,4 +43,4 @@ class CassandraSession:
         process_id = rows_1.process_id
         steps = f"SELECT * FROM {self.ocds_keyspace.execute}.orchestrator_operation_step " \
                f"WHERE process_id = '{process_id}' ALLOW FILTERING;"
-        return steps
+        return str(copy.deepcopy(steps))
