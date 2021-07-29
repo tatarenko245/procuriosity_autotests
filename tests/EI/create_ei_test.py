@@ -147,19 +147,7 @@ class TestCreateEi:
             allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
             with allure.step('# 4.2. Check message in feed point'):
                 try:
-                    if GlobalClassCreateEi.check_message is True:
-                        database = CassandraSession(
-                            cassandra_username=GlobalClassCreateEi.cassandra_username,
-                            cassandra_password=GlobalClassCreateEi.cassandra_password,
-                            cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
-                        )
-                        database.create_ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.message['data']['ocid']
-                        )
-                        database.cleanup_steps_of_process(
-                            operation_id=GlobalClassCreateEi.operation_id
-                        )
-                    else:
+                    if GlobalClassCreateEi.check_message is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = CassandraSession(
                                 cassandra_username=GlobalClassCreateEi.cassandra_username,
@@ -176,8 +164,6 @@ class TestCreateEi:
                 )
 
             with allure.step('# 4.3. Check EI release'):
-
-                GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
                 actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
                                                            f"{GlobalClassCreateEi.message['data']['ocid']}").json()
                 release = EiRelease(
