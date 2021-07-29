@@ -93,7 +93,7 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                         cassandra_password=GlobalClassCreateEi.cassandra_password,
                         cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
                     ).get_orchestrator_operation_step_by_x_operation_id(operation_id=GlobalClassCreateEi.operation_id)
-                allure.attach(steps, "Cassandra DataBase: steps of process")
+                    allure.attach(steps, "Cassandra DataBase: steps of process")
         except ValueError:
             print("Check the message in kafka topic")
 
