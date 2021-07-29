@@ -22,7 +22,7 @@ from tests.utils.requests import Requests
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/edit#gid=0',
                  name='Google sheets: Create EI')
-class TestCheckStatusCodeAndMessageFromKafkaTopic:
+class TestCreateEi:
     @allure.title('Check status code and message from Kafka topic after EI creation')
     def test_check_status_code_and_message_from_kafka_topic_after_ei_creation(self, environment, country, language,
                                                                               cassandra_username, cassandra_password):
@@ -98,13 +98,6 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                     actual_result=str(GlobalClassCreateEi.check_message)
                 )
 
-@allure.parent_suite('Budgets')
-@allure.suite('EI')
-@allure.sub_suite('BPE: Create EI')
-@allure.severity('Critical')
-@allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/edit#gid=0',
-                 name='Google sheets: Create EI')
-class TestCheckEiReleaseDataAfterEiCreationBasedOnFullDataModel:
     @allure.title('Check EI release data after Ei creation based on full data model')
     def test_check_ei_release_data_after_ei_creation_based_on_full_data_model(self, environment, country, language,
                                                                               cassandra_username, cassandra_password):
