@@ -41,6 +41,5 @@ class CassandraSession:
         rows_1 = self.ocds_keyspace.execute(
             f"SELECT * FROM orchestrator_operation WHERE operation_id = '{operation_id}';").one()
         process_id = rows_1.process_id
-        steps = f"SELECT * FROM {self.ocds_keyspace.execute}.orchestrator_operation_step " \
-               f"WHERE process_id = '{process_id}' ALLOW FILTERING;"
-        return str(copy.deepcopy(steps))
+        steps = f"SELECT * FROM ocds.orchestrator_operation_step WHERE process_id = '{process_id}' ALLOW FILTERING;"
+        return steps
