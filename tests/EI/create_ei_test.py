@@ -67,8 +67,9 @@ class TestCreateEi:
                 environment=GlobalClassCreateEi.environment,
                 kafka_message=GlobalClassCreateEi.message
             )
-            allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
+
             with allure.step('# 4.2. Check message in feed point'):
+                allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
                 try:
                     if GlobalClassCreateEi.check_message is True:
                         database = CassandraSession(
@@ -144,8 +145,9 @@ class TestCreateEi:
                 environment=GlobalClassCreateEi.environment,
                 kafka_message=GlobalClassCreateEi.message
             )
-            allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
+
             with allure.step('# 4.2. Check message in feed point'):
+                allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
                 try:
                     if GlobalClassCreateEi.check_message is False:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -178,8 +180,8 @@ class TestCreateEi:
                 release.full_data_data_model()
                 expected_ei_release_model = release.add_tender_with_items_array(
                     actual_items_array=actual_ei_release_model['releases'][0]['tender']['items'])
-                allure.attach(str(actual_ei_release_model), "Actual Ei release")
-                allure.attach(str(expected_ei_release_model), "Expected Ei release")
+                allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
+                allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
                 compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
                 assert compare_actual_result_and_expected_result(
                     expected_result=str({}),
