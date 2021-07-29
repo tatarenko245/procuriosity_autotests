@@ -56,6 +56,11 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
             )
 
         with allure.step('# 4. See result'):
+            with allure.step('# 4.1. Check status code'):
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str(202),
+                    actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
+                )
             GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
             GlobalClassCreateEi.check_message = KafkaMessage(
                 GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
@@ -63,11 +68,6 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                 kafka_message=GlobalClassCreateEi.message
             )
             allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
-            with allure.step('# 4.1. Check status code'):
-                assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
-                    actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
-                )
             with allure.step('# 4.2. Check message in feed point'):
                 assert compare_actual_result_and_expected_result(
                     expected_result=str(True),
