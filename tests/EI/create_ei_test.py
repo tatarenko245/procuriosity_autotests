@@ -121,7 +121,6 @@ class TestCreateEi:
         with allure.step('# 2. Take EI payload based on full data model'):
             payload = copy.deepcopy(EiPayload())
             GlobalClassCreateEi.payload_for_create_ei = payload.add_optionals_fields()
-            del GlobalClassCreateEi.payload_for_create_ei['tender']
             allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
 
         with allure.step('# 3. Send request to create EI'):
@@ -146,7 +145,6 @@ class TestCreateEi:
                 environment=GlobalClassCreateEi.environment,
                 kafka_message=GlobalClassCreateEi.message
             )
-
             with allure.step('# 4.2. Check message in feed point'):
                 allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
                 try:
@@ -165,7 +163,6 @@ class TestCreateEi:
                     expected_result=str(True),
                     actual_result=str(GlobalClassCreateEi.check_message)
                 )
-
             with allure.step('# 4.3. Check EI release'):
                 actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
                                                            f"{GlobalClassCreateEi.message['data']['ocid']}").json()
@@ -184,6 +181,30 @@ class TestCreateEi:
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
                 compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
+                try:
+                    if compare_releases is True:
+                        database = CassandraSession(
+                            cassandra_username=GlobalClassCreateEi.cassandra_username,
+                            cassandra_password=GlobalClassCreateEi.cassandra_password,
+                            cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
+                        )
+                        database.create_ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.message['data']['ocid']
+                        )
+                        database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id
+                        )
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = CassandraSession(
+                                cassandra_username=GlobalClassCreateEi.cassandra_username,
+                                cassandra_password=GlobalClassCreateEi.cassandra_password,
+                                cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
+                            ).get_orchestrator_operation_step_by_x_operation_id(
+                                operation_id=GlobalClassCreateEi.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    print("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
                     expected_result=str({}),
                     actual_result=str(compare_releases)
