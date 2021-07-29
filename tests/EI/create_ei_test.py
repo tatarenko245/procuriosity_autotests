@@ -16,8 +16,8 @@ from tests.utils.releases_models import EiRelease
 from tests.utils.requests import Requests
 
 
-@allure.parent_suite('Open procedure')
-@allure.suite('Budget')
+@allure.parent_suite('Budgets')
+@allure.suite('EI')
 @allure.sub_suite('BPE: Create EI')
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/edit#gid=0',
@@ -26,7 +26,7 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
     @allure.title('Check status code and message from Kafka topic after EI creation')
     def test_check_status_code_and_message_from_kafka_topic_after_ei_creation(self, environment, country, language,
                                                                               cassandra_username, cassandra_password):
-        with allure.step('Authorization'):
+        with allure.step('# 1. Authorization'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -40,11 +40,11 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                 GlobalClassCreateEi.host_for_bpe).get_access_token_for_platform_one()
             GlobalClassCreateEi.operation_id = PlatformAuthorization(GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
-        with allure.step('Take EI payload based on full data model'):
+        with allure.step('# 2. Take EI payload based on full data model'):
             GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(EiPayload().add_optionals_fields())
             allure.attach(str(json.dumps(GlobalClassCreateEi.payload_for_create_ei)), 'Payload')
 
-        with allure.step('Send request to create EI'):
+        with allure.step('# 3. Send request to create EI'):
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -53,11 +53,8 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                 language=GlobalClassCreateEi.language,
                 payload=GlobalClassCreateEi.payload_for_create_ei
             )
-            assert compare_actual_result_and_expected_result(
-                expected_result=str(202),
-                actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
-            )
-        with allure.step('See result'):
+
+        with allure.step('# 4. See result'):
             GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
             GlobalClassCreateEi.check_message = KafkaMessage(
                 GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
@@ -66,10 +63,13 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
             )
             allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
             assert compare_actual_result_and_expected_result(
+                expected_result=str(202),
+                actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
+            )
+            assert compare_actual_result_and_expected_result(
                 expected_result=str(True),
                 actual_result=str(GlobalClassCreateEi.check_message)
             )
-
         try:
             if GlobalClassCreateEi.check_message is True:
                 database = CassandraSession(
@@ -91,6 +91,7 @@ class TestCheckStatusCodeAndMessageFromKafkaTopic:
                 ).get_orchestrator_operation_step_by_x_operation_id(operation_id=GlobalClassCreateEi.operation_id)
         except ValueError:
             print("Check the message in kafka topic")
+
 
 # @allure.feature('Check EI release data after Ei creation based on full data model')
 # class TestCheckEiReleaseDataAfterEiCreationBasedOnFullDataModel:

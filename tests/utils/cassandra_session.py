@@ -41,6 +41,6 @@ class CassandraSession:
         process_id = rows_1.process_id
         steps = f"SELECT * FROM {self.ocds_keyspace.execute}.orchestrator_operation_step " \
                f"WHERE process_id = '{process_id}' ALLOW FILTERING;"
-        with allure.step('Steps from Casandra DataBase'):
+        with allure.step('# Steps from Casandra DataBase'):
             allure.attach(steps, "Cassandra DataBase: steps of process")
         return steps
