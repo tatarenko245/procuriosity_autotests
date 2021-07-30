@@ -88,7 +88,6 @@ def generate_items_array(quantity_of_object, item_object, tender_classification_
     for i in range(quantity_of_object):
         item_json = copy.deepcopy(item_object)
         item_json['id'] = str(i)
-        item_json['relatedLot'] = str(i)
         items_array.append(item_json)
 
     new_array_items = []

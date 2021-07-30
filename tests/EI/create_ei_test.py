@@ -120,7 +120,7 @@ class TestCreateEi:
                 GlobalClassCreateEi.access_token)
         with allure.step('# 2. Take EI payload based on full data model'):
             payload = copy.deepcopy(EiPayload())
-            GlobalClassCreateEi.payload_for_create_ei = payload.add_optionals_fields()
+            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(payload.add_optionals_fields())
             allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
 
         with allure.step('# 3. Send request to create EI'):
@@ -166,7 +166,7 @@ class TestCreateEi:
             with allure.step('# 4.3. Check EI release'):
                 actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
                                                            f"{GlobalClassCreateEi.message['data']['ocid']}").json()
-                release = EiRelease(
+                release = copy.deepcopy(EiRelease(
                     operation_date=GlobalClassCreateEi.message['data']['operationDate'],
                     release_id=actual_ei_release_model['releases'][0]['id'],
                     tender_id=actual_ei_release_model['releases'][0]['tender']['id'],
@@ -174,10 +174,10 @@ class TestCreateEi:
                     environment=GlobalClassCreateEi.environment,
                     payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
                     language=GlobalClassCreateEi.language
-                )
-                release.full_data_data_model()
-                expected_ei_release_model = release.add_tender_with_items_array(
-                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items'])
+                ))
+                copy.deepcopy(release.full_data_data_model())
+                expected_ei_release_model = copy.deepcopy(release.add_tender_with_items_array(
+                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items']))
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
                 compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
@@ -278,7 +278,7 @@ class TestCreateEi:
             with allure.step('# 4.3. Check EI release'):
                 actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
                                                            f"{GlobalClassCreateEi.message['data']['ocid']}").json()
-                release = EiRelease(
+                release = copy.deepcopy(EiRelease(
                     operation_date=GlobalClassCreateEi.message['data']['operationDate'],
                     release_id=actual_ei_release_model['releases'][0]['id'],
                     tender_id=actual_ei_release_model['releases'][0]['tender']['id'],
@@ -286,8 +286,8 @@ class TestCreateEi:
                     environment=GlobalClassCreateEi.environment,
                     payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
                     language=GlobalClassCreateEi.language
-                )
-                expected_ei_release_model = release.obligatory_data_model()
+                ))
+                expected_ei_release_model = copy.deepcopy(release.obligatory_data_model())
 
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
@@ -344,9 +344,9 @@ class TestCreateEi:
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
         with allure.step('# 2. Take EI payload based on full data model'):
-            payload = EiPayload()
-            GlobalClassCreateEi.payload_for_create_ei = payload.add_optionals_fields()
-            GlobalClassCreateEi.payload_for_create_ei = payload.add_tender_items(3)
+            payload = copy.deepcopy(EiPayload())
+            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(payload.add_optionals_fields())
+            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(payload.add_tender_items(3))
             allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
 
         with allure.step('# 3. Send request to create EI'):
@@ -392,7 +392,7 @@ class TestCreateEi:
             with allure.step('# 4.3. Check EI release'):
                 actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
                                                            f"{GlobalClassCreateEi.message['data']['ocid']}").json()
-                release = EiRelease(
+                release = copy.deepcopy(EiRelease(
                     operation_date=GlobalClassCreateEi.message['data']['operationDate'],
                     release_id=actual_ei_release_model['releases'][0]['id'],
                     tender_id=actual_ei_release_model['releases'][0]['tender']['id'],
@@ -400,10 +400,10 @@ class TestCreateEi:
                     environment=GlobalClassCreateEi.environment,
                     payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
                     language=GlobalClassCreateEi.language
-                )
-                release.full_data_data_model()
-                expected_ei_release_model = release.add_tender_with_items_array(
-                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items'])
+                ))
+                copy.deepcopy(release.full_data_data_model())
+                expected_ei_release_model = copy.deepcopy(release.add_tender_with_items_array(
+                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items']))
 
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
@@ -432,6 +432,11 @@ class TestCreateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     print("Check the message in kafka topic")
+
+                print('---------')
+                print(json.dumps(actual_ei_release_model))
+                print('============')
+                print(json.dumps(expected_ei_release_model))
                 assert compare_actual_result_and_expected_result(
                     expected_result=str({}),
                     actual_result=str(compare_releases)
