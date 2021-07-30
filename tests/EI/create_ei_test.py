@@ -321,7 +321,6 @@ class TestCreateEi:
                     actual_result=str(compare_releases)
                 )
 
-    # ----------------------
     @allure.title('Check EI release data after Ei creation based on full data model with 3 items objects')
     def test_check_ei_release_data_after_ei_creation_based_on_full_data_model_with_3_items_objects(self, environment,
                                                                                                    country,
@@ -406,34 +405,34 @@ class TestCreateEi:
                 expected_ei_release_model = release.add_tender_with_items_array(
                     actual_items_array=actual_ei_release_model['releases'][0]['tender']['items'])
 
-            allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
-            allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
-            compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
-            try:
-                if compare_releases is {}:
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassCreateEi.cassandra_username,
-                        cassandra_password=GlobalClassCreateEi.cassandra_password,
-                        cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
-                    )
-                    database.create_ei_process_cleanup_table_of_services(
-                        ei_id=GlobalClassCreateEi.message['data']['ocid']
-                    )
-                    database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreateEi.operation_id
-                    )
-                else:
-                    with allure.step('# Steps from Casandra DataBase'):
-                        steps = CassandraSession(
+                allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
+                allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
+                compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
+                try:
+                    if compare_releases is {}:
+                        database = CassandraSession(
                             cassandra_username=GlobalClassCreateEi.cassandra_username,
                             cassandra_password=GlobalClassCreateEi.cassandra_password,
                             cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
-                        ).get_orchestrator_operation_step_by_x_operation_id(
-                            operation_id=GlobalClassCreateEi.operation_id)
-                        allure.attach(steps, "Cassandra DataBase: steps of process")
-            except ValueError:
-                print("Check the message in kafka topic")
-            assert compare_actual_result_and_expected_result(
-                expected_result=str({}),
-                actual_result=str(compare_releases)
-            )
+                        )
+                        database.create_ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.message['data']['ocid']
+                        )
+                        database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id
+                        )
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = CassandraSession(
+                                cassandra_username=GlobalClassCreateEi.cassandra_username,
+                                cassandra_password=GlobalClassCreateEi.cassandra_password,
+                                cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
+                            ).get_orchestrator_operation_step_by_x_operation_id(
+                                operation_id=GlobalClassCreateEi.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    print("Check the message in kafka topic")
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str({}),
+                    actual_result=str(compare_releases)
+                )
