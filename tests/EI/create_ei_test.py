@@ -345,9 +345,9 @@ class TestCreateEi:
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
         with allure.step('# 2. Take EI payload based on full data model'):
-            payload = copy.deepcopy(EiPayload())
-            payload_with_optionals_fields = payload.add_optionals_fields()
-            GlobalClassCreateEi.payload_for_create_ei = payload_with_optionals_fields.add_tender_items(quantity=3)
+            payload = EiPayload()
+            GlobalClassCreateEi.payload_for_create_ei = payload.add_optionals_fields()
+            GlobalClassCreateEi.payload_for_create_ei = payload.add_tender_items(3)
             allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
 
         with allure.step('# 3. Send request to create EI'):
