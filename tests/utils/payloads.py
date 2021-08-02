@@ -70,12 +70,70 @@ class EiPayload:
             }
         }
 
+    def add_optionals_fields(self):
+
+        self.payload['tender']['description'] = "create ei description"
+        self.payload['tender']['items'] = [{
+            "id": "1",
+            "description": "item 1",
+            "classification": {
+                "id": self.tender_classification_id
+            },
+            "additionalClassifications": [
+                {
+                    "id": "AA12-4"
+                }
+            ],
+            "deliveryAddress": {
+                "streetAddress": "хрещатик",
+                "postalCode": "02235",
+                "addressDetails": {
+                    "country": {
+                        "id": "MD"
+
+                    },
+                    "region": {
+                        "id": "1700000"
+
+                    },
+                    "locality": {
+                        "id": "1701000",
+                        "description": "ОПИСАНИЕ33pizza",
+                        "scheme": f'{random.choice(locality_scheme)}'
+                    }
+
+                }
+            },
+            "quantity": 1,
+            "unit": {
+                "id": "10"
+
+            }
+        }]
+        self.payload['planning']['rationale'] = "create ei planning.rationale"
+        self.payload['buyer']['identifier']['uri'] = "create ei buyer.identifier.uri"
+        self.payload['buyer']['address']['postalCode'] = "create ei buyer.address.postalCode"
+        self.payload['buyer']['additionalIdentifiers'] = [{
+            "id": "create ei buyer.additionalIdentifiers.id",
+            "scheme": "create ei buyer.additionalIdentifiers.scheme",
+            "legalName": "create ei buyer.additionalIdentifiers.description",
+            "uri": "create ei buyer.additionalIdentifiers.uri"
+        }]
+        self.payload['buyer']['contactPoint']['faxNumber'] = "create ei buyer.contactPoint.faxNumber"
+        self.payload['buyer']['contactPoint']['url'] = "create ei buyer.contactPoint.url"
+        self.payload['buyer']['details'] = {
+            "typeOfBuyer": f'{random.choice(typeOfBuyer)}',
+            "mainGeneralActivity": f'{random.choice(mainGeneralActivity)}',
+            "mainSectoralActivity": f'{random.choice(mainSectoralActivity)}'
+
+        }
+        return self.payload
+
     def obligatory_model_of_payload(self):
-        payload = copy.deepcopy(self.payload)
-        return payload
+        return self.payload
 
     def add_tender_items(self, quantity=2):
-        payload = copy.deepcopy(self.payload)
+
         item_object = {
             "id": "1",
             "description": "item 1",
@@ -123,135 +181,18 @@ class EiPayload:
             cpv=temp_tender_classification_id,
             language=GlobalClassCreateEi.language
         )
-        payload['tender']['items'] = items_array
-        payload['tender']['classification']['id'] = new_tender_classification[0]
-        return payload
+        self.payload['tender']['items'] = items_array
+        self.payload['tender']['classification']['id'] = new_tender_classification[0]
+        return self.payload
 
     def add_buyer_details(self):
-        payload = copy.deepcopy(self.payload)
+
         buyer_details = {
             "typeOfBuyer": f'{random.choice(typeOfBuyer)}',
             "mainGeneralActivity": f'{random.choice(mainGeneralActivity)}',
             "mainSectoralActivity": f'{random.choice(mainSectoralActivity)}'
 
         }
-        payload['buyer']['details'] = buyer_details
-        return payload
+        self.payload['buyer']['details'] = buyer_details
+        return self.payload
 
-
-class Payload:
-    @staticmethod
-    def for_create_fs_full_own_money_data_model():
-        fs_period = Date().financial_source_period()
-        with step('Create payload for FS'):
-            json = {
-                "planning": {
-                    "budget": {
-                        "id": "IBAN - 102030",
-                        "description": "description",
-                        "period": {
-                            "startDate": fs_period[0],
-                            "endDate": fs_period[1]
-                        },
-                        "amount": {
-                            "amount": 2000.0,
-                            "currency": "EUR"
-                        },
-                        "isEuropeanUnionFunded": True,
-                        "europeanUnionFunding": {
-                            "projectName": "Name of this project",
-                            "projectIdentifier": "projectIdentifier",
-                            "uri": "http://uriuri.th"
-                        },
-                        "project": "project",
-                        "projectID": "projectID",
-                        "uri": "http://uri.ur"
-                    },
-                    "rationale": "reason for the budget"
-                },
-                "tender": {
-                    "procuringEntity": {
-                        "name": "Procuring Entity Name",
-                        "identifier": {
-                            "id": "123456789000",
-                            "scheme": "MD-IDNO",
-                            "legalName": "Legal Name",
-                            "uri": "http://454.to"
-                        },
-                        "additionalIdentifiers": [
-                            {
-                                "id": "additional identifier",
-                                "scheme": "MD-K",
-                                "legalName": "legalname",
-                                "uri": "http://k.to"
-                            }
-                        ],
-                        "address": {
-                            "streetAddress": "street",
-                            "postalCode": "785412",
-                            "addressDetails": {
-                                "country": {
-                                    "id": "MD"
-                                },
-                                "region": {
-                                    "id": "3400000"
-                                },
-                                "locality": {
-                                    "scheme": "CUATM",
-                                    "id": "3401000",
-                                    "description": "ssf"
-                                }
-                            }
-                        },
-                        "contactPoint": {
-                            "name": "contact person",
-                            "email": "string@mail.ccc",
-                            "telephone": "98-79-87",
-                            "faxNumber": "78-56-55",
-                            "url": "http://url.com"
-                        }
-                    }
-                },
-                "buyer": {
-                    "name": "buyer's name",
-                    "identifier": {
-                        "id": "123654789000",
-                        "scheme": "MD-IDNO",
-                        "legalName": "legal Name",
-                        "uri": "http://buyer.com"
-                    },
-                    "address": {
-                        "streetAddress": "street address of buyer",
-                        "postalCode": "02054",
-                        "addressDetails": {
-                            "country": {
-                                "id": "MD"
-                            },
-                            "region": {
-                                "id": "1700000"
-                            },
-                            "locality": {
-                                "scheme": "CUATM",
-                                "id": "1701000",
-                                "description": "description of locality"
-                            }
-                        }
-                    },
-                    "additionalIdentifiers": [
-                        {
-                            "id": "additional identifier",
-                            "scheme": "scheme",
-                            "legalName": "legal name",
-                            "uri": "http://addtIdent.com"
-                        }
-                    ],
-                    "contactPoint": {
-                        "name": "contact point of buyer",
-                        "email": "email.com",
-                        "telephone": "32-22-23",
-                        "faxNumber": "12-22-21",
-                        "url": "http://url.com"
-                    }
-                }
-            }
-        return json

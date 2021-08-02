@@ -157,12 +157,54 @@ class EiRelease:
             }]
         }
 
-    def for_create_ei_obligatory_data_model(self):
-        release_ei_obligatory_data_model = copy.deepcopy(self.release)
-        return release_ei_obligatory_data_model
+    def obligatory_data_model(self):
+        return self.release
 
-    def for_create_ei_obligatory_data_model_with_items_array(self, actual_items_array):
-        release_ei_obligatory_with_items_array_data_model = copy.deepcopy(self.release)
+    def full_data_data_model(self):
+
+        self.release['releases'][0]['tender']['description'] = \
+            self.payload_for_create_ei['tender']['description']
+
+        self.release['releases'][0]['planning']['rationale'] = \
+            self.payload_for_create_ei['planning']['rationale']
+
+        self.release['releases'][0]['parties'][0]['identifier']['uri'] = \
+            self.payload_for_create_ei['buyer']['identifier']['uri']
+
+        self.release['releases'][0]['parties'][0]['additionalIdentifiers'] = [{
+            "id": self.payload_for_create_ei['buyer']['additionalIdentifiers'][0]['id'],
+            "scheme": self.payload_for_create_ei['buyer']['additionalIdentifiers'][0]['scheme'],
+            "legalName": self.payload_for_create_ei['buyer']['additionalIdentifiers'][0]['legalName'],
+            "uri": self.payload_for_create_ei['buyer']['additionalIdentifiers'][0]['uri']
+        }]
+
+        self.release['releases'][0]['parties'][0]['address']['postalCode'] = \
+            self.payload_for_create_ei['buyer']['address']['postalCode']
+
+        self.release['releases'][0]['parties'][0]['contactPoint']['faxNumber'] = \
+            self.payload_for_create_ei['buyer']['contactPoint']['faxNumber']
+
+        self.release['releases'][0]['parties'][0]['contactPoint']['url'] = \
+            self.payload_for_create_ei['buyer']['contactPoint']['url']
+
+        self.release['releases'][0]['parties'][0]['details'] = {
+            "typeOfBuyer": self.payload_for_create_ei['buyer']['details']['typeOfBuyer'],
+            "mainGeneralActivity": self.payload_for_create_ei['buyer']['details']['mainGeneralActivity'],
+            "mainSectoralActivity": self.payload_for_create_ei['buyer']['details']['mainSectoralActivity']
+        }
+        return self.release
+
+    def add_tender_with_items_array(self, actual_items_array):
+        for o in actual_items_array:
+            for i in o['classification']:
+                if i == "id":
+                    try:
+                        is_it_uuid(
+                            uuid_to_test=o['classification']['id'],
+                            version=4
+                        )
+                    except ValueError:
+                        print("Check your item_id in EI release: item_id in EI release must be uuid version 4")
         main_procurement_category = None
         if self.payload_for_create_ei['tender']['classification']['id'][0:2] == "03" or \
                 self.payload_for_create_ei['tender']['classification']['id'][0] == "1" or \
@@ -180,172 +222,170 @@ class EiRelease:
                 self.payload_for_create_ei['tender']['classification']['id'][0:2] == "92" or \
                 self.payload_for_create_ei['tender']['classification']['id'][0:2] == "98":
             main_procurement_category = "services"
-        tender_classification_id = get_value_from_classification_cpv_dictionary_xls(
-            generate_tender_classification_id(actual_items_array), self.language)
-        release_ei_obligatory_with_items_array_data_model['releases'][0]['tender'] = {
-            "id": self.tender_id,
-            "title": self.payload_for_create_ei['tender']['title'],
-            "status": "planning",
-            "statusDetails": "empty",
-            "mainProcurementCategory": main_procurement_category,
-            "classification": {
-                "scheme": "CPV",
-                "id": tender_classification_id[0],
-                "description": tender_classification_id[1]
-            },
-            "items": actual_items_array
-        }
+
         list_of_keys = list()
         for o in self.payload_for_create_ei['tender']['items']:
             for id_ in o['classification']:
                 if id_ == "id":
                     list_of_keys.append(id_)
         quantity = len(list_of_keys)
+        if quantity < 2:
+            tender_classification_id = get_value_from_classification_cpv_dictionary_xls(
+                self.release['releases'][0]['tender']['classification']['id'], self.language)
 
-        for o in release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items']:
-            for i in o['classification']:
-                if i == "id":
-                    try:
-                        is_it_uuid(
-                            uuid_to_test=o['classification']['id'],
-                            version=4
-                        )
-                    except ValueError:
-                        print("Check your item_id in EI release: item_id in EI release must be uuid version 4")
-        item_country_data = get_value_from_country_csv(
-            country=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
-                'addressDetails']['country']['id'],
-            language=self.language
-        )
-        item_region_data = get_value_from_region_csv(
-            region=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
-                'addressDetails']['region']['id'],
-            country=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
-                'addressDetails']['country']['id'],
-            language=self.language
-        )
-        item_locality_data = get_value_from_locality_csv(
-            locality=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
-                'addressDetails']['locality']['id'],
-            region=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
-                'addressDetails']['region']['id'],
-            country=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
-                'addressDetails']['country']['id'],
-            language=self.language
-        )
-        cpv_data = get_value_from_classification_cpv_dictionary_xls(
-            cpv=self.payload_for_create_ei['tender']['items'][quantity - 1]['classification']['id'],
-            language=self.language
-        )
-        cpvs_data = get_value_from_cpvs_dictionary_csv(
-            cpvs=self.payload_for_create_ei['tender']['items'][quantity - 1][
-                'additionalClassifications'][0]['id'],
-            language=self.language
-        )
-        unit_data = get_value_from_classification_unit_dictionary_csv(
-            unit_id=self.payload_for_create_ei['tender']['items'][quantity - 1]['unit']['id'],
-            language=self.language
-        )
+
+        else:
+            tender_classification_id = get_value_from_classification_cpv_dictionary_xls(
+                generate_tender_classification_id(self.payload_for_create_ei['tender']['items']), self.language)
+
+        self.release['releases'][0]['tender']['mainProcurementCategory'] = main_procurement_category
+        self.release['releases'][0]['tender']['classification']['id'] = tender_classification_id[0]
+        self.release['releases'][0]['tender']['classification']['description'] = tender_classification_id[1]
+        self.release['releases'][0]['tender']['items'] = self.payload_for_create_ei['tender']['items']
+        list_of_keys = list()
+        for o in self.payload_for_create_ei['tender']['items']:
+            for id_ in o['classification']:
+                if id_ == "id":
+                    list_of_keys.append(id_)
+        quantity = len(list_of_keys)
         while quantity > 0:
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            item_country_data = get_value_from_country_csv(
+                country=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                    'addressDetails']['country']['id'],
+                language=self.language
+            )
+            item_region_data = get_value_from_region_csv(
+                region=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                    'addressDetails']['region']['id'],
+                country=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                    'addressDetails']['country']['id'],
+                language=self.language
+            )
+            if self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                'addressDetails']['locality']['scheme'] == "CUATM":
+                item_locality_data = get_value_from_locality_csv(
+                    locality=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                        'addressDetails']['locality']['id'],
+                    region=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                        'addressDetails']['region']['id'],
+                    country=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                        'addressDetails']['country']['id'],
+                    language=self.language
+                )
+                self.release['releases'][0]['tender']['items'][quantity - 1][
+                    'deliveryAddress']['addressDetails']['locality']['id'] = item_locality_data[0]
+
+                self.release['releases'][0]['tender']['items'][quantity - 1][
+                    'deliveryAddress']['addressDetails']['locality']['scheme'] = item_locality_data[2]
+
+                self.release['releases'][0]['tender']['items'][quantity - 1][
+                    'deliveryAddress']['addressDetails']['locality']['description'] = item_locality_data[1]
+
+                self.release['releases'][0]['tender']['items'][quantity - 1][
+                    'deliveryAddress']['addressDetails']['locality']['uri'] = item_locality_data[3]
+            else:
+                self.release['releases'][0]['tender']['items'][quantity - 1][
+                    'deliveryAddress']['addressDetails']['locality']['id'] = \
+                    self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                        'addressDetails']['locality']['id']
+
+                self.release['releases'][0]['tender']['items'][quantity - 1][
+                    'deliveryAddress']['addressDetails']['locality']['scheme'] = \
+                    self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                        'addressDetails']['locality']['scheme']
+
+                self.release['releases'][0]['tender']['items'][quantity - 1][
+                    'deliveryAddress']['addressDetails']['locality']['description'] = \
+                    self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                        'addressDetails']['locality']['description']
+
+            cpv_data = get_value_from_classification_cpv_dictionary_xls(
+                cpv=self.payload_for_create_ei['tender']['items'][quantity - 1]['classification']['id'],
+                language=self.language
+            )
+            cpvs_data = get_value_from_cpvs_dictionary_csv(
+                cpvs=self.payload_for_create_ei['tender']['items'][quantity - 1][
+                    'additionalClassifications'][0]['id'],
+                language=self.language
+            )
+            unit_data = get_value_from_classification_unit_dictionary_csv(
+                unit_id=self.payload_for_create_ei['tender']['items'][quantity - 1]['unit']['id'],
+                language=self.language
+            )
+
+            self.release['releases'][0]['tender']['items'][quantity - 1][
+                'id'] = \
+                actual_items_array[quantity - 1]['id']
+
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'description'] = \
                 self.payload_for_create_ei['tender']['items'][quantity - 1]['description']
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'quantity'] = \
-                self.payload_for_create_ei['tender']['items'][quantity - 1]['quantity']
+                float(self.payload_for_create_ei['tender']['items'][quantity - 1]['quantity'])
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'deliveryAddress']['streetAddress'] = \
                 self.payload_for_create_ei['tender']['items'][quantity - 1][
                     'deliveryAddress']['streetAddress']
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'deliveryAddress']['postalCode'] = \
                 self.payload_for_create_ei['tender']['items'][quantity - 1][
                     'deliveryAddress']['postalCode']
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'deliveryAddress']['addressDetails']['country']['id'] = \
-                self.payload_for_create_ei['tender']['items'][quantity - 1][
-                    'deliveryAddress']['addressDetails']['country']['id']
+                item_country_data[0]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'deliveryAddress']['addressDetails']['country']['scheme'] = \
                 item_country_data[2]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'deliveryAddress']['addressDetails']['country']['description'] = \
                 item_country_data[1]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'deliveryAddress']['addressDetails']['country']['uri'] = \
-                item_country_data[4]
+                item_country_data[3]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'deliveryAddress']['addressDetails']['region']['id'] = \
-                self.payload_for_create_ei['tender']['items'][quantity - 1][
-                    'deliveryAddress']['addressDetails']['region']['id']
+                item_region_data[0]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'deliveryAddress']['addressDetails']['region']['scheme'] = item_region_data[2]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'deliveryAddress']['addressDetails']['region']['description'] = item_region_data[1]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
-                'deliveryAddress']['addressDetails']['region']['uri'] = item_region_data[4]
+            self.release['releases'][0]['tender']['items'][quantity - 1][
+                'deliveryAddress']['addressDetails']['region']['uri'] = item_region_data[3]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
-                'deliveryAddress']['addressDetails']['locality']['id'] = \
-                self.payload_for_create_ei['tender']['items'][quantity - 1][
-                    'deliveryAddress']['addressDetails']['locality']['id']
+            self.release['releases'][0]['tender']['items'][quantity - 1][
+                'classification']['id'] = cpv_data[0]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
-                'deliveryAddress']['addressDetails']['locality']['scheme'] = item_locality_data[2]
-
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
-                'deliveryAddress']['addressDetails']['locality']['description'] = item_locality_data[1]
-
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
-                'deliveryAddress']['addressDetails']['locality']['uri'] = item_locality_data[4]
-
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
-                'classification']['id'] = \
-                self.payload_for_create_ei['tender']['items'][quantity - 1][
-                    'classification']['id']
-
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'classification']['scheme'] = "CPV"
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'classification']['description'] = cpv_data[1]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
-                'additionalClassifications'][0]['id'] = \
-                self.payload_for_create_ei['tender']['items'][quantity - 1][
-                    'additionalClassifications'][0]['id']
+            self.release['releases'][0]['tender']['items'][quantity - 1][
+                'additionalClassifications'][0]['id'] = cpvs_data[0]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'additionalClassifications'][0]['scheme'] = "CPVS"
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1][
+            self.release['releases'][0]['tender']['items'][quantity - 1][
                 'additionalClassifications'][0]['description'] = cpvs_data[2]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1]['unit'][
-                'id'] = \
-                self.payload_for_create_ei['tender']['items'][quantity - 1]['unit']['id']
+            self.release['releases'][0]['tender']['items'][quantity - 1]['unit'][
+                'id'] = unit_data[0]
 
-            release_ei_obligatory_with_items_array_data_model['releases'][0]['tender']['items'][quantity - 1]['unit'][
-                'description'] = unit_data[1]
+            self.release['releases'][0]['tender']['items'][quantity - 1]['unit'][
+                'name'] = unit_data[1]
             quantity -= 1
-        return release_ei_obligatory_with_items_array_data_model
-
-    def for_create_ei_obligatory_data_model_with_buyer_details(self):
-        release_ei_obligatory_with_buyer_details_data_model = copy.deepcopy(self.release)
-        buyer_role_in_parties = list()
-        for p in release_ei_obligatory_with_buyer_details_data_model["releases"][0]["parties"]:
-            if p["roles"] == ["buyer"]:
-                p['details'] = self.payload_for_create_ei['buyer']['details']
-                buyer_role_in_parties.append(p)
-        return release_ei_obligatory_with_buyer_details_data_model
+        return self.release

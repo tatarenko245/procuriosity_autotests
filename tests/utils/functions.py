@@ -84,22 +84,15 @@ def get_value_from_classification_unit_dictionary_csv(unit_id, language):
 
 def generate_items_array(quantity_of_object, item_object, tender_classification_id):
     copy.deepcopy(item_object)
-    items_array = [item_object for _ in range(quantity_of_object)]
-    id_set = set()
-    while len(id_set) < quantity_of_object:
-        id_list = list()
-        for i in items_array:
-            for keys, values in i.items():
-                if keys == "id":
-                    values = random.randint(1, quantity_of_object + 1)
-                    id_list.append(values)
+    items_array = []
+    for i in range(quantity_of_object):
+        item_json = copy.deepcopy(item_object)
+        item_json['id'] = str(i)
+        items_array.append(item_json)
 
-        id_set = set(id_list)
-    correct_id_list = list(id_set)
-    new_array_items = list()
+    new_array_items = []
     for quantity_of_object in range(quantity_of_object):
-        id_ = str(correct_id_list[quantity_of_object])
-        items_array[quantity_of_object]['id'] = id_
+
         item_classification_id = None
         if tender_classification_id[0:2] == "03":
             item_classification_id = f"{random.choice(cpv_goods_low_level_03)}"
@@ -133,6 +126,58 @@ def generate_items_array(quantity_of_object, item_object, tender_classification_
         val = items_array[quantity_of_object]
         new_array_items.append(copy.deepcopy(val))
     return new_array_items
+
+# def generate_items_array(quantity_of_object, item_object, tender_classification_id):
+#     copy.deepcopy(item_object)
+#     items_array = [item_object for _ in range(quantity_of_object)]
+#     id_set = set()
+#     while len(id_set) < quantity_of_object:
+#         id_list = list()
+#         for i in items_array:
+#             for keys, values in i.items():
+#                 if keys == "id":
+#                     values = random.randint(1, quantity_of_object + 1)
+#                     id_list.append(values)
+#
+#         id_set = set(id_list)
+#     correct_id_list = list(id_set)
+#     new_array_items = list()
+#     for quantity_of_object in range(quantity_of_object):
+#         id_ = str(correct_id_list[quantity_of_object])
+#         items_array[quantity_of_object]['id'] = id_
+#         item_classification_id = None
+#         if tender_classification_id[0:2] == "03":
+#             item_classification_id = f"{random.choice(cpv_goods_low_level_03)}"
+#         elif tender_classification_id[0] == "1":
+#             item_classification_id = f"{random.choice(cpv_goods_low_level_1)}"
+#         elif tender_classification_id[0] == "2":
+#             item_classification_id = f"{random.choice(cpv_goods_low_level_2)}"
+#         elif tender_classification_id[0] == "3":
+#             item_classification_id = f"{random.choice(cpv_goods_low_level_3)}"
+#         elif tender_classification_id[0:2] == "44":
+#             item_classification_id = f"{random.choice(cpv_goods_low_level_44)}"
+#         elif tender_classification_id[0:2] == "48":
+#             item_classification_id = f"{random.choice(cpv_goods_low_level_48)}"
+#         elif tender_classification_id[0:2] == "45":
+#             item_classification_id = f"{random.choice(cpv_works_low_level_45)}"
+#         elif tender_classification_id[0] == "5":
+#             item_classification_id = f"{random.choice(cpv_services_low_level_5)}"
+#         elif tender_classification_id[0] == "6":
+#             item_classification_id = f"{random.choice(cpv_services_low_level_6)}"
+#         elif tender_classification_id[0] == "7":
+#             item_classification_id = f"{random.choice(cpv_services_low_level_7)}"
+#         elif tender_classification_id[0] == "8":
+#             item_classification_id = f"{random.choice(cpv_services_low_level_8)}"
+#         elif tender_classification_id[0:2] == "92":
+#             item_classification_id = f"{random.choice(cpv_services_low_level_92)}"
+#         elif tender_classification_id[0:2] == "98":
+#             item_classification_id = f"{random.choice(cpv_services_low_level_98)}"
+#         else:
+#             Exception("Error: check your 'tender.clasification.id'")
+#         items_array[quantity_of_object]['classification']['id'] = item_classification_id
+#         val = items_array[quantity_of_object]
+#         new_array_items.append(copy.deepcopy(val))
+#     return new_array_items
 
 
 def generate_tender_classification_id(items_array):

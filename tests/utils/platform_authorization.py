@@ -1,3 +1,5 @@
+import json
+
 import allure
 import requests
 from allure_commons._allure import step
@@ -17,6 +19,7 @@ class PlatformAuthorization:
         access_token = access_token['data']['tokens']['access']
         allure.attach(self.host + '/auth/signin', 'HOST')
         allure.attach('Basic dXNlcjpwYXNzd29yZA==', 'Platform credentials for authorization')
+        allure.attach(json.dumps(access_token), 'Response from auth service')
         allure.attach(str(access_token), 'Access token')
         return access_token
 
@@ -32,6 +35,7 @@ class PlatformAuthorization:
         allure.attach(self.host + '/auth/signin', 'HOST')
         allure.attach('Basic YXV0b21hdGlvbl91c2VyOnBhc3N3b3Jk=', 'Platform credentials for authorization')
         allure.attach(str(access_token), 'Access token')
+        allure.attach(str(access_token), 'Access token')
         return access_token
 
     @allure.step('Get X-OPERATION-ID')
@@ -44,5 +48,6 @@ class PlatformAuthorization:
         x_operation_id = x_operation_id['data']['operationId']
         allure.attach(self.host + '/operations', 'HOST')
         allure.attach(access_token, 'Platform access token')
+        allure.attach(json.dumps(x_operation_id), 'Response from auth service')
         allure.attach(str(x_operation_id), 'X-OPERATION-ID')
         return x_operation_id
