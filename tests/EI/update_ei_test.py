@@ -52,9 +52,9 @@ class TestUpdateEi:
                 language=GlobalClassCreateEi.language,
                 payload=GlobalClassCreateEi.payload_for_create_ei
             )
-
             GlobalClassCreateEi.ei_ocid = \
-            KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()["data"]["outcomes"]["ei"][0]['id']
+                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()["data"]["outcomes"]["ei"][0][
+                    'id']
             GlobalClassCreateEi.ei_token = \
                 KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()["data"]["outcomes"]["ei"][0][
                     'X-TOKEN']
