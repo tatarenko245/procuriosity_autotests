@@ -161,12 +161,9 @@ class TestUpdateEi:
                 language=GlobalClassCreateEi.language,
                 payload=GlobalClassCreateEi.payload_for_create_ei
             )
-            GlobalClassCreateEi.ei_ocid = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()["data"]["outcomes"]["ei"][0][
-                    'id']
-            GlobalClassCreateEi.ei_token = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()["data"]["outcomes"]["ei"][0][
-                    'X-TOKEN']
+            GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+            GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.message["data"]["outcomes"]["ei"][0]['id']
+            GlobalClassCreateEi.ei_token = GlobalClassCreateEi.message["data"]["outcomes"]["ei"][0]['X-TOKEN']
         with allure.step('# 3. Authorization: update EI'):
             GlobalClassUpdateEi.cassandra_username = cassandra_username
             GlobalClassUpdateEi.cassandra_password = cassandra_password
