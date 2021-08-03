@@ -26,7 +26,7 @@ class TestUpdateEi:
     @allure.title('Check status code and message from Kafka topic after EI updating')
     def test_check_status_code_and_message_from_kafka_topic_after_ei_updating(self, environment, country, language,
                                                                               cassandra_username, cassandra_password):
-        with allure.step('# 1. Authorization'):
+        with allure.step('# 1. Authorization: create EI'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -41,20 +41,6 @@ class TestUpdateEi:
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
-
-            GlobalClassUpdateEi.cassandra_username = cassandra_username
-            GlobalClassUpdateEi.cassandra_password = cassandra_password
-            GlobalClassUpdateEi.environment = environment
-            GlobalClassUpdateEi.hosts = Environment().choose_environment(GlobalClassUpdateEi.environment)
-            GlobalClassUpdateEi.host_for_bpe = GlobalClassUpdateEi.hosts[1]
-            GlobalClassUpdateEi.host_for_service = GlobalClassUpdateEi.hosts[2]
-            GlobalClassUpdateEi.cassandra_cluster = GlobalClassUpdateEi.hosts[0]
-            GlobalClassUpdateEi.access_token = PlatformAuthorization(
-                GlobalClassUpdateEi.host_for_bpe).get_access_token_for_platform_one()
-            GlobalClassUpdateEi.operation_id = PlatformAuthorization(
-                GlobalClassUpdateEi.host_for_bpe).get_x_operation_id(
-                GlobalClassUpdateEi.access_token)
-
         with allure.step('# 2. Send request to create EI'):
             payload = copy.deepcopy(EiPayload())
             GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_obligatory_model_of_payload()
@@ -72,12 +58,19 @@ class TestUpdateEi:
             GlobalClassCreateEi.ei_token = \
                 KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()["data"]["outcomes"]["ei"][0][
                     'X-TOKEN']
-        with allure.step('# 3. Take EI payload based on full data model'):
-            GlobalClassUpdateEi.payload_for_update_ei = copy.deepcopy(payload.update_ei_full_data_model_with_one_item_object())
-            allure.attach(str(json.dumps(GlobalClassUpdateEi.payload_for_update_ei)), 'Payload')
-            print(json.dumps(GlobalClassCreateEi.payload_for_create_ei))
-            print('увага')
-            print(json.dumps(GlobalClassUpdateEi.payload_for_update_ei))
+        with allure.step('# 3. Authorization: update EI'):
+            GlobalClassUpdateEi.cassandra_username = cassandra_username
+            GlobalClassUpdateEi.cassandra_password = cassandra_password
+            GlobalClassUpdateEi.environment = environment
+            GlobalClassUpdateEi.hosts = Environment().choose_environment(GlobalClassUpdateEi.environment)
+            GlobalClassUpdateEi.host_for_bpe = GlobalClassUpdateEi.hosts[1]
+            GlobalClassUpdateEi.host_for_service = GlobalClassUpdateEi.hosts[2]
+            GlobalClassUpdateEi.cassandra_cluster = GlobalClassUpdateEi.hosts[0]
+            GlobalClassUpdateEi.access_token = PlatformAuthorization(
+                GlobalClassUpdateEi.host_for_bpe).get_access_token_for_platform_one()
+            GlobalClassUpdateEi.operation_id = PlatformAuthorization(
+                GlobalClassUpdateEi.host_for_bpe).get_x_operation_id(
+                GlobalClassUpdateEi.access_token)
         with allure.step('# 4. Send request to update EI'):
             GlobalClassUpdateEi.send_the_request_update_ei = Requests().update_ei(
                 host_of_request=GlobalClassUpdateEi.host_for_bpe,
@@ -88,13 +81,13 @@ class TestUpdateEi:
                 payload=GlobalClassUpdateEi.payload_for_update_ei
             )
 
-        with allure.step('# 4. See result'):
-            with allure.step('# 4.1. Check status code'):
+        with allure.step('# 5. See result'):
+            with allure.step('# 5.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
                     expected_result=str(202),
                     actual_result=str(GlobalClassUpdateEi.send_the_request_update_ei.status_code)
                 )
-            with allure.step('# 4.2. Check message in feed point'):
+            with allure.step('# 5.2. Check message in feed point'):
                 GlobalClassUpdateEi.message = KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
                 GlobalClassUpdateEi.check_message = KafkaMessage(
                     GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
