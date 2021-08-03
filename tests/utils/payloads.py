@@ -24,30 +24,70 @@ class EiPayload:
             self.tender_classification_id = random.choice(cpv_services_high_level)
         self.payload = {
             "tender": {
-                "title": "EI_FULL_WORKS",
+                "title": "ei: tender.title",
+                "description": "ei: tender.description",
                 "classification": {
                     "id": self.tender_classification_id
                 },
+                "items": [{
+                    "id": "1",
+                    "description": "ei: tender.items[0].description",
+                    "classification": {
+                        "id": self.tender_classification_id
+                    },
+                    "additionalClassifications": [
+                        {
+                            "id": "AA12-4"
+                        }
+                    ],
+                    "deliveryAddress": {
+                        "streetAddress": "ei: tender.items[0].deliveryAddress.streetAddress",
+                        "postalCode": "ei: tender.items[0].deliveryAddress.postalCode",
+                        "addressDetails": {
+                            "country": {
+                                "id": "MD"
 
+                            },
+                            "region": {
+                                "id": "1700000"
+
+                            },
+                            "locality": {
+                                "id": "1701000",
+                                "description": "ei: tender.items[0].deliveryAddress.addressDetails."
+                                               "locality.description",
+                                "scheme": f'{random.choice(locality_scheme)}'
+                            }
+
+                        }
+                    },
+                    "quantity": 1,
+                    "unit": {
+                        "id": "10"
+
+                    }
+                }]
             },
             "planning": {
                 "budget": {
-
                     "period": {
                         "startDate": ei_period[0],
                         "endDate": ei_period[1]
                     }
-                }
+                },
+                "rationale": "ei: tender.items[0].deliveryAddress.postalCode"
             },
             "buyer": {
-                "name": "LLC Petrusenko",
+                "name": "ei: buyer.name",
                 "identifier": {
-                    "id": "380632074071",
+                    "id": "ei: buyer.identifier.id",
                     "scheme": "MD-IDNO",
-                    "legalName": "LLC Petrusenko"
+                    "legalName": "ei: buyer.identifier.legalName",
+                    "uri": "ei: buyer.identifier.uri"
                 },
                 "address": {
-                    "streetAddress": "Zakrevskogo",
+                    "streetAddress": "ei: buyer.address.streetAddress",
+                    "postalCode": "ei: buyer.address.postalCode",
                     "addressDetails": {
                         "country": {
                             "id": "MD"
@@ -58,24 +98,51 @@ class EiPayload:
                         "locality": {
                             "scheme": "CUATM",
                             "id": "1701000",
-                            "description": "description"
+                            "description": "ei: buyer.address.addressDetails.locality.description"
                         }
                     }
                 },
+                "additionalIdentifiers": [{
+                    "id": "ei buyer.additionalIdentifiers.id",
+                    "scheme": "ei buyer.additionalIdentifiers.scheme",
+                    "legalName": "ei buyer.additionalIdentifiers.description",
+                    "uri": "ei buyer.additionalIdentifiers.uri"
+                }],
                 "contactPoint": {
-                    "name": "Petrusenko Svitlana",
-                    "email": "svetik@gmail.com",
-                    "telephone": "888999666"
+                    "name": "ei: buyer.contactPoint.name",
+                    "email": "ei: buyer.contactPoint.email",
+                    "telephone": "ei: buyer.contactPoint.telephone",
+                    "faxNumber": "ei: buyer.contactPoint.faxNUmber",
+                    "url": "ei: buyer.contactPoint.url"
+                },
+                "details": {
+                    "typeOfBuyer": f'{random.choice(typeOfBuyer)}',
+                    "mainGeneralActivity": f'{random.choice(mainGeneralActivity)}',
+                    "mainSectoralActivity": f'{random.choice(mainSectoralActivity)}'
+
                 }
             }
         }
 
-    def add_optionals_fields(self):
+    def create_ei_obligatory_model_of_payload(self):
+        del self.payload['tender']['description']
+        del self.payload['tender']['items']
+        del self.payload['planning']['rationale']
+        del self.payload['buyer']['identifier']['uri']
+        del self.payload['buyer']['address']['postalCode']
+        del self.payload['buyer']['additionalIdentifiers']
+        del self.payload['buyer']['contactPoint']['faxNumber']
+        del self.payload['buyer']['contactPoint']['url']
+        del self.payload['buyer']['details']
+        return self.payload
 
-        self.payload['tender']['description'] = "create ei description"
-        self.payload['tender']['items'] = [{
+    def create_ei_full_data_model_with_one_item_object(self):
+        return self.payload
+
+    def add_tender_items(self, quantity=2):
+        item_object = {
             "id": "1",
-            "description": "item 1",
+            "description": "ei: tender.items[0].description",
             "classification": {
                 "id": self.tender_classification_id
             },
@@ -85,8 +152,8 @@ class EiPayload:
                 }
             ],
             "deliveryAddress": {
-                "streetAddress": "хрещатик",
-                "postalCode": "02235",
+                "streetAddress": "ei: tender.items[0].deliveryAddress.streetAddress",
+                "postalCode": "ei: tender.items[0].deliveryAddress.postalCode",
                 "addressDetails": {
                     "country": {
                         "id": "MD"
@@ -98,68 +165,8 @@ class EiPayload:
                     },
                     "locality": {
                         "id": "1701000",
-                        "description": "ОПИСАНИЕ33pizza",
-                        "scheme": f'{random.choice(locality_scheme)}'
-                    }
-
-                }
-            },
-            "quantity": 1,
-            "unit": {
-                "id": "10"
-
-            }
-        }]
-        self.payload['planning']['rationale'] = "create ei planning.rationale"
-        self.payload['buyer']['identifier']['uri'] = "create ei buyer.identifier.uri"
-        self.payload['buyer']['address']['postalCode'] = "create ei buyer.address.postalCode"
-        self.payload['buyer']['additionalIdentifiers'] = [{
-            "id": "create ei buyer.additionalIdentifiers.id",
-            "scheme": "create ei buyer.additionalIdentifiers.scheme",
-            "legalName": "create ei buyer.additionalIdentifiers.description",
-            "uri": "create ei buyer.additionalIdentifiers.uri"
-        }]
-        self.payload['buyer']['contactPoint']['faxNumber'] = "create ei buyer.contactPoint.faxNumber"
-        self.payload['buyer']['contactPoint']['url'] = "create ei buyer.contactPoint.url"
-        self.payload['buyer']['details'] = {
-            "typeOfBuyer": f'{random.choice(typeOfBuyer)}',
-            "mainGeneralActivity": f'{random.choice(mainGeneralActivity)}',
-            "mainSectoralActivity": f'{random.choice(mainSectoralActivity)}'
-
-        }
-        return self.payload
-
-    def obligatory_model_of_payload(self):
-        return self.payload
-
-    def add_tender_items(self, quantity=2):
-
-        item_object = {
-            "id": "1",
-            "description": "item 1",
-            "classification": {
-                "id": "45100000-8"
-            },
-            "additionalClassifications": [
-                {
-                    "id": "AA12-4"
-                }
-            ],
-            "deliveryAddress": {
-                "streetAddress": "хрещатик",
-                "postalCode": "02235",
-                "addressDetails": {
-                    "country": {
-                        "id": "MD"
-
-                    },
-                    "region": {
-                        "id": "1700000"
-
-                    },
-                    "locality": {
-                        "id": "1701000",
-                        "description": "ОПИСАНИЕ33pizza",
+                        "description": "ei: tender.items[0].deliveryAddress.addressDetails."
+                                       "locality.description",
                         "scheme": f'{random.choice(locality_scheme)}'
                     }
 
@@ -185,14 +192,19 @@ class EiPayload:
         self.payload['tender']['classification']['id'] = new_tender_classification[0]
         return self.payload
 
-    def add_buyer_details(self):
-
-        buyer_details = {
-            "typeOfBuyer": f'{random.choice(typeOfBuyer)}',
-            "mainGeneralActivity": f'{random.choice(mainGeneralActivity)}',
-            "mainSectoralActivity": f'{random.choice(mainSectoralActivity)}'
-
-        }
-        self.payload['buyer']['details'] = buyer_details
+    def update_ei_obligatory_model_of_payload(self):
+        del self.payload['tender']['description']
+        del self.payload['tender']['items']
+        del self.payload['planning']
+        # Временно так как не пофиксили баг -> нужно раскомментировать del self.payload['tender']['classification']
+        # и # del self.payload['buyer']
+        # del self.payload['tender']['classification']
+        # del self.payload['buyer']
         return self.payload
 
+    def update_ei_full_data_model_with_one_item_object(self):
+        # Временно так как не пофиксили баг -> нужно раскомментировать del self.payload['tender']['classification']
+        # и # del self.payload['buyer']
+        # del self.payload['tender']['classification']
+        # del self.payload['buyer']
+        return self.payload

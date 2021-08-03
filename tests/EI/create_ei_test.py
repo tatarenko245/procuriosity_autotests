@@ -42,7 +42,8 @@ class TestCreateEi:
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
         with allure.step('# 2. Take EI payload based on full data model'):
-            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(EiPayload().add_optionals_fields())
+            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(
+                EiPayload().create_ei_full_data_model_with_one_item_object())
             allure.attach(str(json.dumps(GlobalClassCreateEi.payload_for_create_ei)), 'Payload')
 
         with allure.step('# 3. Send request to create EI'):
@@ -61,14 +62,13 @@ class TestCreateEi:
                     expected_result=str(202),
                     actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
                 )
-            GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-            GlobalClassCreateEi.check_message = KafkaMessage(
-                GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                environment=GlobalClassCreateEi.environment,
-                kafka_message=GlobalClassCreateEi.message
-            )
-
             with allure.step('# 4.2. Check message in feed point'):
+                GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                GlobalClassCreateEi.check_message = KafkaMessage(
+                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                    environment=GlobalClassCreateEi.environment,
+                    kafka_message=GlobalClassCreateEi.message
+                )
                 allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
                 try:
                     if GlobalClassCreateEi.check_message is True:
@@ -120,7 +120,8 @@ class TestCreateEi:
                 GlobalClassCreateEi.access_token)
         with allure.step('# 2. Take EI payload based on full data model'):
             payload = copy.deepcopy(EiPayload())
-            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(payload.add_optionals_fields())
+            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(
+                payload.create_ei_full_data_model_with_one_item_object())
             allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
 
         with allure.step('# 3. Send request to create EI'):
@@ -139,13 +140,13 @@ class TestCreateEi:
                     expected_result=str(202),
                     actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
                 )
-            GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-            GlobalClassCreateEi.check_message = KafkaMessage(
-                GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                environment=GlobalClassCreateEi.environment,
-                kafka_message=GlobalClassCreateEi.message
-            )
             with allure.step('# 4.2. Check message in feed point'):
+                GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                GlobalClassCreateEi.check_message = KafkaMessage(
+                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                    environment=GlobalClassCreateEi.environment,
+                    kafka_message=GlobalClassCreateEi.message
+                )
                 allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
                 try:
                     if GlobalClassCreateEi.check_message is False:
@@ -232,7 +233,8 @@ class TestCreateEi:
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
         with allure.step('# 2. Take EI payload based on full data model'):
-            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(EiPayload().obligatory_model_of_payload())
+            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(
+                EiPayload().create_ei_obligatory_model_of_payload())
             allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
 
         with allure.step('# 3. Send request to create EI'):
@@ -251,13 +253,13 @@ class TestCreateEi:
                     expected_result=str(202),
                     actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
                 )
-            GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-            GlobalClassCreateEi.check_message = KafkaMessage(
-                GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                environment=GlobalClassCreateEi.environment,
-                kafka_message=GlobalClassCreateEi.message
-            )
             with allure.step('# 4.2. Check message in feed point'):
+                GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                GlobalClassCreateEi.check_message = KafkaMessage(
+                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                    environment=GlobalClassCreateEi.environment,
+                    kafka_message=GlobalClassCreateEi.message
+                )
                 allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
                 try:
                     if GlobalClassCreateEi.check_message is False:
@@ -345,7 +347,8 @@ class TestCreateEi:
                 GlobalClassCreateEi.access_token)
         with allure.step('# 2. Take EI payload based on full data model'):
             payload = copy.deepcopy(EiPayload())
-            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(payload.add_optionals_fields())
+            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(
+                payload.create_ei_full_data_model_with_one_item_object())
             GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(payload.add_tender_items(3))
             allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
 
@@ -365,13 +368,14 @@ class TestCreateEi:
                     expected_result=str(202),
                     actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
                 )
-            GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-            GlobalClassCreateEi.check_message = KafkaMessage(
-                GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                environment=GlobalClassCreateEi.environment,
-                kafka_message=GlobalClassCreateEi.message
-            )
+
             with allure.step('# 4.2. Check message in feed point'):
+                GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                GlobalClassCreateEi.check_message = KafkaMessage(
+                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                    environment=GlobalClassCreateEi.environment,
+                    kafka_message=GlobalClassCreateEi.message
+                )
                 allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
                 try:
                     if GlobalClassCreateEi.check_message is False:
@@ -432,11 +436,6 @@ class TestCreateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     print("Check the message in kafka topic")
-
-                print('---------')
-                print(json.dumps(actual_ei_release_model))
-                print('============')
-                print(json.dumps(expected_ei_release_model))
                 assert compare_actual_result_and_expected_result(
                     expected_result=str({}),
                     actual_result=str(compare_releases)

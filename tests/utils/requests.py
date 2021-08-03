@@ -26,3 +26,18 @@ class Requests:
         allure.attach(json.dumps(payload), 'Prepared payload')
         return ei
 
+    @staticmethod
+    @allure.step('Prepared request: update EI')
+    def update_ei(host_of_request, ei_ocid, ei_token, access_token, x_operation_id, payload):
+        ei = requests.post(
+            url=host_of_request + f"/do/ei/{ei_ocid}",
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'X-TOKEN': ei_token,
+                'Content-Type': 'application/json'},
+            json=payload)
+        allure.attach(host_of_request + f"/do/ei{ei_ocid}", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return ei
+
