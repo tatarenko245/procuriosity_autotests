@@ -41,9 +41,9 @@ class TestCreateEi:
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
-        payload = copy.deepcopy(EiPayload())
-        GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model_with_one_item_object()
         with allure.step('# 2. Send request to create EI'):
+            payload = copy.deepcopy(EiPayload())
+            GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model_with_one_item_object()
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -115,9 +115,9 @@ class TestCreateEi:
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
-        payload = copy.deepcopy(EiPayload())
-        GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model_with_one_item_object()
         with allure.step('# 2. Send request to create EI'):
+            payload = copy.deepcopy(EiPayload())
+            GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model_with_one_item_object()
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -224,9 +224,9 @@ class TestCreateEi:
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
-        payload = copy.deepcopy(EiPayload())
-        GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_obligatory_model_of_payload()
         with allure.step('# 2. Send request to create EI'):
+            payload = copy.deepcopy(EiPayload())
+            GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_obligatory_model_of_payload()
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -332,9 +332,9 @@ class TestCreateEi:
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
-        payload = copy.deepcopy(EiPayload())
-        GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model_with_one_item_object()
         with allure.step('# 2. Send request to create EI'):
+            payload = copy.deepcopy(EiPayload())
+            GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model_with_one_item_object()
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
