@@ -45,7 +45,8 @@ class TestCreateEi:
         #     GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(
         #         EiPayload().create_ei_full_data_model_with_one_item_object())
         #     allure.attach(str(json.dumps(GlobalClassCreateEi.payload_for_create_ei)), 'Payload')
-
+        payload = copy.deepcopy(EiPayload())
+        GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model_with_one_item_object()
         with allure.step('# 2. Send request to create EI'):
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
@@ -123,7 +124,8 @@ class TestCreateEi:
         #     GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(
         #         payload.create_ei_full_data_model_with_one_item_object())
         #     allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
-
+        payload = copy.deepcopy(EiPayload())
+        GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model_with_one_item_object()
         with allure.step('# 2. Send request to create EI'):
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
@@ -237,6 +239,8 @@ class TestCreateEi:
         #         EiPayload().create_ei_obligatory_model_of_payload())
         #     allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
 
+        payload = copy.deepcopy(EiPayload())
+        GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_obligatory_model_of_payload()
         with allure.step('# 2. Send request to create EI'):
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
@@ -352,6 +356,8 @@ class TestCreateEi:
         #     GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(payload.add_tender_items(3))
         #     allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
 
+        payload = copy.deepcopy(EiPayload())
+        GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model_with_one_item_object()
         with allure.step('# 2. Send request to create EI'):
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
