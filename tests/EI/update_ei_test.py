@@ -243,7 +243,7 @@ class TestUpdateEi:
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
                 compare_releases = DeepDiff(actual_ei_release_model_before_updating, expected_ei_release_model)
                 try:
-                    if compare_releases is {}:
+                    if compare_releases == {}:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):

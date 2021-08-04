@@ -175,7 +175,7 @@ class TestCreateEi:
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
                 compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
                 try:
-                    if compare_releases is {}:
+                    if compare_releases == {}:
                         database = CassandraSession(
                             cassandra_username=GlobalClassCreateEi.cassandra_username,
                             cassandra_password=GlobalClassCreateEi.cassandra_password,
@@ -283,7 +283,7 @@ class TestCreateEi:
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
                 compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
                 try:
-                    if compare_releases is {}:
+                    if compare_releases == {}:
                         database = CassandraSession(
                             cassandra_username=GlobalClassCreateEi.cassandra_username,
                             cassandra_password=GlobalClassCreateEi.cassandra_password,
@@ -394,7 +394,7 @@ class TestCreateEi:
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
                 compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
                 try:
-                    if compare_releases is {}:
+                    if compare_releases == {}:
                         database = CassandraSession(
                             cassandra_username=GlobalClassCreateEi.cassandra_username,
                             cassandra_password=GlobalClassCreateEi.cassandra_password,
