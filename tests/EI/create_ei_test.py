@@ -26,7 +26,7 @@ class TestCreateEi:
     @allure.title('Check status code and message from Kafka topic after EI creation')
     def test_check_status_code_and_message_from_kafka_topic_after_ei_creation(self, environment, country, language,
                                                                               cassandra_username, cassandra_password):
-        with allure.step('# 1. Authorization'):
+        with allure.step('# 1. Authorization platform one'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -90,7 +90,7 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
                     expected_result=str(True),
                     actual_result=str(GlobalClassCreateEi.check_message)
@@ -100,7 +100,7 @@ class TestCreateEi:
     def test_check_ei_release_data_after_ei_creation_based_on_full_data_model(self, environment, country, language,
                                                                               cassandra_username, cassandra_password):
 
-        with allure.step('# 1. Authorization'):
+        with allure.step('# 1. Authorization platform one'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -151,7 +151,7 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
                     expected_result=str(True),
                     actual_result=str(GlobalClassCreateEi.check_message)
@@ -197,7 +197,7 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
                     expected_result=str({}),
                     actual_result=str(compare_releases)
@@ -209,7 +209,7 @@ class TestCreateEi:
                                                                                             cassandra_username,
                                                                                             cassandra_password):
 
-        with allure.step('# 1. Authorization'):
+        with allure.step('# 1. Authorization platform one'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -261,7 +261,7 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
                     expected_result=str(True),
                     actual_result=str(GlobalClassCreateEi.check_message)
@@ -305,7 +305,7 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
                     expected_result=str({}),
                     actual_result=str(compare_releases)
@@ -318,7 +318,7 @@ class TestCreateEi:
                                                                                                    cassandra_username,
                                                                                                    cassandra_password):
 
-        with allure.step('# 1. Authorization'):
+        with allure.step('# 1. Authorization platform one'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -370,7 +370,7 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
                     expected_result=str(True),
                     actual_result=str(GlobalClassCreateEi.check_message)
@@ -416,7 +416,7 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
                     expected_result=str({}),
                     actual_result=str(compare_releases)
