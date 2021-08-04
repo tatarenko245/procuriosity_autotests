@@ -243,7 +243,9 @@ class TestUpdateEi:
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
                 compare_releases = DeepDiff(actual_ei_release_model_before_updating, expected_ei_release_model)
                 try:
-                    if compare_releases is not {}:
+                    if compare_releases is {}:
+                        pass
+                    else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = CassandraSession(
                                 cassandra_username=GlobalClassCreateEi.cassandra_username,
@@ -270,8 +272,29 @@ class TestUpdateEi:
                 dictionary_item_removed_was_cleaned = \
                     str(compare_releases['dictionary_item_removed']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_removed'] = dictionary_item_removed_was_cleaned
+                expected_result = {
+                        'dictionary_item_removed': "['releases'][0]['tender']['description'], "
+                                                   "['releases'][0]['tender']['items'], "
+                                                   "['releases'][0]['planning']['rationale']",
+                        'values_changed': {
+                            "root['releases'][0]['id']": {
+                                'new_value': f"{GlobalClassCreateEi.ei_ocid}-"
+                                             f"{actual_ei_release_model_after_updating['releases'][0]['id'][29:42]}",
+                                'old_value': f"{GlobalClassCreateEi.ei_ocid}-"
+                                             f"{actual_ei_release_model_before_updating['releases'][0]['id'][29:42]}"
+                            },
+                            "root['releases'][0]['date']": {
+                                'new_value': GlobalClassUpdateEi.message['data']['operationDate'],
+                                'old_value': GlobalClassCreateEi.message['data']['operationDate']
+                            },
+                            "root['releases'][0]['tender']['title']": {
+                                'new_value': GlobalClassUpdateEi.payload_for_update_ei['tender']['title'],
+                                'old_value': GlobalClassCreateEi.payload_for_create_ei['tender']['title']
+                            }
+                        }
+                    }
                 try:
-                    if compare_releases is {}:
+                    if compare_releases == expected_result:
                         database = CassandraSession(
                             cassandra_username=GlobalClassCreateEi.cassandra_username,
                             cassandra_password=GlobalClassCreateEi.cassandra_password,
@@ -306,27 +329,7 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str({
-                        'dictionary_item_removed': "['releases'][0]['tender']['description'], "
-                                                   "['releases'][0]['tender']['items'], "
-                                                   "['releases'][0]['planning']['rationale']",
-                        'values_changed': {
-                            "root['releases'][0]['id']": {
-                                'new_value': f"{GlobalClassCreateEi.ei_ocid}-"
-                                             f"{actual_ei_release_model_after_updating['releases'][0]['id'][29:42]}",
-                                'old_value': f"{GlobalClassCreateEi.ei_ocid}-"
-                                             f"{actual_ei_release_model_before_updating['releases'][0]['id'][29:42]}"
-                            },
-                            "root['releases'][0]['date']": {
-                                'new_value': GlobalClassUpdateEi.message['data']['operationDate'],
-                                'old_value': GlobalClassCreateEi.message['data']['operationDate']
-                            },
-                            "root['releases'][0]['tender']['title']": {
-                                'new_value': GlobalClassUpdateEi.payload_for_update_ei['tender']['title'],
-                                'old_value': GlobalClassCreateEi.payload_for_create_ei['tender']['title']
-                            }
-                        }
-                    }),
+                    expected_result=str(expected_result),
                     actual_result=str(compare_releases)
                 )
 # ========================
