@@ -127,6 +127,7 @@ def generate_items_array(quantity_of_object, item_object, tender_classification_
         new_array_items.append(copy.deepcopy(val))
     return new_array_items
 
+
 # def generate_items_array(quantity_of_object, item_object, tender_classification_id):
 #     copy.deepcopy(item_object)
 #     items_array = [item_object for _ in range(quantity_of_object)]

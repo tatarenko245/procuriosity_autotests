@@ -194,7 +194,7 @@ class EiRelease:
         }
         return self.release
 
-    def add_tender_with_items_array(self, actual_items_array):
+    def add_tender_with_items_array(self, actual_items_array,payload):
         for o in actual_items_array:
             for i in o['classification']:
                 if i == "id":
@@ -206,25 +206,25 @@ class EiRelease:
                     except ValueError:
                         print("Check your item_id in EI release: item_id in EI release must be uuid version 4")
         main_procurement_category = None
-        if self.payload_for_create_ei['tender']['classification']['id'][0:2] == "03" or \
-                self.payload_for_create_ei['tender']['classification']['id'][0] == "1" or \
-                self.payload_for_create_ei['tender']['classification']['id'][0] == "2" or \
-                self.payload_for_create_ei['tender']['classification']['id'][0] == "3" or \
-                self.payload_for_create_ei['tender']['classification']['id'][0:2] == "44" or \
-                self.payload_for_create_ei['tender']['classification']['id'][0:2] == "48":
+        if payload['tender']['classification']['id'][0:2] == "03" or \
+                payload['tender']['classification']['id'][0] == "1" or \
+                payload['tender']['classification']['id'][0] == "2" or \
+                payload['tender']['classification']['id'][0] == "3" or \
+                payload['tender']['classification']['id'][0:2] == "44" or \
+                payload['tender']['classification']['id'][0:2] == "48":
             main_procurement_category = "goods"
-        elif self.payload_for_create_ei['tender']['classification']['id'][0:2] == "45":
+        elif payload['tender']['classification']['id'][0:2] == "45":
             main_procurement_category = "works"
-        elif self.payload_for_create_ei['tender']['classification']['id'][0] == "5" or \
-                self.payload_for_create_ei['tender']['classification']['id'][0] == "6" or \
-                self.payload_for_create_ei['tender']['classification']['id'][0] == "7" or \
-                self.payload_for_create_ei['tender']['classification']['id'][0] == "8" or \
-                self.payload_for_create_ei['tender']['classification']['id'][0:2] == "92" or \
-                self.payload_for_create_ei['tender']['classification']['id'][0:2] == "98":
+        elif payload['tender']['classification']['id'][0] == "5" or \
+                payload['tender']['classification']['id'][0] == "6" or \
+                payload['tender']['classification']['id'][0] == "7" or \
+                payload['tender']['classification']['id'][0] == "8" or \
+                payload['tender']['classification']['id'][0:2] == "92" or \
+                payload['tender']['classification']['id'][0:2] == "98":
             main_procurement_category = "services"
 
         list_of_keys = list()
-        for o in self.payload_for_create_ei['tender']['items']:
+        for o in payload['tender']['items']:
             for id_ in o['classification']:
                 if id_ == "id":
                     list_of_keys.append(id_)
@@ -236,39 +236,39 @@ class EiRelease:
 
         else:
             tender_classification_id = get_value_from_classification_cpv_dictionary_xls(
-                generate_tender_classification_id(self.payload_for_create_ei['tender']['items']), self.language)
+                generate_tender_classification_id(payload['tender']['items']), self.language)
 
         self.release['releases'][0]['tender']['mainProcurementCategory'] = main_procurement_category
         self.release['releases'][0]['tender']['classification']['id'] = tender_classification_id[0]
         self.release['releases'][0]['tender']['classification']['description'] = tender_classification_id[1]
-        self.release['releases'][0]['tender']['items'] = self.payload_for_create_ei['tender']['items']
+        self.release['releases'][0]['tender']['items'] = payload['tender']['items']
         list_of_keys = list()
-        for o in self.payload_for_create_ei['tender']['items']:
+        for o in payload['tender']['items']:
             for id_ in o['classification']:
                 if id_ == "id":
                     list_of_keys.append(id_)
         quantity = len(list_of_keys)
         while quantity > 0:
             item_country_data = get_value_from_country_csv(
-                country=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                country=payload['tender']['items'][quantity - 1]['deliveryAddress'][
                     'addressDetails']['country']['id'],
                 language=self.language
             )
             item_region_data = get_value_from_region_csv(
-                region=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                region=payload['tender']['items'][quantity - 1]['deliveryAddress'][
                     'addressDetails']['region']['id'],
-                country=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                country=payload['tender']['items'][quantity - 1]['deliveryAddress'][
                     'addressDetails']['country']['id'],
                 language=self.language
             )
-            if self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+            if payload['tender']['items'][quantity - 1]['deliveryAddress'][
                 'addressDetails']['locality']['scheme'] == "CUATM":
                 item_locality_data = get_value_from_locality_csv(
-                    locality=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                    locality=payload['tender']['items'][quantity - 1]['deliveryAddress'][
                         'addressDetails']['locality']['id'],
-                    region=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                    region=payload['tender']['items'][quantity - 1]['deliveryAddress'][
                         'addressDetails']['region']['id'],
-                    country=self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                    country=payload['tender']['items'][quantity - 1]['deliveryAddress'][
                         'addressDetails']['country']['id'],
                     language=self.language
                 )
@@ -286,30 +286,30 @@ class EiRelease:
             else:
                 self.release['releases'][0]['tender']['items'][quantity - 1][
                     'deliveryAddress']['addressDetails']['locality']['id'] = \
-                    self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                    payload['tender']['items'][quantity - 1]['deliveryAddress'][
                         'addressDetails']['locality']['id']
 
                 self.release['releases'][0]['tender']['items'][quantity - 1][
                     'deliveryAddress']['addressDetails']['locality']['scheme'] = \
-                    self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                    payload['tender']['items'][quantity - 1]['deliveryAddress'][
                         'addressDetails']['locality']['scheme']
 
                 self.release['releases'][0]['tender']['items'][quantity - 1][
                     'deliveryAddress']['addressDetails']['locality']['description'] = \
-                    self.payload_for_create_ei['tender']['items'][quantity - 1]['deliveryAddress'][
+                    payload['tender']['items'][quantity - 1]['deliveryAddress'][
                         'addressDetails']['locality']['description']
 
             cpv_data = get_value_from_classification_cpv_dictionary_xls(
-                cpv=self.payload_for_create_ei['tender']['items'][quantity - 1]['classification']['id'],
+                cpv=payload['tender']['items'][quantity - 1]['classification']['id'],
                 language=self.language
             )
             cpvs_data = get_value_from_cpvs_dictionary_csv(
-                cpvs=self.payload_for_create_ei['tender']['items'][quantity - 1][
+                cpvs=payload['tender']['items'][quantity - 1][
                     'additionalClassifications'][0]['id'],
                 language=self.language
             )
             unit_data = get_value_from_classification_unit_dictionary_csv(
-                unit_id=self.payload_for_create_ei['tender']['items'][quantity - 1]['unit']['id'],
+                unit_id=payload['tender']['items'][quantity - 1]['unit']['id'],
                 language=self.language
             )
 
@@ -319,20 +319,20 @@ class EiRelease:
 
             self.release['releases'][0]['tender']['items'][quantity - 1][
                 'description'] = \
-                self.payload_for_create_ei['tender']['items'][quantity - 1]['description']
+                payload['tender']['items'][quantity - 1]['description']
 
             self.release['releases'][0]['tender']['items'][quantity - 1][
                 'quantity'] = \
-                float(self.payload_for_create_ei['tender']['items'][quantity - 1]['quantity'])
+                float(payload['tender']['items'][quantity - 1]['quantity'])
 
             self.release['releases'][0]['tender']['items'][quantity - 1][
                 'deliveryAddress']['streetAddress'] = \
-                self.payload_for_create_ei['tender']['items'][quantity - 1][
+                payload['tender']['items'][quantity - 1][
                     'deliveryAddress']['streetAddress']
 
             self.release['releases'][0]['tender']['items'][quantity - 1][
                 'deliveryAddress']['postalCode'] = \
-                self.payload_for_create_ei['tender']['items'][quantity - 1][
+                payload['tender']['items'][quantity - 1][
                     'deliveryAddress']['postalCode']
 
             self.release['releases'][0]['tender']['items'][quantity - 1][

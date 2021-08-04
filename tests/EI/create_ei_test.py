@@ -170,7 +170,8 @@ class TestCreateEi:
                 ))
                 copy.deepcopy(release.full_data_data_model())
                 expected_ei_release_model = copy.deepcopy(release.add_tender_with_items_array(
-                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items']))
+                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items'],
+                    payload=GlobalClassCreateEi.payload_for_create_ei))
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
                 compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
@@ -389,7 +390,8 @@ class TestCreateEi:
                 ))
                 copy.deepcopy(release.full_data_data_model())
                 expected_ei_release_model = copy.deepcopy(release.add_tender_with_items_array(
-                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items']))
+                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items'],
+                    payload=GlobalClassCreateEi.payload_for_create_ei))
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
                 compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
