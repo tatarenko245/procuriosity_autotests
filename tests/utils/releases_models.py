@@ -1,4 +1,4 @@
-import copy
+
 from tests.utils.functions import is_it_uuid, get_value_from_classification_cpv_dictionary_xls, \
     get_value_from_cpvs_dictionary_csv, get_value_from_classification_unit_dictionary_csv, get_value_from_country_csv, \
     get_value_from_region_csv, get_value_from_locality_csv, generate_tender_classification_id
@@ -56,13 +56,27 @@ class EiRelease:
             country=payload_for_create_ei['buyer']['address']['addressDetails']['country']['id'],
             language=self.language
         )
-
-        buyer_locality_data = get_value_from_locality_csv(
-            locality=payload_for_create_ei['buyer']['address']['addressDetails']['locality']['id'],
-            region=payload_for_create_ei['buyer']['address']['addressDetails']['region']['id'],
-            country=payload_for_create_ei['buyer']['address']['addressDetails']['country']['id'],
-            language=self.language
-        )
+        buyer_locality_object = None
+        if payload_for_create_ei['buyer']['address']['addressDetails']['locality']['scheme'] == "CUATM":
+            buyer_locality_data = get_value_from_locality_csv(
+                locality=payload_for_create_ei['buyer']['address']['addressDetails']['locality']['id'],
+                region=payload_for_create_ei['buyer']['address']['addressDetails']['region']['id'],
+                country=payload_for_create_ei['buyer']['address']['addressDetails']['country']['id'],
+                language=self.language
+            )
+            buyer_locality_object = {
+                "scheme": buyer_locality_data[2],
+                "id": payload_for_create_ei['buyer']['address'][
+                    'addressDetails']['locality']['id'],
+                "description": buyer_locality_data[1],
+                "uri": buyer_locality_data[3]
+            }
+        else:
+            buyer_locality_object = {
+                "scheme": payload_for_create_ei['buyer']['address']['addressDetails']['locality']['scheme'],
+                "id": payload_for_create_ei['buyer']['address']['addressDetails']['locality']['id'],
+                "description": payload_for_create_ei['buyer']['address']['addressDetails']['locality']['description']
+            }
         self.release = {
             "uri": f"{metadata_budget_url}/{ei_id}/{ei_id}",
             "version": "1.1",
@@ -127,13 +141,7 @@ class EiRelease:
                                 "description": buyer_region_data[1],
                                 "uri": buyer_region_data[3]
                             },
-                            "locality": {
-                                "scheme": buyer_locality_data[2],
-                                "id": payload_for_create_ei['buyer']['address'][
-                                    'addressDetails']['locality']['id'],
-                                "description": buyer_locality_data[1],
-                                "uri": buyer_locality_data[3]
-                            }
+                            "locality": buyer_locality_object
                         }
                     },
                     "contactPoint": {

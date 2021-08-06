@@ -9,9 +9,9 @@ mainSectoralActivity = ("AIRPORT_RELATED_ACTIVITIES", "ELECTRICITY", "EXPLORATIO
                         "RAILWAY_SERVICES", "URBAN_RAILWAY_TRAMWAY_TROLLEYBUS_BUS_SERVICES", "WATER",)
 
 cpv_category = ("goods", "works", "services",)
-cpv_goods_high_level = ("03100000-2", "19100000-7", "24200000-6", "30100000-0", "44100000-1", "48100000-9",)
-cpv_works_high_level = ("45100000-8", "45200000-9", "45300000-0",)
-cpv_services_high_level = ("50100000-6", "60100000-9", "70100000-2", "80100000-5", "92100000-2", "98100000-4")
+cpv_goods_high_level = ("03100000-2", "14600000-7", "22100000-1", "30100000-0", "44400000-4", "48200000-0",)
+cpv_works_high_level = ("45100000-8",)
+cpv_services_high_level = ("51500000-7", "63700000-6", "71300000-1", "85100000-0", "92300000-4", "98300000-6",)
 
 cpv_goods_low_level_03 = ("03112000-9", "03115100-1", "03142100-9", "03144000-2", "03111800-0",)
 cpv_goods_low_level_1 = ("14612300-7", "14612400-8", "14630000-6", "14613100-2", "14621110-4",)
