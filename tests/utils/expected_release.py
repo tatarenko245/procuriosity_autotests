@@ -1,4 +1,5 @@
 import copy
+import json
 
 from tests.utils.functions import is_it_uuid, get_value_from_country_csv, get_value_from_region_csv, \
     get_value_from_locality_csv, get_value_from_classification_cpv_dictionary_xls, get_value_from_cpvs_dictionary_csv, \
@@ -437,11 +438,11 @@ class ExpectedRelease:
         expected_items_array = None
         try:
             for o in actual_items_array:
-                for i in o['classification']:
+                for i in o:
                     if i == "id":
                         try:
                             is_it_uuid(
-                                uuid_to_test=o['classification']['id'],
+                                uuid_to_test=o['id'],
                                 version=4
                             )
                         except ValueError:
