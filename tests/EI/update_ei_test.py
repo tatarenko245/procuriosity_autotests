@@ -1011,6 +1011,6 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
+                    expected_result=str(expected_result),
+                    actual_result=str(compare_releases)
                 )
