@@ -244,9 +244,9 @@ class TestUpdateEi:
                 allure.attach(str(json.dumps(actual_ei_release_model_before_updating)),
                               "Actual Ei release before updating")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
-                compare_releases = DeepDiff(
+                compare_releases = dict(DeepDiff(
                     actual_ei_release_model_before_updating,
-                    expected_ei_release_model)
+                    expected_ei_release_model))
                 try:
                     if compare_releases == {}:
                         pass
@@ -272,8 +272,8 @@ class TestUpdateEi:
                               "Actual Ei release before updating")
                 allure.attach(str(json.dumps(actual_ei_release_model_after_updating)),
                               "Actual Ei release after updating")
-                compare_releases = DeepDiff(actual_ei_release_model_before_updating,
-                                            actual_ei_release_model_after_updating)
+                compare_releases = dict(DeepDiff(actual_ei_release_model_before_updating,
+                                            actual_ei_release_model_after_updating))
                 dictionary_item_removed_was_cleaned = \
                     str(compare_releases['dictionary_item_removed']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_removed'] = dictionary_item_removed_was_cleaned
@@ -333,10 +333,10 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert compare_actual_result_and_expected_result(
+                assert str(compare_actual_result_and_expected_result(
                     expected_result=str(expected_result),
                     actual_result=str(compare_releases)
-                )
+                )) == str(True)
 
     @allure.title('Check EI release data after Ei updating with full data model')
     def test_check_ei_release_data_after_ei_updating_with_full_data_model(self, environment, country, language,
@@ -444,8 +444,8 @@ class TestUpdateEi:
                 allure.attach(str(json.dumps(actual_ei_release_model_before_updating)),
                               "Actual Ei release before updating")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
-                compare_releases = DeepDiff(actual_ei_release_model_before_updating,
-                                            expected_ei_release_model)
+                compare_releases = dict(DeepDiff(actual_ei_release_model_before_updating,
+                                            expected_ei_release_model))
                 try:
                     if compare_releases == {}:
                         pass
@@ -471,8 +471,8 @@ class TestUpdateEi:
                               "Actual Ei release before updating")
                 allure.attach(str(json.dumps(actual_ei_release_model_after_updating)),
                               "Actual Ei release after updating")
-                compare_releases = DeepDiff(actual_ei_release_model_before_updating,
-                                            actual_ei_release_model_after_updating)
+                compare_releases =dict(DeepDiff (actual_ei_release_model_before_updating,
+                                            actual_ei_release_model_after_updating))
                 dictionary_item_added_was_cleaned = \
                     str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
@@ -552,10 +552,10 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert compare_actual_result_and_expected_result(
+                assert str(compare_actual_result_and_expected_result(
                     expected_result=str(expected_result),
                     actual_result=str(compare_releases)
-                )
+                )) == str(True)
 
     @allure.title('Check EI release data after Ei updating based on full data model with 3 items objects')
     def test_check_ei_release_data_after_ei_updating_based_on_full_data_model_with_three_items_objects(
@@ -669,9 +669,9 @@ class TestUpdateEi:
                 allure.attach(str(json.dumps(actual_ei_release_model_before_updating)),
                               "Actual Ei release before updating")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
-                compare_releases = DeepDiff(
+                compare_releases = dict(DeepDiff(
                     actual_ei_release_model_before_updating,
-                    expected_ei_release_model)
+                    expected_ei_release_model))
                 try:
                     if compare_releases == {}:
                         pass
@@ -705,9 +705,9 @@ class TestUpdateEi:
                     pass
                 else:
                     raise ValueError('Check tender.items array')
-                compare_releases = DeepDiff(
+                compare_releases = dict(DeepDiff(
                     actual_ei_release_model_before_updating,
-                    actual_ei_release_model_after_updating)
+                    actual_ei_release_model_after_updating))
                 try:
                     if GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0]['classification']['id'] != \
                             GlobalClassUpdateEi.payload_for_update_ei['tender']['items'][0]['classification']['id']:
@@ -1014,6 +1014,6 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert compare_actual_result_and_expected_result(
-                    expected_result=str(expected_result),
-                    actual_result=str(compare_releases))
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases)) == str(True)
