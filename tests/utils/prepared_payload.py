@@ -47,8 +47,7 @@ class PreparePayload:
         payload['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['id'] = "1701000"
         payload['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['description'] = \
             "create ei: tender.items[0].deliveryAddress.addressDetails.locality.description"
-        payload['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['scheme'] = \
-            f"{random.choice(locality_scheme)}"
+        payload['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['scheme'] = "CUATM"
         payload['tender']['items'][0]['quantity'] = 10
         payload['tender']['items'][0]['unit']['id'] = "10"
         payload['tender']['items'] = generate_items_array(
@@ -73,7 +72,7 @@ class PreparePayload:
         payload['buyer']['address']['addressDetails']['locality']['id'] = "1701000"
         payload['buyer']['address']['addressDetails']['locality']['description'] = \
             "create ei: buyer.address.addressDetails.locality.description"
-        payload['buyer']['address']['addressDetails']['locality']['scheme'] = f"{random.choice(locality_scheme)}"
+        payload['buyer']['address']['addressDetails']['locality']['scheme'] = "CUATM"
         payload['buyer']['additionalIdentifiers'][0]['id'] = "create ei buyer.additionalIdentifiers.id"
         payload['buyer']['additionalIdentifiers'][0]['scheme'] = "create ei buyer.additionalIdentifiers.scheme"
         payload['buyer']['additionalIdentifiers'][0]['legalName'] = "create ei buyer.additionalIdentifiers.legalName"
@@ -133,7 +132,7 @@ class PreparePayload:
         payload['buyer']['address']['addressDetails']['locality']['id'] = "1701000"
         payload['buyer']['address']['addressDetails']['locality']['description'] = \
             "create ei: buyer.address.addressDetails.locality.description"
-        payload['buyer']['address']['addressDetails']['locality']['scheme'] = f"{random.choice(locality_scheme)}"
+        payload['buyer']['address']['addressDetails']['locality']['scheme'] = "other"
         payload['buyer']['contactPoint']['name'] = "create ei: buyer.contactPoint.name"
         payload['buyer']['contactPoint']['email'] = "create ei: buyer.contactPoint.email"
         payload['buyer']['contactPoint']['telephone'] = "create ei: buyer.contactPoint.telephone"
@@ -168,8 +167,7 @@ class PreparePayload:
         payload['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['id'] = "3401000"
         payload['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['description'] = \
             "update ei: tender.items[0].deliveryAddress.addressDetails.locality.description"
-        payload['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['scheme'] = \
-            f"{random.choice(locality_scheme)}"
+        payload['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['scheme'] = "CUATM"
         payload['tender']['items'][0]['quantity'] = 20
         payload['tender']['items'][0]['unit']['id'] = "20"
         payload['tender']['items'] = generate_items_array(
@@ -194,7 +192,7 @@ class PreparePayload:
         payload['buyer']['address']['addressDetails']['locality']['id'] = "3401000"
         payload['buyer']['address']['addressDetails']['locality']['description'] = \
             "update ei: buyer.address.addressDetails.locality.description"
-        payload['buyer']['address']['addressDetails']['locality']['scheme'] = f"{random.choice(locality_scheme)}"
+        payload['buyer']['address']['addressDetails']['locality']['scheme'] = "CUATM"
         payload['buyer']['additionalIdentifiers'][0]['id'] = "update ei buyer.additionalIdentifiers.id"
         payload['buyer']['additionalIdentifiers'][0]['scheme'] = "update ei buyer.additionalIdentifiers.scheme"
         payload['buyer']['additionalIdentifiers'][0]['legalName'] = "update ei buyer.additionalIdentifiers.legalName"
@@ -258,7 +256,7 @@ class PreparePayload:
         payload['buyer']['address']['addressDetails']['locality']['id'] = "3401000"
         payload['buyer']['address']['addressDetails']['locality']['description'] = \
             "update ei: buyer.address.addressDetails.locality.description"
-        payload['buyer']['address']['addressDetails']['locality']['scheme'] = f"{random.choice(locality_scheme)}"
+        payload['buyer']['address']['addressDetails']['locality']['scheme'] = "other"
         payload['buyer']['contactPoint']['name'] = "update ei: buyer.contactPoint.name"
         payload['buyer']['contactPoint']['email'] = "update ei: buyer.contactPoint.email"
         payload['buyer']['contactPoint']['telephone'] = "update ei: buyer.contactPoint.telephone"
