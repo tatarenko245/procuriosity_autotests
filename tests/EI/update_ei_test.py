@@ -89,8 +89,8 @@ class TestUpdateEi:
         with allure.step('# 5. See result'):
             with allure.step('# 5.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=202,
-                    actual_result=GlobalClassUpdateEi.send_the_request_update_ei.status_code
+                    expected_result=str(202),
+                    actual_result=str(GlobalClassUpdateEi.send_the_request_update_ei.status_code)
                 )
             with allure.step('# 5.2. Check message in feed point'):
                 GlobalClassUpdateEi.message = KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
@@ -129,10 +129,10 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=True,
-                    actual_result=GlobalClassUpdateEi.check_message
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str(True),
+                    actual_result=str(GlobalClassUpdateEi.check_message)
+                )
 
     @allure.title('Check EI release after Ei updating on model without optional fields')
     def test_check_ei_release_after_ei_updating_on_model_without_optional_fields(self, environment, country, language,
@@ -199,10 +199,10 @@ class TestUpdateEi:
 
         with allure.step('# 5. See result'):
             with allure.step('# 5.1. Check status code'):
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=202,
-                    actual_result=GlobalClassUpdateEi.send_the_request_update_ei.status_code
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str(202),
+                    actual_result=str(GlobalClassUpdateEi.send_the_request_update_ei.status_code)
+                )
             with allure.step('# 5.2. Check message in feed point'):
                 GlobalClassUpdateEi.message = KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
                 GlobalClassUpdateEi.check_message = KafkaMessage(
@@ -224,10 +224,10 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=True,
-                    actual_result=GlobalClassUpdateEi.check_message
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str(True),
+                    actual_result=str(GlobalClassUpdateEi.check_message)
+                )
             with allure.step('# 5.3. Check EI release before updating'):
                 release = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassCreateEi.environment,
@@ -261,10 +261,10 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result={},
-                    actual_result=compare_releases
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str({}),
+                    actual_result=str(compare_releases)
+                )
             with allure.step('# 5.4. Check EI release after updating'):
                 actual_ei_release_model_after_updating = requests.get(
                     url=f"{GlobalClassUpdateEi.message['data']['url']}").json()
@@ -333,10 +333,10 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str(expected_result),
+                    actual_result=str(compare_releases)
+                )
 
     @allure.title('Check EI release data after Ei updating with full data model')
     def test_check_ei_release_data_after_ei_updating_with_full_data_model(self, environment, country, language,
@@ -401,10 +401,10 @@ class TestUpdateEi:
             )
         with allure.step('# 5. See result'):
             with allure.step('# 5.1. Check status code'):
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=202,
-                    actual_result=GlobalClassUpdateEi.send_the_request_update_ei.status_code
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str(202),
+                    actual_result=str(GlobalClassUpdateEi.send_the_request_update_ei.status_code)
+                )
             with allure.step('# 5.2. Check message in feed point'):
                 GlobalClassUpdateEi.message = KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
                 GlobalClassUpdateEi.check_message = KafkaMessage(
@@ -426,10 +426,10 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=True,
-                    actual_result=GlobalClassUpdateEi.check_message
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str(True),
+                    actual_result=str(GlobalClassUpdateEi.check_message)
+                )
             with allure.step('# 5.3. Check EI release before updating'):
                 release = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassCreateEi.environment,
@@ -460,10 +460,10 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result={},
-                    actual_result=compare_releases
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str({}),
+                    actual_result=str(compare_releases)
+                )
             with allure.step('# 5.4. Check EI release after updating'):
                 actual_ei_release_model_after_updating = requests.get(
                     url=f"{GlobalClassUpdateEi.message['data']['url']}").json()
@@ -552,10 +552,10 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str(expected_result),
+                    actual_result=str(compare_releases)
+                )
 
     @allure.title('Check EI release data after Ei updating based on full data model with 3 items objects')
     def test_check_ei_release_data_after_ei_updating_based_on_full_data_model_with_three_items_objects(
@@ -624,10 +624,10 @@ class TestUpdateEi:
         print(json.dumps(GlobalClassUpdateEi.payload_for_update_ei))
         with allure.step('# 5. See result'):
             with allure.step('# 5.1. Check status code'):
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=202,
-                    actual_result=GlobalClassUpdateEi.send_the_request_update_ei.status_code
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str(202),
+                    actual_result=str(GlobalClassUpdateEi.send_the_request_update_ei.status_code)
+                )
             with allure.step('# 5.2. Check message in feed point'):
                 GlobalClassUpdateEi.message = KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
                 GlobalClassUpdateEi.check_message = KafkaMessage(
@@ -649,10 +649,10 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=True,
-                    actual_result=GlobalClassUpdateEi.check_message
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str(True),
+                    actual_result=str(GlobalClassUpdateEi.check_message)
+                )
             with allure.step('# 5.3. Check EI release before updating'):
                 release = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassCreateEi.environment,
@@ -686,10 +686,10 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result={},
-                    actual_result=compare_releases
-                )) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str({}),
+                    actual_result=str(compare_releases)
+                )
             with allure.step('# 5.4. Check EI release after updating'):
                 actual_ei_release_model_after_updating = requests.get(
                     url=f"{GlobalClassUpdateEi.message['data']['url']}").json()
@@ -1014,6 +1014,6 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases)) == str(True)
+                assert compare_actual_result_and_expected_result(
+                    expected_result=str(expected_result),
+                    actual_result=str(compare_releases))
