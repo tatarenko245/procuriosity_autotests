@@ -11,9 +11,7 @@ from tests.conftest import GlobalClassCreateEi, GlobalClassUpdateEi
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.expected_release import ExpectedRelease
-from tests.utils.functions import compare_actual_result_and_expected_result, \
-    get_value_from_classification_cpv_dictionary_xls, get_value_from_cpvs_dictionary_csv, \
-    get_value_from_classification_unit_dictionary_csv
+from tests.utils.functions import compare_actual_result_and_expected_result
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.prepared_payload import PreparePayload
@@ -699,23 +697,25 @@ class TestUpdateEi:
                     actual_items_array=actual_ei_release_model_after_updating['releases'][0]['tender']['items'],
                     payload=GlobalClassUpdateEi.payload_for_update_ei
                 )
-
                 if actual_ei_release_model_after_updating['releases'][0]['tender']['items'] == expected_items_array:
                     pass
                 else:
                     raise ValueError('Check tender.items array')
-                compare_releases = DeepDiff(actual_ei_release_model_before_updating,
-                                            actual_ei_release_model_after_updating)
+                compare_releases = DeepDiff(
+                    actual_ei_release_model_before_updating,
+                    actual_ei_release_model_after_updating)
                 try:
                     if GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0]['classification']['id'] != \
                             GlobalClassUpdateEi.payload_for_update_ei['tender']['items'][0]['classification']['id']:
                         expected_result = {
                             'values_changed': {
                                 "root['releases'][0]['id']": {
-                                    'new_value': f"{GlobalClassCreateEi.ei_ocid}-"
-                                                 f"{actual_ei_release_model_after_updating['releases'][0]['id'][29:42]}",
-                                    'old_value': f"{GlobalClassCreateEi.ei_ocid}-"
-                                                 f"{actual_ei_release_model_before_updating['releases'][0]['id'][29:42]}"
+                                    'new_value':
+                                        f"{GlobalClassCreateEi.ei_ocid}-"
+                                        f"{actual_ei_release_model_after_updating['releases'][0]['id'][29:42]}",
+                                    'old_value':
+                                        f"{GlobalClassCreateEi.ei_ocid}-"
+                                        f"{actual_ei_release_model_before_updating['releases'][0]['id'][29:42]}"
                                 },
                                 "root['releases'][0]['date']": {
                                     'new_value': GlobalClassUpdateEi.message['data']['operationDate'],
@@ -761,7 +761,8 @@ class TestUpdateEi:
                                         actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
                                             'additionalClassifications'][0]['id']
                                 },
-                                "root['releases'][0]['tender']['items'][0]['additionalClassifications'][0]['description']": {
+                                "root['releases'][0]['tender']['items'][0]['additionalClassifications'][0]["
+                                "'description']": {
                                     'new_value': expected_items_array[0]['additionalClassifications'][0]['description'],
                                     'old_value':
                                         actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
@@ -799,21 +800,24 @@ class TestUpdateEi:
                                         actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
                                             'deliveryAddress']['postalCode']
                                 },
-                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']['region']['id']": {
+                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']["
+                                "'region']['id']": {
                                     'new_value': expected_items_array[0]['deliveryAddress']['addressDetails']['region'][
                                         'id'],
                                     'old_value':
                                         actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
                                             'deliveryAddress']['addressDetails']['region']['id']
                                 },
-                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']['region']['description']": {
+                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']["
+                                "'region']['description']": {
                                     'new_value': expected_items_array[0]['deliveryAddress']['addressDetails']['region'][
                                         'description'],
                                     'old_value':
                                         actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
                                             'deliveryAddress']['addressDetails']['region']['description']
                                 },
-                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['id']": {
+                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']["
+                                "'locality']['id']": {
                                     'new_value':
                                         expected_items_array[0]['deliveryAddress']['addressDetails']['locality'][
                                             'id'],
@@ -821,7 +825,8 @@ class TestUpdateEi:
                                         actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
                                             'deliveryAddress']['addressDetails']['locality']['id']
                                 },
-                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['description']": {
+                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']["
+                                "'locality']['description']": {
                                     'new_value':
                                         expected_items_array[0]['deliveryAddress']['addressDetails']['locality'][
                                             'description'],
@@ -841,161 +846,171 @@ class TestUpdateEi:
                             }
                         }
                     elif GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0]['classification']['id'] == \
-                         GlobalClassUpdateEi.payload_for_update_ei['tender']['items'][0]['classification']['id']:
+                            GlobalClassUpdateEi.payload_for_update_ei['tender']['items'][0]['classification']['id']:
                         expected_result = {
-                        'values_changed': {
-                            "root['releases'][0]['id']": {
-                                'new_value': f"{GlobalClassCreateEi.ei_ocid}-"
-                                             f"{actual_ei_release_model_after_updating['releases'][0]['id'][29:42]}",
-                                'old_value': f"{GlobalClassCreateEi.ei_ocid}-"
-                                             f"{actual_ei_release_model_before_updating['releases'][0]['id'][29:42]}"
+                            'values_changed': {
+                                "root['releases'][0]['id']": {
+                                    'new_value':
+                                        f"{GlobalClassCreateEi.ei_ocid}-"
+                                        f"{actual_ei_release_model_after_updating['releases'][0]['id'][29:42]}",
+                                    'old_value':
+                                        f"{GlobalClassCreateEi.ei_ocid}-"
+                                        f"{actual_ei_release_model_before_updating['releases'][0]['id'][29:42]}"
+                                },
+                                "root['releases'][0]['date']": {
+                                    'new_value': GlobalClassUpdateEi.message['data']['operationDate'],
+                                    'old_value': GlobalClassCreateEi.message['data']['operationDate']
+                                },
+                                "root['releases'][0]['tender']['title']": {
+                                    'new_value': GlobalClassUpdateEi.payload_for_update_ei['tender']['title'],
+                                    'old_value': GlobalClassCreateEi.payload_for_create_ei['tender']['title']
+                                },
+                                "root['releases'][0]['tender']['description']": {
+                                    'new_value': GlobalClassUpdateEi.payload_for_update_ei['tender']['description'],
+                                    'old_value': GlobalClassCreateEi.payload_for_create_ei['tender']['description']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['id']": {
+                                    'new_value':
+                                        expected_items_array[0]['id'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'id']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['description']": {
+                                    'new_value':
+                                        expected_items_array[0]['description'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'description']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['additionalClassifications'][0]['id']": {
+                                    'new_value': expected_items_array[0]['additionalClassifications'][0]['id'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'additionalClassifications'][0]['id']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['additionalClassifications'][0]["
+                                "'description']": {
+                                    'new_value': expected_items_array[0]['additionalClassifications'][0]['description'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'additionalClassifications'][0]['description']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['quantity']": {
+                                    'new_value': expected_items_array[0]['quantity'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'quantity']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['unit']['name']": {
+                                    'new_value': expected_items_array[0]['unit']['name'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'unit'][
+                                            'name']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['unit']['id']": {
+                                    'new_value': expected_items_array[0]['unit']['id'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'unit'][
+                                            'id']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['streetAddress']": {
+                                    'new_value': expected_items_array[0]['deliveryAddress']['streetAddress'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'deliveryAddress']['streetAddress']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['postalCode']": {
+                                    'new_value': expected_items_array[0]['deliveryAddress']['postalCode'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'deliveryAddress']['postalCode']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']["
+                                "'region']['id']": {
+                                    'new_value': expected_items_array[0]['deliveryAddress']['addressDetails']['region'][
+                                        'id'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'deliveryAddress']['addressDetails']['region']['id']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']["
+                                "'region']['description']": {
+                                    'new_value': expected_items_array[0]['deliveryAddress']['addressDetails']['region'][
+                                        'description'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'deliveryAddress']['addressDetails']['region']['description']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']["
+                                "'locality']['id']": {
+                                    'new_value':
+                                        expected_items_array[0]['deliveryAddress']['addressDetails']['locality'][
+                                            'id'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'deliveryAddress']['addressDetails']['locality']['id']
+                                },
+                                "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']["
+                                "'locality']['description']": {
+                                    'new_value':
+                                        expected_items_array[0]['deliveryAddress']['addressDetails']['locality'][
+                                            'description'],
+                                    'old_value':
+                                        actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
+                                            'deliveryAddress']['addressDetails']['locality']['description']
+                                },
+                                "root['releases'][0]['planning']['rationale']": {
+                                    'new_value': GlobalClassUpdateEi.payload_for_update_ei['planning']['rationale'],
+                                    'old_value': actual_ei_release_model_before_updating['releases'][0]['planning'][
+                                        'rationale']
+                                }
                             },
-                            "root['releases'][0]['date']": {
-                                'new_value': GlobalClassUpdateEi.message['data']['operationDate'],
-                                'old_value': GlobalClassCreateEi.message['data']['operationDate']
-                            },
-                            "root['releases'][0]['tender']['title']": {
-                                'new_value': GlobalClassUpdateEi.payload_for_update_ei['tender']['title'],
-                                'old_value': GlobalClassCreateEi.payload_for_create_ei['tender']['title']
-                            },
-                            "root['releases'][0]['tender']['description']": {
-                                'new_value': GlobalClassUpdateEi.payload_for_update_ei['tender']['description'],
-                                'old_value': GlobalClassCreateEi.payload_for_create_ei['tender']['description']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['classification']['id']": {
-                                "new_value": expected_items_array[0]['classification']['id'],
-                                "old_value":
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'classification']['id']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['classification']['description']": {
-                                "new_value": expected_items_array[0]['classification']['description'],
-                                "old_value":
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'classification']['description']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['additionalClassifications'][0]['id']": {
-                                'new_value': expected_items_array[0]['additionalClassifications'][0]['id'],
-                                'old_value':
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'additionalClassifications'][0]['id']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['additionalClassifications'][0]['description']": {
-                                'new_value': expected_items_array[0]['additionalClassifications'][0]['description'],
-                                'old_value':
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'additionalClassifications'][0]['description']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['quantity']": {
-                                'new_value': expected_items_array[0]['quantity'],
-                                'old_value':
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'quantity']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['unit']['name']": {
-                                'new_value': expected_items_array[0]['unit']['name'],
-                                'old_value':
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'unit'][
-                                        'name']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['unit']['id']": {
-                                'new_value': expected_items_array[0]['unit']['id'],
-                                'old_value':
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'unit'][
-                                        'id']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['deliveryAddress']['streetAddress']": {
-                                'new_value': expected_items_array[0]['deliveryAddress']['streetAddress'],
-                                'old_value':
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'deliveryAddress']['streetAddress']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['deliveryAddress']['postalCode']": {
-                                'new_value': expected_items_array[0]['deliveryAddress']['postalCode'],
-                                'old_value':
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'deliveryAddress']['postalCode']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']['region']['id']": {
-                                'new_value': expected_items_array[0]['deliveryAddress']['addressDetails']['region'][
-                                    'id'],
-                                'old_value':
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'deliveryAddress']['addressDetails']['region']['id']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']['region']['description']": {
-                                'new_value': expected_items_array[0]['deliveryAddress']['addressDetails']['region'][
-                                    'description'],
-                                'old_value':
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'deliveryAddress']['addressDetails']['region']['description']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['id']": {
-                                'new_value': expected_items_array[0]['deliveryAddress']['addressDetails']['locality'][
-                                    'id'],
-                                'old_value':
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'deliveryAddress']['addressDetails']['locality']['id']
-                            },
-                            "root['releases'][0]['tender']['items'][0]['deliveryAddress']['addressDetails']['locality']['description']": {
-                                'new_value': expected_items_array[0]['deliveryAddress']['addressDetails']['locality'][
-                                    'description'],
-                                'old_value':
-                                    actual_ei_release_model_before_updating['releases'][0]['tender']['items'][0][
-                                        'deliveryAddress']['addressDetails']['locality']['description']
-                            },
-                            "root['releases'][0]['planning']['rationale']": {
-                                'new_value': GlobalClassUpdateEi.payload_for_update_ei['planning']['rationale'],
-                                'old_value': actual_ei_release_model_before_updating['releases'][0]['planning'][
-                                    'rationale']
+                            'iterable_item_added': {
+                                "root['releases'][0]['tender']['items'][1]": expected_items_array[1],
+                                "root['releases'][0]['tender']['items'][2]": expected_items_array[2]
                             }
-                        },
-                        'iterable_item_added': {
-                            "root['releases'][0]['tender']['items'][1]": expected_items_array[1],
-                            "root['releases'][0]['tender']['items'][2]": expected_items_array[2]
                         }
-                    }
                 except ValueError:
                     raise ValueError("Check your payloads")
-            try:
-                if compare_releases == expected_result:
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassCreateEi.cassandra_username,
-                        cassandra_password=GlobalClassCreateEi.cassandra_password,
-                        cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
-                    )
-                    database.create_ei_process_cleanup_table_of_services(
-                        ei_id=GlobalClassCreateEi.message['data']['ocid']
-                    )
-                    database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreateEi.operation_id
-                    )
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassUpdateEi.cassandra_username,
-                        cassandra_password=GlobalClassUpdateEi.cassandra_password,
-                        cassandra_cluster=GlobalClassUpdateEi.cassandra_cluster
-                    )
-                    database.create_ei_process_cleanup_table_of_services(
-                        ei_id=GlobalClassUpdateEi.message['data']['ocid']
-                    )
-                    database.cleanup_steps_of_process(
-                        operation_id=GlobalClassUpdateEi.operation_id
-                    )
-                else:
-                    with allure.step('# Steps from Casandra DataBase'):
-                        steps = CassandraSession(
+                try:
+                    if compare_releases == expected_result:
+                        database = CassandraSession(
                             cassandra_username=GlobalClassCreateEi.cassandra_username,
                             cassandra_password=GlobalClassCreateEi.cassandra_password,
                             cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
-                        ).get_orchestrator_operation_step_by_x_operation_id(
-                            operation_id=GlobalClassCreateEi.operation_id)
-                        allure.attach(steps, "Cassandra DataBase: steps of process")
-            except ValueError:
-                raise ValueError("Check the message in kafka topic")
-
-            assert compare_actual_result_and_expected_result(
-                expected_result=str(expected_result),
-                actual_result=str(compare_releases)
-            )
+                        )
+                        database.create_ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.message['data']['ocid']
+                        )
+                        database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id
+                        )
+                        database = CassandraSession(
+                            cassandra_username=GlobalClassUpdateEi.cassandra_username,
+                            cassandra_password=GlobalClassUpdateEi.cassandra_password,
+                            cassandra_cluster=GlobalClassUpdateEi.cassandra_cluster
+                        )
+                        database.create_ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassUpdateEi.message['data']['ocid']
+                        )
+                        database.cleanup_steps_of_process(
+                            operation_id=GlobalClassUpdateEi.operation_id
+                        )
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = CassandraSession(
+                                cassandra_username=GlobalClassCreateEi.cassandra_username,
+                                cassandra_password=GlobalClassCreateEi.cassandra_password,
+                                cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
+                            ).get_orchestrator_operation_step_by_x_operation_id(
+                                operation_id=GlobalClassCreateEi.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Check the message in kafka topic")
+                assert compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )
