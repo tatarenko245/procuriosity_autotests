@@ -8,11 +8,13 @@ from deepdiff import DeepDiff
 from tests.conftest import GlobalClassCreateEi
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
+from tests.utils.expected_release import ExpectedRelease
+
 from tests.utils.functions import compare_actual_result_and_expected_result
-from tests.utils.payloads import EiPayload
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.releases_models import EiRelease
+from tests.utils.prepared_payload import PreparePayload
+
 from tests.utils.requests import Requests
 
 
@@ -26,7 +28,7 @@ class TestCreateEi:
     @allure.title('Check status code and message from Kafka topic after EI creation')
     def test_check_status_code_and_message_from_kafka_topic_after_ei_creation(self, environment, country, language,
                                                                               cassandra_username, cassandra_password):
-        with allure.step('# 1. Authorization'):
+        with allure.step('# 1. Authorization platform one'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -41,11 +43,9 @@ class TestCreateEi:
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Take EI payload based on full data model'):
-            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(EiPayload().add_optionals_fields())
-            allure.attach(str(json.dumps(GlobalClassCreateEi.payload_for_create_ei)), 'Payload')
-
-        with allure.step('# 3. Send request to create EI'):
+        with allure.step('# 2. Send request to create EI'):
+            payload = copy.deepcopy(PreparePayload())
+            GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model()
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -55,20 +55,19 @@ class TestCreateEi:
                 payload=GlobalClassCreateEi.payload_for_create_ei
             )
 
-        with allure.step('# 4. See result'):
-            with allure.step('# 4.1. Check status code'):
+        with allure.step('# 3. See result'):
+            with allure.step('# 3.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
-                    actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
+                    expected_result=202,
+                    actual_result=GlobalClassCreateEi.send_the_request_create_ei.status_code
                 )
-            GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-            GlobalClassCreateEi.check_message = KafkaMessage(
-                GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                environment=GlobalClassCreateEi.environment,
-                kafka_message=GlobalClassCreateEi.message
-            )
-
-            with allure.step('# 4.2. Check message in feed point'):
+            with allure.step('# 3.2. Check message in feed point'):
+                GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                GlobalClassCreateEi.check_message = KafkaMessage(
+                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                    environment=GlobalClassCreateEi.environment,
+                    kafka_message=GlobalClassCreateEi.message
+                )
                 allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
                 try:
                     if GlobalClassCreateEi.check_message is True:
@@ -93,17 +92,17 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassCreateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassCreateEi.check_message
                 )
 
     @allure.title('Check EI release data after Ei creation based on full data model')
     def test_check_ei_release_data_after_ei_creation_based_on_full_data_model(self, environment, country, language,
                                                                               cassandra_username, cassandra_password):
 
-        with allure.step('# 1. Authorization'):
+        with allure.step('# 1. Authorization platform one'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -118,12 +117,9 @@ class TestCreateEi:
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Take EI payload based on full data model'):
-            payload = copy.deepcopy(EiPayload())
-            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(payload.add_optionals_fields())
-            allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
-
-        with allure.step('# 3. Send request to create EI'):
+        with allure.step('# 2. Send request to create EI'):
+            payload = copy.deepcopy(PreparePayload())
+            GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model()
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -132,20 +128,19 @@ class TestCreateEi:
                 language=GlobalClassCreateEi.language,
                 payload=GlobalClassCreateEi.payload_for_create_ei
             )
-
-        with allure.step('# 4. See result'):
-            with allure.step('# 4.1. Check status code'):
+        with allure.step('# 3. See result'):
+            with allure.step('# 3.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
-                    actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
+                    expected_result=202,
+                    actual_result=GlobalClassCreateEi.send_the_request_create_ei.status_code
                 )
-            GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-            GlobalClassCreateEi.check_message = KafkaMessage(
-                GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                environment=GlobalClassCreateEi.environment,
-                kafka_message=GlobalClassCreateEi.message
-            )
-            with allure.step('# 4.2. Check message in feed point'):
+            with allure.step('# 3.2. Check message in feed point'):
+                GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                GlobalClassCreateEi.check_message = KafkaMessage(
+                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                    environment=GlobalClassCreateEi.environment,
+                    kafka_message=GlobalClassCreateEi.message
+                )
                 allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
                 try:
                     if GlobalClassCreateEi.check_message is False:
@@ -158,31 +153,31 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassCreateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassCreateEi.check_message
                 )
-            with allure.step('# 4.3. Check EI release'):
+            with allure.step('# 3.3. Check EI release'):
                 actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
                                                            f"{GlobalClassCreateEi.message['data']['ocid']}").json()
-                release = copy.deepcopy(EiRelease(
+                release = copy.deepcopy(ExpectedRelease(
+                    environment=GlobalClassCreateEi.environment,
+                    language=GlobalClassCreateEi.language
+                ))
+                expected_ei_release_model = copy.deepcopy(release.ei_release_full_data_model(
                     operation_date=GlobalClassCreateEi.message['data']['operationDate'],
                     release_id=actual_ei_release_model['releases'][0]['id'],
                     tender_id=actual_ei_release_model['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
-                    environment=GlobalClassCreateEi.environment,
                     payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
-                    language=GlobalClassCreateEi.language
+                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items']
                 ))
-                copy.deepcopy(release.full_data_data_model())
-                expected_ei_release_model = copy.deepcopy(release.add_tender_with_items_array(
-                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items']))
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
-                compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
+                compare_releases = dict(DeepDiff(actual_ei_release_model, expected_ei_release_model))
                 try:
-                    if compare_releases is {}:
+                    if compare_releases == {}:
                         database = CassandraSession(
                             cassandra_username=GlobalClassCreateEi.cassandra_username,
                             cassandra_password=GlobalClassCreateEi.cassandra_password,
@@ -204,10 +199,10 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str({}),
-                    actual_result=str(compare_releases)
+                    expected_result={},
+                    actual_result=compare_releases
                 )
 
     @allure.title('Check EI release after Ei creation on model without optional fields')
@@ -216,7 +211,7 @@ class TestCreateEi:
                                                                                             cassandra_username,
                                                                                             cassandra_password):
 
-        with allure.step('# 1. Authorization'):
+        with allure.step('# 1. Authorization platform one'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -231,11 +226,9 @@ class TestCreateEi:
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Take EI payload based on full data model'):
-            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(EiPayload().obligatory_model_of_payload())
-            allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
-
-        with allure.step('# 3. Send request to create EI'):
+        with allure.step('# 2. Send request to create EI'):
+            payload = copy.deepcopy(PreparePayload())
+            GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_obligatory_data_model()
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -244,20 +237,19 @@ class TestCreateEi:
                 language=GlobalClassCreateEi.language,
                 payload=GlobalClassCreateEi.payload_for_create_ei
             )
-
-        with allure.step('# 4. See result'):
-            with allure.step('# 4.1. Check status code'):
+        with allure.step('# 3. See result'):
+            with allure.step('# 3.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
+                    expected_result=202,
                     actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
                 )
-            GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-            GlobalClassCreateEi.check_message = KafkaMessage(
-                GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                environment=GlobalClassCreateEi.environment,
-                kafka_message=GlobalClassCreateEi.message
-            )
-            with allure.step('# 4.2. Check message in feed point'):
+            with allure.step('# 3.2. Check message in feed point'):
+                GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                GlobalClassCreateEi.check_message = KafkaMessage(
+                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                    environment=GlobalClassCreateEi.environment,
+                    kafka_message=GlobalClassCreateEi.message
+                )
                 allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
                 try:
                     if GlobalClassCreateEi.check_message is False:
@@ -270,30 +262,29 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassCreateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassCreateEi.check_message
                 )
-            with allure.step('# 4.3. Check EI release'):
+            with allure.step('# 3.3. Check EI release'):
                 actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
                                                            f"{GlobalClassCreateEi.message['data']['ocid']}").json()
-                release = copy.deepcopy(EiRelease(
+                release = copy.deepcopy(ExpectedRelease(
+                    environment=GlobalClassCreateEi.environment,
+                    language=GlobalClassCreateEi.language))
+                expected_ei_release_model = copy.deepcopy(release.ei_release_obligatory_data_model(
                     operation_date=GlobalClassCreateEi.message['data']['operationDate'],
                     release_id=actual_ei_release_model['releases'][0]['id'],
                     tender_id=actual_ei_release_model['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
-                    environment=GlobalClassCreateEi.environment,
-                    payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
-                    language=GlobalClassCreateEi.language
+                    payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei
                 ))
-                expected_ei_release_model = copy.deepcopy(release.obligatory_data_model())
-
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
-                compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
+                compare_releases = dict(DeepDiff(actual_ei_release_model, expected_ei_release_model))
                 try:
-                    if compare_releases is {}:
+                    if compare_releases == {}:
                         database = CassandraSession(
                             cassandra_username=GlobalClassCreateEi.cassandra_username,
                             cassandra_password=GlobalClassCreateEi.cassandra_password,
@@ -315,10 +306,10 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str({}),
-                    actual_result=str(compare_releases)
+                    expected_result={},
+                    actual_result=compare_releases
                 )
 
     @allure.title('Check EI release data after Ei creation based on full data model with 3 items objects')
@@ -328,7 +319,7 @@ class TestCreateEi:
                                                                                                    cassandra_username,
                                                                                                    cassandra_password):
 
-        with allure.step('# 1. Authorization'):
+        with allure.step('# 1. Authorization platform one'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -343,13 +334,10 @@ class TestCreateEi:
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassCreateEi.host_for_bpe).get_x_operation_id(
                 GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Take EI payload based on full data model'):
-            payload = copy.deepcopy(EiPayload())
-            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(payload.add_optionals_fields())
-            GlobalClassCreateEi.payload_for_create_ei = copy.deepcopy(payload.add_tender_items(3))
-            allure.attach(str(GlobalClassCreateEi.payload_for_create_ei), 'Payload')
-
-        with allure.step('# 3. Send request to create EI'):
+        with allure.step('# 2. Send request to create EI'):
+            payload = copy.deepcopy(PreparePayload())
+            GlobalClassCreateEi.payload_for_create_ei = payload.create_ei_full_data_model(
+                quantity_of_tender_item_object=3)
             GlobalClassCreateEi.send_the_request_create_ei = Requests().create_ei(
                 host_of_request=GlobalClassCreateEi.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -358,20 +346,19 @@ class TestCreateEi:
                 language=GlobalClassCreateEi.language,
                 payload=GlobalClassCreateEi.payload_for_create_ei
             )
-
-        with allure.step('# 4. See result'):
-            with allure.step('# 4.1. Check status code'):
+        with allure.step('# 3. See result'):
+            with allure.step('# 3.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
-                    actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
+                    expected_result=202,
+                    actual_result=GlobalClassCreateEi.send_the_request_create_ei.status_code
                 )
-            GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-            GlobalClassCreateEi.check_message = KafkaMessage(
-                GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                environment=GlobalClassCreateEi.environment,
-                kafka_message=GlobalClassCreateEi.message
-            )
-            with allure.step('# 4.2. Check message in feed point'):
+            with allure.step('# 3.2. Check message in feed point'):
+                GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                GlobalClassCreateEi.check_message = KafkaMessage(
+                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                    environment=GlobalClassCreateEi.environment,
+                    kafka_message=GlobalClassCreateEi.message
+                )
                 allure.attach(str(GlobalClassCreateEi.message), 'Message in feed point')
                 try:
                     if GlobalClassCreateEi.check_message is False:
@@ -384,32 +371,31 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassCreateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassCreateEi.check_message
                 )
-            with allure.step('# 4.3. Check EI release'):
+            with allure.step('# 3.3. Check EI release'):
                 actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
                                                            f"{GlobalClassCreateEi.message['data']['ocid']}").json()
-                release = copy.deepcopy(EiRelease(
+                release = copy.deepcopy(ExpectedRelease(
+                    environment=GlobalClassCreateEi.environment,
+                    language=GlobalClassCreateEi.language
+                ))
+                expected_ei_release_model = copy.deepcopy(release.ei_release_full_data_model(
                     operation_date=GlobalClassCreateEi.message['data']['operationDate'],
                     release_id=actual_ei_release_model['releases'][0]['id'],
                     tender_id=actual_ei_release_model['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
-                    environment=GlobalClassCreateEi.environment,
                     payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
-                    language=GlobalClassCreateEi.language
+                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items']
                 ))
-                copy.deepcopy(release.full_data_data_model())
-                expected_ei_release_model = copy.deepcopy(release.add_tender_with_items_array(
-                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items']))
-
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
-                compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
+                compare_releases = dict(DeepDiff(actual_ei_release_model, expected_ei_release_model))
                 try:
-                    if compare_releases is {}:
+                    if compare_releases == {}:
                         database = CassandraSession(
                             cassandra_username=GlobalClassCreateEi.cassandra_username,
                             cassandra_password=GlobalClassCreateEi.cassandra_password,
@@ -431,13 +417,8 @@ class TestCreateEi:
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
-                    print("Check the message in kafka topic")
-
-                print('---------')
-                print(json.dumps(actual_ei_release_model))
-                print('============')
-                print(json.dumps(expected_ei_release_model))
+                    raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str({}),
-                    actual_result=str(compare_releases)
+                    expected_result={},
+                    actual_result=compare_releases
                 )

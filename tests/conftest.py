@@ -95,7 +95,26 @@ class GlobalClassCreateEi:
     access_token = None
     host_for_bpe = None
     check_message = None
+    ei_ocid = None
+    ei_token = None
 
+
+class GlobalClassUpdateEi:
+    environment = None
+    operation_id = None
+    hosts = None
+    send_the_request_create_ei = None
+    message = None
+    host_for_service = None
+    country = None
+    language = None
+    payload_for_update_ei = None
+    cassandra_cluster = None
+    cassandra_username = None
+    cassandra_password = None
+    access_token = None
+    host_for_bpe = None
+    check_message = None
 
 
 class GlobalClassCreateFs:

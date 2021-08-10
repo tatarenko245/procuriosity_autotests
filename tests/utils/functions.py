@@ -18,8 +18,8 @@ from tests.utils.data_of_enum import cpv_goods_low_level_03, cpv_goods_low_level
 
 @allure.step('Compare actual and expected results')
 def compare_actual_result_and_expected_result(expected_result, actual_result):
-    allure.attach(expected_result, "Expected result")
-    allure.attach(actual_result, "Actual result")
+    allure.attach(str(expected_result), "Expected result")
+    allure.attach(str(actual_result), "Actual result")
     if expected_result == actual_result:
         return True
     else:
@@ -126,6 +126,7 @@ def generate_items_array(quantity_of_object, item_object, tender_classification_
         val = items_array[quantity_of_object]
         new_array_items.append(copy.deepcopy(val))
     return new_array_items
+
 
 # def generate_items_array(quantity_of_object, item_object, tender_classification_id):
 #     copy.deepcopy(item_object)
