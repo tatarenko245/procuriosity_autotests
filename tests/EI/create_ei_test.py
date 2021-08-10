@@ -241,7 +241,7 @@ class TestCreateEi:
             with allure.step('# 3.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
                     expected_result=202,
-                    actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
+                    actual_result=GlobalClassCreateEi.send_the_request_create_ei.status_code
                 )
             with allure.step('# 3.2. Check message in feed point'):
                 GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()

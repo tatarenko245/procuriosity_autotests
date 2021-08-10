@@ -554,7 +554,7 @@ class TestUpdateEi:
                     raise ValueError("Check the message in kafka topic")
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
-                    actual_result=str(compare_releases)
+                    actual_result=compare_releases
                 )) == str(True)
 
     @allure.title('Check EI release data after Ei updating based on full data model with 3 items objects')
