@@ -58,8 +58,8 @@ class TestCreateEi:
         with allure.step('# 3. See result'):
             with allure.step('# 3.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
-                    actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
+                    expected_result=202,
+                    actual_result=GlobalClassCreateEi.send_the_request_create_ei.status_code
                 )
             with allure.step('# 3.2. Check message in feed point'):
                 GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
@@ -94,8 +94,8 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassCreateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassCreateEi.check_message
                 )
 
     @allure.title('Check EI release data after Ei creation based on full data model')
@@ -131,8 +131,8 @@ class TestCreateEi:
         with allure.step('# 3. See result'):
             with allure.step('# 3.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
-                    actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
+                    expected_result=202,
+                    actual_result=GlobalClassCreateEi.send_the_request_create_ei.status_code
                 )
             with allure.step('# 3.2. Check message in feed point'):
                 GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
@@ -155,8 +155,8 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassCreateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassCreateEi.check_message
                 )
             with allure.step('# 3.3. Check EI release'):
                 actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
@@ -175,7 +175,7 @@ class TestCreateEi:
                 ))
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
-                compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
+                compare_releases = dict(DeepDiff(actual_ei_release_model, expected_ei_release_model))
                 try:
                     if compare_releases == {}:
                         database = CassandraSession(
@@ -201,8 +201,8 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str({}),
-                    actual_result=str(compare_releases)
+                    expected_result={},
+                    actual_result=compare_releases
                 )
 
     @allure.title('Check EI release after Ei creation on model without optional fields')
@@ -240,7 +240,7 @@ class TestCreateEi:
         with allure.step('# 3. See result'):
             with allure.step('# 3.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
+                    expected_result=202,
                     actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
                 )
             with allure.step('# 3.2. Check message in feed point'):
@@ -264,8 +264,8 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassCreateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassCreateEi.check_message
                 )
             with allure.step('# 3.3. Check EI release'):
                 actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
@@ -282,7 +282,7 @@ class TestCreateEi:
                 ))
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
-                compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
+                compare_releases = dict(DeepDiff(actual_ei_release_model, expected_ei_release_model))
                 try:
                     if compare_releases == {}:
                         database = CassandraSession(
@@ -308,8 +308,8 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str({}),
-                    actual_result=str(compare_releases)
+                    expected_result={},
+                    actual_result=compare_releases
                 )
 
     @allure.title('Check EI release data after Ei creation based on full data model with 3 items objects')
@@ -349,8 +349,8 @@ class TestCreateEi:
         with allure.step('# 3. See result'):
             with allure.step('# 3.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
-                    actual_result=str(GlobalClassCreateEi.send_the_request_create_ei.status_code)
+                    expected_result=202,
+                    actual_result=GlobalClassCreateEi.send_the_request_create_ei.status_code
                 )
             with allure.step('# 3.2. Check message in feed point'):
                 GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
@@ -373,8 +373,8 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassCreateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassCreateEi.check_message
                 )
             with allure.step('# 3.3. Check EI release'):
                 actual_ei_release_model = requests.get(url=f"{GlobalClassCreateEi.message['data']['url']}/"
@@ -393,7 +393,7 @@ class TestCreateEi:
                 ))
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
-                compare_releases = DeepDiff(actual_ei_release_model, expected_ei_release_model)
+                compare_releases = dict(DeepDiff(actual_ei_release_model, expected_ei_release_model))
                 try:
                     if compare_releases == {}:
                         database = CassandraSession(
@@ -419,6 +419,6 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str({}),
-                    actual_result=str(compare_releases)
+                    expected_result={},
+                    actual_result=compare_releases
                 )

@@ -89,8 +89,8 @@ class TestUpdateEi:
         with allure.step('# 5. See result'):
             with allure.step('# 5.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
-                    actual_result=str(GlobalClassUpdateEi.send_the_request_update_ei.status_code)
+                    expected_result=202,
+                    actual_result=GlobalClassUpdateEi.send_the_request_update_ei.status_code
                 )
             with allure.step('# 5.2. Check message in feed point'):
                 GlobalClassUpdateEi.message = KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
@@ -130,8 +130,8 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassUpdateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassUpdateEi.check_message
                 )
 
     @allure.title('Check EI release after Ei updating on model without optional fields')
@@ -200,8 +200,8 @@ class TestUpdateEi:
         with allure.step('# 5. See result'):
             with allure.step('# 5.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
-                    actual_result=str(GlobalClassUpdateEi.send_the_request_update_ei.status_code)
+                    expected_result=202,
+                    actual_result=GlobalClassUpdateEi.send_the_request_update_ei.status_code
                 )
             with allure.step('# 5.2. Check message in feed point'):
                 GlobalClassUpdateEi.message = KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
@@ -225,8 +225,8 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassUpdateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassUpdateEi.check_message
                 )
             with allure.step('# 5.3. Check EI release before updating'):
                 release = copy.deepcopy(ExpectedRelease(
@@ -262,8 +262,8 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str({}),
-                    actual_result=str(compare_releases)
+                    expected_result={},
+                    actual_result=compare_releases
                 )
             with allure.step('# 5.4. Check EI release after updating'):
                 actual_ei_release_model_after_updating = requests.get(
@@ -273,7 +273,7 @@ class TestUpdateEi:
                 allure.attach(str(json.dumps(actual_ei_release_model_after_updating)),
                               "Actual Ei release after updating")
                 compare_releases = dict(DeepDiff(actual_ei_release_model_before_updating,
-                                            actual_ei_release_model_after_updating))
+                                                 actual_ei_release_model_after_updating))
                 dictionary_item_removed_was_cleaned = \
                     str(compare_releases['dictionary_item_removed']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_removed'] = dictionary_item_removed_was_cleaned
@@ -334,8 +334,8 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert str(compare_actual_result_and_expected_result(
-                    expected_result=str(expected_result),
-                    actual_result=str(compare_releases)
+                    expected_result=expected_result,
+                    actual_result=compare_releases
                 )) == str(True)
 
     @allure.title('Check EI release data after Ei updating with full data model')
@@ -402,8 +402,8 @@ class TestUpdateEi:
         with allure.step('# 5. See result'):
             with allure.step('# 5.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
-                    actual_result=str(GlobalClassUpdateEi.send_the_request_update_ei.status_code)
+                    expected_result=202,
+                    actual_result=GlobalClassUpdateEi.send_the_request_update_ei.status_code
                 )
             with allure.step('# 5.2. Check message in feed point'):
                 GlobalClassUpdateEi.message = KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
@@ -427,8 +427,8 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassUpdateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassUpdateEi.check_message
                 )
             with allure.step('# 5.3. Check EI release before updating'):
                 release = copy.deepcopy(ExpectedRelease(
@@ -445,7 +445,7 @@ class TestUpdateEi:
                               "Actual Ei release before updating")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
                 compare_releases = dict(DeepDiff(actual_ei_release_model_before_updating,
-                                            expected_ei_release_model))
+                                                 expected_ei_release_model))
                 try:
                     if compare_releases == {}:
                         pass
@@ -461,8 +461,8 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str({}),
-                    actual_result=str(compare_releases)
+                    expected_result={},
+                    actual_result=compare_releases
                 )
             with allure.step('# 5.4. Check EI release after updating'):
                 actual_ei_release_model_after_updating = requests.get(
@@ -471,8 +471,8 @@ class TestUpdateEi:
                               "Actual Ei release before updating")
                 allure.attach(str(json.dumps(actual_ei_release_model_after_updating)),
                               "Actual Ei release after updating")
-                compare_releases =dict(DeepDiff (actual_ei_release_model_before_updating,
-                                            actual_ei_release_model_after_updating))
+                compare_releases = dict(DeepDiff(actual_ei_release_model_before_updating,
+                                                 actual_ei_release_model_after_updating))
                 dictionary_item_added_was_cleaned = \
                     str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
@@ -553,7 +553,7 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert str(compare_actual_result_and_expected_result(
-                    expected_result=str(expected_result),
+                    expected_result=expected_result,
                     actual_result=str(compare_releases)
                 )) == str(True)
 
@@ -625,8 +625,8 @@ class TestUpdateEi:
         with allure.step('# 5. See result'):
             with allure.step('# 5.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(202),
-                    actual_result=str(GlobalClassUpdateEi.send_the_request_update_ei.status_code)
+                    expected_result=202,
+                    actual_result=GlobalClassUpdateEi.send_the_request_update_ei.status_code
                 )
             with allure.step('# 5.2. Check message in feed point'):
                 GlobalClassUpdateEi.message = KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
@@ -650,8 +650,8 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str(True),
-                    actual_result=str(GlobalClassUpdateEi.check_message)
+                    expected_result=True,
+                    actual_result=GlobalClassUpdateEi.check_message
                 )
             with allure.step('# 5.3. Check EI release before updating'):
                 release = copy.deepcopy(ExpectedRelease(
@@ -687,8 +687,8 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
                 assert compare_actual_result_and_expected_result(
-                    expected_result=str({}),
-                    actual_result=str(compare_releases)
+                    expected_result={},
+                    actual_result=compare_releases
                 )
             with allure.step('# 5.4. Check EI release after updating'):
                 actual_ei_release_model_after_updating = requests.get(
