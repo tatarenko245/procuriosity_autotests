@@ -13,6 +13,7 @@ class PreparePayload:
         self.constructor = copy.deepcopy(PayloadLibrary())
         self.ei_period = Date().expenditure_item_period()
         self.currency = f"{random.choice(currency)}"
+
     def create_ei_full_data_model(self, quantity_of_tender_item_object=1):
         payload = {
             "tender": {},
@@ -64,7 +65,6 @@ class PreparePayload:
             quantity_of_object=quantity_of_tender_item_object,
             item_object=payload['tender']['items'][0],
             tender_classification_id=tender_classification_id)
-
 
         payload['planning']['budget']['period']['startDate'] = self.ei_period[0]
         payload['planning']['budget']['period']['endDate'] = self.ei_period[1]
@@ -235,7 +235,7 @@ class PreparePayload:
         payload['planning']['budget']['period']['endDate'] = self.ei_period[1]
         return payload
 
-    def create_fs_full_data_model(self):
+    def create_fs_full_data_model_own_money(self):
         payload = {
             "tender": {},
             "planning": {},
@@ -271,6 +271,69 @@ class PreparePayload:
         payload['buyer']['details']['typeOfBuyer'] = f"{random.choice(typeOfBuyer)}"
         payload['buyer']['details']['mainGeneralActivity'] = f"{random.choice(mainGeneralActivity)}"
         payload['buyer']['details']['mainSectoralActivity'] = f"{random.choice(mainSectoralActivity)}"
+
+        payload['tender']['procuringEntity']['name'] = "create fs: procuringEntity.name"
+        payload['tender']['procuringEntity']['identifier']['id'] = "create fs: procuringEntity.identifier.id"
+        payload['tender']['procuringEntity']['identifier']['scheme'] = "MD-IDNO"
+        payload['tender']['procuringEntity']['identifier']['legalName'] = \
+            "create fs: procuringEntity.identifier.legalName"
+        payload['tender']['procuringEntity']['identifier']['uri'] = "create fs: procuringEntity.identifier.uri"
+        payload['tender']['procuringEntity']['address']['streetAddress'] = \
+            "create fs: procuringEntity.address.streetAddress"
+        payload['tender']['procuringEntity']['address']['postalCode'] = "create fs: procuringEntity.address.postalCode"
+        payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'] = "MD"
+        payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'] = "1700000"
+        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'] = "1701000"
+        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['scheme'] = "CUATM"
+        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['description'] = \
+            "create fs: procuringEntity.address.addressDetails.locality.description"
+        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['id'] = \
+            "create fs: tender.procuringEntity.additionalIdentifiers.id"
+        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['scheme'] = \
+            "create fs: tender.procuringEntity.additionalIdentifiers.scheme"
+        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['legalName'] = \
+            "create fs: tender.procuringEntity.additionalIdentifiers.legalName"
+        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['uri'] = \
+            "create fs: tender.procuringEntity.additionalIdentifiers.uri"
+        payload['tender']['procuringEntity']['contactPoint']['name'] = \
+            "create fs: tender.procuringEntity.contactPoint.name"
+        payload['tender']['procuringEntity']['contactPoint']['email'] = \
+            "create fs: tender.procuringEntity.contactPoint.email"
+        payload['tender']['procuringEntity']['contactPoint']['telephone'] = \
+            "create fs: tender.procuringEntity.contactPoint.telephone"
+        payload['tender']['procuringEntity']['contactPoint']['faxNumber'] = \
+            "create fs: tender.procuringEntity.contactPoint.faxNumber"
+        payload['tender']['procuringEntity']['contactPoint']['url'] = \
+            "create fs: tender.procuringEntity.contactPoint.url"
+
+        payload['planning']['budget']['id'] = "create fs: planning.budget.id"
+        payload['planning']['budget']['description'] = "create fs: planning.budget.description"
+        payload['planning']['budget']['description'] = "create fs: planning.budget.description"
+        payload['planning']['budget']['period']['startDate'] = self.ei_period[0]
+        payload['planning']['budget']['period']['endDate'] = self.ei_period[1]
+        payload['planning']['budget']['amount']['amount'] = 88889.89
+        payload['planning']['budget']['amount']['currency'] = self.currency
+        payload['planning']['budget']['isEuropeanUnionFunded'] = True
+        payload['planning']['budget']['europeanUnionFunding']['projectName'] = \
+            "create fs: planning.budget.europeanUnionFunding.projectName"
+        payload['planning']['budget']['europeanUnionFunding']['projectIdentifier'] = \
+            "create fs: planning.budget.europeanUnionFunding.projectIdentifier"
+        payload['planning']['budget']['europeanUnionFunding']['uri'] = \
+            "create fs: planning.budget.europeanUnionFunding.uri"
+        payload['planning']['budget']['project'] = "create fs: planning.budget.project"
+        payload['planning']['budget']['projectID'] = "create fs: planning.budget.projectID"
+        payload['planning']['budget']['uri'] = "create fs: planning.budget.uri"
+        payload['planning']['rationale'] = "create fs: planning.rationale"
+        return payload
+
+    def create_fs_full_data_model_treasury_money(self):
+        payload = {
+            "tender": {},
+            "planning": {}
+        }
+
+        payload['tender'].update(self.constructor.procuring_entity_obj())
+        payload['planning'].update(self.constructor.planning_obj())
 
         payload['tender']['procuringEntity']['name'] = "create fs: procuringEntity.name"
         payload['tender']['procuringEntity']['identifier']['id'] = "create fs: procuringEntity.identifier.id"
