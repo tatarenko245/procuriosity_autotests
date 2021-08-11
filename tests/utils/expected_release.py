@@ -20,6 +20,7 @@ class ExpectedRelease:
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
+
     def ei_release_full_data_model(self, operation_date, release_id, tender_id, ei_id, payload_for_create_ei,
                                    actual_items_array):
         release = {
@@ -345,6 +346,7 @@ class ExpectedRelease:
         del release['releases'][0]['planning']['budget']['project']
         del release['releases'][0]['planning']['budget']['projectID']
         del release['releases'][0]['planning']['budget']['uri']
+
         try:
             is_it_uuid(
                 uuid_to_test=tender_id,

@@ -7,7 +7,7 @@ import allure
 import requests
 from deepdiff import DeepDiff
 
-from tests.conftest import GlobalClassCreateEi, GlobalClassUpdateEi, GlobalClassCreateFs, GlobalClassMetadata
+from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassMetadata
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.expected_release import ExpectedRelease
@@ -162,9 +162,6 @@ class TestCreateFs:
                 payload=GlobalClassCreateEi.payload_for_create_ei
             )
             GlobalClassCreateEi.message = KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-            actual_ei_release = requests.get(
-                url=f"{GlobalClassCreateEi.message['data']['url']}/"
-                    f"{GlobalClassCreateEi.message['data']['ocid']}").json()
             GlobalClassCreateEi.ei_ocid = \
                 KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()["data"]["outcomes"]["ei"][0][
                     'id']
@@ -232,7 +229,7 @@ class TestCreateFs:
                         f"{GlobalClassCreateFs.message['data']['outcomes']['fs'][0]['id']}").json()
                 allure.attach(str(json.dumps(actual_fs_release)),
                               "Actual FS release")
-                expected_fs_release_model = copy.deepcopy(
+                expected_fs_release = copy.deepcopy(
                     release.fs_release_full_data_model_own_money_payer_id_is_not_equal_funder_id(
                         operation_date=GlobalClassCreateFs.message['data']['operationDate'],
                         release_id=actual_fs_release['releases'][0]['id'],
@@ -242,7 +239,9 @@ class TestCreateFs:
                         fs_id=GlobalClassCreateFs.message['data']['outcomes']['fs'][0]['id'],
                         payload_for_create_fs=GlobalClassCreateFs.payload_for_create_fs
                     ))
-                compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
+                allure.attach(str(json.dumps(expected_fs_release)),
+                              "Expected FS release")
+                compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release))
 
                 expected_result = {}
                 try:
