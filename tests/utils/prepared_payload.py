@@ -223,12 +223,6 @@ class PreparePayload:
         del payload['tender']['description']
         del payload['tender']['items']
         del payload['planning']['rationale']
-        del payload['buyer']['identifier']['uri']
-        del payload['buyer']['address']['postalCode']
-        del payload['buyer']['additionalIdentifiers']
-        del payload['buyer']['contactPoint']['faxNumber']
-        del payload['buyer']['contactPoint']['url']
-        del payload['buyer']['details']
 
         payload['tender']['title'] = "update ei: tender.title"
         payload['planning']['budget']['period']['startDate'] = self.ei_period[0]
