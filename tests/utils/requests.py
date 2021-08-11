@@ -41,3 +41,16 @@ class Requests:
         allure.attach(json.dumps(payload), 'Prepared payload')
         return ei
 
+    @staticmethod
+    @allure.step('Prepared request: create FS')
+    def create_fs(host_of_request, ei_ocid, access_token, x_operation_id, payload):
+        fs = requests.post(
+            url=host_of_request + f"/do/fs/{ei_ocid}",
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json'},
+            json=payload)
+        allure.attach(host_of_request + f"/do/fs/{ei_ocid}", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return fs

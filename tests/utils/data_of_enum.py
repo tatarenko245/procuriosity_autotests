@@ -30,3 +30,5 @@ cpv_services_low_level_98 = ("98341110-9", "98341120-2", "98341130-5", "98341140
 cpv_works_low_level = ()
 cpv_service_low_level = ()
 locality_scheme = ("CUATM", "other",)
+
+currency = ("USD", "EUR", "MDL",)

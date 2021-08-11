@@ -185,9 +185,7 @@ class TestUpdateEi:
                 GlobalClassUpdateEi.access_token)
         with allure.step('# 4. Send request to update EI'):
             time.sleep(2)
-            GlobalClassUpdateEi.payload_for_update_ei = payload.update_ei_obligatory_data_model(
-                tender_classification_id=GlobalClassCreateEi.payload_for_create_ei['tender']['classification']['id']
-            )
+            GlobalClassUpdateEi.payload_for_update_ei = payload.update_ei_obligatory_data_model()
             GlobalClassUpdateEi.send_the_request_update_ei = Requests().update_ei(
                 host_of_request=GlobalClassUpdateEi.host_for_bpe,
                 access_token=GlobalClassUpdateEi.access_token,
@@ -618,10 +616,6 @@ class TestUpdateEi:
                 ei_token=GlobalClassCreateEi.ei_token,
                 payload=GlobalClassUpdateEi.payload_for_update_ei
             )
-        print("ура9")
-        print(json.dumps(GlobalClassCreateEi.payload_for_create_ei))
-        print()
-        print(json.dumps(GlobalClassUpdateEi.payload_for_update_ei))
         with allure.step('# 5. See result'):
             with allure.step('# 5.1. Check status code'):
                 assert compare_actual_result_and_expected_result(
