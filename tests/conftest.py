@@ -131,3 +131,6 @@ class GlobalClassCreateFs:
     cassandra_username = None
     cassandra_password = None
     create_ei_process = None
+
+class GlobalClassMetadata:
+    metadata_budget_url = None

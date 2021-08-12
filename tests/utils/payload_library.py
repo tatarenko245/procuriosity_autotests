@@ -45,21 +45,35 @@ class PayloadLibrary:
         }
         return ei_tender_object
 
-    def ei_planning_obj(self):
-        ei_planning_obj = {
+    def planning_obj(self):
+        planning_obj = {
             "budget": {
+                "id": None,
+                "description": None,
                 "period": {
                     "startDate": None,
                     "endDate": None
-                }
+                },
+                "amount": {
+                    "amount": None,
+                    "currency": None,
+                },
+                "isEuropeanUnionFunded": None,
+                "europeanUnionFunding": {
+                    "projectName": None,
+                    "projectIdentifier": None,
+                    "uri": None
+                },
+                "project": None,
+                "projectID": None,
+                "uri": None
             },
             "rationale": None
         }
+        return planning_obj
 
-        return ei_planning_obj
-
-    def ei_buyer_obj(self):
-        ei_buyer_obj = {
+    def buyer_obj(self):
+        buyer_obj = {
             "name": None,
             "identifier": {
                 "id": None,
@@ -104,4 +118,50 @@ class PayloadLibrary:
 
             }
         }
-        return ei_buyer_obj
+        return buyer_obj
+
+    def procuring_entity_obj(self):
+        procuring_entity_obj = {
+            "procuringEntity": {
+                "name": None,
+                "identifier":
+                    {
+                        "id": None,
+                        "scheme": None,
+                        "legalName": None,
+                        "uri": None
+                    },
+                "address": {
+                    "streetAddress": None,
+                    "postalCode": None,
+                    "addressDetails": {
+                        "country": {
+                            "id": None
+                        },
+                        "region": {
+                            "id": None
+                        },
+                        "locality": {
+                            "scheme": None,
+                            "id": None,
+                            "description": None
+                        }
+                    }
+                },
+                "additionalIdentifiers":
+                    [{
+                        "id": None,
+                        "scheme": None,
+                        "legalName": None,
+                        "uri": None
+                    }],
+                "contactPoint":
+                    {
+                        "name": None,
+                        "email": None,
+                        "telephone": None,
+                        "faxNumber": None,
+                        "url": None
+                    }
+            }}
+        return procuring_entity_obj
