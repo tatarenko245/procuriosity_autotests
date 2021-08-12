@@ -1080,3 +1080,183 @@ class ExpectedRelease:
         release['releases'][0]['relatedProcesses'][0]['identifier'] = ei_id
         release['releases'][0]['relatedProcesses'][0]['uri'] = f"{self.metadata_budget_url}/{ei_id}/{ei_id}"
         return release
+
+    def fs_release_obligatory_data_model_treasury_money(
+            self, operation_date, release_id, tender_id, related_processes_id, ei_id, fs_id, payload_for_create_fs,
+            buyer_section):
+        release = {
+            "releases": [{
+                "tender": {},
+                "parties": [{}],
+                "planning": {},
+                "relatedProcesses": [{}]
+            }]
+        }
+        release.update(self.constructor.metadata_release())
+        release['releases'][0].update(self.constructor.release_general_attributes())
+        release['releases'][0]['tender'].update(self.constructor.release_tender_section())
+        release['releases'][0]['parties'][0].update(self.constructor.release_parties_section())
+        release['releases'][0]['planning'].update(self.constructor.release_planning_section())
+        release['releases'][0]['relatedProcesses'][0].update(self.constructor.release_related_processes_section())
+
+        del release['releases'][0]['tender']['title']
+        del release['releases'][0]['tender']['description']
+        del release['releases'][0]['tender']['mainProcurementCategory']
+        del release['releases'][0]['tender']['classification']
+        del release['releases'][0]['tender']['items']
+        del release['releases'][0]['parties'][0]['identifier']['uri']
+        del release['releases'][0]['parties'][0]['additionalIdentifiers']
+        del release['releases'][0]['parties'][0]['address']['postalCode']
+        del release['releases'][0]['parties'][0]['contactPoint']['faxNumber']
+        del release['releases'][0]['parties'][0]['contactPoint']['url']
+        del release['releases'][0]['parties'][0]['details']
+        del release['releases'][0]['planning']['budget']['id']
+        del release['releases'][0]['planning']['budget']['description']
+        del release['releases'][0]['planning']['budget']['europeanUnionFunding']
+        del release['releases'][0]['planning']['budget']['project']
+        del release['releases'][0]['planning']['budget']['projectID']
+        del release['releases'][0]['planning']['budget']['uri']
+        del release['releases'][0]['planning']['rationale']
+
+        try:
+            is_it_uuid(
+                uuid_to_test=tender_id,
+                version=4
+            )
+        except ValueError:
+            raise ValueError("Check your tender_id in FS release: tender_id in FS release must be uuid version 4")
+
+        try:
+            is_it_uuid(
+                uuid_to_test=release_id,
+                version=4
+            )
+        except ValueError:
+            raise ValueError("Check your release_id in FS release: release_id in FS release must be uuid version 4")
+
+        try:
+            is_it_uuid(
+                uuid_to_test=related_processes_id,
+                version=1
+            )
+        except ValueError:
+            raise ValueError("Check your related_processes_id in FS release: "
+                             "tender_id in FS release must be uuid version 1")
+
+        try:
+            payer_country_data = get_value_from_country_csv(
+                country=payload_for_create_fs['tender']['procuringEntity']['address']['addressDetails']['country'][
+                    'id'],
+                language=self.language
+            )
+
+            payer_region_data = get_value_from_region_csv(
+                region=payload_for_create_fs['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
+                country=payload_for_create_fs['tender']['procuringEntity']['address']['addressDetails']['country'][
+                    'id'],
+                language=self.language
+            )
+
+            if payload_for_create_fs['tender']['procuringEntity']['address']['addressDetails']['locality'][
+                'scheme'] == "CUATM":
+                payer_locality_data = get_value_from_locality_csv(
+                    locality=
+                    payload_for_create_fs['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
+                    region=payload_for_create_fs['tender']['procuringEntity']['address']['addressDetails']['region'][
+                        'id'],
+                    country=payload_for_create_fs['tender']['procuringEntity']['address']['addressDetails']['country'][
+                        'id'],
+                    language=self.language
+                )
+                payer_locality_object = {
+                    "scheme": payer_locality_data[2],
+                    "id": payload_for_create_fs['tender']['procuringEntity']['address']['addressDetails']['locality'][
+                        'id'],
+                    "description": payer_locality_data[1],
+                    "uri": payer_locality_data[3]
+                }
+            else:
+                payer_locality_object = {
+                    "scheme":
+                        payload_for_create_fs['tender']['procuringEntity']['address']['addressDetails']['locality'][
+                            'scheme'],
+                    "id": payload_for_create_fs['tender']['procuringEntity']['address']['addressDetails']['locality'][
+                        'id'],
+                    "description":
+                        payload_for_create_fs['tender']['procuringEntity']['address']['addressDetails']['locality'][
+                            'description']
+                }
+        except ValueError:
+            raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
+
+        release['uri'] = f"{self.metadata_budget_url}/{ei_id}/{fs_id}"
+        release['version'] = "1.1"
+        release['extensions'][
+            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
+        release['extensions'][
+            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
+        release['publisher']['name'] = "M-Tender"
+        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['license'] = "http://opendefinition.org/licenses/"
+        release['publicationPolicy'] = "http://opendefinition.org/licenses/"
+        release['publishedDate'] = operation_date
+        release['releases'][0]['ocid'] = fs_id
+        release['releases'][0]['id'] = f"{fs_id}-{release_id[46:59]}"
+        release['releases'][0]['date'] = operation_date
+        release['releases'][0]['tag'][0] = "planning"
+        release['releases'][0]['language'] = self.language
+        release['releases'][0]['initiationType'] = "tender"
+        release['releases'][0]['tender']['id'] = tender_id
+        release['releases'][0]['tender']['status'] = "planning"
+        release['releases'][0]['tender']['statusDetails'] = "empty"
+
+        release['releases'][0]['parties'][0]['id'] = \
+            f"{payload_for_create_fs['tender']['procuringEntity']['identifier']['scheme']}-" \
+            f"{payload_for_create_fs['tender']['procuringEntity']['identifier']['id']}"
+        release['releases'][0]['parties'][0]['name'] = payload_for_create_fs['tender']['procuringEntity']['name']
+        release['releases'][0]['parties'][0]['identifier']['scheme'] = \
+            payload_for_create_fs['tender']['procuringEntity']['identifier']['scheme']
+        release['releases'][0]['parties'][0]['identifier']['id'] = \
+            payload_for_create_fs['tender']['procuringEntity']['identifier']['id']
+        release['releases'][0]['parties'][0]['identifier']['legalName'] = \
+            payload_for_create_fs['tender']['procuringEntity']['identifier']['legalName']
+        release['releases'][0]['parties'][0]['address']['streetAddress'] = \
+            payload_for_create_fs['tender']['procuringEntity']['address']['streetAddress']
+        release['releases'][0]['parties'][0]['address']['addressDetails']['country']['id'] = payer_country_data[0]
+        release['releases'][0]['parties'][0]['address']['addressDetails']['country']['description'] = \
+            payer_country_data[1]
+        release['releases'][0]['parties'][0]['address']['addressDetails']['country']['scheme'] = payer_country_data[2]
+        release['releases'][0]['parties'][0]['address']['addressDetails']['country']['uri'] = payer_country_data[3]
+        release['releases'][0]['parties'][0]['address']['addressDetails']['region']['id'] = payer_region_data[0]
+        release['releases'][0]['parties'][0]['address']['addressDetails']['region']['description'] = \
+            payer_region_data[1]
+        release['releases'][0]['parties'][0]['address']['addressDetails']['region']['scheme'] = payer_region_data[2]
+        release['releases'][0]['parties'][0]['address']['addressDetails']['region']['uri'] = payer_region_data[3]
+        release['releases'][0]['parties'][0]['address']['addressDetails']['locality'] = payer_locality_object
+        release['releases'][0]['parties'][0]['contactPoint']['name'] = \
+            payload_for_create_fs['tender']['procuringEntity']['contactPoint']['name']
+        release['releases'][0]['parties'][0]['contactPoint']['telephone'] = \
+            payload_for_create_fs['tender']['procuringEntity']['contactPoint']['telephone']
+        release['releases'][0]['parties'][0]['contactPoint']['email'] = \
+            payload_for_create_fs['tender']['procuringEntity']['contactPoint']['email']
+        release['releases'][0]['parties'][0]['roles'][0] = "payer"
+
+        release['releases'][0]['planning']['budget']['period']['startDate'] = \
+            payload_for_create_fs['planning']['budget']['period']['startDate']
+        release['releases'][0]['planning']['budget']['period']['endDate'] = \
+            payload_for_create_fs['planning']['budget']['period']['endDate']
+        release['releases'][0]['planning']['budget']['amount']['amount'] = \
+            payload_for_create_fs['planning']['budget']['amount']['amount']
+        release['releases'][0]['planning']['budget']['amount']['currency'] = \
+            payload_for_create_fs['planning']['budget']['amount']['currency']
+        release['releases'][0]['planning']['budget']['isEuropeanUnionFunded'] = False
+        release['releases'][0]['planning']['budget']['verified'] = False
+        release['releases'][0]['planning']['budget']['sourceEntity']['id'] = buyer_section['id']
+        release['releases'][0]['planning']['budget']['sourceEntity']['name'] = buyer_section['name']
+
+        release['releases'][0]['relatedProcesses'][0]['id'] = related_processes_id
+        release['releases'][0]['relatedProcesses'][0]['relationship'][0] = "parent"
+        release['releases'][0]['relatedProcesses'][0]['scheme'] = "ocid"
+        release['releases'][0]['relatedProcesses'][0]['identifier'] = ei_id
+        release['releases'][0]['relatedProcesses'][0]['uri'] = f"{self.metadata_budget_url}/{ei_id}/{ei_id}"
+        return release

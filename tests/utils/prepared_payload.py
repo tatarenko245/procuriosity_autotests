@@ -302,7 +302,6 @@ class PreparePayload:
 
         payload['planning']['budget']['id'] = "create fs: planning.budget.id"
         payload['planning']['budget']['description'] = "create fs: planning.budget.description"
-        payload['planning']['budget']['description'] = "create fs: planning.budget.description"
         payload['planning']['budget']['period']['startDate'] = self.ei_period[0]
         payload['planning']['budget']['period']['endDate'] = self.ei_period[1]
         payload['planning']['budget']['amount']['amount'] = 88889.89
@@ -365,7 +364,6 @@ class PreparePayload:
 
         payload['planning']['budget']['id'] = "create fs: planning.budget.id"
         payload['planning']['budget']['description'] = "create fs: planning.budget.description"
-        payload['planning']['budget']['description'] = "create fs: planning.budget.description"
         payload['planning']['budget']['period']['startDate'] = self.ei_period[0]
         payload['planning']['budget']['period']['endDate'] = self.ei_period[1]
         payload['planning']['budget']['amount']['amount'] = 88889.89
@@ -381,4 +379,52 @@ class PreparePayload:
         payload['planning']['budget']['projectID'] = "create fs: planning.budget.projectID"
         payload['planning']['budget']['uri'] = "create fs: planning.budget.uri"
         payload['planning']['rationale'] = "create fs: planning.rationale"
+        return payload
+
+    def create_fs_obligatory_data_model_treasury_money(self):
+        payload = {
+            "tender": {},
+            "planning": {}
+        }
+
+        payload['tender'].update(self.constructor.procuring_entity_obj())
+        payload['planning'].update(self.constructor.planning_obj())
+
+        del payload['tender']['procuringEntity']['identifier']['uri']
+        del payload['tender']['procuringEntity']['address']['postalCode']
+        del payload['tender']['procuringEntity']['additionalIdentifiers']
+        del payload['tender']['procuringEntity']['contactPoint']['faxNumber']
+        del payload['tender']['procuringEntity']['contactPoint']['url']
+        del payload['planning']['budget']['id']
+        del payload['planning']['budget']['description']
+        del payload['planning']['budget']['europeanUnionFunding']
+        del payload['planning']['budget']['project']
+        del payload['planning']['budget']['projectID']
+        del payload['planning']['budget']['uri']
+        del payload['planning']['rationale']
+
+        payload['tender']['procuringEntity']['name'] = "create fs: procuringEntity.name"
+        payload['tender']['procuringEntity']['identifier']['id'] = "create fs: procuringEntity.identifier.id"
+        payload['tender']['procuringEntity']['identifier']['scheme'] = "MD-IDNO"
+        payload['tender']['procuringEntity']['identifier']['legalName'] = \
+            "create fs: procuringEntity.identifier.legalName"
+        payload['tender']['procuringEntity']['address']['streetAddress'] = \
+            "create fs: procuringEntity.address.streetAddress"
+        payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'] = "MD"
+        payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'] = "1700000"
+        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'] = "1701000"
+        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['scheme'] = "CUATM"
+        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['description'] = \
+            "create fs: procuringEntity.address.addressDetails.locality.description"
+        payload['tender']['procuringEntity']['contactPoint']['name'] = \
+            "create fs: tender.procuringEntity.contactPoint.name"
+        payload['tender']['procuringEntity']['contactPoint']['email'] = \
+            "create fs: tender.procuringEntity.contactPoint.email"
+        payload['tender']['procuringEntity']['contactPoint']['telephone'] = \
+            "create fs: tender.procuringEntity.contactPoint.telephone"
+        payload['planning']['budget']['period']['startDate'] = self.ei_period[0]
+        payload['planning']['budget']['period']['endDate'] = self.ei_period[1]
+        payload['planning']['budget']['amount']['amount'] = 88889.89
+        payload['planning']['budget']['amount']['currency'] = self.currency
+        payload['planning']['budget']['isEuropeanUnionFunded'] = False
         return payload
