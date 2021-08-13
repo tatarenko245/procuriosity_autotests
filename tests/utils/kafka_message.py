@@ -63,45 +63,45 @@ class KafkaMessage:
         try:
             if "X-OPERATION-ID" in kafka_message:
                 check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
-        except:
-            KeyError('KeyError: X-OPERATION-ID')
+        except KeyError:
+            raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
                 check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
-        except:
-            KeyError('KeyError: X-RESPONSE-ID')
+        except KeyError:
+            raise KeyError('KeyError: X-RESPONSE-ID')
         try:
             if "initiator" in kafka_message:
                 check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "platform")
-        except:
-            KeyError('KeyError: initiator')
+        except KeyError:
+            raise KeyError('KeyError: initiator')
         try:
             if "ocid" in kafka_message["data"]:
                 check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], "ocds-t1s2t3-MD-*")
-        except:
-            KeyError('KeyError: ocid')
+        except KeyError:
+            raise KeyError('KeyError: ocid')
         try:
             if "url" in kafka_message["data"]:
                 check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
                                             f"{budget_url}{kafka_message['data']['ocid']}")
-        except:
-            KeyError('KeyError: url')
+        except KeyError:
+            raise KeyError('KeyError: url')
         try:
             if "operationDate" in kafka_message["data"]:
                 check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
-        except:
-            KeyError('KeyError: operationDate')
+        except KeyError:
+            raise KeyError('KeyError: operationDate')
         try:
             if "id" in kafka_message["data"]["outcomes"]["ei"][0]:
                 check_ei_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["ei"][0]["id"], "ocds-t1s2t3-MD-*")
-        except:
-            KeyError('KeyError: id')
+        except KeyError:
+            raise KeyError('KeyError: id')
         try:
             if "X-TOKEN" in kafka_message["data"]["outcomes"]["ei"][0]:
                 check_ei_token = is_it_uuid(kafka_message["data"]["outcomes"]["ei"][0]["X-TOKEN"], 4)
-        except:
-            KeyError('KeyError: X-TOKEN')
+        except KeyError:
+            raise KeyError('KeyError: X-TOKEN')
 
         if check_x_operation_id is True and check_x_response_id is True and check_initiator is True and \
                 check_oc_id is True and check_url is True and check_operation_date is True and \
@@ -128,35 +128,35 @@ class KafkaMessage:
         try:
             if "X-OPERATION-ID" in kafka_message:
                 check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
-        except:
-            KeyError('KeyError: X-OPERATION-ID')
+        except KeyError:
+            raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
                 check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
-        except:
-            KeyError('KeyError: X-RESPONSE-ID')
+        except KeyError:
+            raise KeyError('KeyError: X-RESPONSE-ID')
         try:
             if "initiator" in kafka_message:
                 check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "platform")
-        except:
-            KeyError('KeyError: initiator')
+        except KeyError:
+            raise KeyError('KeyError: initiator')
         try:
             if "ocid" in kafka_message["data"]:
                 check_oc_id = fnmatch.fnmatch(ei_ocid, "ocds-t1s2t3-MD-*")
-        except:
-            KeyError('KeyError: ocid')
+        except KeyError:
+            raise KeyError('KeyError: ocid')
         try:
             if "url" in kafka_message["data"]:
                 check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
                                             f"{budget_url}{ei_ocid}/{ei_ocid}")
-        except:
-            KeyError('KeyError: url')
+        except KeyError:
+            raise KeyError('KeyError: url')
         try:
             if "operationDate" in kafka_message["data"]:
                 check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
-        except:
-            KeyError('KeyError: operationDate')
+        except KeyError:
+            raise KeyError('KeyError: operationDate')
         if check_x_operation_id is True and check_x_response_id is True and check_initiator is True and \
                 check_oc_id is True and check_url is True and check_operation_date is True:
             return True
@@ -183,50 +183,104 @@ class KafkaMessage:
         try:
             if "X-OPERATION-ID" in kafka_message:
                 check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
-        except:
-            KeyError('KeyError: X-OPERATION-ID')
+        except KeyError:
+            raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
                 check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
-        except:
-            KeyError('KeyError: X-RESPONSE-ID')
+        except KeyError:
+            raise KeyError('KeyError: X-RESPONSE-ID')
         try:
             if "initiator" in kafka_message:
                 check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "platform")
-        except:
-            KeyError('KeyError: initiator')
+        except KeyError:
+            raise KeyError('KeyError: initiator')
         try:
             if "ocid" in kafka_message["data"]:
                 check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], "ocds-t1s2t3-MD-*")
-        except:
-            KeyError('KeyError: ocid')
+        except KeyError:
+            raise KeyError('KeyError: ocid')
         try:
             if "url" in kafka_message["data"]:
                 check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
                                             f"{budget_url}{kafka_message['data']['ocid']}")
-        except:
-            KeyError('KeyError: url')
+        except KeyError:
+            raise KeyError('KeyError: url')
         try:
             if "operationDate" in kafka_message["data"]:
                 check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
-        except:
-            KeyError('KeyError: operationDate')
+        except KeyError:
+            raise KeyError('KeyError: operationDate')
         try:
             if "id" in kafka_message["data"]["outcomes"]["fs"][0]:
                 check_fs_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["fs"][0]["id"],
                                               f"{kafka_message['data']['ocid']}-FS-*")
-        except:
-            KeyError('KeyError: id')
+        except KeyError:
+            raise KeyError('KeyError: id')
         try:
             if "X-TOKEN" in kafka_message["data"]["outcomes"]["fs"][0]:
                 check_fs_token = is_it_uuid(kafka_message["data"]["outcomes"]["fs"][0]["X-TOKEN"], 4)
-        except:
-            KeyError('KeyError: X-TOKEN')
+        except KeyError:
+            raise KeyError('KeyError: X-TOKEN')
 
         if check_x_operation_id is True and check_x_response_id is True and check_initiator is True and \
                 check_oc_id is True and check_url is True and check_operation_date is True and \
                 check_fs_id is True and check_fs_token is True:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def update_fs_message_is_successful(environment, kafka_message, ei_ocid, fs_id):
+        budget_url = None
+        if environment == "dev":
+            budget_url = "http://dev.public.eprocurement.systems/budgets/"
+        if environment == "sandbox":
+            budget_url = "http://public.eprocurement.systems/budgets/"
+
+        check_x_operation_id = None
+        check_x_response_id = None
+        check_initiator = None
+        check_oc_id = None
+        check_url = None
+        check_operation_date = None
+
+        try:
+            if "X-OPERATION-ID" in kafka_message:
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+        except KeyError:
+            raise KeyError('KeyError: X-OPERATION-ID')
+
+        try:
+            if "X-RESPONSE-ID" in kafka_message:
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+        except KeyError:
+            raise KeyError('KeyError: X-RESPONSE-ID')
+        try:
+            if "initiator" in kafka_message:
+                check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "platform")
+        except KeyError:
+            raise KeyError('KeyError: initiator')
+        try:
+            if "ocid" in kafka_message["data"]:
+                check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{fs_id}")
+        except KeyError:
+            raise KeyError('KeyError: ocid')
+        try:
+            if "url" in kafka_message["data"]:
+                check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
+                                            f"{budget_url}{ei_ocid}/{fs_id}")
+        except KeyError:
+            raise KeyError('KeyError: url')
+        try:
+            if "operationDate" in kafka_message["data"]:
+                check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
+        except KeyError:
+            raise KeyError('KeyError: operationDate')
+
+        if check_x_operation_id is True and check_x_response_id is True and check_initiator is True and \
+                check_oc_id is True and check_url is True and check_operation_date is True:
             return True
         else:
             return False

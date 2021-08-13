@@ -29,7 +29,7 @@ class TestCreateFs:
     @allure.title('Check status code and message from Kafka topic after FS creation')
     def test_check_status_code_and_message_from_kafka_topic_after_fs_creation(self, environment, country, language,
                                                                               cassandra_username, cassandra_password):
-        with allure.step('# 1. Authorization: create EI'):
+        with allure.step('# 1. Authorization platform one: create EI'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -61,7 +61,7 @@ class TestCreateFs:
             GlobalClassCreateEi.ei_token = \
                 KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()["data"]["outcomes"]["ei"][0][
                     'X-TOKEN']
-        with allure.step('# 3. Authorization: create FS'):
+        with allure.step('# 3. Authorization platform one: create FS'):
             GlobalClassCreateFs.language = language
             GlobalClassCreateFs.cassandra_username = cassandra_username
             GlobalClassCreateFs.cassandra_password = cassandra_password
@@ -136,7 +136,7 @@ class TestCreateFs:
                   'and fs -> full data model own money')
     def test_check_fs_release_data_after_fs_creation_ei_model_without_optional_fields_and_fs_full_data_model_own(
             self, environment, country, language, cassandra_username, cassandra_password):
-        with allure.step('# 1. Authorization: create EI'):
+        with allure.step('# 1. Authorization platform one: create EI'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -166,7 +166,7 @@ class TestCreateFs:
             GlobalClassCreateEi.ei_ocid = \
                 KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()["data"]["outcomes"]["ei"][0][
                     'id']
-        with allure.step('# 3. Authorization: create FS'):
+        with allure.step('# 3. Authorization platform one: create FS'):
             GlobalClassCreateFs.language = language
             GlobalClassCreateFs.cassandra_username = cassandra_username
             GlobalClassCreateFs.cassandra_password = cassandra_password
@@ -205,14 +205,14 @@ class TestCreateFs:
                 )
                 allure.attach(str(GlobalClassCreateFs.message), 'Message in feed point')
                 try:
-                    if GlobalClassCreateEi.check_message is False:
+                    if GlobalClassCreateFs.check_message is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = CassandraSession(
-                                cassandra_username=GlobalClassCreateEi.cassandra_username,
-                                cassandra_password=GlobalClassCreateEi.cassandra_password,
-                                cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
+                                cassandra_username=GlobalClassCreateFs.cassandra_username,
+                                cassandra_password=GlobalClassCreateFs.cassandra_password,
+                                cassandra_cluster=GlobalClassCreateFs.cassandra_cluster
                             ).get_orchestrator_operation_step_by_x_operation_id(
-                                operation_id=GlobalClassCreateEi.operation_id)
+                                operation_id=GlobalClassCreateFs.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
@@ -238,7 +238,8 @@ class TestCreateFs:
                         related_processes_id=actual_fs_release['releases'][0]['relatedProcesses'][0]['id'],
                         ei_id=GlobalClassCreateEi.message['data']['ocid'],
                         fs_id=GlobalClassCreateFs.message['data']['outcomes']['fs'][0]['id'],
-                        payload_for_create_fs=GlobalClassCreateFs.payload_for_create_fs
+                        payload_for_create_fs=GlobalClassCreateFs.payload_for_create_fs,
+                        release_date=GlobalClassCreateFs.message['data']['operationDate']
                     ))
                 allure.attach(str(json.dumps(expected_fs_release)),
                               "Expected FS release")
@@ -264,7 +265,7 @@ class TestCreateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-            with allure.step('# 5.4. Check EI release'):
+            with allure.step('# 5.4. Check EI release after FS creation'):
                 actual_ei_release = requests.get(
                     url=f"{GlobalClassCreateEi.message['data']['url']}/"
                         f"{GlobalClassCreateEi.message['data']['ocid']}").json()
@@ -277,7 +278,8 @@ class TestCreateFs:
                     release_id=actual_ei_release['releases'][0]['id'],
                     tender_id=actual_ei_release['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
-                    payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei
+                    payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
+                    release_date=GlobalClassCreateFs.message['data']['operationDate']
                 ))
                 allure.attach(str(json.dumps(actual_ei_release)),
                               "Actual Ei release")
@@ -292,13 +294,7 @@ class TestCreateFs:
                 compare_releases = dict(compare_releases)
                 expected_result = {
                     'dictionary_item_added': "['releases'][0]['relatedProcesses'], "
-                                             "['releases'][0]['planning']['budget']['amount']",
-                    'values_changed': {
-                        "root['releases'][0]['date']": {
-                            'new_value': GlobalClassCreateFs.message['data']['operationDate'],
-                            'old_value': GlobalClassCreateEi.message['data']['operationDate']
-                        }
-                    }
+                                             "['releases'][0]['planning']['budget']['amount']"
                 }
 
                 expected_related_processes = [{
@@ -367,7 +363,7 @@ class TestCreateFs:
                   'fs -> full data model treasury money')
     def test_check_fs_release_data_after_fs_creation_ei_full_data_model_and_fs_full_data_model_treasury(
             self, environment, country, language, cassandra_username, cassandra_password):
-        with allure.step('# 1. Authorization: create EI'):
+        with allure.step('# 1. Authorization platform one: create EI'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -400,7 +396,7 @@ class TestCreateFs:
             actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.message['data']['url']}/"
                     f"{GlobalClassCreateEi.message['data']['ocid']}").json()
-        with allure.step('# 3. Authorization: create FS'):
+        with allure.step('# 3. Authorization platform one: create FS'):
             GlobalClassCreateFs.language = language
             GlobalClassCreateFs.cassandra_username = cassandra_username
             GlobalClassCreateFs.cassandra_password = cassandra_password
@@ -442,11 +438,11 @@ class TestCreateFs:
                     if GlobalClassCreateEi.check_message is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = CassandraSession(
-                                cassandra_username=GlobalClassCreateEi.cassandra_username,
-                                cassandra_password=GlobalClassCreateEi.cassandra_password,
-                                cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
+                                cassandra_username=GlobalClassCreateFs.cassandra_username,
+                                cassandra_password=GlobalClassCreateFs.cassandra_password,
+                                cassandra_cluster=GlobalClassCreateFs.cassandra_cluster
                             ).get_orchestrator_operation_step_by_x_operation_id(
-                                operation_id=GlobalClassCreateEi.operation_id)
+                                operation_id=GlobalClassCreateFs.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
@@ -473,7 +469,8 @@ class TestCreateFs:
                         ei_id=GlobalClassCreateEi.message['data']['ocid'],
                         fs_id=GlobalClassCreateFs.message['data']['outcomes']['fs'][0]['id'],
                         payload_for_create_fs=GlobalClassCreateFs.payload_for_create_fs,
-                        buyer_section=actual_ei_release['releases'][0]['buyer']
+                        buyer_section=actual_ei_release['releases'][0]['buyer'],
+                        release_date=GlobalClassCreateFs.message['data']['operationDate']
                     ))
                 allure.attach(str(json.dumps(expected_fs_release)),
                               "Expected FS release")
@@ -498,7 +495,7 @@ class TestCreateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-            with allure.step('# 5.4. Check EI release'):
+            with allure.step('# 5.4. Check EI release after FS creation'):
                 actual_ei_release = requests.get(
                     url=f"{GlobalClassCreateEi.message['data']['url']}/"
                         f"{GlobalClassCreateEi.message['data']['ocid']}").json()
@@ -512,7 +509,8 @@ class TestCreateFs:
                     tender_id=actual_ei_release['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
                     payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
-                    actual_items_array=actual_ei_release['releases'][0]['tender']['items']
+                    actual_items_array=actual_ei_release['releases'][0]['tender']['items'],
+                    release_date=GlobalClassCreateFs.message['data']['operationDate']
                 ))
                 allure.attach(str(json.dumps(actual_ei_release)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
@@ -526,13 +524,7 @@ class TestCreateFs:
                 compare_releases = dict(compare_releases)
                 expected_result = {
                     'dictionary_item_added': "['releases'][0]['relatedProcesses'], "
-                                             "['releases'][0]['planning']['budget']['amount']",
-                    'values_changed': {
-                        "root['releases'][0]['date']": {
-                            'new_value': GlobalClassCreateFs.message['data']['operationDate'],
-                            'old_value': GlobalClassCreateEi.message['data']['operationDate']
-                        }
-                    }
+                                             "['releases'][0]['planning']['budget']['amount']"
                 }
 
                 expected_related_processes = [{
@@ -601,7 +593,7 @@ class TestCreateFs:
                   'fs -> model without optional fields own money')
     def test_check_fs_release_data_after_fs_creation_ei_full_data_model_and_fs_model_without_optional_fields_own(
             self, environment, country, language, cassandra_username, cassandra_password):
-        with allure.step('# 1. Authorization: create EI'):
+        with allure.step('# 1. Authorization platform one: create EI'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -634,7 +626,7 @@ class TestCreateFs:
             actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.message['data']['url']}/"
                     f"{GlobalClassCreateEi.message['data']['ocid']}").json()
-        with allure.step('# 3. Authorization: create FS'):
+        with allure.step('# 3. Authorization platform one: create FS'):
             GlobalClassCreateFs.language = language
             GlobalClassCreateFs.cassandra_username = cassandra_username
             GlobalClassCreateFs.cassandra_password = cassandra_password
@@ -676,11 +668,11 @@ class TestCreateFs:
                     if GlobalClassCreateEi.check_message is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = CassandraSession(
-                                cassandra_username=GlobalClassCreateEi.cassandra_username,
-                                cassandra_password=GlobalClassCreateEi.cassandra_password,
-                                cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
+                                cassandra_username=GlobalClassCreateFs.cassandra_username,
+                                cassandra_password=GlobalClassCreateFs.cassandra_password,
+                                cassandra_cluster=GlobalClassCreateFs.cassandra_cluster
                             ).get_orchestrator_operation_step_by_x_operation_id(
-                                operation_id=GlobalClassCreateEi.operation_id)
+                                operation_id=GlobalClassCreateFs.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
@@ -707,7 +699,8 @@ class TestCreateFs:
                         ei_id=GlobalClassCreateEi.message['data']['ocid'],
                         fs_id=GlobalClassCreateFs.message['data']['outcomes']['fs'][0]['id'],
                         payload_for_create_fs=GlobalClassCreateFs.payload_for_create_fs,
-                        buyer_section=actual_ei_release['releases'][0]['buyer']
+                        buyer_section=actual_ei_release['releases'][0]['buyer'],
+                        release_date=GlobalClassCreateFs.message['data']['operationDate']
                     ))
                 allure.attach(str(json.dumps(expected_fs_release)),
                               "Expected FS release")
@@ -732,7 +725,7 @@ class TestCreateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-            with allure.step('# 5.4. Check EI release'):
+            with allure.step('# 5.4. Check EI release after FS creation'):
                 actual_ei_release = requests.get(
                     url=f"{GlobalClassCreateEi.message['data']['url']}/"
                         f"{GlobalClassCreateEi.message['data']['ocid']}").json()
@@ -746,7 +739,8 @@ class TestCreateFs:
                     tender_id=actual_ei_release['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
                     payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
-                    actual_items_array=actual_ei_release['releases'][0]['tender']['items']
+                    actual_items_array=actual_ei_release['releases'][0]['tender']['items'],
+                    release_date=GlobalClassCreateFs.message['data']['operationDate']
                 ))
                 allure.attach(str(json.dumps(actual_ei_release)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
@@ -760,13 +754,7 @@ class TestCreateFs:
                 compare_releases = dict(compare_releases)
                 expected_result = {
                     'dictionary_item_added': "['releases'][0]['relatedProcesses'], "
-                                             "['releases'][0]['planning']['budget']['amount']",
-                    'values_changed': {
-                        "root['releases'][0]['date']": {
-                            'new_value': GlobalClassCreateFs.message['data']['operationDate'],
-                            'old_value': GlobalClassCreateEi.message['data']['operationDate']
-                        }
-                    }
+                                             "['releases'][0]['planning']['budget']['amount']"
                 }
 
                 expected_related_processes = [{
@@ -835,7 +823,7 @@ class TestCreateFs:
                   'fs -> model without optional fields treasury money')
     def test_check_fs_release_data_after_fs_creation_ei_without_optional_fields_and_fs_without_optional_fields_own(
             self, environment, country, language, cassandra_username, cassandra_password):
-        with allure.step('# 1. Authorization: create EI'):
+        with allure.step('# 1. Authorization platform one: create EI'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -868,7 +856,7 @@ class TestCreateFs:
             actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.message['data']['url']}/"
                     f"{GlobalClassCreateEi.message['data']['ocid']}").json()
-        with allure.step('# 3. Authorization: create FS'):
+        with allure.step('# 3. Authorization platform one: create FS'):
             GlobalClassCreateFs.language = language
             GlobalClassCreateFs.cassandra_username = cassandra_username
             GlobalClassCreateFs.cassandra_password = cassandra_password
@@ -910,11 +898,11 @@ class TestCreateFs:
                     if GlobalClassCreateEi.check_message is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = CassandraSession(
-                                cassandra_username=GlobalClassCreateEi.cassandra_username,
-                                cassandra_password=GlobalClassCreateEi.cassandra_password,
-                                cassandra_cluster=GlobalClassCreateEi.cassandra_cluster
+                                cassandra_username=GlobalClassCreateFs.cassandra_username,
+                                cassandra_password=GlobalClassCreateFs.cassandra_password,
+                                cassandra_cluster=GlobalClassCreateFs.cassandra_cluster
                             ).get_orchestrator_operation_step_by_x_operation_id(
-                                operation_id=GlobalClassCreateEi.operation_id)
+                                operation_id=GlobalClassCreateFs.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Check the message in kafka topic")
@@ -941,7 +929,8 @@ class TestCreateFs:
                         ei_id=GlobalClassCreateEi.message['data']['ocid'],
                         fs_id=GlobalClassCreateFs.message['data']['outcomes']['fs'][0]['id'],
                         payload_for_create_fs=GlobalClassCreateFs.payload_for_create_fs,
-                        buyer_section=actual_ei_release['releases'][0]['buyer']
+                        buyer_section=actual_ei_release['releases'][0]['buyer'],
+                        release_date=GlobalClassCreateFs.message['data']['operationDate']
                     ))
                 allure.attach(str(json.dumps(expected_fs_release)),
                               "Expected FS release")
@@ -966,7 +955,7 @@ class TestCreateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-            with allure.step('# 5.4. Check EI release'):
+            with allure.step('# 5.4. Check EI release after FS creation'):
                 actual_ei_release = requests.get(
                     url=f"{GlobalClassCreateEi.message['data']['url']}/"
                         f"{GlobalClassCreateEi.message['data']['ocid']}").json()
@@ -979,7 +968,8 @@ class TestCreateFs:
                     release_id=actual_ei_release['releases'][0]['id'],
                     tender_id=actual_ei_release['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
-                    payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei
+                    payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
+                    release_date=GlobalClassCreateFs.message['data']['operationDate']
                 ))
                 allure.attach(str(json.dumps(actual_ei_release)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
@@ -993,13 +983,7 @@ class TestCreateFs:
                 compare_releases = dict(compare_releases)
                 expected_result = {
                     'dictionary_item_added': "['releases'][0]['relatedProcesses'], "
-                                             "['releases'][0]['planning']['budget']['amount']",
-                    'values_changed': {
-                        "root['releases'][0]['date']": {
-                            'new_value': GlobalClassCreateFs.message['data']['operationDate'],
-                            'old_value': GlobalClassCreateEi.message['data']['operationDate']
-                        }
-                    }
+                                             "['releases'][0]['planning']['budget']['amount']"
                 }
 
                 expected_related_processes = [{

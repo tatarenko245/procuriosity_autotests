@@ -2,8 +2,8 @@ class PayloadLibrary:
     def __init__(self, language='ro'):
         self.language = language
 
-    def ei_tender_object(self):
-        ei_tender_object = {
+    def tender_object(self):
+        tender_object = {
             "title": None,
             "description": None,
             "classification": {
@@ -43,7 +43,7 @@ class PayloadLibrary:
                 }
             }]
         }
-        return ei_tender_object
+        return tender_object
 
     def planning_obj(self):
         planning_obj = {

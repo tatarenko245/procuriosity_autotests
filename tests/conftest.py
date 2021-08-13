@@ -80,21 +80,10 @@ def tag(request):
 
 
 class GlobalClassCreateEi:
-    environment = None
-    operation_id = None
-    hosts = None
-    send_the_request_create_ei = None
-    message = None
-    host_for_service = None
-    country = None
-    language = None
-    payload_for_create_ei = None
-    cassandra_cluster = None
-    cassandra_username = None
-    cassandra_password = None
     access_token = None
-    host_for_bpe = None
-    check_message = None
+    operation_id = None
+    payload = None
+    feed_point_message = None
     ei_ocid = None
     ei_token = None
 
@@ -108,7 +97,7 @@ class GlobalClassUpdateEi:
     host_for_service = None
     country = None
     language = None
-    payload_for_update_ei = None
+    payload = None
     cassandra_cluster = None
     cassandra_username = None
     cassandra_password = None
@@ -118,19 +107,25 @@ class GlobalClassUpdateEi:
 
 
 class GlobalClassCreateFs:
-    environment = None
+    access_token = None
     operation_id = None
-    hosts = None
-    send_the_request_create_fs = None
-    message = None
-    host_for_service = None
+    payload = None
+    feed_point_message = None
+
+
+class GlobalClassMetadata:
+    environment = None
     country = None
     language = None
-    payload_for_create_fs = None
     cassandra_cluster = None
     cassandra_username = None
     cassandra_password = None
-    create_ei_process = None
-
-class GlobalClassMetadata:
+    host_for_bpe = None
     metadata_budget_url = None
+
+
+class GlobalClassUpdateFs:
+    access_token = None
+    operation_id = None
+    payload = None
+    feed_point_message = None

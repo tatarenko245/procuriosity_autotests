@@ -28,7 +28,7 @@ class TestUpdateEi:
     @allure.title('Check status code and message from Kafka topic after EI updating')
     def test_check_status_code_and_message_from_kafka_topic_after_ei_updating(self, environment, country, language,
                                                                               cassandra_username, cassandra_password):
-        with allure.step('# 1. Authorization: create EI'):
+        with allure.step('# 1. Authorization platform one: create EI'):
             GlobalClassCreateEi.country = country
             GlobalClassCreateEi.language = language
             GlobalClassCreateEi.cassandra_username = cassandra_username
@@ -60,7 +60,7 @@ class TestUpdateEi:
             GlobalClassCreateEi.ei_token = \
                 KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()["data"]["outcomes"]["ei"][0][
                     'X-TOKEN']
-        with allure.step('# 3. Authorization: update EI'):
+        with allure.step('# 3. Authorization platform one: update EI'):
             GlobalClassUpdateEi.cassandra_username = cassandra_username
             GlobalClassUpdateEi.cassandra_password = cassandra_password
             GlobalClassUpdateEi.environment = environment
@@ -237,7 +237,8 @@ class TestUpdateEi:
                     tender_id=actual_ei_release_model_before_updating['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
                     payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
-                    actual_items_array=actual_ei_release_model_before_updating['releases'][0]['tender']['items']
+                    actual_items_array=actual_ei_release_model_before_updating['releases'][0]['tender']['items'],
+                    release_date=GlobalClassCreateEi.message['data']['operationDate']
                 ))
                 allure.attach(str(json.dumps(actual_ei_release_model_before_updating)),
                               "Actual Ei release before updating")
@@ -437,7 +438,8 @@ class TestUpdateEi:
                     release_id=actual_ei_release_model_before_updating['releases'][0]['id'],
                     tender_id=actual_ei_release_model_before_updating['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
-                    payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei
+                    payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
+                    release_date=GlobalClassCreateEi.message['data']['operationDate']
                 ))
                 allure.attach(str(json.dumps(actual_ei_release_model_before_updating)),
                               "Actual Ei release before updating")
@@ -658,7 +660,8 @@ class TestUpdateEi:
                     tender_id=actual_ei_release_model_before_updating['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
                     payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
-                    actual_items_array=actual_ei_release_model_before_updating['releases'][0]['tender']['items']
+                    actual_items_array=actual_ei_release_model_before_updating['releases'][0]['tender']['items'],
+                    release_date=GlobalClassUpdateEi.message['data']['operationDate']
                 ))
                 allure.attach(str(json.dumps(actual_ei_release_model_before_updating)),
                               "Actual Ei release before updating")

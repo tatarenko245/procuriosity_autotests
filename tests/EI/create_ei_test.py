@@ -171,7 +171,8 @@ class TestCreateEi:
                     tender_id=actual_ei_release_model['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
                     payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
-                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items']
+                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items'],
+                    release_date=GlobalClassCreateEi.message['data']['operationDate']
                 ))
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
@@ -278,7 +279,8 @@ class TestCreateEi:
                     release_id=actual_ei_release_model['releases'][0]['id'],
                     tender_id=actual_ei_release_model['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
-                    payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei
+                    payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
+                    release_date=GlobalClassCreateEi.message['data']['operationDate']
                 ))
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
@@ -389,7 +391,8 @@ class TestCreateEi:
                     tender_id=actual_ei_release_model['releases'][0]['tender']['id'],
                     ei_id=GlobalClassCreateEi.message['data']['ocid'],
                     payload_for_create_ei=GlobalClassCreateEi.payload_for_create_ei,
-                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items']
+                    actual_items_array=actual_ei_release_model['releases'][0]['tender']['items'],
+                    release_date=GlobalClassCreateEi.message['data']['operationDate']
                 ))
                 allure.attach(str(json.dumps(actual_ei_release_model)), "Actual Ei release")
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
