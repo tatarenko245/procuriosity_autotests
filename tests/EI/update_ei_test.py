@@ -125,13 +125,13 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateEi.feed_point_message,
                     ei_ocid=GlobalClassCreateEi.ei_ocid
                 )
-                allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -248,13 +248,13 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateEi.feed_point_message,
                     ei_ocid=GlobalClassCreateEi.ei_ocid
                 )
-                allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -478,13 +478,13 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateEi.feed_point_message,
                     ei_ocid=GlobalClassCreateEi.ei_ocid
                 )
-                allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -725,13 +725,13 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateEi.feed_point_message,
                     ei_ocid=GlobalClassCreateEi.ei_ocid
                 )
-                allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
 
                 try:
                     """

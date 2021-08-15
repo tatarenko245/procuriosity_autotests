@@ -126,12 +126,12 @@ class TestCreateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateFs.feed_point_message
                 )
-                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -259,12 +259,12 @@ class TestCreateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateFs.feed_point_message
                 )
-                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -527,12 +527,12 @@ class TestCreateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateFs.feed_point_message
                 )
-                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -798,12 +798,12 @@ class TestCreateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateFs.feed_point_message
                 )
-                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -1066,12 +1066,12 @@ class TestCreateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateFs.feed_point_message
                 )
-                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
