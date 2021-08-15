@@ -232,29 +232,29 @@ class TestUpdateEi:
             actual_ei_release_after_updating = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 5. See result'):
+        with allure.step('# 5. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 5.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 5.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 5.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateEi.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid
-                    )
-                    allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 5.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateEi.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid
+                )
+                allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -390,7 +390,6 @@ class TestUpdateEi:
 
     @allure.title('Check EI release after Ei updating on model without optional fields')
     def test_check_ei_release_two(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -463,29 +462,29 @@ class TestUpdateEi:
             actual_ei_release_after_updating = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 5. See result'):
+        with allure.step('# 5. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 5.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 5.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 5.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateEi.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid
-                    )
-                    allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 5.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateEi.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid
+                )
+                allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -637,7 +636,6 @@ class TestUpdateEi:
 
     @allure.title('Check EI release data after Ei updating based on full data model with 3 items objects')
     def test_check_ei_release_three(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -711,29 +709,29 @@ class TestUpdateEi:
             actual_ei_release_after_updating = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 5. See result'):
+        with allure.step('# 5. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 5.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 5.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 5.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateEi.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid
-                    )
-                    allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 5.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateEi.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid
+                )
+                allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -1100,44 +1098,44 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check your payloads")
 
-            expected_items_array_model = expected_release_class.ei_tender_items_array_release(
-                actual_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items'],
-                payload=GlobalClassUpdateEi.payload
-            )
+                expected_items_array_model = expected_release_class.ei_tender_items_array_release(
+                    actual_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items'],
+                    payload=GlobalClassUpdateEi.payload
+                )
 
-            try:
-                """
-                If TestCase was passed, then cLean up the database.
-                If TestCase was failed, then return process steps by operation-id.
-                """
-                database = CassandraSession(
-                    cassandra_username=GlobalClassMetadata.cassandra_username,
-                    cassandra_password=GlobalClassMetadata.cassandra_password,
-                    cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                if compare_releases == expected_result:
-                    database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                    database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
-                else:
-                    with allure.step('# Steps from Casandra DataBase'):
-                        steps = database.get_bpe_operation_step_by_operation_id(
-                            operation_id=GlobalClassUpdateEi.operation_id)
-                        allure.attach(steps, "Cassandra DataBase: steps of process")
-            except ValueError:
-                raise ValueError("Can not return BPE operation step")
+                try:
+                    """
+                    If TestCase was passed, then cLean up the database.
+                    If TestCase was failed, then return process steps by operation-id.
+                    """
+                    database = CassandraSession(
+                        cassandra_username=GlobalClassMetadata.cassandra_username,
+                        cassandra_password=GlobalClassMetadata.cassandra_password,
+                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                    if compare_releases == expected_result:
+                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
+                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = database.get_bpe_operation_step_by_operation_id(
+                                operation_id=GlobalClassUpdateEi.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
-            assert str(compare_actual_result_and_expected_result(
-                expected_result=expected_result,
-                actual_result=compare_releases
-            )) == str(True)
-            assert str(compare_actual_result_and_expected_result(
-                expected_result=GlobalClassUpdateEi.payload['tender']['description'],
-                actual_result=actual_ei_release_after_updating['releases'][0]['tender']['description']
-            )) == str(True)
-            assert str(compare_actual_result_and_expected_result(
-                expected_result=expected_items_array_model,
-                actual_result=actual_ei_release_after_updating['releases'][0]['tender']['items']
-            )) == str(True)
-            assert str(compare_actual_result_and_expected_result(
-                expected_result=GlobalClassUpdateEi.payload['planning']['rationale'],
-                actual_result=actual_ei_release_after_updating['releases'][0]['planning']['rationale']
-            )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=GlobalClassUpdateEi.payload['tender']['description'],
+                    actual_result=actual_ei_release_after_updating['releases'][0]['tender']['description']
+                )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_items_array_model,
+                    actual_result=actual_ei_release_after_updating['releases'][0]['tender']['items']
+                )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=GlobalClassUpdateEi.payload['planning']['rationale'],
+                    actual_result=actual_ei_release_after_updating['releases'][0]['planning']['rationale']
+                )) == str(True)

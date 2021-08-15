@@ -243,28 +243,28 @@ class TestCreateFs:
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
-            with allure.step('# 5. See result'):
+        with allure.step('# 5. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 5.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 5.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 5.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassCreateFs.feed_point_message
-                    )
-                    allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 5.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassCreateFs.feed_point_message
+                )
+                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -433,7 +433,6 @@ class TestCreateFs:
                   'ei -> full data model and '
                   'fs -> full data model treasury money')
     def test_check_fs_release_two(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -512,28 +511,28 @@ class TestCreateFs:
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
-            with allure.step('# 5. See result'):
+        with allure.step('# 5. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 5.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 5.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 5.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassCreateFs.feed_point_message
-                    )
-                    allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 5.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassCreateFs.feed_point_message
+                )
+                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -705,7 +704,6 @@ class TestCreateFs:
                   'ei -> full data model and '
                   'fs -> model without optional fields own money')
     def test_check_fs_release_three(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -784,28 +782,28 @@ class TestCreateFs:
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
-            with allure.step('# 5. See result'):
+        with allure.step('# 5. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 5.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 5.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 5.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassCreateFs.feed_point_message
-                    )
-                    allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 5.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassCreateFs.feed_point_message
+                )
+                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -974,7 +972,6 @@ class TestCreateFs:
                   'ei -> model without optional fields and '
                   'fs -> model without optional fields treasury money')
     def test_check_fs_release_four(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -1053,28 +1050,28 @@ class TestCreateFs:
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
-            with allure.step('# 5. See result'):
+        with allure.step('# 5. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 5.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 5.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 5.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassCreateFs.feed_point_message
-                    )
-                    allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 5.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassCreateFs.operation_id).create_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassCreateFs.feed_point_message
+                )
+                allure.attach(str(GlobalClassCreateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """

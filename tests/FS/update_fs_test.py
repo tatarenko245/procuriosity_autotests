@@ -44,7 +44,6 @@ class TestUpdateFs:
 
     @allure.title('Check status code and message from Kafka topic after FS updating')
     def test_check_result_of_sending_the_request(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -55,7 +54,6 @@ class TestUpdateFs:
 
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-
         with allure.step('# 2. Send request to create EI'):
             """
             Send api request on BPE host for expenditure item creation.
@@ -75,7 +73,6 @@ class TestUpdateFs:
                 KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
 
             GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
-
         with allure.step('# 3. Authorization platform one: create FS'):
             """
             Tender platform authorization for create financial source process.
@@ -86,7 +83,6 @@ class TestUpdateFs:
 
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
-
         with allure.step('# 4. Send request to create FS'):
             """
             Send api request on BPE host for financial source creating.
@@ -108,7 +104,6 @@ class TestUpdateFs:
 
             GlobalClassCreateFs.fs_token = \
                 GlobalClassCreateFs.feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
-
         with allure.step('# 5. Authorization platform one: update FS'):
             """
             Tender platform authorization for update financial source process.
@@ -119,7 +114,6 @@ class TestUpdateFs:
 
             GlobalClassUpdateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassUpdateFs.access_token)
-
         with allure.step('# 6. Send request to update FS'):
             """
             Send api request on BPE host for financial source updating.
@@ -138,7 +132,6 @@ class TestUpdateFs:
             )
             GlobalClassUpdateFs.feed_point_message = \
                 KafkaMessage(GlobalClassUpdateFs.operation_id).get_message_from_kafka()
-
         with allure.step('# 7. See result'):
             """
             Check the results of TestCase.
@@ -163,12 +156,11 @@ class TestUpdateFs:
                     fs_id=GlobalClassCreateFs.fs_id
                 )
                 allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
-
                 try:
                     """
-                    If TestCase was passed, then cLean up the database.
-                    If TestCase was failed, then return process steps by operation-id.
-                    """
+                        If TestCase was passed, then cLean up the database.
+                        If TestCase was failed, then return process steps by operation-id.
+                        """
                     database = CassandraSession(
                         cassandra_username=GlobalClassMetadata.cassandra_username,
                         cassandra_password=GlobalClassMetadata.cassandra_password,
@@ -196,7 +188,6 @@ class TestUpdateFs:
                   'create fs: payload without optional fields treasury money,'
                   'update fs: payload without optional fields treasury money ')
     def test_check_fs_release_one(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -207,7 +198,6 @@ class TestUpdateFs:
 
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-
         with allure.step('# 2. Send request to create EI'):
             """
             Send api request on BPE host for expenditure item creation.
@@ -228,7 +218,6 @@ class TestUpdateFs:
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
-
         with allure.step('# 3. Authorization platform one: create FS'):
             """
             Tender platform authorization for create financial source process.
@@ -239,7 +228,6 @@ class TestUpdateFs:
 
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
-
         with allure.step('# 4. Send request to create FS'):
             """
             Send api request on BPE host for financial source creating.
@@ -270,7 +258,6 @@ class TestUpdateFs:
             actual_fs_release_before_updating = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-
         with allure.step('# 5. Authorization platform one: update FS'):
             """
             Tender platform authorization for update financial source process.
@@ -281,7 +268,6 @@ class TestUpdateFs:
 
             GlobalClassUpdateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassUpdateFs.access_token)
-
         with allure.step('# 6. Send request to update FS'):
             """
             Send api request on BPE host for financial source updating.
@@ -307,37 +293,35 @@ class TestUpdateFs:
 
             actual_fs_release_after_updating = \
                 requests.get(url=f"{GlobalClassUpdateFs.feed_point_message['data']['url']}").json()
-
-            with allure.step('# 7. See result'):
+        with allure.step('# 7. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 7.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 7.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 7.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateFs.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id
-                    )
-                    allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
-
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 7.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateFs.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid,
+                    fs_id=GlobalClassCreateFs.fs_id
+                )
+                allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
                 try:
                     """
-                    If asynchronous_result_of_sending_the_request was False, then return process steps by
-                    operation-id.
-                    """
+                        If asynchronous_result_of_sending_the_request was False, then return process steps by
+                        operation-id.
+                        """
                     database = CassandraSession(
                         cassandra_username=GlobalClassMetadata.cassandra_username,
                         cassandra_password=GlobalClassMetadata.cassandra_password,
@@ -354,7 +338,6 @@ class TestUpdateFs:
                     expected_result=True,
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
-
             with allure.step('# 7.3. Check FS release before updating'):
                 """
                 Compare actual first financial source release before updating with expected financial source
@@ -380,11 +363,10 @@ class TestUpdateFs:
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
                 expected_result = {}
-
                 try:
                     """
-                    If compare_releases !=expected_result, then return process steps by operation-id.
-                    """
+                        If compare_releases !=expected_result, then return process steps by operation-id.
+                        """
                     if compare_releases == expected_result:
                         pass
                     else:
@@ -403,7 +385,6 @@ class TestUpdateFs:
                     expected_result=expected_result,
                     actual_result=compare_releases
                 )) == str(True)
-
             with allure.step('# 7.4. Check FS release after updating'):
                 """
                 Compare actual second financial source release after updating with
@@ -471,7 +452,6 @@ class TestUpdateFs:
                     expected_result=expected_result,
                     actual_result=compare_releases
                 )) == str(True)
-
             with allure.step('# 7.5. Check EI release after FS updating'):
                 """
                 Compare actual third expenditure item release after fs updating with
@@ -482,9 +462,8 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
                               "Actual Ei release after fs updating")
 
-                compare_releases = DeepDiff(
-                    actual_ei_release_after_fs_creating,
-                    actual_ei_release_after_fs_updating)
+                compare_releases = DeepDiff(actual_ei_release_after_fs_creating,
+                                            actual_ei_release_after_fs_updating)
 
                 expected_result = {
                     'values_changed': {
@@ -510,9 +489,9 @@ class TestUpdateFs:
                 }
                 try:
                     """
-                    If TestCase was passed, then cLean up the database.
-                    If TestCase was failed, then return process steps by operation-id.
-                    """
+                        If TestCase was passed, then cLean up the database.
+                        If TestCase was failed, then return process steps by operation-id.
+                        """
                     database = CassandraSession(
                         cassandra_username=GlobalClassMetadata.cassandra_username,
                         cassandra_password=GlobalClassMetadata.cassandra_password,
@@ -540,7 +519,6 @@ class TestUpdateFs:
                   'create fs: payload full data model treasury money, '
                   'update fs: payload full data model treasury money ')
     def test_check_fs_release_two(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -652,35 +630,36 @@ class TestUpdateFs:
             actual_fs_release_after_updating = \
                 requests.get(url=f"{GlobalClassUpdateFs.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 7. See result'):
+        with allure.step('# 7. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 7.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 7.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 7.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateFs.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id
-                    )
-                    allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 7.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateFs.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid,
+                    fs_id=GlobalClassCreateFs.fs_id
+                )
+                allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
-                    If asynchronous_result_of_sending_the_request was False, then return process steps by operation-id.
-                    """
+                        If asynchronous_result_of_sending_the_request was False, 
+                        then return process steps by operation-id.
+                        """
                     database = CassandraSession(
                         cassandra_username=GlobalClassMetadata.cassandra_username,
                         cassandra_password=GlobalClassMetadata.cassandra_password,
@@ -723,11 +702,10 @@ class TestUpdateFs:
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
                 expected_result = {}
-
                 try:
                     """
-                    If compare_releases !=expected_result, then return process steps by operation-id.
-                    """
+                        If compare_releases !=expected_result, then return process steps by operation-id.
+                        """
                     if compare_releases == expected_result:
                         pass
                     else:
@@ -749,9 +727,9 @@ class TestUpdateFs:
 
             with allure.step('# 7.4. Check FS release after updating'):
                 """
-                Compare actual second financial source release after updating with
-                first financial source release before updating.
-                """
+                    Compare actual second financial source release after updating with
+                    first financial source release before updating.
+                    """
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release before updating")
                 allure.attach(str(json.dumps(actual_fs_release_after_updating)), "Actual FS release after updating")
 
@@ -844,8 +822,8 @@ class TestUpdateFs:
                 }
                 try:
                     """
-                    If compare_releases !=expected_result, then return process steps by operation-id.
-                    """
+                        If compare_releases !=expected_result, then return process steps by operation-id.
+                        """
                     if compare_releases == expected_result:
                         pass
                     else:
@@ -903,9 +881,9 @@ class TestUpdateFs:
                 }
                 try:
                     """
-                    If TestCase was passed, then cLean up the database.
-                    If TestCase was failed, then return process steps by operation-id.
-                    """
+                        If TestCase was passed, then cLean up the database.
+                        If TestCase was failed, then return process steps by operation-id.
+                        """
                     database = CassandraSession(
                         cassandra_username=GlobalClassMetadata.cassandra_username,
                         cassandra_password=GlobalClassMetadata.cassandra_password,
@@ -933,7 +911,6 @@ class TestUpdateFs:
                   'create fs: payload without optional fields treasury money, '
                   'update fs: payload full data model treasury money ')
     def test_check_fs_release_three(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -1045,30 +1022,30 @@ class TestUpdateFs:
             actual_fs_release_after_updating = \
                 requests.get(url=f"{GlobalClassUpdateFs.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 7. See result'):
+        with allure.step('# 7. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 7.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 7.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 7.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateFs.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id
-                    )
-                    allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 7.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateFs.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid,
+                    fs_id=GlobalClassCreateFs.fs_id
+                )
+                allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -1203,8 +1180,8 @@ class TestUpdateFs:
 
                 try:
                     """
-                    If compare_releases !=expected_result, then return process steps by operation-id.
-                    """
+                            If compare_releases !=expected_result, then return process steps by operation-id.
+                            """
                     if compare_releases == expected_result:
                         pass
                     else:
@@ -1292,9 +1269,9 @@ class TestUpdateFs:
 
                 try:
                     """
-                    If TestCase was passed, then cLean up the database.
-                    If TestCase was failed, then return process steps by operation-id.
-                    """
+                            If TestCase was passed, then cLean up the database.
+                            If TestCase was failed, then return process steps by operation-id.
+                            """
                     database = CassandraSession(
                         cassandra_username=GlobalClassMetadata.cassandra_username,
                         cassandra_password=GlobalClassMetadata.cassandra_password,
@@ -1322,12 +1299,12 @@ class TestUpdateFs:
                   'create fs: payload full data model treasury money, '
                   'update fs: payload without optional fields treasury money')
     def test_check_fs_release_four(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
+
             GlobalClassCreateEi.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
@@ -1402,11 +1379,11 @@ class TestUpdateFs:
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
             """
-            GlobalClassUpdateFs.access_token = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
+        GlobalClassUpdateFs.access_token = PlatformAuthorization(
+            GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
-            GlobalClassUpdateFs.operation_id = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassUpdateFs.access_token)
+        GlobalClassUpdateFs.operation_id = PlatformAuthorization(
+            GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassUpdateFs.access_token)
 
         with allure.step('# 6. Send request to update FS'):
             """
@@ -1434,35 +1411,36 @@ class TestUpdateFs:
             actual_fs_release_after_updating = \
                 requests.get(url=f"{GlobalClassUpdateFs.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 7. See result'):
+        with allure.step('# 7. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 7.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 7.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 7.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateFs.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id
-                    )
-                    allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 7.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateFs.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid,
+                    fs_id=GlobalClassCreateFs.fs_id
+                )
+                allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
-                    If asynchronous_result_of_sending_the_request was False, then return process steps by operation-id.
-                    """
+                            If asynchronous_result_of_sending_the_request was False, 
+                            then return process steps by operation-id.
+                            """
                     database = CassandraSession(
                         cassandra_username=GlobalClassMetadata.cassandra_username,
                         cassandra_password=GlobalClassMetadata.cassandra_password,
@@ -1508,8 +1486,8 @@ class TestUpdateFs:
 
                 try:
                     """
-                    If compare_releases !=expected_result, then return process steps by operation-id.
-                    """
+                            If compare_releases !=expected_result, then return process steps by operation-id.
+                            """
                     if compare_releases == expected_result:
                         pass
                     else:
@@ -1591,8 +1569,8 @@ class TestUpdateFs:
 
                 try:
                     """
-                    If compare_releases !=expected_result, then return process steps by operation-id.
-                    """
+                            If compare_releases !=expected_result, then return process steps by operation-id.
+                            """
                     if compare_releases == expected_result:
                         pass
                     else:
@@ -1650,9 +1628,9 @@ class TestUpdateFs:
 
                 try:
                     """
-                    If TestCase was passed, then cLean up the database.
-                    If TestCase was failed, then return process steps by operation-id.
-                    """
+                            If TestCase was passed, then cLean up the database.
+                            If TestCase was failed, then return process steps by operation-id.
+                            """
                     database = CassandraSession(
                         cassandra_username=GlobalClassMetadata.cassandra_username,
                         cassandra_password=GlobalClassMetadata.cassandra_password,
@@ -1680,12 +1658,12 @@ class TestUpdateFs:
                   'create fs: payload without optional fields own money,'
                   'update fs: payload without optional fields own money ')
     def test_check_fs_release_five(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
+
             GlobalClassCreateEi.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
@@ -1792,30 +1770,30 @@ class TestUpdateFs:
             actual_fs_release_after_updating = \
                 requests.get(url=f"{GlobalClassUpdateFs.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 7. See result'):
+        with allure.step('# 7. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 7.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 7.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 7.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateFs.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id
-                    )
-                    allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 7.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateFs.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid,
+                    fs_id=GlobalClassCreateFs.fs_id
+                )
+                allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -2020,12 +1998,12 @@ class TestUpdateFs:
                   'create fs: payload full data model own money, '
                   'update fs: payload full data model own money ')
     def test_check_fs_release_six(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
+
             GlobalClassCreateEi.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
@@ -2132,30 +2110,30 @@ class TestUpdateFs:
             actual_fs_release_after_updating = \
                 requests.get(url=f"{GlobalClassUpdateFs.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 7. See result'):
+        with allure.step('# 7. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 7.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 7.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 7.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateFs.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id
-                    )
-                    allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 7.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateFs.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid,
+                    fs_id=GlobalClassCreateFs.fs_id
+                )
+                allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -2203,8 +2181,8 @@ class TestUpdateFs:
 
                 try:
                     """
-                    If compare_releases !=expected_result, then return process steps by operation-id.
-                    """
+                            If compare_releases !=expected_result, then return process steps by operation-id.
+                            """
                     if compare_releases == expected_result:
                         pass
                     else:
@@ -2402,12 +2380,12 @@ class TestUpdateFs:
                   'create fs: payload without optional fields own money, '
                   'update fs: payload full data model own money ')
     def test_check_fs_release_seven(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
+
             GlobalClassCreateEi.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
@@ -2514,30 +2492,30 @@ class TestUpdateFs:
             actual_fs_release_after_updating = \
                 requests.get(url=f"{GlobalClassUpdateFs.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 7. See result'):
+        with allure.step('# 7. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 7.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 7.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 7.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateFs.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id
-                    )
-                    allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
+            assert compare_actual_result_and_expected_result(
+                expected_result=202,
+                actual_result=synchronous_result_of_sending_the_request.status_code
+            )
+            with allure.step('# 7.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateFs.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid,
+                    fs_id=GlobalClassCreateFs.fs_id
+                )
+                allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -2667,8 +2645,8 @@ class TestUpdateFs:
 
                 try:
                     """
-                    If compare_releases !=expected_result, then return process steps by operation-id.
-                    """
+                            If compare_releases !=expected_result, then return process steps by operation-id.
+                            """
                     if compare_releases == expected_result:
                         pass
                     else:
@@ -2782,12 +2760,12 @@ class TestUpdateFs:
                   'create fs: payload full data model own money, '
                   'update fs: payload without optional fields own money')
     def test_check_fs_release_eight(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
+
             GlobalClassCreateEi.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
@@ -2894,30 +2872,30 @@ class TestUpdateFs:
             actual_fs_release_after_updating = \
                 requests.get(url=f"{GlobalClassUpdateFs.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 7. See result'):
+        with allure.step('# 7. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 7.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 7.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 7.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateFs.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id
-                    )
-                    allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 7.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateFs.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid,
+                    fs_id=GlobalClassCreateFs.fs_id
+                )
+                allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -2965,8 +2943,8 @@ class TestUpdateFs:
 
                 try:
                     """
-                    If compare_releases !=expected_result, then return process steps by operation-id.
-                    """
+                            If compare_releases !=expected_result, then return process steps by operation-id.
+                            """
                     if compare_releases == expected_result:
                         pass
                     else:
@@ -3047,8 +3025,8 @@ class TestUpdateFs:
 
                 try:
                     """
-                    If compare_releases !=expected_result, then return process steps by operation-id.
-                    """
+                            If compare_releases !=expected_result, then return process steps by operation-id.
+                            """
                     if compare_releases == expected_result:
                         pass
                     else:
@@ -3082,26 +3060,26 @@ class TestUpdateFs:
                     actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating)
 
                 expected_result = {
-                    'values_changed': {
-                        "root['releases'][0]['id']": {
-                            "new_value": f"{GlobalClassCreateEi.ei_ocid}-"
-                                         f"{actual_ei_release_after_fs_updating['releases'][0]['id'][29:42]}",
-                            "old_value": f"{GlobalClassCreateEi.ei_ocid}-"
-                                         f"{actual_ei_release_after_fs_creating['releases'][0]['id'][29:42]}"
-                        },
-                        "root['releases'][0]['date']": {
-                            'new_value':
-                                GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
-                            'old_value':
-                                GlobalClassCreateFs.feed_point_message['data']['operationDate']
-                        },
-                        "root['releases'][0]['planning']['budget']['amount']['amount']": {
-                            'new_value':
-                                GlobalClassUpdateFs.payload['planning']['budget']['amount']['amount'],
-                            'old_value':
-                                GlobalClassCreateFs.payload['planning']['budget']['amount']['amount']
+                        'values_changed': {
+                            "root['releases'][0]['id']": {
+                                "new_value": f"{GlobalClassCreateEi.ei_ocid}-"
+                                             f"{actual_ei_release_after_fs_updating['releases'][0]['id'][29:42]}",
+                                "old_value": f"{GlobalClassCreateEi.ei_ocid}-"
+                                             f"{actual_ei_release_after_fs_creating['releases'][0]['id'][29:42]}"
+                            },
+                            "root['releases'][0]['date']": {
+                                'new_value':
+                                    GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
+                                'old_value':
+                                    GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            },
+                            "root['releases'][0]['planning']['budget']['amount']['amount']": {
+                                'new_value':
+                                    GlobalClassUpdateFs.payload['planning']['budget']['amount']['amount'],
+                                'old_value':
+                                    GlobalClassCreateFs.payload['planning']['budget']['amount']['amount']
+                            }
                         }
-                    }
                 }
 
                 try:
@@ -3136,12 +3114,12 @@ class TestUpdateFs:
                   'create fs: payload without optional fields treasury money, '
                   'update fs: payload full data model own money ')
     def test_check_fs_release_nine(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
+
             GlobalClassCreateEi.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
@@ -3248,30 +3226,30 @@ class TestUpdateFs:
             actual_fs_release_after_updating = \
                 requests.get(url=f"{GlobalClassUpdateFs.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 7. See result'):
+        with allure.step('# 7. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 7.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 7.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 7.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateFs.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id
-                    )
-                    allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 7.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateFs.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid,
+                    fs_id=GlobalClassCreateFs.fs_id
+                )
+                allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -3525,12 +3503,12 @@ class TestUpdateFs:
                   'create fs: payload without optional fields own money, '
                   'update fs: payload full data modeltreasury money ')
     def test_check_fs_release_ten(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
+
             GlobalClassCreateEi.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
@@ -3637,30 +3615,30 @@ class TestUpdateFs:
             actual_fs_release_after_updating = \
                 requests.get(url=f"{GlobalClassUpdateFs.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 7. See result'):
+        with allure.step('# 7. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 7.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 7.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 7.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateFs.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id
-                    )
-                    allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 7.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateFs.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid,
+                    fs_id=GlobalClassCreateFs.fs_id
+                )
+                allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
@@ -3905,12 +3883,12 @@ class TestUpdateFs:
                   ' create fs: payload full data model treasury money, '
                   'update fs: payload without optional fields own money')
     def test_check_fs_release_twelve(self):
-
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
+
             GlobalClassCreateEi.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
@@ -4017,30 +3995,30 @@ class TestUpdateFs:
             actual_fs_release_after_updating = \
                 requests.get(url=f"{GlobalClassUpdateFs.feed_point_message['data']['url']}").json()
 
-            with allure.step('# 7. See result'):
+        with allure.step('# 7. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 7.1. Check status code'):
                 """
-                Check the results of TestCase.
+                Check the synchronous_result_of_sending_the_request.
                 """
-                with allure.step('# 7.1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 7.2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateFs.feed_point_message,
-                        ei_ocid=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id
-                    )
-                    allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            with allure.step('# 7.2. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                    GlobalClassUpdateFs.operation_id).update_fs_message_is_successful(
+                    environment=GlobalClassMetadata.environment,
+                    kafka_message=GlobalClassUpdateFs.feed_point_message,
+                    ei_ocid=GlobalClassCreateEi.ei_ocid,
+                    fs_id=GlobalClassCreateFs.fs_id
+                )
+                allure.attach(str(GlobalClassUpdateFs.feed_point_message), 'Message in feed point')
 
                 try:
                     """
