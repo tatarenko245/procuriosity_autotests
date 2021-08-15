@@ -54,3 +54,18 @@ class Requests:
         allure.attach(host_of_request + f"/do/fs/{ei_ocid}", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return fs
+
+    @staticmethod
+    @allure.step('Prepared request: update FS')
+    def update_fs(host_of_request, ei_ocid, fs_id, fs_token, access_token, x_operation_id, payload):
+        fs = requests.post(
+            url=host_of_request + f"/do/fs/{ei_ocid}/{fs_id}",
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': fs_token},
+            json=payload)
+        allure.attach(host_of_request + f"/do/fs/{ei_ocid}/{fs_id}", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return fs
