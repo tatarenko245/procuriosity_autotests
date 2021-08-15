@@ -21,8 +21,12 @@ class ExpectedRelease:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
 
-    def ei_release_full_data_model(self, operation_date, release_id, tender_id, ei_id, payload_for_create_ei,
-                                   actual_items_array, release_date):
+    def ei_release_full_data_model(self, actual_ei_release, payload_for_create_ei,
+                                   operation_date, release_date, ei_id, actual_items_array):
+
+        release_id = actual_ei_release['releases'][0]['id']
+        tender_id = actual_ei_release['releases'][0]['tender']['id']
+
         release = {
             "releases": [{
                 "planning": {},
@@ -322,8 +326,12 @@ class ExpectedRelease:
         release['releases'][0]['planning']['rationale'] = payload_for_create_ei['planning']['rationale']
         return release
 
-    def ei_release_obligatory_data_model(self, operation_date, release_id, tender_id, ei_id, payload_for_create_ei,
-                                         release_date):
+    def ei_release_obligatory_data_model(self, actual_ei_release, payload_for_create_ei,
+                                         operation_date, release_date, ei_id):
+
+        release_id = actual_ei_release['releases'][0]['id']
+        tender_id = actual_ei_release['releases'][0]['tender']['id']
+
         release = {
             "releases": [{
                 "planning": {},
