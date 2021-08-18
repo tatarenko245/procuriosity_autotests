@@ -158,7 +158,7 @@ class TestCreateEi:
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
-            actual_ei_release = requests.get(
+            GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
 
@@ -212,23 +212,19 @@ class TestCreateEi:
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release)), "Actual EI release")
+                allure.attach(str(json.dumps(GlobalClassCreateEi.actual_ei_release)), "Actual EI release")
 
                 expected_release_class = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
                     expected_release_class.ei_release_full_data_model(
-                        actual_ei_release=actual_ei_release,
-                        payload_for_create_ei=GlobalClassCreateEi.payload,
                         operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        actual_items_array=actual_ei_release['releases'][0]['tender']['items']))
+                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate']))
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release")
 
-                compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateEi.actual_ei_release, expected_ei_release_model))
                 expected_result = {}
 
                 try:
@@ -308,7 +304,7 @@ class TestCreateEi:
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
-            actual_ei_release = requests.get(
+            GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
 
@@ -362,22 +358,19 @@ class TestCreateEi:
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release)), "Actual EI release")
+                allure.attach(str(json.dumps(GlobalClassCreateEi.actual_ei_release)), "Actual EI release")
 
                 expected_release_class = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
                     expected_release_class.ei_release_obligatory_data_model(
-                        actual_ei_release=actual_ei_release,
-                        payload_for_create_ei=GlobalClassCreateEi.payload,
                         operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid))
+                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate']))
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release")
 
-                compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateEi.actual_ei_release, expected_ei_release_model))
                 expected_result = {}
 
                 try:
@@ -457,7 +450,7 @@ class TestCreateEi:
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
-            actual_ei_release = requests.get(
+            GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
 
@@ -511,23 +504,19 @@ class TestCreateEi:
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release)), "Actual EI release")
+                allure.attach(str(json.dumps(GlobalClassCreateEi.actual_ei_release)), "Actual EI release")
 
                 expected_release_class = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
                     expected_release_class.ei_release_full_data_model(
-                        actual_ei_release=actual_ei_release,
-                        payload_for_create_ei=GlobalClassCreateEi.payload,
                         operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        actual_items_array=actual_ei_release['releases'][0]['tender']['items']))
+                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate']))
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release")
 
-                compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateEi.actual_ei_release, expected_ei_release_model))
                 expected_result = {}
 
                 try:

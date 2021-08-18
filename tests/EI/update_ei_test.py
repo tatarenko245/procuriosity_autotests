@@ -230,7 +230,7 @@ class TestUpdateEi:
                 KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
 
             actual_ei_release_after_updating = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}").json()
+                url=f"{GlobalClassUpdateEi.feed_point_message['data']['url']}").json()
 
         with allure.step('# 5. See result'):
             """
@@ -284,18 +284,14 @@ class TestUpdateEi:
                 release model.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual EI release before updating")
-
+                GlobalClassCreateEi.actual_ei_release = actual_ei_release_before_updating
                 expected_release_class = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
                     expected_release_class.ei_release_full_data_model(
-                        actual_ei_release=actual_ei_release_before_updating,
-                        payload_for_create_ei=GlobalClassCreateEi.payload,
                         operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        actual_items_array=actual_ei_release_before_updating['releases'][0]['tender']['items']))
+                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate']))
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release before updating")
 
@@ -460,7 +456,7 @@ class TestUpdateEi:
                 KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
 
             actual_ei_release_after_updating = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}").json()
+                url=f"{GlobalClassUpdateEi.feed_point_message['data']['url']}").json()
 
         with allure.step('# 5. See result'):
             """
@@ -514,17 +510,14 @@ class TestUpdateEi:
                 release model.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual EI release before updating")
-
+                GlobalClassCreateEi.actual_ei_release = actual_ei_release_before_updating
                 expected_release_class = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
                     expected_release_class.ei_release_obligatory_data_model(
-                        actual_ei_release=actual_ei_release_before_updating,
-                        payload_for_create_ei=GlobalClassCreateEi.payload,
                         operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid))
+                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate']))
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release before updating")
 
@@ -577,9 +570,9 @@ class TestUpdateEi:
                     'values_changed': {
                         "root['releases'][0]['id']": {
                             'new_value': f"{GlobalClassCreateEi.ei_ocid}-"
-                                         f"{actual_ei_release_before_updating['releases'][0]['id'][29:42]}",
+                                         f"{actual_ei_release_after_updating['releases'][0]['id'][29:42]}",
                             'old_value': f"{GlobalClassCreateEi.ei_ocid}-"
-                                         f"{actual_ei_release_after_updating['releases'][0]['id'][29:42]}"
+                                         f"{actual_ei_release_before_updating['releases'][0]['id'][29:42]}"
                         },
                         "root['releases'][0]['date']": {
                             'new_value': GlobalClassUpdateEi.feed_point_message['data']['operationDate'],
@@ -593,10 +586,9 @@ class TestUpdateEi:
                 }
 
                 expected_items_array_model = expected_release_class.ei_tender_items_array_release(
-                    actual_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items'],
-                    payload=GlobalClassUpdateEi.payload
+                    payload=GlobalClassUpdateEi.payload,
+                    actual_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items']
                 )
-
                 try:
                     """
                     If TestCase was passed, then cLean up the database.
@@ -707,7 +699,7 @@ class TestUpdateEi:
                 KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
 
             actual_ei_release_after_updating = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}").json()
+                url=f"{GlobalClassUpdateEi.feed_point_message['data']['url']}").json()
 
         with allure.step('# 5. See result'):
             """
@@ -761,18 +753,14 @@ class TestUpdateEi:
                 release model.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual EI release before updating")
-
+                GlobalClassCreateEi.actual_ei_release = actual_ei_release_before_updating
                 expected_release_class = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
                     expected_release_class.ei_release_full_data_model(
-                        actual_ei_release=actual_ei_release_before_updating,
-                        payload_for_create_ei=GlobalClassCreateEi.payload,
                         operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        actual_items_array=actual_ei_release_before_updating['releases'][0]['tender']['items']))
+                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate']))
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release before updating")
 
@@ -819,8 +807,8 @@ class TestUpdateEi:
                     Expected result depends on payload['tender']['items'][0]['classification']['id'].
                     """
                     expected_items_array_model = expected_release_class.ei_tender_items_array_release(
-                        actual_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items'],
-                        payload=GlobalClassUpdateEi.payload
+                        payload=GlobalClassUpdateEi.payload,
+                        actual_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items']
                     )
                     if actual_ei_release_after_updating['releases'][0]['tender']['items'] == expected_items_array_model:
                         pass
@@ -1099,8 +1087,8 @@ class TestUpdateEi:
                     raise ValueError("Check your payloads")
 
                 expected_items_array_model = expected_release_class.ei_tender_items_array_release(
-                    actual_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items'],
-                    payload=GlobalClassUpdateEi.payload
+                    payload=GlobalClassUpdateEi.payload,
+                    actual_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items']
                 )
 
                 try:

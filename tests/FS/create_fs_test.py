@@ -239,7 +239,7 @@ class TestCreateFs:
             GlobalClassCreateFs.fs_token = \
                 GlobalClassCreateFs.feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
 
-            actual_fs_release = requests.get(
+            GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
@@ -293,22 +293,18 @@ class TestCreateFs:
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual FS release")
+                allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)), "Actual FS release")
 
                 expected_release_class = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
                     expected_release_class.fs_release_full_data_model_own_money_payer_id_is_not_equal_funder_id(
-                        actual_fs_release=actual_fs_release,
-                        payload_for_create_fs=GlobalClassCreateFs.payload,
                         operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id))
+                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
-                compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateFs.actual_fs_release, expected_fs_release_model))
                 expected_result = {}
 
                 try:
@@ -507,7 +503,7 @@ class TestCreateFs:
             GlobalClassCreateFs.fs_token = \
                 GlobalClassCreateFs.feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
 
-            actual_fs_release = requests.get(
+            GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
@@ -561,25 +557,18 @@ class TestCreateFs:
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual FS release")
+                allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)), "Actual FS release")
 
                 expected_release_class = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
                     expected_release_class.fs_release_full_data_model_treasury_money(
-                        actual_fs_release=actual_fs_release,
-                        payload_for_create_fs=GlobalClassCreateFs.payload,
                         operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id,
-                        ei_buyer_id=f"{GlobalClassCreateEi.payload['buyer']['identifier']['scheme']}-"
-                                    f"{GlobalClassCreateEi.payload['buyer']['identifier']['id']}",
-                        ei_buyer_name=GlobalClassCreateEi.payload['buyer']['name']))
+                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
-                compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateFs.actual_fs_release, expected_fs_release_model))
                 expected_result = {}
 
                 try:
@@ -778,7 +767,7 @@ class TestCreateFs:
             GlobalClassCreateFs.fs_token = \
                 GlobalClassCreateFs.feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
 
-            actual_fs_release = requests.get(
+            GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
@@ -832,22 +821,18 @@ class TestCreateFs:
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual FS release")
+                allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)), "Actual FS release")
 
                 expected_release_class = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
                     expected_release_class.fs_release_obligatory_data_model_own_money_payer_id_is_not_equal_funder_id(
-                        actual_fs_release=actual_fs_release,
-                        payload_for_create_fs=GlobalClassCreateFs.payload,
                         operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id))
+                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
-                compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateFs.actual_fs_release, expected_fs_release_model))
                 expected_result = {}
 
                 try:
@@ -1046,7 +1031,7 @@ class TestCreateFs:
             GlobalClassCreateFs.fs_token = \
                 GlobalClassCreateFs.feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
 
-            actual_fs_release = requests.get(
+            GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
@@ -1100,25 +1085,18 @@ class TestCreateFs:
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual FS release")
+                allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)), "Actual FS release")
 
                 expected_release_class = copy.deepcopy(ExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
                     expected_release_class.fs_release_obligatory_data_model_treasury_money(
-                        actual_fs_release=actual_fs_release,
-                        payload_for_create_fs=GlobalClassCreateFs.payload,
                         operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id,
-                        ei_buyer_id=f"{GlobalClassCreateEi.payload['buyer']['identifier']['scheme']}-"
-                                    f"{GlobalClassCreateEi.payload['buyer']['identifier']['id']}",
-                        ei_buyer_name=GlobalClassCreateEi.payload['buyer']['name']))
+                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
-                compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateFs.actual_fs_release, expected_fs_release_model))
                 expected_result = {}
 
                 try:

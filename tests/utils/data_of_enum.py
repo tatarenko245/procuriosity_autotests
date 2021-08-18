@@ -32,3 +32,6 @@ cpv_service_low_level = ()
 locality_scheme = ("CUATM", "other",)
 
 currency = ("USD", "EUR", "MDL",)
+
+legalBasis = ("DIRECTIVE_2014_23_EU", "DIRECTIVE_2014_24_EU", "DIRECTIVE_2014_25_EU", "DIRECTIVE_2009_81_EC",
+              "REGULATION_966_2012", "NATIONAL_PROCUREMENT_LAW",)

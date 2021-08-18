@@ -69,3 +69,24 @@ class Requests:
         allure.attach(host_of_request + f"/do/fs/{ei_ocid}/{fs_id}", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return fs
+
+    @staticmethod
+    @allure.step('Prepared request: create PN')
+    def create_pn(host_of_request, access_token, x_operation_id, country,
+                  language, pmd, payload):
+        pn = requests.post(
+            url=host_of_request + f"/do/pn",
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json'
+            },
+            params={
+                'country': country,
+                'lang': language,
+                'pmd': pmd
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/pn", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return pn
