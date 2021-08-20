@@ -94,7 +94,7 @@ class GlobalClassUpdateEi:
     operation_id = None
     hosts = None
     send_the_request_create_ei = None
-    message = None
+    feed_point_message = None
     host_for_service = None
     country = None
     language = None

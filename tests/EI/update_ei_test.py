@@ -97,7 +97,7 @@ class TestUpdateEi:
                     asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                         GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
                         environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateEi.feed_point_message
+                        kafka_message=GlobalClassCreateEi.feed_point_message
                     )
 
                     try:
@@ -260,7 +260,7 @@ class TestUpdateEi:
                     asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                         GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
                         environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateEi.feed_point_message
+                        kafka_message=GlobalClassCreateEi.feed_point_message
                     )
 
                     try:
@@ -528,7 +528,7 @@ class TestUpdateEi:
                     asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                         GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
                         environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateEi.feed_point_message
+                        kafka_message=GlobalClassCreateEi.feed_point_message
                     )
 
                     try:
@@ -813,7 +813,7 @@ class TestUpdateEi:
                     asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                         GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
                         environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassUpdateEi.feed_point_message
+                        kafka_message=GlobalClassCreateEi.feed_point_message
                     )
 
                     try:
