@@ -25,7 +25,11 @@ class ReleaseLibrary:
             "date": None,
             "tag": [None],
             "language": None,
-            "initiationType": None
+            "initiationType": None,
+            "hasPreviousNotice": None,
+            "purposeOfNotice": {
+                "isACallForCompetition": None
+            }
         }
         return general_attributes
 
@@ -43,6 +47,7 @@ class ReleaseLibrary:
                     "amount": None,
                     "currency": None
                 },
+                "budgetBreakdown": [],
                 "europeanUnionFunding": {
                     "projectIdentifier": None,
                     "projectName": None,
@@ -70,49 +75,203 @@ class ReleaseLibrary:
             "description": None,
             "status": None,
             "statusDetails": None,
+            "value": {
+                "amount": None,
+                "currency": None
+            },
+            "procurementMethod": None,
+            "procurementMethodDetails": None,
+            "lotGroups": [{
+                "optionToCombine": None
+            }],
+            "tenderPeriod": {
+                "startDate": None
+            },
+            "hasEnquiries": None,
+            "acceleratedProcedure": {
+                "isAcceleratedProcedure": None
+            },
+            "designContest": {
+                "serviceContractAward": None
+            },
+            "electronicWorkflows": {
+                "useOrdering": None,
+                "usePayment": None,
+                "acceptInvoicing": None
+            },
+            "jointProcurement": {
+                "isJointProcurement": None
+            },
+            "legalBasis": None,
+            "procedureOutsourcing": {
+                "procedureOutsourced": None
+            },
+            "dynamicPurchasingSystem": {
+                "hasDynamicPurchasingSystem": None
+            },
+            "framework": {
+                "isAFramework": None
+            },
+            "eligibilityCriteria": None,
+            "procuringEntity": {},
+            "submissionMethod": [None],
+            "submissionMethodDetails": None,
+            "submissionMethodRationale": [None],
+            "requiresElectronicCatalogue": None,
             "mainProcurementCategory": None,
             "classification": {
                 "scheme": None,
                 "id": None,
                 "description": None
             },
-            "items": [{
+            "lots": None,
+            "items": None
+        }
+        return tender_section
+
+    @staticmethod
+    def ei_release_tender_item_object():
+        ei_item_object = {
+            "id": None,
+            "description": None,
+            "classification": {
                 "id": None,
-                "description": None,
-                "classification": {
-                    "id": None,
-                    "scheme": None,
-                    "description": None
-                },
-                "additionalClassifications": [{
-                    "id": None,
-                    "scheme": None,
-                    "description": None
+                "scheme": None,
+                "description": None
+            },
+            "additionalClassifications": [{
+                "id": None,
+                "scheme": None,
+                "description": None
+            }],
+            "deliveryAddress": {
+                "streetAddress": None,
+                "postalCode": None,
+                "addressDetails": {
+                    "country": {
+                        "id": None
+                    },
+                    "region": {
+                        "id": None
+                    },
+                    "locality": {
+                        "id": None,
+                        "description": None,
+                        "scheme": None
+                    }
+                }
+            },
+            "quantity": None,
+            "unit": {
+                "id": None,
+                "name": None
+            }
+        }
+        return ei_item_object
+
+    @staticmethod
+    def release_tender_lot_object():
+        lot_object = {
+            "id": None,
+            "internalId": None,
+            "title": None,
+            "description": None,
+            "status": None,
+            "statusDetails": None,
+            "value": {
+                "amount": None,
+                "currency": None
+            },
+            "recurrentProcurement": [{
+                "isRecurrent": None
+            }],
+            "renewals": [{
+                "hasRenewals": None
+            }],
+            "variants": [
+                {
+                    "hasVariants": None
                 }],
-                "deliveryAddress": {
+            "contractPeriod": {
+                "startDate": None,
+                "endDate": None
+            },
+            "placeOfPerformance": {
+                "address": {
                     "streetAddress": None,
                     "postalCode": None,
                     "addressDetails": {
                         "country": {
-                            "id": None
+                            "id": None,
+                            "scheme": None,
+                            "description": None,
+                            "uri": None
                         },
                         "region": {
-                            "id": None
+                            "id": None,
+                            "scheme": None,
+                            "description": None,
+                            "uri": None
                         },
                         "locality": {
                             "id": None,
+                            "scheme": None,
                             "description": None,
-                            "scheme": None
+                            "uri": None
                         }
                     }
                 },
-                "quantity": None,
-                "unit": {
-                    "id": None
-                }
-            }]
+                "description": None
+            },
+            "options": [
+                {
+                    "hasOptions": None
+                }]
+
         }
-        return tender_section
+        return lot_object
+
+    @staticmethod
+    def release_tender_item_object():
+        item_object = {
+            "id": None,
+            "internalId": None,
+            "description": None,
+            "classification": {
+                "id": None,
+                "scheme": None,
+                "description": None
+            },
+            "additionalClassifications": [{
+                "id": None,
+                "scheme": None,
+                "description": None
+            }],
+            "deliveryAddress": {
+                "streetAddress": None,
+                "postalCode": None,
+                "addressDetails": {
+                    "country": {
+                        "id": None
+                    },
+                    "region": {
+                        "id": None
+                    },
+                    "locality": {
+                        "id": None,
+                        "description": None,
+                        "scheme": None
+                    }
+                }
+            },
+            "quantity": None,
+            "unit": {
+                "id": None,
+                "name": None
+            },
+            "relatedLot": None
+        }
+        return item_object
 
     @staticmethod
     def release_buyer_section():
@@ -121,6 +280,14 @@ class ReleaseLibrary:
             "name": None
         }
         return buyer_section
+
+    @staticmethod
+    def release_procuring_entity_section():
+        procuring_entity_section = {
+            "id": None,
+            "name": None
+        }
+        return procuring_entity_section
 
     @staticmethod
     def release_parties_section():
@@ -189,3 +356,44 @@ class ReleaseLibrary:
             "uri": None
         }
         return related_processes_section
+
+    @staticmethod
+    def pn_stage_ms_release_planning_section():
+        planning_section = {
+            "budget": {
+                "description": None,
+                "amount": {
+                    "amount": None,
+                    "currency": None
+                },
+                "isEuropeanUnionFunded": None,
+                "budgetBreakdown": None,
+                "rationale": None
+            }
+        }
+        return planning_section
+
+    @staticmethod
+    def release_planning_budget_budget_breakdown_obj():
+        budget_breakdown = {
+            "id": None,
+            "description": None,
+            "amount": {
+                "amount": None,
+                "currency": None
+            },
+            "period": {
+                "startDate": None,
+                "endDate": None
+            },
+            "sourceParty": {
+                "id": None,
+                "name": None
+            },
+            "europeanUnionFunding": {
+                "projectIdentifier": None,
+                "projectName": None,
+                "uri": None
+            }
+        }
+        return budget_breakdown

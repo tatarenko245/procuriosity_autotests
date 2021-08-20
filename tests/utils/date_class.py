@@ -30,3 +30,19 @@ class Date:
             time.mktime(
                 datetime.datetime.strptime(time_at_now_milliseconds, "%Y-%m-%dT%H:%M:%S.%fZ").timetuple())) * 1000
         return date_now, timestamp_now
+
+    @staticmethod
+    def planning_notice_period():
+        date = datetime.datetime.now()
+        duration_date_start = date + datetime.timedelta(days=31)
+        start_date = duration_date_start.strftime('%Y-%m-01T%H:%M:%SZ')
+        return start_date
+
+    @staticmethod
+    def contact_period():
+        date = datetime.datetime.now()
+        duration_date_start = date + datetime.timedelta(days=60)
+        start_date = duration_date_start.strftime('%Y-%m-01T%H:%M:%SZ')
+        duration_date_end = date + datetime.timedelta(days=80)
+        end_date = duration_date_end.strftime('%Y-%m-01T%H:%M:%SZ')
+        return start_date, end_date

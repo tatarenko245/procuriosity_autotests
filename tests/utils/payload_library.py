@@ -6,11 +6,51 @@ class PayloadLibrary:
         tender_object = {
             "title": None,
             "description": None,
+            "legalBasis": None,
+            "tenderPeriod": {
+                "startDate": None
+            },
             "classification": {
                 "id": None
             },
+            "lots": [{
+                "id": None,
+                "internalId": None,
+                "title": None,
+                "description": None,
+                "value": {
+                    "amount": None,
+                    "currency": None
+                },
+                "contractPeriod": {
+                   "startDate": None,
+                    "endDate": None
+                },
+                "placeOfPerformance": {
+                    "address": {
+                        "streetAddress": None,
+                        "postalCode": None,
+                        "addressDetails": {
+                            "country": {
+                                "id": None
+                            },
+                            "region": {
+                                "id": None
+                            },
+                            "locality": {
+                                "scheme": None,
+                                "id": None,
+                                "description": None
+                            }
+                        }
+                    },
+                    "description": None
+                }
+
+            }],
             "items": [{
                 "id": "1",
+                "internalId": None,
                 "description": None,
                 "classification": {
                     "id": None
@@ -66,11 +106,22 @@ class PayloadLibrary:
                 },
                 "project": None,
                 "projectID": None,
-                "uri": None
+                "uri": None,
+                "budgetBreakdown": []
             },
             "rationale": None
         }
         return planning_obj
+
+    def planning_budget_budget_breakdown_obj(self):
+        budget_breakdown = {
+            "id": None,
+            "amount": {
+                "amount": None,
+                "currency": None
+            }
+        }
+        return budget_breakdown
 
     def buyer_obj(self):
         buyer_obj = {

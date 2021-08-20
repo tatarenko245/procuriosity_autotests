@@ -6,14 +6,16 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassMetadata
+from tests.utils.PayloadModel.EI.ei_prepared_payload import EiPreparePayload
+from tests.utils.ReleaseModel.EI.ei_prepared_release import EiExpectedRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.expected_release import ExpectedRelease
+
 
 from tests.utils.functions import compare_actual_result_and_expected_result
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.prepared_payload import PreparePayload
+
 
 from tests.utils.requests import Requests
 
@@ -60,8 +62,8 @@ class TestCreateEi:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_full_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
             synchronous_result_of_sending_the_request = Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -142,8 +144,8 @@ class TestCreateEi:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_full_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
             synchronous_result_of_sending_the_request = Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -158,7 +160,7 @@ class TestCreateEi:
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
-            actual_ei_release = requests.get(
+            GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
 
@@ -212,23 +214,17 @@ class TestCreateEi:
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release)), "Actual EI release")
+                allure.attach(str(json.dumps(GlobalClassCreateEi.actual_ei_release)), "Actual EI release")
 
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(EiExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
-                    expected_release_class.ei_release_full_data_model(
-                        actual_ei_release=actual_ei_release,
-                        payload_for_create_ei=GlobalClassCreateEi.payload,
-                        operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        actual_items_array=actual_ei_release['releases'][0]['tender']['items']))
+                    expected_release_class.ei_release_full_data_model())
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release")
 
-                compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateEi.actual_ei_release, expected_ei_release_model))
                 expected_result = {}
 
                 try:
@@ -292,8 +288,8 @@ class TestCreateEi:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_obligatory_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
             synchronous_result_of_sending_the_request = Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -308,7 +304,7 @@ class TestCreateEi:
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
-            actual_ei_release = requests.get(
+            GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
 
@@ -362,22 +358,17 @@ class TestCreateEi:
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release)), "Actual EI release")
+                allure.attach(str(json.dumps(GlobalClassCreateEi.actual_ei_release)), "Actual EI release")
 
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(EiExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
-                    expected_release_class.ei_release_obligatory_data_model(
-                        actual_ei_release=actual_ei_release,
-                        payload_for_create_ei=GlobalClassCreateEi.payload,
-                        operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid))
+                    expected_release_class.ei_release_obligatory_data_model())
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release")
 
-                compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateEi.actual_ei_release, expected_ei_release_model))
                 expected_result = {}
 
                 try:
@@ -417,7 +408,9 @@ class TestCreateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
-
+                print()
+                print(json.dumps(GlobalClassCreateEi.actual_ei_release))
+                print(json.dumps(expected_ei_release_model))
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
                     actual_result=compare_releases
@@ -441,8 +434,8 @@ class TestCreateEi:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_full_data_model(quantity_of_tender_item_object=3)
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model(quantity_of_tender_item_object=3)
             synchronous_result_of_sending_the_request = Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -457,7 +450,7 @@ class TestCreateEi:
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
-            actual_ei_release = requests.get(
+            GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
 
@@ -511,23 +504,17 @@ class TestCreateEi:
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release)), "Actual EI release")
+                allure.attach(str(json.dumps(GlobalClassCreateEi.actual_ei_release)), "Actual EI release")
 
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(EiExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
-                    expected_release_class.ei_release_full_data_model(
-                        actual_ei_release=actual_ei_release,
-                        payload_for_create_ei=GlobalClassCreateEi.payload,
-                        operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        actual_items_array=actual_ei_release['releases'][0]['tender']['items']))
+                    expected_release_class.ei_release_full_data_model())
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release")
 
-                compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateEi.actual_ei_release, expected_ei_release_model))
                 expected_result = {}
 
                 try:

@@ -86,6 +86,7 @@ class GlobalClassCreateEi:
     feed_point_message = None
     ei_ocid = None
     ei_token = None
+    actual_ei_release = None
 
 
 class GlobalClassUpdateEi:
@@ -111,17 +112,23 @@ class GlobalClassCreateFs:
     operation_id = None
     payload = None
     feed_point_message = None
+    fs_id = None
+    actual_fs_release = None
+    actual_ei_release = None
 
 
 class GlobalClassMetadata:
     environment = None
     country = None
     language = None
+    pmd = None
     cassandra_cluster = None
     cassandra_username = None
     cassandra_password = None
     host_for_bpe = None
+    host_for_services = None
     metadata_budget_url = None
+    metadata_tender_url = None
 
 
 class GlobalClassUpdateFs:
@@ -129,3 +136,16 @@ class GlobalClassUpdateFs:
     operation_id = None
     payload = None
     feed_point_message = None
+
+
+class GlobalClassCreatePn:
+    access_token = None
+    operation_id = None
+    payload = None
+    feed_point_message = None
+    pn_id = None
+    pn_ocid = None
+    actual_ei_release = None
+    actual_fs_release = None
+    actual_ms_release = None
+    actual_pn_release = None

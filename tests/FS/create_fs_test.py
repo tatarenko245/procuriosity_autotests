@@ -8,13 +8,17 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassMetadata
+from tests.utils.PayloadModel.EI.ei_prepared_payload import EiPreparePayload
+from tests.utils.PayloadModel.FS.fs_prepared_payload import FsPreparePayload
+from tests.utils.ReleaseModel.FS.fs_prepared_release import FsExpectedRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.expected_release import ExpectedRelease
+
+
 from tests.utils.functions import compare_actual_result_and_expected_result, is_it_uuid
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.prepared_payload import PreparePayload
+
 from tests.utils.requests import Requests
 
 
@@ -61,8 +65,8 @@ class TestCreateFs:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_obligatory_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
             Requests().create_ei(
 
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -94,7 +98,8 @@ class TestCreateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            GlobalClassCreateFs.payload = payload.create_fs_full_data_model_own_money()
+            fs_payload = copy.deepcopy(FsPreparePayload())
+            GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             synchronous_result_of_sending_the_request = Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFs.access_token,
@@ -181,8 +186,8 @@ class TestCreateFs:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_obligatory_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
             Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -218,7 +223,8 @@ class TestCreateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            GlobalClassCreateFs.payload = payload.create_fs_full_data_model_own_money()
+            fs_payload = copy.deepcopy(FsPreparePayload())
+            GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             synchronous_result_of_sending_the_request = Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFs.access_token,
@@ -226,9 +232,6 @@ class TestCreateFs:
                 ei_ocid=GlobalClassCreateEi.ei_ocid,
                 payload=GlobalClassCreateFs.payload
             )
-            actual_ei_release_after_fs_creating = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
             GlobalClassCreateFs.feed_point_message = \
                 KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
@@ -239,9 +242,13 @@ class TestCreateFs:
             GlobalClassCreateFs.fs_token = \
                 GlobalClassCreateFs.feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
 
-            actual_fs_release = requests.get(
+            GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
+
+            actual_ei_release_after_fs_creating = requests.get(
+                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
         with allure.step('# 5. See result'):
             """
@@ -293,22 +300,16 @@ class TestCreateFs:
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual FS release")
+                allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)), "Actual FS release")
 
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_full_data_model_own_money_payer_id_is_not_equal_funder_id(
-                        actual_fs_release=actual_fs_release,
-                        payload_for_create_fs=GlobalClassCreateFs.payload,
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id))
+                    expected_release_class.fs_release_full_data_model_own_money_payer_id_is_not_equal_funder_id())
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
-                compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateFs.actual_fs_release, expected_fs_release_model))
                 expected_result = {}
 
                 try:
@@ -449,8 +450,8 @@ class TestCreateFs:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_full_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
             Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -486,7 +487,8 @@ class TestCreateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            GlobalClassCreateFs.payload = payload.create_fs_full_data_model_treasury_money()
+            fs_payload = copy.deepcopy(FsPreparePayload())
+            GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_treasury_money()
             synchronous_result_of_sending_the_request = Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFs.access_token,
@@ -494,9 +496,6 @@ class TestCreateFs:
                 ei_ocid=GlobalClassCreateEi.ei_ocid,
                 payload=GlobalClassCreateFs.payload
             )
-            actual_ei_release_after_fs_creating = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
             GlobalClassCreateFs.feed_point_message = \
                 KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
@@ -507,9 +506,13 @@ class TestCreateFs:
             GlobalClassCreateFs.fs_token = \
                 GlobalClassCreateFs.feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
 
-            actual_fs_release = requests.get(
+            GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
+
+            actual_ei_release_after_fs_creating = requests.get(
+                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
         with allure.step('# 5. See result'):
             """
@@ -561,25 +564,16 @@ class TestCreateFs:
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual FS release")
+                allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)), "Actual FS release")
 
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_full_data_model_treasury_money(
-                        actual_fs_release=actual_fs_release,
-                        payload_for_create_fs=GlobalClassCreateFs.payload,
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id,
-                        ei_buyer_id=f"{GlobalClassCreateEi.payload['buyer']['identifier']['scheme']}-"
-                                    f"{GlobalClassCreateEi.payload['buyer']['identifier']['id']}",
-                        ei_buyer_name=GlobalClassCreateEi.payload['buyer']['name']))
+                    expected_release_class.fs_release_full_data_model_treasury_money())
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
-                compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateFs.actual_fs_release, expected_fs_release_model))
                 expected_result = {}
 
                 try:
@@ -720,8 +714,8 @@ class TestCreateFs:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_full_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
             Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -757,7 +751,8 @@ class TestCreateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            GlobalClassCreateFs.payload = payload.create_fs_obligatory_data_model_own_money()
+            fs_payload = copy.deepcopy(FsPreparePayload())
+            GlobalClassCreateFs.payload = fs_payload.create_fs_obligatory_data_model_own_money()
             synchronous_result_of_sending_the_request = Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFs.access_token,
@@ -765,9 +760,6 @@ class TestCreateFs:
                 ei_ocid=GlobalClassCreateEi.ei_ocid,
                 payload=GlobalClassCreateFs.payload
             )
-            actual_ei_release_after_fs_creating = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
             GlobalClassCreateFs.feed_point_message = \
                 KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
@@ -778,9 +770,13 @@ class TestCreateFs:
             GlobalClassCreateFs.fs_token = \
                 GlobalClassCreateFs.feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
 
-            actual_fs_release = requests.get(
+            GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
+
+            actual_ei_release_after_fs_creating = requests.get(
+                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
         with allure.step('# 5. See result'):
             """
@@ -832,22 +828,16 @@ class TestCreateFs:
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual FS release")
+                allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)), "Actual FS release")
 
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_obligatory_data_model_own_money_payer_id_is_not_equal_funder_id(
-                        actual_fs_release=actual_fs_release,
-                        payload_for_create_fs=GlobalClassCreateFs.payload,
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id))
+                    expected_release_class.fs_release_obligatory_data_model_own_money_payer_id_is_not_equal_funder_id())
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
-                compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateFs.actual_fs_release, expected_fs_release_model))
                 expected_result = {}
 
                 try:
@@ -988,8 +978,8 @@ class TestCreateFs:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_obligatory_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
             Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -1025,7 +1015,8 @@ class TestCreateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            GlobalClassCreateFs.payload = payload.create_fs_obligatory_data_model_treasury_money()
+            fs_payload = copy.deepcopy(FsPreparePayload())
+            GlobalClassCreateFs.payload = fs_payload.create_fs_obligatory_data_model_treasury_money()
             synchronous_result_of_sending_the_request = Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFs.access_token,
@@ -1033,9 +1024,6 @@ class TestCreateFs:
                 ei_ocid=GlobalClassCreateEi.ei_ocid,
                 payload=GlobalClassCreateFs.payload
             )
-            actual_ei_release_after_fs_creating = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
             GlobalClassCreateFs.feed_point_message = \
                 KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
@@ -1046,9 +1034,13 @@ class TestCreateFs:
             GlobalClassCreateFs.fs_token = \
                 GlobalClassCreateFs.feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
 
-            actual_fs_release = requests.get(
+            GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
+
+            actual_ei_release_after_fs_creating = requests.get(
+                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
         with allure.step('# 5. See result'):
             """
@@ -1100,25 +1092,16 @@ class TestCreateFs:
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual FS release")
+                allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)), "Actual FS release")
 
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_obligatory_data_model_treasury_money(
-                        actual_fs_release=actual_fs_release,
-                        payload_for_create_fs=GlobalClassCreateFs.payload,
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        ei_id=GlobalClassCreateEi.ei_ocid,
-                        fs_id=GlobalClassCreateFs.fs_id,
-                        ei_buyer_id=f"{GlobalClassCreateEi.payload['buyer']['identifier']['scheme']}-"
-                                    f"{GlobalClassCreateEi.payload['buyer']['identifier']['id']}",
-                        ei_buyer_name=GlobalClassCreateEi.payload['buyer']['name']))
+                    expected_release_class.fs_release_obligatory_data_model_treasury_money())
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
-                compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
+                compare_releases = dict(DeepDiff(GlobalClassCreateFs.actual_fs_release, expected_fs_release_model))
                 expected_result = {}
 
                 try:

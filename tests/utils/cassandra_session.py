@@ -14,6 +14,7 @@ class CassandraSession:
         )
         self.cluster = Cluster([cassandra_cluster], auth_provider=auth_provider)
         self.ocds_keyspace = self.cluster.connect('ocds')
+        self.access_keyspace = self.cluster.connect('access')
 
     def ei_process_cleanup_table_of_services(self, ei_id):
         return self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one(), \
@@ -36,6 +37,14 @@ class CassandraSession:
                self.ocds_keyspace.execute(f"DELETE FROM notice_budget_release WHERE cp_id='{ei_id}';"), \
                self.ocds_keyspace.execute(f"DELETE FROM notice_budget_offset WHERE cp_id='{ei_id}';"), \
                self.ocds_keyspace.execute(f"DELETE FROM notice_budget_compiled_release WHERE cp_id='{ei_id}';")
+
+    def pn_process_cleanup_table_of_services(self, pn_ocid):
+        return self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one(), \
+               self.ocds_keyspace.execute(f"DELETE FROM budget_fs WHERE cp_id='{pn_ocid}';"), \
+               self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';"), \
+               self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';"), \
+               self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';"), \
+               self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
 
     def get_bpe_operation_step_by_operation_id(self, operation_id):
         rows_1 = self.ocds_keyspace.execute(
