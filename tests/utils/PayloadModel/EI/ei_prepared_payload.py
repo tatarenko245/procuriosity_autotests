@@ -205,6 +205,5 @@ class EiPreparePayload:
         del payload['planning']['budget']
 
         payload['tender']['title'] = "update ei: tender.title"
-        payload['planning']['budget']['period']['startDate'] = self.ei_period[0]
-        payload['planning']['budget']['period']['endDate'] = self.ei_period[1]
+
         return payload

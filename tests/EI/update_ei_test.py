@@ -64,7 +64,7 @@ class TestUpdateEi:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
-            Requests().create_ei(
+            synchronous_result_of_sending_the_request = Requests().create_ei(
 
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -73,13 +73,59 @@ class TestUpdateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
-            GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
 
-            GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+            with allure.step('# See result: create EI'):
+                """
+                Check the results of TestCase.
+                """
+                with allure.step('# 1. Check status code'):
+                    """
+                    Check the synchronous_result_of_sending_the_request.
+                    """
+                    assert compare_actual_result_and_expected_result(
+                        expected_result=202,
+                        actual_result=synchronous_result_of_sending_the_request.status_code
+                    )
+                with allure.step('# 2. Check message in feed point'):
+                    """
+                    Check the asynchronous_result_of_sending_the_request.
+                    """
+                    GlobalClassCreateEi.feed_point_message = \
+                        KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                    allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
 
-            GlobalClassCreateEi.ei_token = \
-                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
+                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                        GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                        environment=GlobalClassMetadata.environment,
+                        kafka_message=GlobalClassUpdateEi.feed_point_message
+                    )
+
+                    try:
+                        """
+                        If asynchronous_result_of_sending_the_request was False, then return process steps by
+                        operation-id.
+                        """
+                        database = CassandraSession(
+                            cassandra_username=GlobalClassMetadata.cassandra_username,
+                            cassandra_password=GlobalClassMetadata.cassandra_password,
+                            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                        if asynchronous_result_of_sending_the_request_was_checked is False:
+                            with allure.step('# Steps from Casandra DataBase'):
+                                steps = database.get_bpe_operation_step_by_operation_id(
+                                    operation_id=GlobalClassCreateEi.operation_id)
+                                allure.attach(steps, "Cassandra DataBase: steps of process")
+                    except ValueError:
+                        raise ValueError("Can not return BPE operation step")
+
+                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+
+                    GlobalClassCreateEi.ei_token = \
+                        GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
+
+                    assert compare_actual_result_and_expected_result(
+                        expected_result=True,
+                        actual_result=asynchronous_result_of_sending_the_request_was_checked
+                    )
 
         with allure.step('# 3. Authorization platform one: update EI'):
             """
@@ -108,10 +154,8 @@ class TestUpdateEi:
                 ei_token=GlobalClassCreateEi.ei_token,
                 payload=GlobalClassUpdateEi.payload
             )
-            GlobalClassUpdateEi.feed_point_message = \
-                KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
 
-        with allure.step('# 5. See result'):
+        with allure.step('# 5. See result: update EI'):
             """
             Check the results of TestCase.
             """
@@ -127,7 +171,10 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                GlobalClassUpdateEi.feed_point_message = \
+                    KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
                 allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
+
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
@@ -181,7 +228,7 @@ class TestUpdateEi:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
-            Requests().create_ei(
+            synchronous_result_of_sending_the_request = Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
                 x_operation_id=GlobalClassCreateEi.operation_id,
@@ -189,18 +236,63 @@ class TestUpdateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
-            GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
 
-            GlobalClassCreateEi.ei_ocid = \
-                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+            with allure.step('# See result: create EI'):
+                """
+                Check the results of TestCase.
+                """
+                with allure.step('# 1. Check status code'):
+                    """
+                    Check the synchronous_result_of_sending_the_request.
+                    """
+                    assert compare_actual_result_and_expected_result(
+                        expected_result=202,
+                        actual_result=synchronous_result_of_sending_the_request.status_code
+                    )
+                with allure.step('# 2. Check message in feed point'):
+                    """
+                    Check the asynchronous_result_of_sending_the_request.
+                    """
+                    GlobalClassCreateEi.feed_point_message = \
+                        KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                    allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
 
-            GlobalClassCreateEi.ei_token = \
-                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
+                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                        GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                        environment=GlobalClassMetadata.environment,
+                        kafka_message=GlobalClassUpdateEi.feed_point_message
+                    )
 
-            actual_ei_release_before_updating = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                    f"{GlobalClassCreateEi.ei_ocid}").json()
+                    try:
+                        """
+                        If asynchronous_result_of_sending_the_request was False, then return process steps by
+                        operation-id.
+                        """
+                        database = CassandraSession(
+                            cassandra_username=GlobalClassMetadata.cassandra_username,
+                            cassandra_password=GlobalClassMetadata.cassandra_password,
+                            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                        if asynchronous_result_of_sending_the_request_was_checked is False:
+                            with allure.step('# Steps from Casandra DataBase'):
+                                steps = database.get_bpe_operation_step_by_operation_id(
+                                    operation_id=GlobalClassCreateEi.operation_id)
+                                allure.attach(steps, "Cassandra DataBase: steps of process")
+                    except ValueError:
+                        raise ValueError("Can not return BPE operation step")
+
+                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+
+                    GlobalClassCreateEi.ei_token = \
+                        GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
+
+                    actual_ei_release_before_updating = requests.get(
+                        url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                            f"{GlobalClassCreateEi.ei_ocid}").json()
+
+                    assert compare_actual_result_and_expected_result(
+                        expected_result=True,
+                        actual_result=asynchronous_result_of_sending_the_request_was_checked
+                    )
 
         with allure.step('# 3. Authorization platform one: Update EI'):
             """
@@ -228,13 +320,7 @@ class TestUpdateEi:
                 payload=GlobalClassUpdateEi.payload
             )
 
-            GlobalClassUpdateEi.feed_point_message = \
-                KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
-
-            actual_ei_release_after_updating = requests.get(
-                url=f"{GlobalClassUpdateEi.feed_point_message['data']['url']}").json()
-
-        with allure.step('# 5. See result'):
+        with allure.step('# 5. See result: update EI'):
             """
             Check the results of TestCase.
             """
@@ -250,7 +336,10 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                GlobalClassUpdateEi.feed_point_message = \
+                    KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
                 allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
+
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
@@ -274,6 +363,9 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
+
+                actual_ei_release_after_updating = requests.get(
+                    url=f"{GlobalClassUpdateEi.feed_point_message['data']['url']}").json()
 
                 assert compare_actual_result_and_expected_result(
                     expected_result=True,
@@ -404,7 +496,7 @@ class TestUpdateEi:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
-            Requests().create_ei(
+            synchronous_result_of_sending_the_request = Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
                 x_operation_id=GlobalClassCreateEi.operation_id,
@@ -412,18 +504,63 @@ class TestUpdateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
-            GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
 
-            GlobalClassCreateEi.ei_ocid = \
-                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+            with allure.step('# See result: create EI'):
+                """
+                Check the results of TestCase.
+                """
+                with allure.step('# 1. Check status code'):
+                    """
+                    Check the synchronous_result_of_sending_the_request.
+                    """
+                    assert compare_actual_result_and_expected_result(
+                        expected_result=202,
+                        actual_result=synchronous_result_of_sending_the_request.status_code
+                    )
+                with allure.step('# 2. Check message in feed point'):
+                    """
+                    Check the asynchronous_result_of_sending_the_request.
+                    """
+                    GlobalClassCreateEi.feed_point_message = \
+                        KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                    allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
 
-            GlobalClassCreateEi.ei_token = \
-                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
+                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                        GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                        environment=GlobalClassMetadata.environment,
+                        kafka_message=GlobalClassUpdateEi.feed_point_message
+                    )
 
-            actual_ei_release_before_updating = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                    f"{GlobalClassCreateEi.ei_ocid}").json()
+                    try:
+                        """
+                        If asynchronous_result_of_sending_the_request was False, then return process steps by
+                        operation-id.
+                        """
+                        database = CassandraSession(
+                            cassandra_username=GlobalClassMetadata.cassandra_username,
+                            cassandra_password=GlobalClassMetadata.cassandra_password,
+                            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                        if asynchronous_result_of_sending_the_request_was_checked is False:
+                            with allure.step('# Steps from Casandra DataBase'):
+                                steps = database.get_bpe_operation_step_by_operation_id(
+                                    operation_id=GlobalClassCreateEi.operation_id)
+                                allure.attach(steps, "Cassandra DataBase: steps of process")
+                    except ValueError:
+                        raise ValueError("Can not return BPE operation step")
+
+                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+
+                    GlobalClassCreateEi.ei_token = \
+                        GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
+
+                    actual_ei_release_before_updating = requests.get(
+                        url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                            f"{GlobalClassCreateEi.ei_ocid}").json()
+
+                    assert compare_actual_result_and_expected_result(
+                        expected_result=True,
+                        actual_result=asynchronous_result_of_sending_the_request_was_checked
+                    )
 
         with allure.step('# 3. Authorization platform one: Update EI'):
             """
@@ -452,13 +589,7 @@ class TestUpdateEi:
                 payload=GlobalClassUpdateEi.payload
             )
 
-            GlobalClassUpdateEi.feed_point_message = \
-                KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
-
-            actual_ei_release_after_updating = requests.get(
-                url=f"{GlobalClassUpdateEi.feed_point_message['data']['url']}").json()
-
-        with allure.step('# 5. See result'):
+        with allure.step('# 5. See result: update EI'):
             """
             Check the results of TestCase.
             """
@@ -474,7 +605,10 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                GlobalClassUpdateEi.feed_point_message = \
+                    KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
                 allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
+
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
@@ -498,6 +632,9 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
+
+                actual_ei_release_after_updating = requests.get(
+                    url=f"{GlobalClassUpdateEi.feed_point_message['data']['url']}").json()
 
                 assert compare_actual_result_and_expected_result(
                     expected_result=True,
@@ -644,7 +781,7 @@ class TestUpdateEi:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
-            Requests().create_ei(
+            synchronous_result_of_sending_the_request = Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
                 x_operation_id=GlobalClassCreateEi.operation_id,
@@ -652,18 +789,63 @@ class TestUpdateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
-            GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
 
-            GlobalClassCreateEi.ei_ocid = \
-                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+            with allure.step('# See result: create EI'):
+                """
+                Check the results of TestCase.
+                """
+                with allure.step('# 1. Check status code'):
+                    """
+                    Check the synchronous_result_of_sending_the_request.
+                    """
+                    assert compare_actual_result_and_expected_result(
+                        expected_result=202,
+                        actual_result=synchronous_result_of_sending_the_request.status_code
+                    )
+                with allure.step('# 2. Check message in feed point'):
+                    """
+                    Check the asynchronous_result_of_sending_the_request.
+                    """
+                    GlobalClassCreateEi.feed_point_message = \
+                        KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                    allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
 
-            GlobalClassCreateEi.ei_token = \
-                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
+                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                        GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
+                        environment=GlobalClassMetadata.environment,
+                        kafka_message=GlobalClassUpdateEi.feed_point_message
+                    )
 
-            actual_ei_release_before_updating = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                    f"{GlobalClassCreateEi.ei_ocid}").json()
+                    try:
+                        """
+                        If asynchronous_result_of_sending_the_request was False, then return process steps by
+                        operation-id.
+                        """
+                        database = CassandraSession(
+                            cassandra_username=GlobalClassMetadata.cassandra_username,
+                            cassandra_password=GlobalClassMetadata.cassandra_password,
+                            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                        if asynchronous_result_of_sending_the_request_was_checked is False:
+                            with allure.step('# Steps from Casandra DataBase'):
+                                steps = database.get_bpe_operation_step_by_operation_id(
+                                    operation_id=GlobalClassCreateEi.operation_id)
+                                allure.attach(steps, "Cassandra DataBase: steps of process")
+                    except ValueError:
+                        raise ValueError("Can not return BPE operation step")
+
+                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+
+                    GlobalClassCreateEi.ei_token = \
+                        GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
+
+                    actual_ei_release_before_updating = requests.get(
+                        url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                            f"{GlobalClassCreateEi.ei_ocid}").json()
+
+                    assert compare_actual_result_and_expected_result(
+                        expected_result=True,
+                        actual_result=asynchronous_result_of_sending_the_request_was_checked
+                    )
 
         with allure.step('# 3. Authorization platform one: Update EI'):
             """
@@ -693,13 +875,7 @@ class TestUpdateEi:
                 payload=GlobalClassUpdateEi.payload
             )
 
-            GlobalClassUpdateEi.feed_point_message = \
-                KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
-
-            actual_ei_release_after_updating = requests.get(
-                url=f"{GlobalClassUpdateEi.feed_point_message['data']['url']}").json()
-
-        with allure.step('# 5. See result'):
+        with allure.step('# 5. See result: update EI'):
             """
             Check the results of TestCase.
             """
@@ -715,7 +891,10 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                GlobalClassUpdateEi.feed_point_message = \
+                    KafkaMessage(GlobalClassUpdateEi.operation_id).get_message_from_kafka()
                 allure.attach(str(GlobalClassUpdateEi.feed_point_message), 'Message in feed point')
+
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassUpdateEi.operation_id).update_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
@@ -739,6 +918,9 @@ class TestUpdateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
+
+                actual_ei_release_after_updating = requests.get(
+                    url=f"{GlobalClassUpdateEi.feed_point_message['data']['url']}").json()
 
                 assert compare_actual_result_and_expected_result(
                     expected_result=True,

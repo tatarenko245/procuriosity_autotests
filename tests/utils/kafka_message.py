@@ -64,6 +64,7 @@ class KafkaMessage:
             if "X-OPERATION-ID" in kafka_message:
                 check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
         except KeyError:
+
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
@@ -287,12 +288,10 @@ class KafkaMessage:
 
     @staticmethod
     def create_pn_message_is_successful(environment, kafka_message):
-        budget_url = None
+        tender_url = None
         if environment == "dev":
-            budget_url = "http://dev.public.eprocurement.systems/budgets/"
             tender_url = "http://dev.public.eprocurement.systems/tenders/"
         if environment == "sandbox":
-            budget_url = "http://public.eprocurement.systems/budgets/"
             tender_url = "http://public.eprocurement.systems/tenders/"
 
         check_x_operation_id = None

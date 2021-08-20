@@ -72,10 +72,6 @@ class TestCreateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
-            GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-
-            GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
         with allure.step('# 3. See result'):
             """
@@ -93,7 +89,11 @@ class TestCreateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                GlobalClassCreateEi.feed_point_message = \
+                    KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
                 allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
+                GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
@@ -154,15 +154,6 @@ class TestCreateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
-            GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-
-            GlobalClassCreateEi.ei_ocid = \
-                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
-
-            GlobalClassCreateEi.actual_ei_release = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
         with allure.step('# 3. See result'):
             """
@@ -180,7 +171,17 @@ class TestCreateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                GlobalClassCreateEi.feed_point_message = \
+                    KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
                 allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
+
+                GlobalClassCreateEi.ei_ocid = \
+                    GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+
+                GlobalClassCreateEi.actual_ei_release = requests.get(
+                    url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateEi.ei_ocid}").json()
+
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
@@ -298,15 +299,6 @@ class TestCreateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
-            GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-
-            GlobalClassCreateEi.ei_ocid = \
-                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
-
-            GlobalClassCreateEi.actual_ei_release = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
         with allure.step('# 3. See result'):
             """
@@ -324,7 +316,17 @@ class TestCreateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                GlobalClassCreateEi.feed_point_message = \
+                    KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
                 allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
+
+                GlobalClassCreateEi.ei_ocid = \
+                    GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+
+                GlobalClassCreateEi.actual_ei_release = requests.get(
+                    url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateEi.ei_ocid}").json()
+
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
@@ -408,9 +410,7 @@ class TestCreateEi:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
-                print()
-                print(json.dumps(GlobalClassCreateEi.actual_ei_release))
-                print(json.dumps(expected_ei_release_model))
+
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
                     actual_result=compare_releases
@@ -444,15 +444,6 @@ class TestCreateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
-            GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-
-            GlobalClassCreateEi.ei_ocid = \
-                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
-
-            GlobalClassCreateEi.actual_ei_release = requests.get(
-                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
         with allure.step('# 3. See result'):
             """
@@ -470,7 +461,17 @@ class TestCreateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
+                GlobalClassCreateEi.feed_point_message = \
+                    KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
                 allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
+
+                GlobalClassCreateEi.ei_ocid = \
+                    GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+
+                GlobalClassCreateEi.actual_ei_release = requests.get(
+                    url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateEi.ei_ocid}").json()
+
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
                     environment=GlobalClassMetadata.environment,
