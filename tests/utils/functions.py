@@ -324,7 +324,7 @@ def generate_tender_classification_id(items_array):
             iteration -= 1
             tender_classification_id = f"{new_classification_id[0:4]}0000"
     else:
-        tender_classification_id = f"{items_array[0]['classification']['id']}"
+        tender_classification_id = f"{items_array[0]['classification']['id'][0:4]}0000"
     return tender_classification_id
 
 
