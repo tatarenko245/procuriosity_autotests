@@ -438,7 +438,7 @@ class TestCreatePn:
                 expected_ms_release_model = copy.deepcopy(
                     expected_release_class.ms_release_full_data_model_with_four_parties_object_based_on_fs())
 
-                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected MS release")
+                allure.attach(str(json.dumps(expected_ms_release_model)), "Expected MS release")
 
                 compare_releases = dict(
                     DeepDiff(GlobalClassCreatePn.actual_ms_release, expected_ms_release_model))
@@ -872,7 +872,7 @@ class TestCreatePn:
                 expected_ms_release_model = copy.deepcopy(
                     expected_release_class.ms_release_obligatory_data_model_with_four_parties_object_based_on_fs_full())
 
-                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected MS release")
+                allure.attach(str(json.dumps(expected_ms_release_model)), "Expected MS release")
 
                 compare_releases = dict(DeepDiff(
                     GlobalClassCreatePn.actual_ms_release, expected_ms_release_model))
@@ -1305,7 +1305,7 @@ class TestCreatePn:
                 expected_ms_release_model = copy.deepcopy(
                     expected_release_class.ms_release_obligatory_two())
 
-                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected MS release")
+                allure.attach(str(json.dumps(expected_ms_release_model)), "Expected MS release")
 
                 compare_releases = dict(DeepDiff(
                     GlobalClassCreatePn.actual_ms_release, expected_ms_release_model))

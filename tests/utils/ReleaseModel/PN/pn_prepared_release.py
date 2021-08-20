@@ -21,11 +21,11 @@ class PnExpectedRelease:
             if environment == "dev":
                 self.metadata_budget_url = "http://dev.public.eprocurement.systems/budgets"
                 self.metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
-                self.metadata_document_url = "https://dev.storage.eprocurement.systems/api/v1/storage/get"
+                self.metadata_document_url = "http://dev.storage.eprocurement.systems/api/v1/storage/get"
             elif environment == "sandbox":
                 self.metadata_budget_url = "http://public.eprocurement.systems/budgets"
                 self.metadata_tender_url = "http://public.eprocurement.systems/tenders"
-                self.metadata_document_url = "https://storage.eprocurement.systems/api/v1/storage/get"
+                self.metadata_document_url = "http://storage.eprocurement.systems/api/v1/storage/get"
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
