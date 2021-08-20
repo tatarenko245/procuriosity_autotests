@@ -1,4 +1,5 @@
 import copy
+import datetime
 import fnmatch
 
 import random
@@ -82,7 +83,7 @@ def get_value_from_classification_unit_dictionary_csv(unit_id, language):
                 return cur_arr[0].replace("'", ""), cur_arr[2].replace('"', ''),
 
 
-def generate_items_array(quantity_of_object, item_object, tender_classification_id):
+def generate_items_array(quantity_of_object, item_object, tender_classification_id, lots_array=None):
     copy.deepcopy(item_object)
     items_array = []
     for i in range(quantity_of_object):
@@ -92,7 +93,15 @@ def generate_items_array(quantity_of_object, item_object, tender_classification_
 
     new_array_items = []
     for quantity_of_object in range(quantity_of_object):
-
+        if lots_array is not None:
+            for o in items_array:
+                for r in o:
+                    if r == "relatedLot":
+                        items_array[quantity_of_object]['relatedLot'] = lots_array[quantity_of_object]['id']
+                    else:
+                        pass
+        else:
+            pass
         item_classification_id = None
         if tender_classification_id[0:2] == "03":
             item_classification_id = f"{random.choice(cpv_goods_low_level_03)}"
@@ -126,6 +135,22 @@ def generate_items_array(quantity_of_object, item_object, tender_classification_
         val = items_array[quantity_of_object]
         new_array_items.append(copy.deepcopy(val))
     return new_array_items
+
+
+def generate_lots_array(quantity_of_object, lot_object):
+    copy.deepcopy(lot_object)
+    lots_array = []
+    for i in range(quantity_of_object):
+        lot_json = copy.deepcopy(lot_object)
+        lot_json['id'] = str(i)
+        lot_json['value']['amount'] = lot_object['value']['amount'] / quantity_of_object
+        lots_array.append(lot_json)
+
+    new_array_lots = []
+    for quantity_of_object in range(quantity_of_object):
+        val = lots_array[quantity_of_object]
+        new_array_lots.append(copy.deepcopy(val))
+    return new_array_lots
 
 
 # def generate_items_array(quantity_of_object, item_object, tender_classification_id):
@@ -190,68 +215,9 @@ def generate_tender_classification_id(items_array):
                 list_of_keys.append(id_)
                 list_of_values.append(o['classification']['id'])
     quantity = len(list_of_keys)
-    classification_1 = list_of_values[0]
-    classification_2 = list_of_values[1]
-    s_1 = fnmatch.fnmatch(classification_1[0], classification_2[0])
-    s_2 = fnmatch.fnmatch(classification_1[1], classification_2[1])
-    s_3 = fnmatch.fnmatch(classification_1[2], classification_2[2])
-    s_4 = fnmatch.fnmatch(classification_1[3], classification_2[3])
-    s_5 = fnmatch.fnmatch(classification_1[4], classification_2[4])
-    s_6 = fnmatch.fnmatch(classification_1[5], classification_2[5])
-    s_7 = fnmatch.fnmatch(classification_1[6], classification_2[6])
-    s_8 = fnmatch.fnmatch(classification_1[7], classification_2[7])
-    s_9 = fnmatch.fnmatch(classification_1[8], classification_2[8])
-    s_10 = fnmatch.fnmatch(classification_1[9], classification_2[9])
-    new = list()
-    if s_1 is True:
-        new.append(classification_1[0])
-    else:
-        new.append("0")
-    if s_2 is True:
-        new.append(classification_1[1])
-    else:
-        new.append("0")
-    if s_3 is True:
-        new.append(classification_1[2])
-    else:
-        new.append("0")
-    if s_4 is True:
-        new.append(classification_1[3])
-    else:
-        new.append("0")
-    if s_5 is True:
-        new.append(classification_1[4])
-    else:
-        new.append("0")
-    if s_6 is True:
-        new.append(classification_1[5])
-    else:
-        new.append("0")
-    if s_7 is True:
-        new.append(classification_1[6])
-    else:
-        new.append("0")
-    if s_8 is True:
-        new.append(classification_1[7])
-    else:
-        new.append("0")
-    if s_9 is True:
-        new.append(classification_1[8])
-    else:
-        new.append("0")
-    if s_10 is True:
-        new.append(classification_1[9])
-    else:
-        new.append("0")
-    new_classification_id = copy.deepcopy(
-        str(new[0] + new[1] + new[2] + new[3] + new[4] + new[5] + new[6] + new[7]))
-    tender_classification_id = f"{new_classification_id[0:3]}00000"
-    iteration = quantity - 2
-    index = 1
-    while iteration > 0:
-        index += 1
-        classification_1 = new_classification_id
-        classification_2 = list_of_values[index]
+    if quantity >= 2:
+        classification_1 = list_of_values[0]
+        classification_2 = list_of_values[1]
         s_1 = fnmatch.fnmatch(classification_1[0], classification_2[0])
         s_2 = fnmatch.fnmatch(classification_1[1], classification_2[1])
         s_3 = fnmatch.fnmatch(classification_1[2], classification_2[2])
@@ -260,6 +226,8 @@ def generate_tender_classification_id(items_array):
         s_6 = fnmatch.fnmatch(classification_1[5], classification_2[5])
         s_7 = fnmatch.fnmatch(classification_1[6], classification_2[6])
         s_8 = fnmatch.fnmatch(classification_1[7], classification_2[7])
+        s_9 = fnmatch.fnmatch(classification_1[8], classification_2[8])
+        s_10 = fnmatch.fnmatch(classification_1[9], classification_2[9])
         new = list()
         if s_1 is True:
             new.append(classification_1[0])
@@ -293,10 +261,70 @@ def generate_tender_classification_id(items_array):
             new.append(classification_1[7])
         else:
             new.append("0")
+        if s_9 is True:
+            new.append(classification_1[8])
+        else:
+            new.append("0")
+        if s_10 is True:
+            new.append(classification_1[9])
+        else:
+            new.append("0")
         new_classification_id = copy.deepcopy(
             str(new[0] + new[1] + new[2] + new[3] + new[4] + new[5] + new[6] + new[7]))
-        iteration -= 1
         tender_classification_id = f"{new_classification_id[0:3]}00000"
+        iteration = quantity - 2
+        index = 1
+        while iteration > 0:
+            index += 1
+            classification_1 = new_classification_id
+            classification_2 = list_of_values[index]
+            s_1 = fnmatch.fnmatch(classification_1[0], classification_2[0])
+            s_2 = fnmatch.fnmatch(classification_1[1], classification_2[1])
+            s_3 = fnmatch.fnmatch(classification_1[2], classification_2[2])
+            s_4 = fnmatch.fnmatch(classification_1[3], classification_2[3])
+            s_5 = fnmatch.fnmatch(classification_1[4], classification_2[4])
+            s_6 = fnmatch.fnmatch(classification_1[5], classification_2[5])
+            s_7 = fnmatch.fnmatch(classification_1[6], classification_2[6])
+            s_8 = fnmatch.fnmatch(classification_1[7], classification_2[7])
+            new = list()
+            if s_1 is True:
+                new.append(classification_1[0])
+            else:
+                new.append("0")
+            if s_2 is True:
+                new.append(classification_1[1])
+            else:
+                new.append("0")
+            if s_3 is True:
+                new.append(classification_1[2])
+            else:
+                new.append("0")
+            if s_4 is True:
+                new.append(classification_1[3])
+            else:
+                new.append("0")
+            if s_5 is True:
+                new.append(classification_1[4])
+            else:
+                new.append("0")
+            if s_6 is True:
+                new.append(classification_1[5])
+            else:
+                new.append("0")
+            if s_7 is True:
+                new.append(classification_1[6])
+            else:
+                new.append("0")
+            if s_8 is True:
+                new.append(classification_1[7])
+            else:
+                new.append("0")
+            new_classification_id = copy.deepcopy(
+                str(new[0] + new[1] + new[2] + new[3] + new[4] + new[5] + new[6] + new[7]))
+            iteration -= 1
+            tender_classification_id = f"{new_classification_id[0:4]}0000"
+    else:
+        tender_classification_id = f"{items_array[0]['classification']['id'][0:4]}0000"
     return tender_classification_id
 
 
@@ -330,3 +358,42 @@ def get_value_from_locality_csv(locality, region, country, language):
         for row in reader:
             if row[0] == locality and row[4] == region and row[5] == country and row[6] == language:
                 return row
+
+
+def get_contract_period_for_ms_release(lots_array):
+    start_date = list()
+    end_date = list()
+    for lot_object in lots_array:
+        if "contractPeriod" in lot_object:
+            if "startDate" in lot_object['contractPeriod']:
+                date = datetime.datetime.strptime(lot_object['contractPeriod']['startDate'], "%Y-%m-%dT%H:%M:%SZ")
+                start_date.append(date)
+            else:
+                raise KeyError("Check lot_object['contractPeriod']['startDate']")
+
+            if "endDate" in lot_object['contractPeriod']:
+                date = datetime.datetime.strptime(lot_object['contractPeriod']['endDate'], "%Y-%m-%dT%H:%M:%SZ")
+                end_date.append(date)
+            else:
+                raise KeyError("Check lot_object['contractPeriod']['endDate']")
+        else:
+            raise KeyError("Check lot_object['contractPeriod']")
+    minimum_date = min(start_date)
+    start_date_for_ms_release = minimum_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+    maximum_date = max(end_date)
+    end_date_for_ms_release = maximum_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+    return start_date_for_ms_release, end_date_for_ms_release
+
+
+def get_sum_of_lot(lots_array):
+    sum_of_lot = list()
+    for lot_object in lots_array:
+        if "value" in lot_object:
+            if "amount" in lot_object['value']:
+                sum_of_lot.append(lot_object['value']['amount'])
+            else:
+                raise KeyError("Check lot_object['value']['amount']")
+        else:
+            raise KeyError("Check lot_object['value']")
+    s = float(format(sum(sum_of_lot), '.2f'))
+    return s

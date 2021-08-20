@@ -35,3 +35,22 @@ currency = ("USD", "EUR", "MDL",)
 
 legalBasis = ("DIRECTIVE_2014_23_EU", "DIRECTIVE_2014_24_EU", "DIRECTIVE_2014_25_EU", "DIRECTIVE_2009_81_EC",
               "REGULATION_966_2012", "NATIONAL_PROCUREMENT_LAW",)
+
+documentType = ("tenderNotice",
+                "biddingDocuments",
+                "technicalSpecifications",
+                "evaluationCriteria",
+                "clarifications",
+                "eligibilityCriteria",
+                "riskProvisions",
+                "billOfQuantity",
+                "conflictOfInterest",
+                "procurementPlan",
+                "contractDraft",
+                "complaints",
+                "illustration",
+                "cancellationDetails",
+                "evaluationReports",
+                "shortlistedFirms",
+                "contractArrangements",
+                "contractGuarantees",)

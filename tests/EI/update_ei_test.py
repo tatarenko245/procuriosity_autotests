@@ -8,13 +8,15 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassUpdateEi, GlobalClassMetadata
+from tests.utils.PayloadModel.EI.ei_prepared_payload import EiPreparePayload
+from tests.utils.ReleaseModel.EI.ei_prepared_release import EiExpectedRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.expected_release import ExpectedRelease
+
 from tests.utils.functions import compare_actual_result_and_expected_result
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.prepared_payload import PreparePayload
+
 from tests.utils.requests import Requests
 
 
@@ -60,8 +62,8 @@ class TestUpdateEi:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_obligatory_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
             Requests().create_ei(
 
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -95,7 +97,7 @@ class TestUpdateEi:
             Send api request on BPE host for expenditure item updating.
             """
             time.sleep(1)
-            GlobalClassUpdateEi.payload = payload.update_ei_full_data_model(
+            GlobalClassUpdateEi.payload = ei_payload.update_ei_full_data_model(
                 tender_classification_id=GlobalClassCreateEi.payload['tender']['classification']['id'])
 
             synchronous_result_of_sending_the_request = Requests().update_ei(
@@ -177,8 +179,8 @@ class TestUpdateEi:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_full_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
             Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -216,7 +218,7 @@ class TestUpdateEi:
             Send api request on BPE host for expenditure item updating.
             """
             time.sleep(1)
-            GlobalClassUpdateEi.payload = payload.update_ei_obligatory_data_model()
+            GlobalClassUpdateEi.payload = ei_payload.update_ei_obligatory_data_model()
             synchronous_result_of_sending_the_request = Requests().update_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassUpdateEi.access_token,
@@ -285,13 +287,11 @@ class TestUpdateEi:
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual EI release before updating")
                 GlobalClassCreateEi.actual_ei_release = actual_ei_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(EiExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
-                    expected_release_class.ei_release_full_data_model(
-                        operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate']))
+                    expected_release_class.ei_release_full_data_model())
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release before updating")
 
@@ -402,8 +402,8 @@ class TestUpdateEi:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_obligatory_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
             Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -441,7 +441,7 @@ class TestUpdateEi:
             Send api request on BPE host for expenditure item updating.
             """
             time.sleep(1)
-            GlobalClassUpdateEi.payload = payload.update_ei_full_data_model(
+            GlobalClassUpdateEi.payload = ei_payload.update_ei_full_data_model(
                 tender_classification_id=GlobalClassCreateEi.payload['tender']['classification']['id'])
             synchronous_result_of_sending_the_request = Requests().update_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -511,13 +511,11 @@ class TestUpdateEi:
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual EI release before updating")
                 GlobalClassCreateEi.actual_ei_release = actual_ei_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(EiExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
-                    expected_release_class.ei_release_obligatory_data_model(
-                        operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate']))
+                    expected_release_class.ei_release_obligatory_data_model())
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release before updating")
 
@@ -585,9 +583,9 @@ class TestUpdateEi:
                     }
                 }
 
-                expected_items_array_model = expected_release_class.ei_tender_items_array_release(
-                    payload=GlobalClassUpdateEi.payload,
-                    actual_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items']
+                expected_items_array_model = expected_release_class.prepare_expected_items_array(
+                    payload_items_array=GlobalClassUpdateEi.payload['tender']['items'],
+                    release_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items']
                 )
                 try:
                     """
@@ -644,8 +642,8 @@ class TestUpdateEi:
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            payload = copy.deepcopy(PreparePayload())
-            GlobalClassCreateEi.payload = payload.create_ei_full_data_model()
+            ei_payload = copy.deepcopy(EiPreparePayload())
+            GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
             Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -683,7 +681,7 @@ class TestUpdateEi:
             Send api request on BPE host for expenditure item updating.
             """
             time.sleep(1)
-            GlobalClassUpdateEi.payload = payload.update_ei_full_data_model(
+            GlobalClassUpdateEi.payload = ei_payload.update_ei_full_data_model(
                 tender_classification_id=GlobalClassCreateEi.payload['tender']['classification']['id'],
                 quantity_of_tender_item_object=3)
             synchronous_result_of_sending_the_request = Requests().update_ei(
@@ -754,13 +752,11 @@ class TestUpdateEi:
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual EI release before updating")
                 GlobalClassCreateEi.actual_ei_release = actual_ei_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(EiExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ei_release_model = copy.deepcopy(
-                    expected_release_class.ei_release_full_data_model(
-                        operation_date=GlobalClassCreateEi.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateEi.feed_point_message['data']['operationDate']))
+                    expected_release_class.ei_release_full_data_model())
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected EI release before updating")
 
@@ -806,9 +802,9 @@ class TestUpdateEi:
                     """
                     Expected result depends on payload['tender']['items'][0]['classification']['id'].
                     """
-                    expected_items_array_model = expected_release_class.ei_tender_items_array_release(
-                        payload=GlobalClassUpdateEi.payload,
-                        actual_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items']
+                    expected_items_array_model = expected_release_class.prepare_expected_items_array(
+                        payload_items_array=GlobalClassUpdateEi.payload['tender']['items'],
+                        release_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items']
                     )
                     if actual_ei_release_after_updating['releases'][0]['tender']['items'] == expected_items_array_model:
                         pass
@@ -1086,9 +1082,9 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Check your payloads")
 
-                expected_items_array_model = expected_release_class.ei_tender_items_array_release(
-                    payload=GlobalClassUpdateEi.payload,
-                    actual_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items']
+                expected_items_array_model = expected_release_class.prepare_expected_items_array(
+                    payload_items_array=GlobalClassUpdateEi.payload['tender']['items'],
+                    release_items_array=actual_ei_release_after_updating['releases'][0]['tender']['items']
                 )
 
                 try:
