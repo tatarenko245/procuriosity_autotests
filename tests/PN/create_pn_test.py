@@ -469,7 +469,7 @@ class TestCreatePn:
 
                 with allure.step('# 7.5. Check EI release'):
                     """
-                    Compare multistage release with expected multistage release model.
+                    Compare expenditure item release before pn creating and expenditure item after pn creating.
                     """
                     allure.attach(str(json.dumps(GlobalClassCreatePn.actual_ei_release)),
                                   "Actual EI release after pn creating")
@@ -541,7 +541,7 @@ class TestCreatePn:
 
                 with allure.step('# 7.6. Check FS release'):
                     """
-                    Compare multistage release with expected multistage release model.
+                    Compare financial source before pn creating release and financial source after pn creating.
                     """
                     allure.attach(str(json.dumps(GlobalClassCreatePn.actual_fs_release)),
                                   "Actual FS release after pn creating")
@@ -903,7 +903,7 @@ class TestCreatePn:
 
             with allure.step('# 7.5. Check EI release'):
                 """
-                Compare multistage release with expected multistage release model.
+                Compare expenditure item release before pn creating and expenditure item after pn creating.
                 """
                 allure.attach(str(json.dumps(GlobalClassCreatePn.actual_ei_release)),
                               "Actual EI release after pn creating")
@@ -975,7 +975,7 @@ class TestCreatePn:
 
             with allure.step('# 7.6. Check FS release'):
                 """
-                Compare multistage release with expected multistage release model.
+                Compare financial source before pn creating release and financial source after pn creating.
                 """
                 allure.attach(str(json.dumps(GlobalClassCreatePn.actual_fs_release)),
                               "Actual FS release after pn creating")
@@ -1336,7 +1336,7 @@ class TestCreatePn:
 
             with allure.step('# 7.5. Check EI release'):
                 """
-                Compare multistage release with expected multistage release model.
+                Compare expenditure item release before pn creating and expenditure item after pn creating.
                 """
                 allure.attach(str(json.dumps(GlobalClassCreatePn.actual_ei_release)),
                               "Actual EI release after pn creating")
@@ -1408,7 +1408,7 @@ class TestCreatePn:
 
             with allure.step('# 7.6. Check FS release'):
                 """
-                Compare multistage release with expected multistage release model.
+                Compare financial source before pn creating release and financial source after pn creating.
                 """
                 allure.attach(str(json.dumps(GlobalClassCreatePn.actual_fs_release)),
                               "Actual FS release after pn creating")
