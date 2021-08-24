@@ -7,6 +7,8 @@ from pathlib import Path
 
 from uuid import UUID
 import csv
+
+import pytest
 import xlrd
 
 import allure
@@ -397,3 +399,57 @@ def get_sum_of_lot(lots_array):
             raise KeyError("Check lot_object['value']")
     s = float(format(sum(sum_of_lot), '.2f'))
     return s
+
+
+def set_permanent_id(release_array, payload_array):
+    try:
+        """
+        Check how many objects contains into release_lots_array.
+        Get permanent lot.id
+        """
+        permanent_id_list = list()
+        for some_object in release_array:
+            if "id" in some_object:
+                permanent_id_list.append(some_object['id'])
+        quantity_of_release_id = len(permanent_id_list)
+    except KeyError:
+        raise KeyError("'id' was not fined into 'release_lots_array'")
+
+    try:
+        """
+        Check how many objects contains into payload_lots_array.
+        """
+        permanent_id_list = list()
+        for some_object in payload_array:
+            if "id" in some_object:
+                permanent_id_list.append(some_object['id'])
+        quantity_of_payload_id = len(permanent_id_list)
+    except KeyError:
+        raise KeyError("'id' was not fined into 'payload_lots_array'")
+
+    try:
+        """
+        Set permanent lot.id into payload_lots_array
+        """
+        if quantity_of_payload_id == quantity_of_release_id or \
+                quantity_of_payload_id > quantity_of_release_id:
+            cycle = quantity_of_release_id - 1
+            position = 0
+            while cycle >= 0:
+                copy.deepcopy(payload_array)
+                payload_array[position]['id'] = release_array[position]['id']
+                position += 1
+                cycle -= 1
+
+        elif quantity_of_payload_id < quantity_of_release_id:
+            cycle = quantity_of_payload_id - 1
+            position = 0
+            while cycle >= 0:
+                copy.deepcopy(payload_array)
+                payload_array[position]['id'] = release_array[position]['id']
+                position += 1
+                cycle -= 1
+
+    except ValueError:
+        raise ValueError("Impossible to set permanent id into 'payload_lots_array'")
+    return payload_array
