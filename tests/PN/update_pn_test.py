@@ -948,8 +948,8 @@ class TestCreatePn:
                     actual_fs_release_after_updating = requests.get(
                         url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                             f"{GlobalClassCreateFs.fs_id}").json()
-                    allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)),
-                                  "Actual FS release after fs creating")
+                    allure.attach(str(json.dumps(actual_fs_release_after_updating)),
+                                  "Actual FS release after pn updating")
 
                     compare_releases = dict(
                         DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating))
@@ -1005,7 +1005,7 @@ class TestCreatePn:
 
     @allure.title('Check PN and MS releases data after PN updating without optional fields, but '
                   'with lot and item (without optional fields).')
-    def test_check_pn_ms_releases_one(self):
+    def test_check_pn_ms_releases_two(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -1542,8 +1542,8 @@ class TestCreatePn:
                     actual_fs_release_after_updating = requests.get(
                         url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                             f"{GlobalClassCreateFs.fs_id}").json()
-                    allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)),
-                                  "Actual FS release after fs creating")
+                    allure.attach(str(json.dumps(actual_fs_release_after_updating)),
+                                  "Actual FS release after pn updating")
 
                     compare_releases = dict(
                         DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating))
@@ -1598,7 +1598,7 @@ class TestCreatePn:
                 )) == str(True)
 
     @allure.title('Check PN and MS releases data after PN updating without optional fields.')
-    def test_check_pn_ms_releases_one(self):
+    def test_check_pn_ms_releases_three(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -1958,8 +1958,8 @@ class TestCreatePn:
                     actual_fs_release_after_updating = requests.get(
                         url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                             f"{GlobalClassCreateFs.fs_id}").json()
-                    allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)),
-                                  "Actual FS release after fs creating")
+                    allure.attach(str(json.dumps(actual_fs_release_after_updating)),
+                                  "Actual FS release after pn updating")
 
                     compare_releases = dict(
                         DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating))

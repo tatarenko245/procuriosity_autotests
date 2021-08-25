@@ -157,8 +157,17 @@ class GlobalClassUpdatePn:
     operation_id = None
     payload = None
     feed_point_message = None
-    pn_id = None
-    pn_ocid = None
+    actual_ei_release = None
+    actual_fs_release = None
+    actual_ms_release = None
+    actual_pn_release = None
+
+
+class GlobalClassCancelPn:
+    access_token = None
+    operation_id = None
+    payload = None
+    feed_point_message = None
     actual_ei_release = None
     actual_fs_release = None
     actual_ms_release = None
