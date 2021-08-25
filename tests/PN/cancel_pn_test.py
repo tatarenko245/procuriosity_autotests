@@ -599,103 +599,37 @@ class TestCreatePn:
                     actual_result=compare_releases
                 )) == str(True)
 
-                with allure.step('# 9.5. Check EI release'):
-                    """
-                    Compare actual expenditure item release before pn canceling and actual expenditure item release
-                    after pn canceling.
-                    """
-                    allure.attach(str(json.dumps(actual_ei_release_before_canceling)),
-                                  "Actual EI release before pn canceling")
+            with allure.step('# 9.5. Check EI release'):
+                """
+                Compare actual expenditure item release before pn canceling and actual expenditure item release
+                after pn canceling.
+                """
+                allure.attach(str(json.dumps(actual_ei_release_before_canceling)),
+                              "Actual EI release before pn canceling")
 
-                    actual_ei_release_after_canceling = requests.get(
-                        url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreateEi.ei_ocid}").json()
-                    allure.attach(str(json.dumps(actual_ei_release_after_canceling)),
-                                  "Actual EI release after pn canceling")
+                actual_ei_release_after_canceling = requests.get(
+                    url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateEi.ei_ocid}").json()
+                allure.attach(str(json.dumps(actual_ei_release_after_canceling)),
+                              "Actual EI release after pn canceling")
 
-                    compare_releases = dict(
-                        DeepDiff(actual_ei_release_before_canceling, actual_ei_release_after_canceling))
+                compare_releases = dict(
+                    DeepDiff(actual_ei_release_before_canceling, actual_ei_release_after_canceling))
 
-                    expected_result = {}
-
-                    try:
-                        """
-                        If compare_releases !=expected_result, then return process steps by operation-id.
-                        """
-                        if compare_releases == expected_result:
-                            pass
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                database = CassandraSession(
-                                    cassandra_username=GlobalClassMetadata.cassandra_username,
-                                    cassandra_password=GlobalClassMetadata.cassandra_password,
-                                    cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                                steps = database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassCancelPn.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
-
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_result,
-                        actual_result=compare_releases
-                    )) == str(True)
-
-                with allure.step('# 9.6. Check FS release'):
-                    """
-                    Compare actual financial source release before pn canceling and actual financial source release
-                    after pn canceling.
-                    """
-                    allure.attach(str(json.dumps(actual_fs_release_before_canceling)),
-                                  "Actual FS release before pn canceling")
-
-                    actual_fs_release_after_canceling = requests.get(
-                        url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreateFs.fs_id}").json()
-                    allure.attach(str(json.dumps(actual_fs_release_after_canceling)),
-                                  "Actual FS release after pn canceling")
-
-                    compare_releases = dict(
-                        DeepDiff(actual_fs_release_before_canceling, actual_fs_release_after_canceling))
-
-                    expected_result = {}
-
-                    try:
-                        """
-                        If compare_releases !=expected_result, then return process steps by operation-id.
-                        """
-                        if compare_releases == expected_result:
-                            pass
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                database = CassandraSession(
-                                    cassandra_username=GlobalClassMetadata.cassandra_username,
-                                    cassandra_password=GlobalClassMetadata.cassandra_password,
-                                    cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                                steps = database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassCancelPn.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
+                expected_result = {}
 
                 try:
                     """
-                        If TestCase was passed, then cLean up the database.
-                        If TestCase was failed, then return process steps by operation-id.
-                        """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                    If compare_releases !=expected_result, then return process steps by operation-id.
+                    """
                     if compare_releases == expected_result:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCancelPn.operation_id)
+                        pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
+                            database = CassandraSession(
+                                cassandra_username=GlobalClassMetadata.cassandra_username,
+                                cassandra_password=GlobalClassMetadata.cassandra_password,
+                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                             steps = database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassCancelPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
@@ -706,6 +640,72 @@ class TestCreatePn:
                     expected_result=expected_result,
                     actual_result=compare_releases
                 )) == str(True)
+
+            with allure.step('# 9.6. Check FS release'):
+                """
+                Compare actual financial source release before pn canceling and actual financial source release
+                after pn canceling.
+                """
+                allure.attach(str(json.dumps(actual_fs_release_before_canceling)),
+                              "Actual FS release before pn canceling")
+
+                actual_fs_release_after_canceling = requests.get(
+                    url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateFs.fs_id}").json()
+                allure.attach(str(json.dumps(actual_fs_release_after_canceling)),
+                              "Actual FS release after pn canceling")
+
+                compare_releases = dict(
+                    DeepDiff(actual_fs_release_before_canceling, actual_fs_release_after_canceling))
+
+                expected_result = {}
+
+                try:
+                    """
+                    If compare_releases !=expected_result, then return process steps by operation-id.
+                    """
+                    if compare_releases == expected_result:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            database = CassandraSession(
+                                cassandra_username=GlobalClassMetadata.cassandra_username,
+                                cassandra_password=GlobalClassMetadata.cassandra_password,
+                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                            steps = database.get_bpe_operation_step_by_operation_id(
+                                operation_id=GlobalClassCancelPn.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+            try:
+                """
+                    If TestCase was passed, then cLean up the database.
+                    If TestCase was failed, then return process steps by operation-id.
+                    """
+                database = CassandraSession(
+                    cassandra_username=GlobalClassMetadata.cassandra_username,
+                    cassandra_password=GlobalClassMetadata.cassandra_password,
+                    cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                if compare_releases == expected_result:
+                    database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
+                    database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
+                    database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
+                    database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
+                    database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
+                    database.cleanup_steps_of_process(operation_id=GlobalClassCancelPn.operation_id)
+                else:
+                    with allure.step('# Steps from Casandra DataBase'):
+                        steps = database.get_bpe_operation_step_by_operation_id(
+                            operation_id=GlobalClassCancelPn.operation_id)
+                        allure.attach(steps, "Cassandra DataBase: steps of process")
+            except ValueError:
+                raise ValueError("Can not return BPE operation step")
+
+            assert str(compare_actual_result_and_expected_result(
+                expected_result=expected_result,
+                actual_result=compare_releases
+            )) == str(True)
 
     @allure.title('Check PN and MS releases data after PN canceling, pn release  without optional fields')
     def test_check_pn_ms_releases_two(self):
@@ -1046,103 +1046,37 @@ class TestCreatePn:
                     actual_result=compare_releases
                 )) == str(True)
 
-                with allure.step('# 9.5. Check EI release'):
-                    """
-                    Compare actual expenditure item release before pn canceling and actual expenditure item release
-                    after pn canceling.
-                    """
-                    allure.attach(str(json.dumps(actual_ei_release_before_canceling)),
-                                  "Actual EI release before pn canceling")
+            with allure.step('# 9.5. Check EI release'):
+                """
+                Compare actual expenditure item release before pn canceling and actual expenditure item release
+                after pn canceling.
+                """
+                allure.attach(str(json.dumps(actual_ei_release_before_canceling)),
+                              "Actual EI release before pn canceling")
 
-                    actual_ei_release_after_canceling = requests.get(
-                        url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreateEi.ei_ocid}").json()
-                    allure.attach(str(json.dumps(actual_ei_release_after_canceling)),
-                                  "Actual EI release after pn canceling")
+                actual_ei_release_after_canceling = requests.get(
+                    url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateEi.ei_ocid}").json()
+                allure.attach(str(json.dumps(actual_ei_release_after_canceling)),
+                              "Actual EI release after pn canceling")
 
-                    compare_releases = dict(
-                        DeepDiff(actual_ei_release_before_canceling, actual_ei_release_after_canceling))
+                compare_releases = dict(
+                    DeepDiff(actual_ei_release_before_canceling, actual_ei_release_after_canceling))
 
-                    expected_result = {}
-
-                    try:
-                        """
-                        If compare_releases !=expected_result, then return process steps by operation-id.
-                        """
-                        if compare_releases == expected_result:
-                            pass
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                database = CassandraSession(
-                                    cassandra_username=GlobalClassMetadata.cassandra_username,
-                                    cassandra_password=GlobalClassMetadata.cassandra_password,
-                                    cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                                steps = database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassCancelPn.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
-
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_result,
-                        actual_result=compare_releases
-                    )) == str(True)
-
-                with allure.step('# 9.6. Check FS release'):
-                    """
-                    Compare actual financial source release before pn canceling and actual financial source release
-                    after pn canceling.
-                    """
-                    allure.attach(str(json.dumps(actual_fs_release_before_canceling)),
-                                  "Actual FS release before pn canceling")
-
-                    actual_fs_release_after_canceling = requests.get(
-                        url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreateFs.fs_id}").json()
-                    allure.attach(str(json.dumps(actual_fs_release_after_canceling)),
-                                  "Actual FS release after pn canceling")
-
-                    compare_releases = dict(
-                        DeepDiff(actual_fs_release_before_canceling, actual_fs_release_after_canceling))
-
-                    expected_result = {}
-
-                    try:
-                        """
-                        If compare_releases !=expected_result, then return process steps by operation-id.
-                        """
-                        if compare_releases == expected_result:
-                            pass
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                database = CassandraSession(
-                                    cassandra_username=GlobalClassMetadata.cassandra_username,
-                                    cassandra_password=GlobalClassMetadata.cassandra_password,
-                                    cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                                steps = database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassCancelPn.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
+                expected_result = {}
 
                 try:
                     """
-                        If TestCase was passed, then cLean up the database.
-                        If TestCase was failed, then return process steps by operation-id.
-                        """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                    If compare_releases !=expected_result, then return process steps by operation-id.
+                    """
                     if compare_releases == expected_result:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCancelPn.operation_id)
+                        pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
+                            database = CassandraSession(
+                                cassandra_username=GlobalClassMetadata.cassandra_username,
+                                cassandra_password=GlobalClassMetadata.cassandra_password,
+                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                             steps = database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassCancelPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
@@ -1153,3 +1087,69 @@ class TestCreatePn:
                     expected_result=expected_result,
                     actual_result=compare_releases
                 )) == str(True)
+
+            with allure.step('# 9.6. Check FS release'):
+                """
+                Compare actual financial source release before pn canceling and actual financial source release
+                after pn canceling.
+                """
+                allure.attach(str(json.dumps(actual_fs_release_before_canceling)),
+                              "Actual FS release before pn canceling")
+
+                actual_fs_release_after_canceling = requests.get(
+                    url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateFs.fs_id}").json()
+                allure.attach(str(json.dumps(actual_fs_release_after_canceling)),
+                              "Actual FS release after pn canceling")
+
+                compare_releases = dict(
+                    DeepDiff(actual_fs_release_before_canceling, actual_fs_release_after_canceling))
+
+                expected_result = {}
+
+                try:
+                    """
+                    If compare_releases !=expected_result, then return process steps by operation-id.
+                    """
+                    if compare_releases == expected_result:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            database = CassandraSession(
+                                cassandra_username=GlobalClassMetadata.cassandra_username,
+                                cassandra_password=GlobalClassMetadata.cassandra_password,
+                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                            steps = database.get_bpe_operation_step_by_operation_id(
+                                operation_id=GlobalClassCancelPn.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+            try:
+                """
+                    If TestCase was passed, then cLean up the database.
+                    If TestCase was failed, then return process steps by operation-id.
+                    """
+                database = CassandraSession(
+                    cassandra_username=GlobalClassMetadata.cassandra_username,
+                    cassandra_password=GlobalClassMetadata.cassandra_password,
+                    cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                if compare_releases == expected_result:
+                    database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
+                    database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
+                    database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
+                    database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
+                    database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
+                    database.cleanup_steps_of_process(operation_id=GlobalClassCancelPn.operation_id)
+                else:
+                    with allure.step('# Steps from Casandra DataBase'):
+                        steps = database.get_bpe_operation_step_by_operation_id(
+                            operation_id=GlobalClassCancelPn.operation_id)
+                        allure.attach(steps, "Cassandra DataBase: steps of process")
+            except ValueError:
+                raise ValueError("Can not return BPE operation step")
+
+            assert str(compare_actual_result_and_expected_result(
+                expected_result=expected_result,
+                actual_result=compare_releases
+            )) == str(True)
