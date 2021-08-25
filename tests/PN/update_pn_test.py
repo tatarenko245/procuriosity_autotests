@@ -417,7 +417,10 @@ class TestCreatePn:
             GlobalClassUpdatePn.payload = \
                 pn_payload.update_pn_full_data_model_with_lots_and_items_full(
                     quantity_of_lot_object=3,
-                    quantity_of_item_object=3
+                    quantity_of_item_object=3,
+                    need_to_set_permanent_id_for_lots_array=True,
+                    need_to_set_permanent_id_for_items_array=True,
+                    need_to_set_permanent_id_for_documents_array=True
                 )
             synchronous_result_of_sending_the_request = Requests().update_pn(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
