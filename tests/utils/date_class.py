@@ -42,7 +42,41 @@ class Date:
     def contact_period():
         date = datetime.datetime.now()
         duration_date_start = date + datetime.timedelta(days=60)
-        start_date = duration_date_start.strftime('%Y-%m-01T%H:%M:%SZ')
+        start_date = duration_date_start.strftime('%Y-%m-%dT%H:%M:%SZ')
         duration_date_end = date + datetime.timedelta(days=80)
-        end_date = duration_date_end.strftime('%Y-%m-01T%H:%M:%SZ')
+        end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+        return start_date, end_date
+
+    @staticmethod
+    def tender_period_end_date(interval=30, check_time_zone=3):
+        date = datetime.datetime.now()
+
+        duration_date_tender_end = date - datetime.timedelta(hours=check_time_zone) + datetime.timedelta(
+            seconds=interval)
+        end_date = duration_date_tender_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+        return end_date
+
+    @staticmethod
+    def enquiry_period_end_date(interval=15, check_time_zone=3):
+        date = datetime.datetime.now()
+        duration_date_end = date - datetime.timedelta(hours=check_time_zone) + datetime.timedelta(seconds=interval)
+        end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+        return end_date
+
+    @staticmethod
+    def old_period():
+        date = datetime.datetime.now()
+        duration_date_start = date - datetime.timedelta(days=365)
+        start_date = duration_date_start.strftime('%Y-%m-%dT%H:%M:%SZ')
+        duration_date_end = date - datetime.timedelta(days=350)
+        end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+        return start_date, end_date
+
+    @staticmethod
+    def duration_period():
+        date = datetime.datetime.now()
+        duration_date_start = date + datetime.timedelta(days=180)
+        start_date = duration_date_start.strftime('%Y-%m-%dT%H:%M:%SZ')
+        duration_date_end = date + datetime.timedelta(days=20)
+        end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return start_date, end_date

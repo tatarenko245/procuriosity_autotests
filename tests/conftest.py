@@ -172,3 +172,16 @@ class GlobalClassCancelPn:
     actual_fs_release = None
     actual_ms_release = None
     actual_pn_release = None
+
+
+class GlobalClassCreateCnOnPn:
+    access_token = None
+    operation_id = None
+    payload = None
+    feed_point_message = None
+    actual_ei_release = None
+    actual_fs_release = None
+    actual_ms_release = None
+    actual_pn_release = None
+    actual_ev_release = None
+    ev_id = None

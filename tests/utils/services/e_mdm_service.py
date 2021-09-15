@@ -1,6 +1,7 @@
+import copy
 import uuid
 import requests
-from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs
+from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassMetadata
 from tests.utils.date_class import Date
 from tests.utils.http_manager import HttpManager
 
@@ -12,7 +13,7 @@ class MdmService:
         port = HttpManager().e_mdm_service()[0]
         command = HttpManager().e_mdm_service()[1]
         data = requests.post(
-            url=GlobalClassCreateEi.host_for_service + f":{port}/{command}",
+            url=GlobalClassMetadata.host_for_services + f":{port}/{command}",
             json={
                 "id": str(uuid.uuid1()),
                 "command": "processEiData",
@@ -33,108 +34,108 @@ class MdmService:
                 "data": {
                     "tender": {
                         "classification": {
-                            "id": GlobalClassCreateEi.payload_for_create_ei['tender']['classification']['id']
+                            "id": GlobalClassCreateEi.payload['tender']['classification']['id']
                         },
                         "items": [{
-                            "id": GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0]['id'],
-                            "description": GlobalClassCreateEi.payload_for_create_ei['tender'][
+                            "id": GlobalClassCreateEi.payload['tender']['items'][0]['id'],
+                            "description": GlobalClassCreateEi.payload['tender'][
                                 'items'][0]['description'],
                             "classification": {
-                                "id": GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0][
+                                "id": GlobalClassCreateEi.payload['tender']['items'][0][
                                     'classification']['id']
                             },
                             "additionalClassifications": [{
-                                "id": GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0][
+                                "id": GlobalClassCreateEi.payload['tender']['items'][0][
                                     'additionalClassifications'][0]['id']
                             }],
                             "deliveryAddress": {
-                                "streetAddress": GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0][
+                                "streetAddress": GlobalClassCreateEi.payload['tender']['items'][0][
                                     'deliveryAddress']['streetAddress'],
-                                "postalCode": GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0][
+                                "postalCode": GlobalClassCreateEi.payload['tender']['items'][0][
                                     'deliveryAddress']['postalCode'],
                                 "addressDetails": {
                                     "country": {
-                                        "id": GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0][
+                                        "id": GlobalClassCreateEi.payload['tender']['items'][0][
                                             'deliveryAddress']['addressDetails']['country']['id']
                                     },
                                     "region": {
-                                        "id": GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0][
+                                        "id": GlobalClassCreateEi.payload['tender']['items'][0][
                                             'deliveryAddress']['addressDetails']['region']['id']
                                     },
                                     "locality": {
-                                        "id": GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0][
+                                        "id": GlobalClassCreateEi.payload['tender']['items'][0][
                                             'deliveryAddress']['addressDetails']['locality']['id'],
-                                        "description": GlobalClassCreateEi.payload_for_create_ei['tender'][
+                                        "description": GlobalClassCreateEi.payload['tender'][
                                             'items'][0]['deliveryAddress']['addressDetails'][
                                             'locality']['description'],
-                                        "scheme": GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0][
+                                        "scheme": GlobalClassCreateEi.payload['tender']['items'][0][
                                             'deliveryAddress']['addressDetails']['locality']['scheme']
                                     }
                                 }
                             },
-                            "quantity": GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0]['quantity'],
+                            "quantity": GlobalClassCreateEi.payload['tender']['items'][0]['quantity'],
                             "unit": {
-                                "id": GlobalClassCreateEi.payload_for_create_ei['tender']['items'][0]['unit']['id']
+                                "id": GlobalClassCreateEi.payload['tender']['items'][0]['unit']['id']
                             }
                         }]
                     },
                     "buyer": {
-                        "name": GlobalClassCreateEi.payload_for_create_ei['buyer']['name'],
+                        "name": GlobalClassCreateEi.payload['buyer']['name'],
                         "identifier": {
-                            "id": GlobalClassCreateEi.payload_for_create_ei['buyer']['identifier']['id'],
-                            "scheme": GlobalClassCreateEi.payload_for_create_ei['buyer']['identifier']['scheme'],
-                            "legalName": GlobalClassCreateEi.payload_for_create_ei['buyer']['identifier'][
+                            "id": GlobalClassCreateEi.payload['buyer']['identifier']['id'],
+                            "scheme": GlobalClassCreateEi.payload['buyer']['identifier']['scheme'],
+                            "legalName": GlobalClassCreateEi.payload['buyer']['identifier'][
                                 'legalName'],
-                            "uri": GlobalClassCreateEi.payload_for_create_ei['buyer']['identifier']['uri']
+                            "uri": GlobalClassCreateEi.payload['buyer']['identifier']['uri']
                         },
                         "address": {
-                            "streetAddress": GlobalClassCreateEi.payload_for_create_ei['buyer']['address'][
+                            "streetAddress": GlobalClassCreateEi.payload['buyer']['address'][
                                 'streetAddress'],
-                            "postalCode": GlobalClassCreateEi.payload_for_create_ei['buyer']['address']['postalCode'],
+                            "postalCode": GlobalClassCreateEi.payload['buyer']['address']['postalCode'],
                             "addressDetails": {
                                 "country": {
-                                    "id": GlobalClassCreateEi.payload_for_create_ei['buyer']['address'][
+                                    "id": GlobalClassCreateEi.payload['buyer']['address'][
                                         'addressDetails']['country']['id']
                                 },
                                 "region": {
-                                    "id": GlobalClassCreateEi.payload_for_create_ei['buyer']['address'][
+                                    "id": GlobalClassCreateEi.payload['buyer']['address'][
                                         'addressDetails']['region']['id']
                                 },
                                 "locality": {
-                                    "scheme": GlobalClassCreateEi.payload_for_create_ei['buyer']['address'][
+                                    "scheme": GlobalClassCreateEi.payload['buyer']['address'][
                                         'addressDetails']['locality']['scheme'],
-                                    "id": GlobalClassCreateEi.payload_for_create_ei['buyer']['address'][
+                                    "id": GlobalClassCreateEi.payload['buyer']['address'][
                                         'addressDetails']['locality']['id'],
-                                    "description": GlobalClassCreateEi.payload_for_create_ei['buyer']['address'][
+                                    "description": GlobalClassCreateEi.payload['buyer']['address'][
                                         'addressDetails']['locality']['description']
                                 }
                             }
                         },
                         "additionalIdentifiers": [{
-                            "id": GlobalClassCreateEi.payload_for_create_ei['buyer'][
+                            "id": GlobalClassCreateEi.payload['buyer'][
                                 'additionalIdentifiers'][0]['id'],
-                            "scheme": GlobalClassCreateEi.payload_for_create_ei['buyer'][
+                            "scheme": GlobalClassCreateEi.payload['buyer'][
                                 'additionalIdentifiers'][0]['scheme'],
-                            "legalName": GlobalClassCreateEi.payload_for_create_ei['buyer'][
+                            "legalName": GlobalClassCreateEi.payload['buyer'][
                                 'additionalIdentifiers'][0]['legalName'],
-                            "uri": GlobalClassCreateEi.payload_for_create_ei['buyer'][
+                            "uri": GlobalClassCreateEi.payload['buyer'][
                                 'additionalIdentifiers'][0]['uri']
                         }],
                         "contactPoint": {
-                            "name": GlobalClassCreateEi.payload_for_create_ei['buyer']['contactPoint']['name'],
-                            "email": GlobalClassCreateEi.payload_for_create_ei['buyer']['contactPoint']['email'],
-                            "telephone": GlobalClassCreateEi.payload_for_create_ei['buyer'][
+                            "name": GlobalClassCreateEi.payload['buyer']['contactPoint']['name'],
+                            "email": GlobalClassCreateEi.payload['buyer']['contactPoint']['email'],
+                            "telephone": GlobalClassCreateEi.payload['buyer'][
                                 'contactPoint']['telephone'],
-                            "faxNumber": GlobalClassCreateEi.payload_for_create_ei['buyer'][
+                            "faxNumber": GlobalClassCreateEi.payload['buyer'][
                                 'contactPoint']['faxNumber'],
-                            "url": GlobalClassCreateEi.payload_for_create_ei['buyer']['contactPoint']['url']
+                            "url": GlobalClassCreateEi.payload['buyer']['contactPoint']['url']
                         },
                         "details": {
-                            "typeOfBuyer": GlobalClassCreateEi.payload_for_create_ei['buyer']['details'][
+                            "typeOfBuyer": GlobalClassCreateEi.payload['buyer']['details'][
                                 'typeOfBuyer'],
-                            "mainGeneralActivity": GlobalClassCreateEi.payload_for_create_ei['buyer'][
+                            "mainGeneralActivity": GlobalClassCreateEi.payload['buyer'][
                                 'details']['mainGeneralActivity'],
-                            "mainSectoralActivity": GlobalClassCreateEi.payload_for_create_ei['buyer'][
+                            "mainSectoralActivity": GlobalClassCreateEi.payload['buyer'][
                                 'details']['mainSectoralActivity']
                         }
                     }
@@ -149,7 +150,7 @@ class MdmService:
         port = HttpManager().e_mdm_service()[0]
         command = HttpManager().e_mdm_service()[1]
         data = requests.post(
-            url=GlobalClassCreateFs.host_for_service + f":{port}/{command}",
+            url=GlobalClassMetadata.host_for_services + f":{port}/{command}",
             json={
                 "id": str(uuid.uuid1()),
                 "command": "processFsData",
@@ -171,120 +172,120 @@ class MdmService:
                     "planning": {
                         "budget": {
                             "amount": {
-                                "currency": GlobalClassCreateFs.payload_for_create_fs['planning']['budget'][
+                                "currency": GlobalClassCreateFs.payload['planning']['budget'][
                                     'amount']['currency']
                             }
                         }
                     },
                     "tender": {
                         "procuringEntity": {
-                            "name": GlobalClassCreateFs.payload_for_create_fs['tender']['procuringEntity']['name'],
+                            "name": GlobalClassCreateFs.payload['tender']['procuringEntity']['name'],
                             "identifier": {
-                                "id": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "id": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['identifier']['id'],
-                                "scheme": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "scheme": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['identifier']['scheme'],
-                                "legalName": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "legalName": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['identifier']['legalName'],
-                                "uri": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "uri": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['identifier']['uri']
                             },
                             "additionalIdentifiers": [{
-                                "id": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "id": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['additionalIdentifiers'][0]['id'],
-                                "scheme": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "scheme": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['additionalIdentifiers'][0]['scheme'],
-                                "legalName": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "legalName": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['additionalIdentifiers'][0]['legalName'],
-                                "uri": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "uri": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['additionalIdentifiers'][0]['uri']
                             }],
                             "address": {
-                                "streetAddress": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "streetAddress": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['address']['streetAddress'],
-                                "postalCode": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "postalCode": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['address']['postalCode'],
                                 "addressDetails": {
                                     "country": {
-                                        "id": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                        "id": GlobalClassCreateFs.payload['tender'][
                                             'procuringEntity']['address']['addressDetails']['country']['id']
                                     },
                                     "region": {
-                                        "id": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                        "id": GlobalClassCreateFs.payload['tender'][
                                             'procuringEntity']['address']['addressDetails']['region']['id']
                                     },
                                     "locality": {
-                                        "scheme": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                        "scheme": GlobalClassCreateFs.payload['tender'][
                                             'procuringEntity']['address']['addressDetails']['locality']['scheme'],
-                                        "id": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                        "id": GlobalClassCreateFs.payload['tender'][
                                             'procuringEntity']['address']['addressDetails']['locality']['id'],
-                                        "description": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                        "description": GlobalClassCreateFs.payload['tender'][
                                             'procuringEntity']['address']['addressDetails']['locality']['description']
                                     }
                                 }
                             },
                             "contactPoint": {
-                                "name": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "name": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['contactPoint']['name'],
-                                "email": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "email": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['contactPoint']['email'],
-                                "telephone": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "telephone": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['contactPoint']['telephone'],
-                                "faxNumber": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "faxNumber": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['contactPoint']['faxNumber'],
-                                "url": GlobalClassCreateFs.payload_for_create_fs['tender'][
+                                "url": GlobalClassCreateFs.payload['tender'][
                                     'procuringEntity']['contactPoint']['url']
                             }
                         }
                     },
                     "buyer": {
-                        "name": GlobalClassCreateFs.payload_for_create_fs['buyer']['name'],
+                        "name": GlobalClassCreateFs.payload['buyer']['name'],
                         "identifier": {
-                            "id": GlobalClassCreateFs.payload_for_create_fs['buyer']['identifier']['id'],
-                            "scheme": GlobalClassCreateFs.payload_for_create_fs['buyer']['identifier']['scheme'],
-                            "legalName": GlobalClassCreateFs.payload_for_create_fs['buyer']['identifier']['legalName'],
-                            "uri": GlobalClassCreateFs.payload_for_create_fs['buyer']['identifier']['uri']
+                            "id": GlobalClassCreateFs.payload['buyer']['identifier']['id'],
+                            "scheme": GlobalClassCreateFs.payload['buyer']['identifier']['scheme'],
+                            "legalName": GlobalClassCreateFs.payload['buyer']['identifier']['legalName'],
+                            "uri": GlobalClassCreateFs.payload['buyer']['identifier']['uri']
                         },
                         "address": {
-                            "streetAddress": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                            "streetAddress": GlobalClassCreateFs.payload['buyer'][
                                 'address']['streetAddress'],
-                            "postalCode": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                            "postalCode": GlobalClassCreateFs.payload['buyer'][
                                 'address']['postalCode'],
                             "addressDetails": {
                                 "country": {
-                                    "id": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                                    "id": GlobalClassCreateFs.payload['buyer'][
                                         'address']['addressDetails']['country']['id']
                                 },
                                 "region": {
-                                    "id": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                                    "id": GlobalClassCreateFs.payload['buyer'][
                                         'address']['addressDetails']['region']['id']
                                 },
                                 "locality": {
-                                    "scheme": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                                    "scheme": GlobalClassCreateFs.payload['buyer'][
                                         'address']['addressDetails']['locality']['scheme'],
-                                    "id": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                                    "id": GlobalClassCreateFs.payload['buyer'][
                                         'address']['addressDetails']['locality']['id'],
-                                    "description": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                                    "description": GlobalClassCreateFs.payload['buyer'][
                                         'address']['addressDetails']['locality']['description']
                                 }
                             }
                         },
                         "additionalIdentifiers": [{
-                            "id": GlobalClassCreateFs.payload_for_create_fs['buyer']['additionalIdentifiers'][0]['id'],
-                            "scheme": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                            "id": GlobalClassCreateFs.payload['buyer']['additionalIdentifiers'][0]['id'],
+                            "scheme": GlobalClassCreateFs.payload['buyer'][
                                 'additionalIdentifiers'][0]['scheme'],
-                            "legalName": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                            "legalName": GlobalClassCreateFs.payload['buyer'][
                                 'additionalIdentifiers'][0]['legalName'],
-                            "uri": GlobalClassCreateFs.payload_for_create_fs['buyer']['additionalIdentifiers'][0]['uri']
+                            "uri": GlobalClassCreateFs.payload['buyer']['additionalIdentifiers'][0]['uri']
                         }],
                         "contactPoint": {
-                            "name": GlobalClassCreateFs.payload_for_create_fs['buyer']['contactPoint']['name'],
-                            "email": GlobalClassCreateFs.payload_for_create_fs['buyer']['contactPoint']['email'],
-                            "telephone": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                            "name": GlobalClassCreateFs.payload['buyer']['contactPoint']['name'],
+                            "email": GlobalClassCreateFs.payload['buyer']['contactPoint']['email'],
+                            "telephone": GlobalClassCreateFs.payload['buyer'][
                                 'contactPoint']['telephone'],
-                            "faxNumber": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                            "faxNumber": GlobalClassCreateFs.payload['buyer'][
                                 'contactPoint']['faxNumber'],
-                            "url": GlobalClassCreateFs.payload_for_create_fs['buyer'][
+                            "url": GlobalClassCreateFs.payload['buyer'][
                                 'contactPoint']['url']
                         }
                     }
@@ -292,3 +293,38 @@ class MdmService:
                 "version": "0.0.1"
             })
         return data.json()
+
+    @staticmethod
+    def get_standard_criteria(country, language):
+        url = None
+        if GlobalClassMetadata.environment == "dev":
+            url = "http://dev.public.eprocurement.systems/mdm/standardCriteria"
+        elif GlobalClassMetadata.environment == "sandbox":
+            url = "http://public.eprocurement.systems/mdm/standardCriteria"
+        data = requests.get(url=url,
+                            params={
+                                'lang': language,
+                                'country': country
+                            })
+
+        exclusion_ground_criteria_list = list()
+        for criteria in copy.deepcopy(data.json()['data']):
+            for i in criteria['classification']:
+                if i == "id":
+                    if criteria['classification']['id'][0:20] == "CRITERION.EXCLUSION.":
+                        exclusion_ground_criteria_list.append(criteria['classification'])
+
+        selection_criteria_list = list()
+        for criteria in copy.deepcopy(data.json()['data']):
+            for i in criteria['classification']:
+                if i == "id":
+                    if criteria['classification']['id'][0:20] == "CRITERION.SELECTION.":
+                        selection_criteria_list.append(criteria['classification'])
+
+        other_criteria_list = list()
+        for criteria in copy.deepcopy(data.json()['data']):
+            for i in criteria['classification']:
+                if i == "id":
+                    if criteria['classification']['id'][0:16] == "CRITERION.OTHER.":
+                        other_criteria_list.append(criteria['classification'])
+        return data.json(), exclusion_ground_criteria_list, selection_criteria_list, other_criteria_list

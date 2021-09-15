@@ -1,8 +1,9 @@
 import copy
 
 import allure
+
 from cassandra.auth import PlainTextAuthProvider
-from cassandra.cluster import Cluster
+from cassandra.cluster import Cluster, ProtocolVersion
 
 
 # yield  то эе самое что и return, только идет по интерациям
@@ -12,9 +13,12 @@ class CassandraSession:
             username=cassandra_username,
             password=cassandra_password
         )
-        self.cluster = Cluster([cassandra_cluster], auth_provider=auth_provider)
+        self.cluster = Cluster([cassandra_cluster], auth_provider=auth_provider, protocol_version=ProtocolVersion.V4)
         self.ocds_keyspace = self.cluster.connect('ocds')
         self.access_keyspace = self.cluster.connect('access')
+        self.clarification_keyspace = self.cluster.connect('clarification')
+        self.auctions_keyspace = self.cluster.connect('auctions')
+        self.submission_keyspace = self.cluster.connect('submission')
 
     def ei_process_cleanup_table_of_services(self, ei_id):
         return self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one(), \
@@ -42,6 +46,16 @@ class CassandraSession:
         return self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one(), \
                self.ocds_keyspace.execute(f"DELETE FROM budget_fs WHERE cp_id='{pn_ocid}';"), \
                self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';"), \
+               self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';"), \
+               self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';"), \
+               self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+
+    def cnonpn_process_cleanup_table_of_services(self, pn_ocid):
+        return self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one(), \
+               self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';"), \
+               self.clarification_keyspace.execute(f"DELETE FROM periods WHERE cpid='{pn_ocid}';"), \
+               self.auctions_keyspace.execute(f"DELETE FROM auctions WHERE cpid='{pn_ocid}';"), \
+               self.submission_keyspace.execute(f"DELETE FROM periods WHERE cpid='{pn_ocid}';"), \
                self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';"), \
                self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';"), \
                self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
