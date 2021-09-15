@@ -717,8 +717,7 @@ class CnOnPnExpectedRelease:
                                 for o in coefficient_object:
                                     if o == "id":
                                         list_of_payload_conversions_coefficients_id.append(o)
-                                    if o == "coefficient":
-                                        int(coefficient_object[o])
+
                         quantity_of_conversions_coefficients_object_into_payload = \
                             len(list_of_payload_conversions_coefficients_id)
                     except KeyError:

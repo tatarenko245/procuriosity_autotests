@@ -453,7 +453,7 @@ class CnOnPnPreparePayload:
             conversion_object['coefficients'][1].update(self.constructor.tender_conversion_coefficient_object())
             conversion_object['coefficients'][0]['id'] = "create cnonpn: tender.conversion.coefficients.id"
             conversion_object['coefficients'][0]['value'] = 0.99
-            conversion_object['coefficients'][0]['coefficient'] = 1.0
+            conversion_object['coefficients'][0]['coefficient'] = 1
             conversion_object['coefficients'][1]['id'] = "create cnonpn: tender.conversion.coefficients.id"
             conversion_object['coefficients'][1]['value'] = 99.99
             conversion_object['coefficients'][1]['coefficient'] = 0.99
@@ -495,7 +495,7 @@ class CnOnPnPreparePayload:
             conversion_object['coefficients'][1].update(self.constructor.tender_conversion_coefficient_object())
             conversion_object['coefficients'][1]['id'] = "1"
             conversion_object['coefficients'][1]['value'] = False
-            conversion_object['coefficients'][1]['coefficient'] = 1.0
+            conversion_object['coefficients'][1]['coefficient'] = 1
             payload['tender']['conversions'].append(conversion_object)
 
             if quantity_of_requirements_objects >= 1:
