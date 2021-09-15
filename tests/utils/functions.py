@@ -1,22 +1,19 @@
 import copy
 import datetime
 import fnmatch
-
+import json
 import random
 from pathlib import Path
-
 from uuid import UUID
 import csv
-
-import pytest
 import xlrd
-
 import allure
-
+from tests.conftest import GlobalClassMetadata
 from tests.utils.data_of_enum import cpv_goods_low_level_03, cpv_goods_low_level_1, cpv_goods_low_level_2, \
     cpv_goods_low_level_3, cpv_goods_low_level_44, cpv_goods_low_level_48, cpv_works_low_level_45, \
     cpv_services_low_level_5, cpv_services_low_level_6, cpv_services_low_level_7, cpv_services_low_level_8, \
     cpv_services_low_level_92, cpv_services_low_level_98
+from tests.utils.services.e_mdm_service import MdmService
 
 
 @allure.step('Compare actual and expected results')
@@ -145,7 +142,7 @@ def generate_lots_array(quantity_of_object, lot_object):
     for i in range(quantity_of_object):
         lot_json = copy.deepcopy(lot_object)
         lot_json['id'] = str(i)
-        lot_json['value']['amount'] = lot_object['value']['amount'] / quantity_of_object
+        lot_json['value']['amount'] = round(float(lot_object['value']['amount'] / quantity_of_object), 2)
         lots_array.append(lot_json)
 
     new_array_lots = []
@@ -153,6 +150,97 @@ def generate_lots_array(quantity_of_object, lot_object):
         val = lots_array[quantity_of_object]
         new_array_lots.append(copy.deepcopy(val))
     return new_array_lots
+
+
+def generate_criteria_array(quantity_of_criteria_object, criteria_object, quantity_of_groups_object,
+                            quantity_of_requirements_object, quantity_of_evidences_object, type_of_standard_criteria):
+    copy.deepcopy(criteria_object)
+    criteria_array = []
+    for i in range(quantity_of_criteria_object):
+        criteria_json = copy.deepcopy(criteria_object)
+        criteria_json['id'] = str(i).zfill(3)
+
+        criteria_json['requirementGroups'] = generate_criteria_requirement_groups_array(
+            quantity_of_object=quantity_of_groups_object,
+            requirement_groups_object=criteria_json['requirementGroups'][0],
+            quantity_of_requirements_object=quantity_of_requirements_object,
+            quantity_of_evidences_object=quantity_of_evidences_object,
+        )
+        for j in range(quantity_of_groups_object):
+            criteria_json['requirementGroups'][j]['id'] = f"{criteria_json['id']}-{j}"
+            for y in range(quantity_of_requirements_object):
+                criteria_json['requirementGroups'][j]['requirements'][y]['id'] = \
+                    f"{criteria_json['requirementGroups'][j]['id']}-{y}"
+        criteria_array.append(criteria_json)
+
+    standard_criteria = MdmService().get_standard_criteria(
+        country=GlobalClassMetadata.country,
+        language=GlobalClassMetadata.language)
+
+    new_array_criteria = []
+    for quantity_of_object in range(quantity_of_criteria_object):
+        criteria_array[quantity_of_object]['classification'] = \
+            standard_criteria[type_of_standard_criteria][quantity_of_object]
+        val = criteria_array[quantity_of_object]
+        new_array_criteria.append(copy.deepcopy(val))
+    return new_array_criteria
+
+
+def generate_criteria_requirement_groups_array(quantity_of_object, requirement_groups_object,
+                                               quantity_of_requirements_object, quantity_of_evidences_object):
+    copy.deepcopy(requirement_groups_object)
+    requirement_groups_array = []
+    for i in range(quantity_of_object):
+        requirement_groups_json = copy.deepcopy(requirement_groups_object)
+        requirement_groups_json['id'] = str(i)
+        requirement_groups_json['requirements'] = generate_criteria_requirement_groups_requirements(
+            quantity_of_object=quantity_of_requirements_object,
+            requirement_object=requirement_groups_json['requirements'][0],
+            quantity_of_evidences_object=quantity_of_evidences_object)
+        requirement_groups_array.append(requirement_groups_json)
+
+    new_array_requirement_groups = []
+    for quantity_of_object in range(quantity_of_object):
+        val = requirement_groups_array[quantity_of_object]
+        new_array_requirement_groups.append(copy.deepcopy(val))
+    return new_array_requirement_groups
+
+
+def generate_criteria_requirement_groups_requirements(
+        quantity_of_object, requirement_object, quantity_of_evidences_object):
+    copy.deepcopy(requirement_object)
+    requirements_array = []
+    for i in range(quantity_of_object):
+        requirement_json = copy.deepcopy(requirement_object)
+        requirement_json['id'] = str(i)
+        requirement_json['eligibleEvidences'] = \
+            generate_criteria_requirement_groups_requirements_eligible_evidences_array(
+                quantity_of_object=quantity_of_evidences_object,
+                eligible_evidences_object=requirement_json['eligibleEvidences'][0])
+        requirements_array.append(requirement_json)
+
+    new_array_requirements = []
+    for quantity_of_object in range(quantity_of_object):
+        val = requirements_array[quantity_of_object]
+        new_array_requirements.append(copy.deepcopy(val))
+    return new_array_requirements
+
+
+def generate_criteria_requirement_groups_requirements_eligible_evidences_array(
+        quantity_of_object, eligible_evidences_object):
+    copy.deepcopy(eligible_evidences_object)
+    eligible_evidences_array = []
+    for i in range(quantity_of_object):
+        eligible_evidences_json = copy.deepcopy(eligible_evidences_object)
+        eligible_evidences_json['id'] = str(i)
+        eligible_evidences_array.append(eligible_evidences_json)
+
+    new_array_requirement_groups = []
+    for quantity_of_object in range(quantity_of_object):
+        val = eligible_evidences_array[quantity_of_object]
+        new_array_requirement_groups.append(copy.deepcopy(val))
+
+    return new_array_requirement_groups
 
 
 # def generate_items_array(quantity_of_object, item_object, tender_classification_id):
@@ -388,6 +476,9 @@ def get_contract_period_for_ms_release(lots_array):
 
 
 def get_sum_of_lot(lots_array):
+    """
+    This function returns result of sum all lots into payload.
+    """
     sum_of_lot = list()
     for lot_object in lots_array:
         if "value" in lot_object:
@@ -402,10 +493,14 @@ def get_sum_of_lot(lots_array):
 
 
 def set_permanent_id(release_array, payload_array):
+    """
+    This function returns payload_array with permanent id from release_array.
+    It means, we can set permanent id for lots, items, documents, any array.
+    """
     try:
         """
-        Check how many objects contains into release_lots_array.
-        Get permanent lot.id
+        Check how many objects contains into release_*_array.
+        Get permanent *.id
         """
         permanent_id_list = list()
         for some_object in release_array:
@@ -413,7 +508,7 @@ def set_permanent_id(release_array, payload_array):
                 permanent_id_list.append(some_object['id'])
         quantity_of_release_id = len(permanent_id_list)
     except KeyError:
-        raise KeyError("'id' was not fined into 'release_lots_array'")
+        raise KeyError("'id' was not fined into 'release_*_array'")
 
     try:
         """
@@ -453,3 +548,274 @@ def set_permanent_id(release_array, payload_array):
     except ValueError:
         raise ValueError("Impossible to set permanent id into 'payload_lots_array'")
     return payload_array
+
+
+def get_value_from_standard_criteria_csv(country, language):
+    """
+    This function returns value from the file 'standard_criteria.csv'.
+    The file 'standard_criteria.csv' contains standard_criteria value from 'mdm' Postgres database.
+    """
+    path = get_project_root()
+    with open(f'{path}/standard_criteria.csv') as f:
+        reader = csv.reader(f)
+        standard_criteria_full_list = list()
+        for row in reader:
+            if row[1] == country and row[2] == language.upper():
+                standard_criteria_full_list.append(json.loads(row[3]))
+
+        exclusion_ground_criteria_list = list()
+        for criteria in copy.deepcopy(standard_criteria_full_list):
+            for i in criteria['classification']:
+                if i == "id":
+                    if criteria['classification']['id'][0:20] == "CRITERION.EXCLUSION.":
+                        exclusion_ground_criteria_list.append(criteria['classification'])
+
+        selection_criteria_list = list()
+        for criteria in copy.deepcopy(standard_criteria_full_list):
+            for i in criteria['classification']:
+                if i == "id":
+                    if criteria['classification']['id'][0:20] == "CRITERION.SELECTION.":
+                        selection_criteria_list.append(criteria['classification'])
+
+        other_criteria_list = list()
+        for criteria in copy.deepcopy(standard_criteria_full_list):
+            for i in criteria['classification']:
+                if i == "id":
+                    if criteria['classification']['id'][0:16] == "CRITERION.OTHER.":
+                        other_criteria_list.append(criteria['classification'])
+        return standard_criteria_full_list, exclusion_ground_criteria_list, selection_criteria_list, other_criteria_list
+
+
+def make_unique_numbers(n):
+    """
+    This function returns set of the unique numbers.
+    """
+    set_of_numbers = set()
+    while len(set_of_numbers) < n:
+        set_of_numbers.add(random.randint(0, n))
+    return set_of_numbers
+
+
+def set_eligibility_evidences_unique_temporary_id(payload_criteria_array):
+    """
+    This function returns
+    criteria[*].requirementGroups[*].requirements[*].eligibleEvidences[*].id as temporary id.
+    """
+    quantity_of_id_list = list()
+    for i in payload_criteria_array:
+        if "requirementGroups" in i:
+            for i_1 in i['requirementGroups']:
+                if "requirements" in i_1:
+                    for i_2 in i_1['requirements']:
+                        if "eligibleEvidences" in i_2:
+                            for i_3 in i_2['eligibleEvidences']:
+                                if "id" in i_3:
+                                    quantity_of_id_list.append(i_3['id'])
+
+    test = make_unique_numbers(len(quantity_of_id_list))
+    iterator = len(test)
+    if len(quantity_of_id_list) == len(test):
+        for i in payload_criteria_array:
+            if "requirementGroups" in i:
+                for i_1 in i['requirementGroups']:
+                    if "requirements" in i_1:
+                        for i_2 in i_1['requirements']:
+                            if "eligibleEvidences" in i_2:
+                                for i_3 in i_2['eligibleEvidences']:
+                                    if "id" in i_3:
+                                        i_3['id'] = str(iterator)
+                                        iterator -= 1
+
+    return payload_criteria_array
+
+
+def set_criteria_array_unique_temporary_id(payload_criteria_array):
+    """
+    This function returns criteria array with unique criteria[*].id, criteria[*].requirementGroups[*].id,
+    criteria[*].requirementGroups[*].requirements[*].id as temporary id.
+    """
+    criteria_objects = list()
+    for o in payload_criteria_array:
+        if "id" in o:
+            criteria_objects.append(o['id'])
+
+    requirement_groups_objects = list()
+    for o in payload_criteria_array:
+        if "id" in o:
+            for o_1 in o['requirementGroups']:
+                if "id" in o_1:
+                    requirement_groups_objects.append(o_1['id'])
+
+    requirements_objects = list()
+    for o in payload_criteria_array:
+        if "id" in o:
+            for o_1 in o['requirementGroups']:
+                if "id" in o_1:
+                    for o_2 in o_1['requirements']:
+                        if "id" in o_2:
+                            requirements_objects.append(o_1['id'])
+
+    quantity_of_criteria_objects = len(criteria_objects)
+    quantity_of_requirement_group_objects = len(requirement_groups_objects)
+    quantity_of_requirement_objects = len(requirements_objects)
+
+    test = make_unique_numbers(quantity_of_criteria_objects)
+    iterator = len(test)
+    criteria_list = []
+    if quantity_of_criteria_objects == len(test):
+        for o in payload_criteria_array:
+            o['id'] = str(iterator).zfill(3)
+            iterator -= 1
+            criteria_list.append(o)
+
+    test = make_unique_numbers(quantity_of_requirement_group_objects)
+    iterator = len(test)
+    requirement_groups_list = []
+    if quantity_of_requirement_group_objects == len(test):
+        for o in criteria_list:
+            for o_1 in o['requirementGroups']:
+                o_1['id'] = f"{o['id']}-{str(iterator).zfill(3)}"
+                iterator -= 1
+                requirement_groups_list.append(o_1)
+
+    test = make_unique_numbers(quantity_of_requirement_objects)
+    iterator = len(test)
+    requirements_list = []
+    if quantity_of_requirement_objects == len(test):
+        for o in requirement_groups_list:
+            for o_1 in o['requirements']:
+                o_1['id'] = f"{o['id']}-{str(iterator).zfill(3)}"
+                iterator -= 1
+                requirements_list.append(o_1)
+
+    return payload_criteria_array
+
+
+def generate_conversions_array(quantity_of_conversion_object, conversion_object, requirements_array):
+    copy.deepcopy(conversion_object)
+
+    coefficient_id_list = list()
+    for o in conversion_object['coefficients']:
+        if "id" in o:
+            coefficient_id_list.append(o['id'])
+    quantity_of_coefficient_object = len(coefficient_id_list)
+
+    conversions_array = []
+    for i in range(quantity_of_conversion_object):
+        conversion_json = copy.deepcopy(conversion_object)
+        conversion_json['id'] = str(i)
+        conversion_json['relatedItem'] = requirements_array[i]
+        coefficients_array = []
+        for j in range(quantity_of_coefficient_object):
+            coefficient_json = copy.deepcopy(conversion_json['coefficients'][j])
+            coefficient_json['id'] = str(j)
+            coefficients_array.append(coefficient_json)
+        conversion_json['coefficients'] = coefficients_array
+        conversions_array.append(conversion_json)
+
+    new_array_conversions = []
+    for quantity_of_object in range(quantity_of_conversion_object):
+        val = conversions_array[quantity_of_object]
+        new_array_conversions.append(copy.deepcopy(val))
+    return new_array_conversions
+
+
+def set_conversions_unique_temporary_id(payload_conversions_array):
+    """
+    This function returns
+    conversions[*]..id as temporary id.
+    """
+    quantity_of_id_list = list()
+    for i in payload_conversions_array:
+        if "id" in i:
+            quantity_of_id_list.append(i['id'])
+
+    test = make_unique_numbers(len(quantity_of_id_list))
+    iterator = len(test)
+    if len(quantity_of_id_list) == len(test):
+        for i in payload_conversions_array:
+            if "id" in i:
+                i['id'] = str(iterator)
+                iterator -= 1
+
+    return payload_conversions_array
+
+
+def get_temporary_requirements_id_and_permanent_requirements_id(temporary_criteria_array, permanent_criteria_array):
+    temporary_id_list = list()
+    for criteria_object in temporary_criteria_array:
+        for requirement_group in criteria_object['requirementGroups']:
+            for requirement in requirement_group['requirements']:
+                for i in requirement:
+                    if i == "id":
+                        temporary_id_list.append(requirement[i])
+
+    permanent_id_list = list()
+    for criteria_object in permanent_criteria_array:
+        for requirement_group in criteria_object['requirementGroups']:
+            for requirement in requirement_group['requirements']:
+                for i in requirement:
+                    if i == "id":
+                        permanent_id_list.append(requirement[i])
+
+    quantity_of_temporary_id = len(temporary_id_list)
+    quantity_of_permanent_id = len(permanent_id_list)
+    try:
+        """
+        Compare quantity of temporary objects into temporary_array and permanent_array.
+        """
+        if quantity_of_temporary_id == quantity_of_permanent_id:
+            pass
+    except KeyError:
+        raise KeyError("Quantity of temporary.id into quantity_of_temporary_id != "
+                       "quantity of permanent.id into and permanent_id_list")
+
+    quantity = quantity_of_temporary_id - 1
+
+    dictionary_of_id = dict()
+    while quantity >= 0:
+        expected_of_id = {
+            temporary_id_list[quantity]: permanent_id_list[quantity]
+        }
+        dictionary_of_id.update(expected_of_id)
+        quantity -= 1
+
+    return dictionary_of_id
+
+
+def get_temporary_lots_id_and_permanent_lots_id(temporary_lots_array, permanent_lots_array):
+    temporary_id_list = list()
+    for lot_object in temporary_lots_array:
+        for i in lot_object:
+            if i == "id":
+                temporary_id_list.append(lot_object[i])
+
+    permanent_id_list = list()
+    for lot_object in permanent_lots_array:
+        for i in lot_object:
+            if i == "id":
+                permanent_id_list.append(lot_object[i])
+
+    quantity_of_temporary_id = len(temporary_id_list)
+    quantity_of_permanent_id = len(permanent_id_list)
+    try:
+        """
+        Compare quantity of temporary objects into temporary_array and permanent_array.
+        """
+        if quantity_of_temporary_id == quantity_of_permanent_id:
+            pass
+    except KeyError:
+        raise KeyError("Quantity of temporary.id into quantity_of_temporary_id != "
+                       "quantity of permanent.id into and permanent_id_list")
+
+    quantity = quantity_of_temporary_id - 1
+
+    dictionary_of_id = dict()
+    while quantity >= 0:
+        expected_of_id = {
+            temporary_id_list[quantity]: permanent_id_list[quantity]
+        }
+        dictionary_of_id.update(expected_of_id)
+        quantity -= 1
+
+    return dictionary_of_id

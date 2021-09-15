@@ -1,10 +1,6 @@
-import configparser
 import json
-import logging
-
 import allure
 import requests
-from allure_commons._allure import step
 
 
 class Requests:
@@ -120,3 +116,19 @@ class Requests:
             })
         allure.attach(host_of_request + f"/cancel/pn", 'URL')
         return pn
+
+    @staticmethod
+    @allure.step('Prepared request: create CnOnPn')
+    def create_cnonpn(host_of_request, access_token, x_operation_id, pn_ocid, pn_id, pn_token, payload):
+        cn = requests.post(
+            url=host_of_request + f"/do/cn/{pn_ocid}/{pn_id}",
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': pn_token
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/cn", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return cn
