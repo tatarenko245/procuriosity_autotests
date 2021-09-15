@@ -16,17 +16,20 @@ class CnOnPnExpectedRelease:
         self.metadata_budget_url = None
         self.metadata_tender_url = None
         self.metadata_document_url = None
+        self.metadata_auction_url =None
 
         try:
             if environment == "dev":
                 self.metadata_budget_url = "http://dev.public.eprocurement.systems/budgets"
                 self.metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
                 self.metadata_document_url = "https://dev.bpe.eprocurement.systems/api/v1/storage/get"
+                self.metadata_auction_url = "http://auction.eprocurement.systems/auctions/"
 
             elif environment == "sandbox":
                 self.metadata_budget_url = "http://public.eprocurement.systems/budgets"
                 self.metadata_tender_url = "http://public.eprocurement.systems/tenders"
                 self.metadata_document_url = "http://storage.eprocurement.systems/get"
+                self.metadata_auction_url = "https://eauction.eprocurement.systems/auctions"
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
@@ -960,7 +963,7 @@ class CnOnPnExpectedRelease:
                     release_electronic_auction_details_array[quantity_two]['auctionPeriod']['startDate']
                 expected_electronic_auction_details_array[quantity_two]['electronicAuctionModalities'][0][
                     'url'] = \
-                    f"http://auction.eprocurement.systems/auctions/{GlobalClassCreateCnOnPn.ev_id}/" \
+                    f"{self.metadata_auction_url}{GlobalClassCreateCnOnPn.ev_id}/" \
                     f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']['lots'][quantity_two]['id']}"
                 expected_electronic_auction_details_array[quantity_two]['electronicAuctionModalities'][0][
                     'eligibleMinimumDifference'] = \
