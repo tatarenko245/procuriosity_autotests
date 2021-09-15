@@ -29,7 +29,7 @@ class CnOnPnExpectedRelease:
                 self.metadata_budget_url = "http://public.eprocurement.systems/budgets"
                 self.metadata_tender_url = "http://public.eprocurement.systems/tenders"
                 self.metadata_document_url = "http://storage.eprocurement.systems/get"
-                self.metadata_auction_url = "https://eauction.eprocurement.systems/auctions"
+                self.metadata_auction_url = "https://eauction.eprocurement.systems/auctions/"
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
