@@ -21,12 +21,12 @@ class CnOnPnExpectedRelease:
             if environment == "dev":
                 self.metadata_budget_url = "http://dev.public.eprocurement.systems/budgets"
                 self.metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
-                self.metadata_document_url = "http://dev.storage.eprocurement.systems/api/v1/storage/get"
+                self.metadata_document_url = "https://dev.bpe.eprocurement.systems/api/v1/storage/get"
 
             elif environment == "sandbox":
                 self.metadata_budget_url = "http://public.eprocurement.systems/budgets"
                 self.metadata_tender_url = "http://public.eprocurement.systems/tenders"
-                self.metadata_document_url = "http://storage.eprocurement.systems/api/v1/storage/get"
+                self.metadata_document_url = "http://storage.eprocurement.systems/get"
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
@@ -717,6 +717,8 @@ class CnOnPnExpectedRelease:
                                 for o in coefficient_object:
                                     if o == "id":
                                         list_of_payload_conversions_coefficients_id.append(o)
+                                    if o == "coefficient":
+                                        float(coefficient_object[o])
                         quantity_of_conversions_coefficients_object_into_payload = \
                             len(list_of_payload_conversions_coefficients_id)
                     except KeyError:
