@@ -30,8 +30,8 @@ class CnOnPnPreparePayload:
 
     def create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
             self, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
-            need_to_set_permanent_id_for_lots_array=False, need_to_set_permanent_id_for_items_array=False,
-            need_to_set_permanent_id_for_documents_array=False):
+            based_stage_release, need_to_set_permanent_id_for_lots_array=False,
+            need_to_set_permanent_id_for_items_array=False, need_to_set_permanent_id_for_documents_array=False):
         payload = {
             "planning": {},
             "tender": {}
@@ -177,7 +177,7 @@ class CnOnPnPreparePayload:
             """
             if need_to_set_permanent_id_for_lots_array is True:
                 payload['tender']['lots'] = set_permanent_id(
-                    release_array=GlobalClassCreatePn.actual_pn_release['releases'][0]['tender']['lots'],
+                    release_array=based_stage_release['releases'][0]['tender']['lots'],
                     payload_array=payload['tender']['lots'])
             else:
                 pass
@@ -190,7 +190,7 @@ class CnOnPnPreparePayload:
         payload['tender']['items'][0]['classification']['scheme'] = "CPV"
         payload['tender']['items'][0]['classification']['description'] = \
             "create cnonpn: tender.items.classification.description"
-        payload['tender']['items'][0]['quantity'] = 60
+        payload['tender']['items'][0]['quantity'] = 60.00
         payload['tender']['items'][0]['unit']['id'] = "20"
         payload['tender']['items'][0]['unit']['name'] = "create cnonpn: tender.items.unit.name"
         payload['tender']['items'][0]['additionalClassifications'][0]['id'] = "AA08-2"
@@ -211,7 +211,7 @@ class CnOnPnPreparePayload:
             """
             if need_to_set_permanent_id_for_items_array is True:
                 payload['tender']['items'] = set_permanent_id(
-                    release_array=GlobalClassCreatePn.actual_pn_release['releases'][0]['tender']['items'],
+                    release_array=based_stage_release['releases'][0]['tender']['items'],
                     payload_array=payload['tender']['items'])
             else:
                 pass
@@ -235,7 +235,7 @@ class CnOnPnPreparePayload:
             """
             if need_to_set_permanent_id_for_documents_array is True:
                 payload['tender']['documents'] = set_permanent_id(
-                    release_array=GlobalClassCreatePn.actual_pn_release['releases'][0]['tender']['documents'],
+                    release_array=based_stage_release['releases'][0]['tender']['documents'],
                     payload_array=payload['tender']['documents'])
             else:
                 pass
@@ -521,8 +521,8 @@ class CnOnPnPreparePayload:
 
     def create_cnonpn_obligatory_data_model_with_lots_items_documents(
             self, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
-            need_to_set_permanent_id_for_lots_array=False, need_to_set_permanent_id_for_items_array=False,
-            need_to_set_permanent_id_for_documents_array=False):
+            based_stage_release, need_to_set_permanent_id_for_lots_array=False,
+            need_to_set_permanent_id_for_items_array=False, need_to_set_permanent_id_for_documents_array=False):
         payload = {
             "tender": {}
         }
@@ -631,7 +631,7 @@ class CnOnPnPreparePayload:
             """
             if need_to_set_permanent_id_for_lots_array is True:
                 payload['tender']['lots'] = set_permanent_id(
-                    release_array=GlobalClassCreatePn.actual_pn_release['releases'][0]['tender']['lots'],
+                    release_array=based_stage_release['releases'][0]['tender']['lots'],
                     payload_array=payload['tender']['lots'])
             else:
                 pass
@@ -643,7 +643,7 @@ class CnOnPnPreparePayload:
         payload['tender']['items'][0]['classification']['scheme'] = "CPV"
         payload['tender']['items'][0]['classification']['description'] = \
             "create cnonpn: tender.items.classification.description"
-        payload['tender']['items'][0]['quantity'] = 60
+        payload['tender']['items'][0]['quantity'] = 60.00
         payload['tender']['items'][0]['unit']['id'] = "20"
         payload['tender']['items'][0]['unit']['name'] = "create cnonpn: tender.items.unit.name"
         payload['tender']['items'][0]['description'] = "create CNonPN: tender.items.description"
@@ -660,7 +660,7 @@ class CnOnPnPreparePayload:
             """
             if need_to_set_permanent_id_for_items_array is True:
                 payload['tender']['items'] = set_permanent_id(
-                    release_array=GlobalClassCreatePn.actual_pn_release['releases'][0]['tender']['items'],
+                    release_array=based_stage_release['releases'][0]['tender']['items'],
                     payload_array=payload['tender']['items'])
             else:
                 pass
@@ -679,11 +679,868 @@ class CnOnPnPreparePayload:
             """
             if need_to_set_permanent_id_for_documents_array is True:
                 payload['tender']['documents'] = set_permanent_id(
-                    release_array=GlobalClassCreatePn.actual_pn_release['releases'][0]['tender']['documents'],
+                    release_array=based_stage_release['releases'][0]['tender']['documents'],
                     payload_array=payload['tender']['documents'])
             else:
                 pass
         except KeyError:
             raise KeyError("Could not to set permanent id for items array. Key 'documents' was not found.")
+
+        return payload
+
+    def update_cnonpn_full_data_model_with_lots_items_documents_auction(
+            self, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
+            based_stage_release, need_to_set_permanent_id_for_lots_array=False,
+            need_to_set_permanent_id_for_items_array=False, need_to_set_permanent_id_for_documents_array=False,
+            need_to_set_permanent_id_for_electronic_auction=False):
+        payload = {
+            "planning": {},
+            "tender": {}
+        }
+
+        try:
+            """
+            Update payload dictionary.
+            """
+            payload['planning'].update(self.constructor.planning_object())
+            payload['tender'].update(self.constructor.tender_object())
+            payload['tender']['electronicAuctions']['details'] = [{}, {}]
+            payload['tender']['electronicAuctions']['details'][0].update(
+                self.constructor.tender_electronic_auctions_details_object())
+            payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'] = [{}]
+            payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'][0].update(
+                self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+            payload['tender']['electronicAuctions']['details'][1].update(
+                self.constructor.tender_electronic_auctions_details_object())
+            payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'] = [{}]
+            payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'][0].update(
+                self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+            payload['tender']['lots'] = [{}]
+            payload['tender']['lots'][0].update(self.constructor.tender_lots_object())
+            payload['tender']['lots'][0]['options'] = [{}, {}]
+            payload['tender']['lots'][0]['options'][0].update(self.constructor.tender_lots_option_object())
+            payload['tender']['lots'][0]['options'][1].update(self.constructor.tender_lots_option_object())
+            payload['tender']['lots'][0]['recurrence']['dates'] = [{}, {}]
+            payload['tender']['lots'][0]['recurrence']['dates'][0].update(
+                self.constructor.tender_lots_recurrence_dates_object())
+            payload['tender']['lots'][0]['recurrence']['dates'][1].update(
+                self.constructor.tender_lots_recurrence_dates_object())
+
+            payload['tender']['items'] = [{}]
+            payload['tender']['items'][0].update(self.constructor.tender_item_object())
+            payload['tender']['items'][0]['additionalClassifications'] = [{}]
+            payload['tender']['items'][0]['additionalClassifications'][0].update(
+                self.constructor.buyer_additional_identifiers_object())
+
+            payload['tender']['documents'] = [{}, {}]
+            payload['tender']['documents'][0].update(self.constructor.tender_document_object())
+            payload['tender']['documents'][1].update(self.constructor.tender_document_object())
+        except KeyError:
+            raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
+
+        del payload['tender']['criteria']
+        del payload['tender']['conversions']
+
+        try:
+            item_classification_id = None
+            tender_classification_id = \
+                GlobalClassCreateEi.actual_ei_release['releases'][0]['tender']['classification']['id']
+
+            if tender_classification_id[0:3] == "031":
+                item_classification_id = random.choice(cpv_goods_low_level_03)
+            elif tender_classification_id[0:3] == "146":
+                item_classification_id = random.choice(cpv_goods_low_level_1)
+            elif tender_classification_id[0:3] == "221":
+                item_classification_id = random.choice(cpv_goods_low_level_2)
+            elif tender_classification_id[0:3] == "301":
+                item_classification_id = random.choice(cpv_goods_low_level_3)
+            elif tender_classification_id[0:3] == "444":
+                item_classification_id = random.choice(cpv_goods_low_level_44)
+            elif tender_classification_id[0:3] == "482":
+                item_classification_id = random.choice(cpv_goods_low_level_48)
+            elif tender_classification_id[0:3] == "451":
+                item_classification_id = random.choice(cpv_works_low_level_45)
+            elif tender_classification_id[0:3] == "515":
+                item_classification_id = random.choice(cpv_services_low_level_5)
+            elif tender_classification_id[0:3] == "637":
+                item_classification_id = random.choice(cpv_services_low_level_6)
+            elif tender_classification_id[0:3] == "713":
+                item_classification_id = random.choice(cpv_services_low_level_7)
+            elif tender_classification_id[0:3] == "851":
+                item_classification_id = random.choice(cpv_services_low_level_8)
+            elif tender_classification_id[0:3] == "923":
+                item_classification_id = random.choice(cpv_services_low_level_92)
+            elif tender_classification_id[0:3] == "983":
+                item_classification_id = random.choice(cpv_services_low_level_98)
+        except KeyError:
+            raise KeyError("Check tender_classification_id")
+
+        payload['tender']['title'] = "This field is redundant"
+        payload['tender']['description'] = "This field is redundant"
+
+        payload['planning']['rationale'] = "update cnonpn: planning.rationale"
+        payload['planning']['budget']['description'] = "update cnonpn: planning.budget.description"
+        payload['tender']['procurementMethodRationale'] = "update cnonpn: tender.procurementMethodRationale"
+        payload['tender']['procurementMethodAdditionalInfo'] = "update cnonpn: tender.procurementMethodAdditionalInfo"
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+        payload['tender']['procuringEntity'] = \
+            GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']
+
+        payload['tender']['lots'][0]['id'] = "update cnonpn: tender.lots.id"
+        payload['tender']['lots'][0]['internalId'] = "update cnonpn: tender.lots.internalId"
+        payload['tender']['lots'][0]['title'] = "update cnonpn: tender.lots.title"
+        payload['tender']['lots'][0]['description'] = "create cnonpn: tender.lots.description"
+        payload['tender']['lots'][0]['value']['amount'] = 4040.45
+        payload['tender']['lots'][0]['value']['currency'] = \
+            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+        payload['tender']['lots'][0]['contractPeriod']['startDate'] = self.contact_period[0]
+        payload['tender']['lots'][0]['contractPeriod']['endDate'] = self.contact_period[1]
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['streetAddress'] = \
+            "update cnonpn: tender.lots.placeOfPerformance.address.streetAddress"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['postalCode'] = \
+            "update cnonpn: tender.lots.placeOfPerformance.address.postalCode"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['country']['id'] = "MD"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['region']['id'] = "3400000"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['id'] = "3401000"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['description'] = \
+            "update cnonpn: tender.lots.placeOfPerformance.address.addressDetails.locality.description"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['scheme'] = \
+            "CUATM"
+        payload['tender']['lots'][0]['placeOfPerformance']['description'] = \
+            "update cnonpn: tender.lots.placeOfPerformance.description"
+        payload['tender']['lots'][0]['hasOptions'] = True
+        payload['tender']['lots'][0]['options'][0]['description'] = "update CNonPN: tender.lots[0].options.description"
+        payload['tender']['lots'][0]['options'][0]['period']['durationInDays'] = 180
+        payload['tender']['lots'][0]['options'][0]['period']['startDate'] = self.duration_period[0]
+        payload['tender']['lots'][0]['options'][0]['period']['endDate'] = self.duration_period[1]
+        payload['tender']['lots'][0]['options'][0]['period']['maxExtentDate'] = self.duration_period[1]
+        payload['tender']['lots'][0]['options'][1]['description'] = "update CNonPN: tender.lots[0].options.description"
+        payload['tender']['lots'][0]['options'][1]['period']['durationInDays'] = 180
+        payload['tender']['lots'][0]['options'][1]['period']['startDate'] = self.duration_period[0]
+        payload['tender']['lots'][0]['options'][1]['period']['endDate'] = self.duration_period[1]
+        payload['tender']['lots'][0]['options'][1]['period']['maxExtentDate'] = self.duration_period[1]
+        payload['tender']['lots'][0]['hasRecurrence'] = True
+        payload['tender']['lots'][0]['recurrence']['dates'][0]['startDate'] = self.duration_period[0]
+        payload['tender']['lots'][0]['recurrence']['dates'][1]['startDate'] = self.duration_period[0]
+        payload['tender']['lots'][0]['recurrence']['description'] = "update CNonPN: tender.lots.recurrence.description"
+        payload['tender']['lots'][0]['hasRenewal'] = True
+        payload['tender']['lots'][0]['renewal']['description'] = "update CNonPN: tender.lots.renewal.description"
+        payload['tender']['lots'][0]['renewal']['minimumRenewals'] = 1
+        payload['tender']['lots'][0]['renewal']['maximumRenewals'] = 4
+        payload['tender']['lots'][0]['renewal']['period']['durationInDays'] = 364
+        payload['tender']['lots'][0]['renewal']['period']['startDate'] = self.duration_period[0]
+        payload['tender']['lots'][0]['renewal']['period']['endDate'] = self.duration_period[1]
+        payload['tender']['lots'][0]['renewal']['period']['maxExtentDate'] = self.duration_period[1]
+        payload['tender']['lots'] = generate_lots_array(
+            quantity_of_object=quantity_of_lots_object,
+            lot_object=payload['tender']['lots'][0])
+
+        try:
+            """
+            Set permanent id for lots array.
+            """
+            if need_to_set_permanent_id_for_lots_array is True:
+                payload['tender']['lots'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['lots'],
+                    payload_array=payload['tender']['lots'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for lots array. Key 'lots' was not found.")
+
+        payload['tender']['items'][0]['id'] = "0"
+        payload['tender']['items'][0]['internalId'] = "update cnonpn: tender.items.internalId"
+        payload['tender']['items'][0]['classification']['id'] = item_classification_id
+        payload['tender']['items'][0]['classification']['scheme'] = "CPV"
+        payload['tender']['items'][0]['classification']['description'] = \
+            "update cnonpn: tender.items.classification.description"
+        payload['tender']['items'][0]['quantity'] = 70.00
+        payload['tender']['items'][0]['unit']['id'] = "18"
+        payload['tender']['items'][0]['unit']['name'] = "update cnonpn: tender.items.unit.name"
+        payload['tender']['items'][0]['additionalClassifications'][0]['id'] = "AA06-6"
+        payload['tender']['items'][0]['additionalClassifications'][0]['scheme'] = "CPVS"
+        payload['tender']['items'][0]['additionalClassifications'][0]['description'] = \
+            "update cnonpn: tender.items.additionalClassifications.description"
+        payload['tender']['items'][0]['description'] = "update CNonPN: tender.items.description"
+        payload['tender']['items'][0]['relatedLot'] = payload['tender']['lots'][0]['id']
+        payload['tender']['items'] = generate_items_array(
+            quantity_of_object=quantity_of_items_object,
+            item_object=payload['tender']['items'][0],
+            tender_classification_id=tender_classification_id,
+            lots_array=payload['tender']['lots'])
+
+        try:
+            """
+            Set permanent id for items array.
+            """
+            if need_to_set_permanent_id_for_items_array is True:
+                payload['tender']['items'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['items'],
+                    payload_array=payload['tender']['items'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for items array. Key 'items' was not found.")
+
+        payload['tender']['documents'][0]['documentType'] = f"{random.choice(documentType)}"
+        payload['tender']['documents'][0]['id'] = self.document_one_was_uploaded[0]["data"]["id"]
+        payload['tender']['documents'][0]['title'] = "update cnonpn: tender.documents.title"
+        payload['tender']['documents'][0]['description'] = "update cnonpn: tender.documents.description"
+        payload['tender']['documents'][0]['relatedLots'] = [payload['tender']['lots'][0]['id']]
+
+        payload['tender']['documents'][1]['documentType'] = f"{random.choice(documentType)}"
+        payload['tender']['documents'][1]['id'] = self.document_two_was_uploaded[0]["data"]["id"]
+        payload['tender']['documents'][1]['title'] = "update cnonpn: tender.documents.title"
+        payload['tender']['documents'][1]['description'] = "update cnonpn: tender.documents.description"
+        payload['tender']['documents'][1]['relatedLots'] = [payload['tender']['lots'][1]['id']]
+        try:
+            """
+            Set permanent id for documents array.
+            """
+            if need_to_set_permanent_id_for_documents_array is True:
+                payload['tender']['documents'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['documents'],
+                    payload_array=payload['tender']['documents'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for items array. Key 'documents' was not found.")
+
+        payload['tender']['electronicAuctions']['details'][0]['id'] = "0"
+        payload['tender']['electronicAuctions']['details'][0]['relatedLot'] = payload['tender']['lots'][0]['id']
+        payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'][0][
+            'eligibleMinimumDifference']['amount'] = 40.00
+        payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'][0][
+            'eligibleMinimumDifference']['currency'] = \
+            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+        payload['tender']['electronicAuctions']['details'][1]['id'] = "1"
+        payload['tender']['electronicAuctions']['details'][1]['relatedLot'] = payload['tender']['lots'][1]['id']
+        payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'][0][
+            'eligibleMinimumDifference']['amount'] = 40.00
+        payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'][0][
+            'eligibleMinimumDifference']['currency'] = \
+            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+
+        try:
+            """
+            Set permanent id for electronicAuctions.details array.
+            """
+            if need_to_set_permanent_id_for_electronic_auction is True:
+                payload['tender']['electronicAuctions']['details'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender'][
+                        'electronicAuctions']['details'],
+                    payload_array=payload['tender']['electronicAuctions']['details'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for electronicAuctions.details array."
+                           "Key 'electronicAuctions.details' was not found.")
+
+        return payload
+
+    def update_cnonpn_obligatory_data_model_with_lots_items_documents_without_auction(
+            self, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
+            based_stage_release, need_to_set_permanent_id_for_lots_array=False,
+            need_to_set_permanent_id_for_items_array=False, need_to_set_permanent_id_for_documents_array=False):
+
+        payload = {
+            "tender": {}
+        }
+
+        try:
+            """
+            Update payload dictionary.
+            """
+            payload['tender'].update(self.constructor.tender_object())
+            payload['tender']['lots'] = [{}]
+            payload['tender']['lots'][0].update(self.constructor.tender_lots_object())
+            payload['tender']['items'] = [{}]
+            payload['tender']['items'][0].update(self.constructor.tender_item_object())
+            payload['tender']['items'][0]['additionalClassifications'] = [{}]
+            payload['tender']['items'][0]['additionalClassifications'][0].update(
+                self.constructor.buyer_additional_identifiers_object())
+            payload['tender']['documents'] = [{}]
+            payload['tender']['documents'][0].update(self.constructor.tender_document_object())
+
+            del payload['tender']['electronicAuctions']
+            del payload['tender']['procurementMethodRationale']
+            del payload['tender']['procurementMethodAdditionalInfo']
+            del payload['tender']['procurementMethodModalities']
+            del payload['tender']['criteria']
+            del payload['tender']['conversions']
+            del payload['tender']['lots'][0]['internalId']
+            del payload['tender']['lots'][0]['placeOfPerformance']['address']['postalCode']
+            del payload['tender']['lots'][0]['placeOfPerformance']['description']
+            del payload['tender']['lots'][0]['hasOptions']
+            del payload['tender']['lots'][0]['options']
+            del payload['tender']['lots'][0]['hasRecurrence']
+            del payload['tender']['lots'][0]['recurrence']
+            del payload['tender']['lots'][0]['hasRenewal']
+            del payload['tender']['lots'][0]['renewal']
+            del payload['tender']['items'][0]['internalId']
+            del payload['tender']['items'][0]['additionalClassifications']
+            del payload['tender']['procuringEntity']
+
+        except KeyError:
+            raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
+
+        try:
+            item_classification_id = None
+            tender_classification_id = \
+                GlobalClassCreateEi.actual_ei_release['releases'][0]['tender']['classification']['id']
+
+            if tender_classification_id[0:3] == "031":
+                item_classification_id = random.choice(cpv_goods_low_level_03)
+            elif tender_classification_id[0:3] == "146":
+                item_classification_id = random.choice(cpv_goods_low_level_1)
+            elif tender_classification_id[0:3] == "221":
+                item_classification_id = random.choice(cpv_goods_low_level_2)
+            elif tender_classification_id[0:3] == "301":
+                item_classification_id = random.choice(cpv_goods_low_level_3)
+            elif tender_classification_id[0:3] == "444":
+                item_classification_id = random.choice(cpv_goods_low_level_44)
+            elif tender_classification_id[0:3] == "482":
+                item_classification_id = random.choice(cpv_goods_low_level_48)
+            elif tender_classification_id[0:3] == "451":
+                item_classification_id = random.choice(cpv_works_low_level_45)
+            elif tender_classification_id[0:3] == "515":
+                item_classification_id = random.choice(cpv_services_low_level_5)
+            elif tender_classification_id[0:3] == "637":
+                item_classification_id = random.choice(cpv_services_low_level_6)
+            elif tender_classification_id[0:3] == "713":
+                item_classification_id = random.choice(cpv_services_low_level_7)
+            elif tender_classification_id[0:3] == "851":
+                item_classification_id = random.choice(cpv_services_low_level_8)
+            elif tender_classification_id[0:3] == "923":
+                item_classification_id = random.choice(cpv_services_low_level_92)
+            elif tender_classification_id[0:3] == "983":
+                item_classification_id = random.choice(cpv_services_low_level_98)
+        except KeyError:
+            raise KeyError("Check tender_classification_id")
+
+        payload['tender']['title'] = "This field is redundant"
+        payload['tender']['description'] = "This field is redundant"
+
+        payload['tender']['awardCriteria'] = "priceOnly"
+        payload['tender']['awardCriteriaDetails'] = "automated"
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+
+        payload['tender']['lots'][0]['id'] = "update cnonpn: tender.lots.id"
+        payload['tender']['lots'][0]['title'] = "update cnonpn: tender.lots.title"
+        payload['tender']['lots'][0]['description'] = "update cnonpn: tender.lots.description"
+        payload['tender']['lots'][0]['value']['amount'] = 4040.45
+        payload['tender']['lots'][0]['value']['currency'] = \
+            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+        payload['tender']['lots'][0]['contractPeriod']['startDate'] = self.contact_period[0]
+        payload['tender']['lots'][0]['contractPeriod']['endDate'] = self.contact_period[1]
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['streetAddress'] = \
+            "update cnonpn: tender.lots.placeOfPerformance.address.streetAddress"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['country']['id'] = "MD"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['region']['id'] = "3400000"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality'][
+            'id'] = "3401000"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['description'] = \
+            "create cnonpn: tender.lots.placeOfPerformance.address.addressDetails.locality.description"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['scheme'] = \
+            "CUATM"
+
+        payload['tender']['lots'] = generate_lots_array(
+            quantity_of_object=quantity_of_lots_object,
+            lot_object=payload['tender']['lots'][0])
+
+        try:
+            """
+            Set permanent id for lots array.
+            """
+            if need_to_set_permanent_id_for_lots_array is True:
+                payload['tender']['lots'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['lots'],
+                    payload_array=payload['tender']['lots'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for lots array. Key 'lots' was not found.")
+
+        payload['tender']['items'][0]['id'] = "0"
+        payload['tender']['items'][0]['classification']['id'] = item_classification_id
+        payload['tender']['items'][0]['classification']['scheme'] = "CPV"
+        payload['tender']['items'][0]['classification']['description'] = \
+            "update cnonpn: tender.items.classification.description"
+        payload['tender']['items'][0]['quantity'] = 70.00
+        payload['tender']['items'][0]['unit']['id'] = "18"
+        payload['tender']['items'][0]['unit']['name'] = "update cnonpn: tender.items.unit.name"
+        payload['tender']['items'][0]['description'] = "update CNonPN: tender.items.description"
+        payload['tender']['items'][0]['relatedLot'] = payload['tender']['lots'][0]['id']
+        payload['tender']['items'] = generate_items_array(
+            quantity_of_object=quantity_of_items_object,
+            item_object=payload['tender']['items'][0],
+            tender_classification_id=tender_classification_id,
+            lots_array=payload['tender']['lots'])
+
+        try:
+            """
+            Set permanent id for items array.
+            """
+            if need_to_set_permanent_id_for_items_array is True:
+                payload['tender']['items'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['items'],
+                    payload_array=payload['tender']['items'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for items array. Key 'items' was not found.")
+
+        payload['tender']['documents'][0]['documentType'] = f"{random.choice(documentType)}"
+        payload['tender']['documents'][0]['id'] = self.document_one_was_uploaded[0]["data"]["id"]
+        payload['tender']['documents'][0]['title'] = "update cnonpn: tender.documents.title"
+        payload['tender']['documents'][0]['description'] = "update cnonpn: tender.documents.description"
+        payload['tender']['documents'][0]['relatedLots'] = [payload['tender']['lots'][0]['id']]
+
+        try:
+            """
+            Set permanent id for documents array.
+            """
+            if need_to_set_permanent_id_for_documents_array is True:
+                payload['tender']['documents'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['documents'],
+                    payload_array=payload['tender']['documents'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for items array. Key 'documents' was not found.")
+
+        return payload
+
+    def update_cnonpn_full_data_model_with_lots_items_documents_without_auction(
+            self, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
+            based_stage_release, need_to_set_permanent_id_for_lots_array=False,
+            need_to_set_permanent_id_for_items_array=False, need_to_set_permanent_id_for_documents_array=False):
+        payload = {
+            "planning": {},
+            "tender": {}
+        }
+
+        try:
+            """
+            Update payload dictionary.
+            """
+            payload['planning'].update(self.constructor.planning_object())
+            payload['tender'].update(self.constructor.tender_object())
+            payload['tender']['lots'] = [{}]
+            payload['tender']['lots'][0].update(self.constructor.tender_lots_object())
+            payload['tender']['lots'][0]['options'] = [{}, {}]
+            payload['tender']['lots'][0]['options'][0].update(self.constructor.tender_lots_option_object())
+            payload['tender']['lots'][0]['options'][1].update(self.constructor.tender_lots_option_object())
+            payload['tender']['lots'][0]['recurrence']['dates'] = [{}, {}]
+            payload['tender']['lots'][0]['recurrence']['dates'][0].update(
+                self.constructor.tender_lots_recurrence_dates_object())
+            payload['tender']['lots'][0]['recurrence']['dates'][1].update(
+                self.constructor.tender_lots_recurrence_dates_object())
+
+            payload['tender']['items'] = [{}]
+            payload['tender']['items'][0].update(self.constructor.tender_item_object())
+            payload['tender']['items'][0]['additionalClassifications'] = [{}]
+            payload['tender']['items'][0]['additionalClassifications'][0].update(
+                self.constructor.buyer_additional_identifiers_object())
+
+            payload['tender']['documents'] = [{}, {}]
+            payload['tender']['documents'][0].update(self.constructor.tender_document_object())
+            payload['tender']['documents'][1].update(self.constructor.tender_document_object())
+        except KeyError:
+            raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
+
+        del payload['tender']['criteria']
+        del payload['tender']['conversions']
+        del payload['tender']['electronicAuctions']
+
+        try:
+            item_classification_id = None
+            tender_classification_id = \
+                GlobalClassCreateEi.actual_ei_release['releases'][0]['tender']['classification']['id']
+
+            if tender_classification_id[0:3] == "031":
+                item_classification_id = random.choice(cpv_goods_low_level_03)
+            elif tender_classification_id[0:3] == "146":
+                item_classification_id = random.choice(cpv_goods_low_level_1)
+            elif tender_classification_id[0:3] == "221":
+                item_classification_id = random.choice(cpv_goods_low_level_2)
+            elif tender_classification_id[0:3] == "301":
+                item_classification_id = random.choice(cpv_goods_low_level_3)
+            elif tender_classification_id[0:3] == "444":
+                item_classification_id = random.choice(cpv_goods_low_level_44)
+            elif tender_classification_id[0:3] == "482":
+                item_classification_id = random.choice(cpv_goods_low_level_48)
+            elif tender_classification_id[0:3] == "451":
+                item_classification_id = random.choice(cpv_works_low_level_45)
+            elif tender_classification_id[0:3] == "515":
+                item_classification_id = random.choice(cpv_services_low_level_5)
+            elif tender_classification_id[0:3] == "637":
+                item_classification_id = random.choice(cpv_services_low_level_6)
+            elif tender_classification_id[0:3] == "713":
+                item_classification_id = random.choice(cpv_services_low_level_7)
+            elif tender_classification_id[0:3] == "851":
+                item_classification_id = random.choice(cpv_services_low_level_8)
+            elif tender_classification_id[0:3] == "923":
+                item_classification_id = random.choice(cpv_services_low_level_92)
+            elif tender_classification_id[0:3] == "983":
+                item_classification_id = random.choice(cpv_services_low_level_98)
+        except KeyError:
+            raise KeyError("Check tender_classification_id")
+
+        payload['tender']['title'] = "This field is redundant"
+        payload['tender']['description'] = "This field is redundant"
+
+        payload['planning']['rationale'] = "update cnonpn: planning.rationale"
+        payload['planning']['budget']['description'] = "update cnonpn: planning.budget.description"
+        payload['tender']['procurementMethodRationale'] = "update cnonpn: tender.procurementMethodRationale"
+        payload['tender']['procurementMethodAdditionalInfo'] = "update cnonpn: tender.procurementMethodAdditionalInfo"
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+        payload['tender']['procuringEntity'] = \
+            GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']
+
+        payload['tender']['lots'][0]['id'] = "update cnonpn: tender.lots.id"
+        payload['tender']['lots'][0]['internalId'] = "update cnonpn: tender.lots.internalId"
+        payload['tender']['lots'][0]['title'] = "update cnonpn: tender.lots.title"
+        payload['tender']['lots'][0]['description'] = "update cnonpn: tender.lots.description"
+        payload['tender']['lots'][0]['value']['amount'] = 4040.45
+        payload['tender']['lots'][0]['value']['currency'] = \
+            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+        payload['tender']['lots'][0]['contractPeriod']['startDate'] = self.contact_period[0]
+        payload['tender']['lots'][0]['contractPeriod']['endDate'] = self.contact_period[1]
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['streetAddress'] = \
+            "update cnonpn: tender.lots.placeOfPerformance.address.streetAddress"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['postalCode'] = \
+            "update cnonpn: tender.lots.placeOfPerformance.address.postalCode"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['country']['id'] = "MD"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['region']['id'] = "3400000"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['id'] = "3401000"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['description'] = \
+            "update cnonpn: tender.lots.placeOfPerformance.address.addressDetails.locality.description"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['scheme'] = \
+            "CUATM"
+        payload['tender']['lots'][0]['placeOfPerformance']['description'] = \
+            "update cnonpn: tender.lots.placeOfPerformance.description"
+        payload['tender']['lots'][0]['hasOptions'] = True
+        payload['tender']['lots'][0]['options'][0]['description'] = "update CNonPN: tender.lots[0].options.description"
+        payload['tender']['lots'][0]['options'][0]['period']['durationInDays'] = 180
+        payload['tender']['lots'][0]['options'][0]['period']['startDate'] = self.duration_period[0]
+        payload['tender']['lots'][0]['options'][0]['period']['endDate'] = self.duration_period[1]
+        payload['tender']['lots'][0]['options'][0]['period']['maxExtentDate'] = self.duration_period[1]
+        payload['tender']['lots'][0]['options'][1]['description'] = "update CNonPN: tender.lots[0].options.description"
+        payload['tender']['lots'][0]['options'][1]['period']['durationInDays'] = 180
+        payload['tender']['lots'][0]['options'][1]['period']['startDate'] = self.duration_period[0]
+        payload['tender']['lots'][0]['options'][1]['period']['endDate'] = self.duration_period[1]
+        payload['tender']['lots'][0]['options'][1]['period']['maxExtentDate'] = self.duration_period[1]
+        payload['tender']['lots'][0]['hasRecurrence'] = True
+        payload['tender']['lots'][0]['recurrence']['dates'][0]['startDate'] = self.duration_period[0]
+        payload['tender']['lots'][0]['recurrence']['dates'][1]['startDate'] = self.duration_period[0]
+        payload['tender']['lots'][0]['recurrence']['description'] = "update CNonPN: tender.lots.recurrence.description"
+        payload['tender']['lots'][0]['hasRenewal'] = True
+        payload['tender']['lots'][0]['renewal']['description'] = "update CNonPN: tender.lots.renewal.description"
+        payload['tender']['lots'][0]['renewal']['minimumRenewals'] = 1
+        payload['tender']['lots'][0]['renewal']['maximumRenewals'] = 4
+        payload['tender']['lots'][0]['renewal']['period']['durationInDays'] = 364
+        payload['tender']['lots'][0]['renewal']['period']['startDate'] = self.duration_period[0]
+        payload['tender']['lots'][0]['renewal']['period']['endDate'] = self.duration_period[1]
+        payload['tender']['lots'][0]['renewal']['period']['maxExtentDate'] = self.duration_period[1]
+        payload['tender']['lots'] = generate_lots_array(
+            quantity_of_object=quantity_of_lots_object,
+            lot_object=payload['tender']['lots'][0])
+
+        try:
+            """
+            Set permanent id for lots array.
+            """
+            if need_to_set_permanent_id_for_lots_array is True:
+                payload['tender']['lots'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['lots'],
+                    payload_array=payload['tender']['lots'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for lots array. Key 'lots' was not found.")
+
+        payload['tender']['items'][0]['id'] = "0"
+        payload['tender']['items'][0]['internalId'] = "update cnonpn: tender.items.internalId"
+        payload['tender']['items'][0]['classification']['id'] = item_classification_id
+        payload['tender']['items'][0]['classification']['scheme'] = "CPV"
+        payload['tender']['items'][0]['classification']['description'] = \
+            "update cnonpn: tender.items.classification.description"
+        payload['tender']['items'][0]['quantity'] = 70.00
+        payload['tender']['items'][0]['unit']['id'] = "18"
+        payload['tender']['items'][0]['unit']['name'] = "update cnonpn: tender.items.unit.name"
+        payload['tender']['items'][0]['additionalClassifications'][0]['id'] = "AA06-6"
+        payload['tender']['items'][0]['additionalClassifications'][0]['scheme'] = "CPVS"
+        payload['tender']['items'][0]['additionalClassifications'][0]['description'] = \
+            "update cnonpn: tender.items.additionalClassifications.description"
+        payload['tender']['items'][0]['description'] = "update CNonPN: tender.items.description"
+        payload['tender']['items'][0]['relatedLot'] = payload['tender']['lots'][0]['id']
+        payload['tender']['items'] = generate_items_array(
+            quantity_of_object=quantity_of_items_object,
+            item_object=payload['tender']['items'][0],
+            tender_classification_id=tender_classification_id,
+            lots_array=payload['tender']['lots'])
+
+        try:
+            """
+            Set permanent id for items array.
+            """
+            if need_to_set_permanent_id_for_items_array is True:
+                payload['tender']['items'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['items'],
+                    payload_array=payload['tender']['items'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for items array. Key 'items' was not found.")
+
+        payload['tender']['documents'][0]['documentType'] = f"{random.choice(documentType)}"
+        payload['tender']['documents'][0]['id'] = self.document_one_was_uploaded[0]["data"]["id"]
+        payload['tender']['documents'][0]['title'] = "update cnonpn: tender.documents.title"
+        payload['tender']['documents'][0]['description'] = "update cnonpn: tender.documents.description"
+        payload['tender']['documents'][0]['relatedLots'] = [payload['tender']['lots'][0]['id']]
+
+        payload['tender']['documents'][1]['documentType'] = f"{random.choice(documentType)}"
+        payload['tender']['documents'][1]['id'] = self.document_two_was_uploaded[0]["data"]["id"]
+        payload['tender']['documents'][1]['title'] = "create cnonpn: tender.documents.title"
+        payload['tender']['documents'][1]['description'] = "create cnonpn: tender.documents.description"
+        payload['tender']['documents'][1]['relatedLots'] = [payload['tender']['lots'][1]['id']]
+        try:
+            """
+            Set permanent id for documents array.
+            """
+            if need_to_set_permanent_id_for_documents_array is True:
+                payload['tender']['documents'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['documents'],
+                    payload_array=payload['tender']['documents'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for items array. Key 'documents' was not found.")
+
+        return payload
+
+    def update_cnonpn_obligatory_data_model_with_lots_items_documents_with_auction(
+            self, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
+            based_stage_release, need_to_set_permanent_id_for_lots_array=False,
+            need_to_set_permanent_id_for_items_array=False, need_to_set_permanent_id_for_documents_array=False,
+            need_to_set_permanent_id_for_electronic_auction=False):
+
+        payload = {
+            "tender": {}
+        }
+
+        try:
+            """
+            Update payload dictionary.
+            """
+            payload['tender'].update(self.constructor.tender_object())
+            payload['tender']['electronicAuctions']['details'] = [{}, {}]
+            payload['tender']['electronicAuctions']['details'][0].update(
+                self.constructor.tender_electronic_auctions_details_object())
+            payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'] = [{}]
+            payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'][0].update(
+                self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+            payload['tender']['electronicAuctions']['details'][1].update(
+                self.constructor.tender_electronic_auctions_details_object())
+            payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'] = [{}]
+            payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'][0].update(
+                self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+            payload['tender']['lots'] = [{}]
+            payload['tender']['lots'][0].update(self.constructor.tender_lots_object())
+            payload['tender']['items'] = [{}]
+            payload['tender']['items'][0].update(self.constructor.tender_item_object())
+            payload['tender']['items'][0]['additionalClassifications'] = [{}]
+            payload['tender']['items'][0]['additionalClassifications'][0].update(
+                self.constructor.buyer_additional_identifiers_object())
+            payload['tender']['documents'] = [{}, {}]
+            payload['tender']['documents'][0].update(self.constructor.tender_document_object())
+            payload['tender']['documents'][1].update(self.constructor.tender_document_object())
+
+            del payload['tender']['procurementMethodRationale']
+            del payload['tender']['procurementMethodAdditionalInfo']
+            del payload['tender']['procurementMethodModalities']
+            del payload['tender']['criteria']
+            del payload['tender']['conversions']
+            del payload['tender']['lots'][0]['internalId']
+            del payload['tender']['lots'][0]['placeOfPerformance']['address']['postalCode']
+            del payload['tender']['lots'][0]['placeOfPerformance']['description']
+            del payload['tender']['lots'][0]['hasOptions']
+            del payload['tender']['lots'][0]['options']
+            del payload['tender']['lots'][0]['hasRecurrence']
+            del payload['tender']['lots'][0]['recurrence']
+            del payload['tender']['lots'][0]['hasRenewal']
+            del payload['tender']['lots'][0]['renewal']
+            del payload['tender']['items'][0]['internalId']
+            del payload['tender']['items'][0]['additionalClassifications']
+            del payload['tender']['procuringEntity']
+
+        except KeyError:
+            raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
+
+        try:
+            item_classification_id = None
+            tender_classification_id = \
+                GlobalClassCreateEi.actual_ei_release['releases'][0]['tender']['classification']['id']
+
+            if tender_classification_id[0:3] == "031":
+                item_classification_id = random.choice(cpv_goods_low_level_03)
+            elif tender_classification_id[0:3] == "146":
+                item_classification_id = random.choice(cpv_goods_low_level_1)
+            elif tender_classification_id[0:3] == "221":
+                item_classification_id = random.choice(cpv_goods_low_level_2)
+            elif tender_classification_id[0:3] == "301":
+                item_classification_id = random.choice(cpv_goods_low_level_3)
+            elif tender_classification_id[0:3] == "444":
+                item_classification_id = random.choice(cpv_goods_low_level_44)
+            elif tender_classification_id[0:3] == "482":
+                item_classification_id = random.choice(cpv_goods_low_level_48)
+            elif tender_classification_id[0:3] == "451":
+                item_classification_id = random.choice(cpv_works_low_level_45)
+            elif tender_classification_id[0:3] == "515":
+                item_classification_id = random.choice(cpv_services_low_level_5)
+            elif tender_classification_id[0:3] == "637":
+                item_classification_id = random.choice(cpv_services_low_level_6)
+            elif tender_classification_id[0:3] == "713":
+                item_classification_id = random.choice(cpv_services_low_level_7)
+            elif tender_classification_id[0:3] == "851":
+                item_classification_id = random.choice(cpv_services_low_level_8)
+            elif tender_classification_id[0:3] == "923":
+                item_classification_id = random.choice(cpv_services_low_level_92)
+            elif tender_classification_id[0:3] == "983":
+                item_classification_id = random.choice(cpv_services_low_level_98)
+        except KeyError:
+            raise KeyError("Check tender_classification_id")
+
+        payload['tender']['title'] = "This field is redundant"
+        payload['tender']['description'] = "This field is redundant"
+
+        payload['tender']['awardCriteria'] = "priceOnly"
+        payload['tender']['awardCriteriaDetails'] = "automated"
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+
+        payload['tender']['lots'][0]['id'] = "update cnonpn: tender.lots.id"
+        payload['tender']['lots'][0]['title'] = "update cnonpn: tender.lots.title"
+        payload['tender']['lots'][0]['description'] = "update cnonpn: tender.lots.description"
+        payload['tender']['lots'][0]['value']['amount'] = 4040.45
+        payload['tender']['lots'][0]['value']['currency'] = \
+            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+        payload['tender']['lots'][0]['contractPeriod']['startDate'] = self.contact_period[0]
+        payload['tender']['lots'][0]['contractPeriod']['endDate'] = self.contact_period[1]
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['streetAddress'] = \
+            "update cnonpn: tender.lots.placeOfPerformance.address.streetAddress"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['country']['id'] = "MD"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['region']['id'] = "3400000"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality'][
+            'id'] = "3401000"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['description'] = \
+            "create cnonpn: tender.lots.placeOfPerformance.address.addressDetails.locality.description"
+        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['scheme'] = \
+            "CUATM"
+
+        payload['tender']['lots'] = generate_lots_array(
+            quantity_of_object=quantity_of_lots_object,
+            lot_object=payload['tender']['lots'][0])
+
+        try:
+            """
+            Set permanent id for lots array.
+            """
+            if need_to_set_permanent_id_for_lots_array is True:
+                payload['tender']['lots'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['lots'],
+                    payload_array=payload['tender']['lots'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for lots array. Key 'lots' was not found.")
+
+        payload['tender']['items'][0]['id'] = "0"
+        payload['tender']['items'][0]['classification']['id'] = item_classification_id
+        payload['tender']['items'][0]['classification']['scheme'] = "CPV"
+        payload['tender']['items'][0]['classification']['description'] = \
+            "update cnonpn: tender.items.classification.description"
+        payload['tender']['items'][0]['quantity'] = 70.00
+        payload['tender']['items'][0]['unit']['id'] = "18"
+        payload['tender']['items'][0]['unit']['name'] = "update cnonpn: tender.items.unit.name"
+        payload['tender']['items'][0]['description'] = "update CNonPN: tender.items.description"
+        payload['tender']['items'][0]['relatedLot'] = payload['tender']['lots'][0]['id']
+        payload['tender']['items'] = generate_items_array(
+            quantity_of_object=quantity_of_items_object,
+            item_object=payload['tender']['items'][0],
+            tender_classification_id=tender_classification_id,
+            lots_array=payload['tender']['lots'])
+
+        try:
+            """
+            Set permanent id for items array.
+            """
+            if need_to_set_permanent_id_for_items_array is True:
+                payload['tender']['items'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['items'],
+                    payload_array=payload['tender']['items'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for items array. Key 'items' was not found.")
+
+        payload['tender']['documents'][0]['documentType'] = f"{random.choice(documentType)}"
+        payload['tender']['documents'][0]['id'] = self.document_one_was_uploaded[0]["data"]["id"]
+        payload['tender']['documents'][0]['title'] = "update cnonpn: tender.documents.title"
+        payload['tender']['documents'][0]['description'] = "update cnonpn: tender.documents.description"
+        payload['tender']['documents'][0]['relatedLots'] = [payload['tender']['lots'][0]['id']]
+
+        payload['tender']['documents'][1]['documentType'] = f"{random.choice(documentType)}"
+        payload['tender']['documents'][1]['id'] = self.document_two_was_uploaded[0]["data"]["id"]
+        payload['tender']['documents'][1]['title'] = "create cnonpn: tender.documents.title"
+        payload['tender']['documents'][1]['description'] = "create cnonpn: tender.documents.description"
+        payload['tender']['documents'][1]['relatedLots'] = [payload['tender']['lots'][1]['id']]
+
+        try:
+            """
+            Set permanent id for documents array.
+            """
+            if need_to_set_permanent_id_for_documents_array is True:
+                payload['tender']['documents'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender']['documents'],
+                    payload_array=payload['tender']['documents'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for items array. Key 'documents' was not found.")
+
+        payload['tender']['electronicAuctions']['details'][0]['id'] = "0"
+        payload['tender']['electronicAuctions']['details'][0]['relatedLot'] = payload['tender']['lots'][0]['id']
+        payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'][0][
+            'eligibleMinimumDifference']['amount'] = 40.00
+        payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'][0][
+            'eligibleMinimumDifference']['currency'] = \
+            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+        payload['tender']['electronicAuctions']['details'][1]['id'] = "1"
+        payload['tender']['electronicAuctions']['details'][1]['relatedLot'] = payload['tender']['lots'][1]['id']
+        payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'][0][
+            'eligibleMinimumDifference']['amount'] = 40.00
+        payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'][0][
+            'eligibleMinimumDifference']['currency'] = \
+            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+
+        try:
+            """
+            Set permanent id for electronicAuctions.details array.
+            """
+            if need_to_set_permanent_id_for_electronic_auction is True:
+                payload['tender']['electronicAuctions']['details'] = set_permanent_id(
+                    release_array=based_stage_release['releases'][0]['tender'][
+                        'electronicAuctions']['details'],
+                    payload_array=payload['tender']['electronicAuctions']['details'])
+            else:
+                pass
+        except KeyError:
+            raise KeyError("Could not to set permanent id for electronicAuctions.details array."
+                           "Key 'electronicAuctions.details' was not found.")
 
         return payload

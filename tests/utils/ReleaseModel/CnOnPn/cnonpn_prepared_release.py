@@ -16,7 +16,7 @@ class CnOnPnExpectedRelease:
         self.metadata_budget_url = None
         self.metadata_tender_url = None
         self.metadata_document_url = None
-        self.metadata_auction_url =None
+        self.metadata_auction_url = None
 
         try:
             if environment == "dev":

@@ -48,7 +48,7 @@ class Date:
         return start_date, end_date
 
     @staticmethod
-    def tender_period_end_date(interval=30, check_time_zone=3):
+    def tender_period_end_date(interval=35, check_time_zone=3):
         date = datetime.datetime.now()
 
         duration_date_tender_end = date - datetime.timedelta(hours=check_time_zone) + datetime.timedelta(
@@ -57,7 +57,7 @@ class Date:
         return end_date
 
     @staticmethod
-    def enquiry_period_end_date(interval=15, check_time_zone=3):
+    def enquiry_period_end_date(interval=20, check_time_zone=3):
         date = datetime.datetime.now()
         duration_date_end = date - datetime.timedelta(hours=check_time_zone) + datetime.timedelta(seconds=interval)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
