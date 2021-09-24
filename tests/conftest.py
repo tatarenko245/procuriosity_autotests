@@ -129,6 +129,7 @@ class GlobalClassMetadata:
     host_for_services = None
     metadata_budget_url = None
     metadata_tender_url = None
+    metadata_document_url = None
 
 
 class GlobalClassUpdateFs:
@@ -175,6 +176,19 @@ class GlobalClassCancelPn:
 
 
 class GlobalClassCreateCnOnPn:
+    access_token = None
+    operation_id = None
+    payload = None
+    feed_point_message = None
+    actual_ei_release = None
+    actual_fs_release = None
+    actual_ms_release = None
+    actual_pn_release = None
+    actual_ev_release = None
+    ev_id = None
+
+
+class GlobalClassUpdateCnOnPn:
     access_token = None
     operation_id = None
     payload = None

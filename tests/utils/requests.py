@@ -132,3 +132,19 @@ class Requests:
         allure.attach(host_of_request + f"/do/cn", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return cn
+
+    @staticmethod
+    @allure.step('Prepared request: update CnOnPn')
+    def update_cnonpn(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, pn_token, payload):
+        cn = requests.post(
+            url=host_of_request + f"/do/cn/{pn_ocid}/{ev_id}",
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': pn_token
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/cn", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return cn
