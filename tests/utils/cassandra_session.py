@@ -60,6 +60,14 @@ class CassandraSession:
                self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';"), \
                self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
 
+    def enquiry_process_cleanup_table_of_services(self, pn_ocid):
+        return self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one(), \
+               self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';"), \
+               self.clarification_keyspace.execute(f"DELETE FROM enquiries WHERE cpid='{pn_ocid}';"), \
+               self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';"), \
+               self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';"), \
+               self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+
     def get_bpe_operation_step_by_operation_id(self, operation_id):
         rows_1 = self.ocds_keyspace.execute(
             f"SELECT * FROM orchestrator_operation WHERE operation_id = '{operation_id}';").one()

@@ -199,3 +199,17 @@ class GlobalClassUpdateCnOnPn:
     actual_pn_release = None
     actual_ev_release = None
     ev_id = None
+
+
+class GlobalClassCreateEnquiry:
+    access_token = None
+    operation_id = None
+    payload = None
+    feed_point_message_platform = None
+    feed_point_message_bpe = None
+    actual_ei_release = None
+    actual_fs_release = None
+    actual_ms_release = None
+    actual_pn_release = None
+    actual_ev_release = None
+    enquiry_id = None

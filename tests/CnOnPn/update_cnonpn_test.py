@@ -233,7 +233,7 @@ class TestCreateCnOnPn:
 
         with allure.step('# 9. Authorization platform one: update CnOnPn'):
             """
-            Tender platform authorization for create contract notice process.
+            Tender platform authorization for update contract notice process.
             As result get Tender platform's access token and process operation-id.
             """
             GlobalClassUpdateCnOnPn.access_token = PlatformAuthorization(
@@ -243,7 +243,7 @@ class TestCreateCnOnPn:
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassUpdateCnOnPn.access_token)
         with allure.step('# 10. Send request to update CnOnPn'):
             """
-            Send api request on BPE host for contract notice creating.
+            Send api request on BPE host for contract notice updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
             time.sleep(1)
@@ -506,7 +506,7 @@ class TestCreateCnOnPn:
                     f"{GlobalClassCreatePn.pn_ocid}").json()
         with allure.step('# 9. Authorization platform one: update CnOnPn'):
             """
-            Tender platform authorization for create contract notice process.
+            Tender platform authorization for update contract notice process.
             As result get Tender platform's access token and process operation-id.
             """
             GlobalClassUpdateCnOnPn.access_token = PlatformAuthorization(
@@ -516,7 +516,7 @@ class TestCreateCnOnPn:
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassUpdateCnOnPn.access_token)
         with allure.step('# 10. Send request to update CnOnPn'):
             """
-            Send api request on BPE host for contract notice creating.
+            Send api request on BPE host for contract notice updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
             time.sleep(1)
@@ -1199,7 +1199,7 @@ class TestCreateCnOnPn:
                     f"{GlobalClassCreatePn.pn_ocid}").json()
         with allure.step('# 9. Authorization platform one: update CnOnPn'):
             """
-            Tender platform authorization for create contract notice process.
+            Tender platform authorization for update contract notice process.
             As result get Tender platform's access token and process operation-id.
             """
             GlobalClassUpdateCnOnPn.access_token = PlatformAuthorization(
@@ -1209,7 +1209,7 @@ class TestCreateCnOnPn:
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassUpdateCnOnPn.access_token)
         with allure.step('# 10. Send request to update CnOnPn'):
             """
-            Send api request on BPE host for contract notice creating.
+            Send api request on BPE host for contract notice updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
             time.sleep(1)
@@ -1704,7 +1704,7 @@ class TestCreateCnOnPn:
                     f"{GlobalClassCreatePn.pn_ocid}").json()
         with allure.step('# 9. Authorization platform one: update CnOnPn'):
             """
-            Tender platform authorization for create contract notice process.
+            Tender platform authorization for update contract notice process.
             As result get Tender platform's access token and process operation-id.
             """
             GlobalClassUpdateCnOnPn.access_token = PlatformAuthorization(
@@ -1714,7 +1714,7 @@ class TestCreateCnOnPn:
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassUpdateCnOnPn.access_token)
         with allure.step('# 10. Send request to update CnOnPn'):
             """
-            Send api request on BPE host for contract notice creating.
+            Send api request on BPE host for contract notice updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
             time.sleep(1)
@@ -2356,7 +2356,7 @@ class TestCreateCnOnPn:
                     f"{GlobalClassCreatePn.pn_ocid}").json()
         with allure.step('# 9. Authorization platform one: update CnOnPn'):
             """
-            Tender platform authorization for create contract notice process.
+            Tender platform authorization for update contract notice process.
             As result get Tender platform's access token and process operation-id.
             """
             GlobalClassUpdateCnOnPn.access_token = PlatformAuthorization(
@@ -2366,7 +2366,7 @@ class TestCreateCnOnPn:
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassUpdateCnOnPn.access_token)
         with allure.step('# 10. Send request to update CnOnPn'):
             """
-            Send api request on BPE host for contract notice creating.
+            Send api request on BPE host for contract notice updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
             time.sleep(1)
