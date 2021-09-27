@@ -782,7 +782,7 @@ class TestCreateEnquiry:
                 )) == str(True)
 
     @allure.title('Check EV and MS releases data after Enquiry creating based on data model without optional fields')
-    def test_check_ev_ms_releases_one(self):
+    def test_check_ev_ms_releases_two(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
