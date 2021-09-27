@@ -54,3 +54,7 @@ documentType = ("tenderNotice",
                 "shortlistedFirms",
                 "contractArrangements",
                 "contractGuarantees",)
+
+scale = ("MICRO",
+         "SME",
+         "LARGE",)
