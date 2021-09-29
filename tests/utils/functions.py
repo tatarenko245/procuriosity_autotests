@@ -6,6 +6,8 @@ import random
 from pathlib import Path
 from uuid import UUID
 import csv
+
+import pytz
 import xlrd
 import allure
 from tests.conftest import GlobalClassMetadata
@@ -14,6 +16,7 @@ from tests.utils.data_of_enum import cpv_goods_low_level_03, cpv_goods_low_level
     cpv_services_low_level_5, cpv_services_low_level_6, cpv_services_low_level_7, cpv_services_low_level_8, \
     cpv_services_low_level_92, cpv_services_low_level_98
 from tests.utils.services.e_mdm_service import MdmService
+import time
 
 
 @allure.step('Compare actual and expected results')
@@ -819,3 +822,18 @@ def get_temporary_lots_id_and_permanent_lots_id(temporary_lots_array, permanent_
         quantity -= 1
 
     return dictionary_of_id
+
+
+def time_bot(expected_time):
+    expected_time = datetime.datetime.strptime(expected_time, "%Y-%m-%dT%H:%M:%SZ")
+    time_at_now = datetime.datetime.strptime(datetime.datetime.strftime(datetime.datetime.now(pytz.utc),
+                                                                        "%Y-%m-%dT%H:%M:%SZ"), "%Y-%m-%dT%H:%M:%SZ")
+    while time_at_now < expected_time:
+        time_at_now = datetime.datetime.strptime(datetime.datetime.strftime(datetime.datetime.now(pytz.utc),
+                                                                            "%Y-%m-%dT%H:%M:%SZ"), "%Y-%m-%dT%H:%M:%SZ")
+        if time_at_now >= expected_time:
+            time.sleep(3)
+            break
+    print("The time was expired")
+
+

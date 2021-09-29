@@ -80,3 +80,18 @@ class Date:
         duration_date_end = date + datetime.timedelta(days=20)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return start_date, end_date
+
+    @staticmethod
+    def sum_of_date(addition_date, addition_seconds):
+        first_addition = datetime.datetime.strptime(addition_date, '%Y-%m-%dT%H:%M:%SZ')
+        second_addition = int(addition_seconds)
+        sum_as_date = datetime.datetime.strftime(first_addition + datetime.timedelta(seconds=second_addition),
+                                                 '%Y-%m-%dT%H:%M:%SZ')
+        return sum_as_date
+
+    @staticmethod
+    def sub_of_date(reduction_date, subtractor_date):
+        reduction = datetime.datetime.strptime(reduction_date, '%Y-%m-%dT%H:%M:%SZ')
+        subtractor = datetime.datetime.strptime(subtractor_date, '%Y-%m-%dT%H:%M:%SZ')
+        difference = reduction - subtractor
+        return int(difference.total_seconds())

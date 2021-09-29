@@ -21,11 +21,11 @@ class CassandraSession:
         self.submission_keyspace = self.cluster.connect('submission')
 
     def ei_process_cleanup_table_of_services(self, ei_id):
-        return self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one(), \
-               self.ocds_keyspace.execute(f"DELETE FROM budget_ei WHERE cp_id='{ei_id}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_budget_release WHERE cp_id='{ei_id}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_budget_offset WHERE cp_id='{ei_id}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_budget_compiled_release WHERE cp_id='{ei_id}';")
+        self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one()
+        self.ocds_keyspace.execute(f"DELETE FROM budget_ei WHERE cp_id='{ei_id}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_budget_release WHERE cp_id='{ei_id}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_budget_offset WHERE cp_id='{ei_id}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_budget_compiled_release WHERE cp_id='{ei_id}';")
 
     def cleanup_steps_of_process(self, operation_id):
         yield
@@ -35,38 +35,38 @@ class CassandraSession:
         self.ocds_keyspace.execute(f"DELETE FROM orchestrator_operation_step WHERE process_id = '{process_id}';")
 
     def fs_process_cleanup_table_of_services(self, ei_id):
-        return self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one(), \
-               self.ocds_keyspace.execute(f"DELETE FROM budget_ei WHERE cp_id='{ei_id}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM budget_fs WHERE cp_id='{ei_id}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_budget_release WHERE cp_id='{ei_id}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_budget_offset WHERE cp_id='{ei_id}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_budget_compiled_release WHERE cp_id='{ei_id}';")
+        self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one()
+        self.ocds_keyspace.execute(f"DELETE FROM budget_ei WHERE cp_id='{ei_id}';")
+        self.ocds_keyspace.execute(f"DELETE FROM budget_fs WHERE cp_id='{ei_id}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_budget_release WHERE cp_id='{ei_id}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_budget_offset WHERE cp_id='{ei_id}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_budget_compiled_release WHERE cp_id='{ei_id}';")
 
     def pn_process_cleanup_table_of_services(self, pn_ocid):
-        return self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one(), \
-               self.ocds_keyspace.execute(f"DELETE FROM budget_fs WHERE cp_id='{pn_ocid}';"), \
-               self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
+        self.ocds_keyspace.execute(f"DELETE FROM budget_fs WHERE cp_id='{pn_ocid}';")
+        self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
 
     def cnonpn_process_cleanup_table_of_services(self, pn_ocid):
-        return self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one(), \
-               self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';"), \
-               self.clarification_keyspace.execute(f"DELETE FROM periods WHERE cpid='{pn_ocid}';"), \
-               self.auctions_keyspace.execute(f"DELETE FROM auctions WHERE cpid='{pn_ocid}';"), \
-               self.submission_keyspace.execute(f"DELETE FROM periods WHERE cpid='{pn_ocid}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
+        self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
+        self.clarification_keyspace.execute(f"DELETE FROM periods WHERE cpid='{pn_ocid}';")
+        self.auctions_keyspace.execute(f"DELETE FROM auctions WHERE cpid='{pn_ocid}';")
+        self.submission_keyspace.execute(f"DELETE FROM periods WHERE cpid='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
 
     def enquiry_process_cleanup_table_of_services(self, pn_ocid):
-        return self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one(), \
-               self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';"), \
-               self.clarification_keyspace.execute(f"DELETE FROM enquiries WHERE cpid='{pn_ocid}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';"), \
-               self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
+        self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
+        self.clarification_keyspace.execute(f"DELETE FROM enquiries WHERE cpid='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
 
     def get_bpe_operation_step_by_operation_id(self, operation_id):
         rows_1 = self.ocds_keyspace.execute(
@@ -74,3 +74,9 @@ class CassandraSession:
         process_id = rows_1.process_id
         steps = f"SELECT * FROM ocds.orchestrator_operation_step WHERE process_id = '{process_id}' ALLOW FILTERING;"
         return steps
+
+    def get_offset_extended_from_clarification_rules(self, country, pmd):
+        data = self.clarification_keyspace.execute(f"SELECT value FROM rules WHERE country='{country}' "
+                                                   f"AND pmd='{pmd}' AND operation_type='all' "
+                                                   f"AND parameter='offsetExtended';").one()
+        return data.value
