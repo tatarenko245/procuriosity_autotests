@@ -13,7 +13,7 @@ from tests.utils.PayloadModel.FS.fs_prepared_payload import FsPreparePayload
 from tests.utils.ReleaseModel.FS.fs_prepared_release import FsExpectedRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.expected_release import ExpectedRelease
+
 from tests.utils.functions import compare_actual_result_and_expected_result
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -688,13 +688,12 @@ class TestUpdateFs:
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release")
                 GlobalClassCreateFs.actual_fs_release = actual_fs_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_full_data_model_treasury_money(
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
+                    expected_release_class.fs_release_full_data_model_treasury_money()
+                )
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
@@ -717,10 +716,10 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                # assert str(compare_actual_result_and_expected_result(
-                #     expected_result=expected_result,
-                #     actual_result=compare_releases
-                # )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
 
             with allure.step('# 7.4. Check FS release after updating'):
                 """
@@ -1075,13 +1074,12 @@ class TestUpdateFs:
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release")
                 GlobalClassCreateFs.actual_fs_release = actual_fs_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_obligatory_data_model_treasury_money(
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
+                    expected_release_class.fs_release_obligatory_data_model_treasury_money()
+                )
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
@@ -1461,13 +1459,12 @@ class TestUpdateFs:
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release")
                 GlobalClassCreateFs.actual_fs_release = actual_fs_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_full_data_model_treasury_money(
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
+                    expected_release_class.fs_release_full_data_model_treasury_money()
+                )
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
@@ -1815,13 +1812,12 @@ class TestUpdateFs:
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release")
                 GlobalClassCreateFs.actual_fs_release = actual_fs_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_obligatory_data_model_own_money_payer_id_is_not_equal_funder_id(
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
+                    expected_release_class.fs_release_obligatory_data_model_own_money_payer_id_is_not_equal_funder_id()
+                )
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
@@ -2154,13 +2150,12 @@ class TestUpdateFs:
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release")
                 GlobalClassCreateFs.actual_fs_release = actual_fs_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_full_data_model_own_money_payer_id_is_not_equal_funder_id(
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
+                    expected_release_class.fs_release_full_data_model_own_money_payer_id_is_not_equal_funder_id()
+                )
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
@@ -2184,10 +2179,10 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                # assert str(compare_actual_result_and_expected_result(
-                #     expected_result=expected_result,
-                #     actual_result=compare_releases
-                # )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
 
             with allure.step('# 7.4. Check FS release after updating'):
                 """
@@ -2535,13 +2530,12 @@ class TestUpdateFs:
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release")
                 GlobalClassCreateFs.actual_fs_release = actual_fs_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_obligatory_data_model_own_money_payer_id_is_not_equal_funder_id(
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
+                    expected_release_class.fs_release_obligatory_data_model_own_money_payer_id_is_not_equal_funder_id()
+                )
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
@@ -2914,13 +2908,12 @@ class TestUpdateFs:
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release")
                 GlobalClassCreateFs.actual_fs_release = actual_fs_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_full_data_model_own_money_payer_id_is_not_equal_funder_id(
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
+                    expected_release_class.fs_release_full_data_model_own_money_payer_id_is_not_equal_funder_id()
+                )
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
@@ -3267,14 +3260,12 @@ class TestUpdateFs:
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release")
                 GlobalClassCreateFs.actual_fs_release = actual_fs_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_obligatory_data_model_treasury_money(
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']
-                    ))
+                    expected_release_class.fs_release_obligatory_data_model_treasury_money()
+                )
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
@@ -3298,10 +3289,10 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                # assert str(compare_actual_result_and_expected_result(
-                #     expected_result=expected_result,
-                #     actual_result=compare_releases
-                # )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
 
             with allure.step('# 7.4. Check FS release after updating'):
                 """
@@ -3652,13 +3643,12 @@ class TestUpdateFs:
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release")
                 GlobalClassCreateFs.actual_fs_release = actual_fs_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_obligatory_data_model_own_money_payer_id_is_not_equal_funder_id(
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
+                    expected_release_class.fs_release_obligatory_data_model_own_money_payer_id_is_not_equal_funder_id()
+                )
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
@@ -3682,10 +3672,10 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                # assert str(compare_actual_result_and_expected_result(
-                #     expected_result=expected_result,
-                #     actual_result=compare_releases
-                # )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
 
             with allure.step('# 7.4. Check FS release after updating'):
                 """
@@ -4031,13 +4021,12 @@ class TestUpdateFs:
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release")
                 GlobalClassCreateFs.actual_fs_release = actual_fs_release_before_updating
-                expected_release_class = copy.deepcopy(ExpectedRelease(
+                expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_fs_release_model = copy.deepcopy(
-                    expected_release_class.fs_release_full_data_model_treasury_money(
-                        operation_date=GlobalClassCreateFs.feed_point_message['data']['operationDate'],
-                        release_date=GlobalClassCreateFs.feed_point_message['data']['operationDate']))
+                    expected_release_class.fs_release_full_data_model_treasury_money()
+                )
                 allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FS release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_updating, expected_fs_release_model))
@@ -4061,10 +4050,10 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                # assert str(compare_actual_result_and_expected_result(
-                #     expected_result=expected_result,
-                #     actual_result=compare_releases
-                # )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
 
             with allure.step('# 7.4. Check FS release after updating'):
                 """

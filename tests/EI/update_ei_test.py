@@ -117,7 +117,8 @@ class TestUpdateEi:
                     except ValueError:
                         raise ValueError("Can not return BPE operation step")
 
-                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
+                        "ei"][0]['id']
 
                     GlobalClassCreateEi.ei_token = \
                         GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
@@ -280,7 +281,8 @@ class TestUpdateEi:
                     except ValueError:
                         raise ValueError("Can not return BPE operation step")
 
-                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
+                        "ei"][0]['id']
 
                     GlobalClassCreateEi.ei_token = \
                         GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
@@ -548,7 +550,8 @@ class TestUpdateEi:
                     except ValueError:
                         raise ValueError("Can not return BPE operation step")
 
-                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
+                        "ei"][0]['id']
 
                     GlobalClassCreateEi.ei_token = \
                         GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
@@ -833,7 +836,8 @@ class TestUpdateEi:
                     except ValueError:
                         raise ValueError("Can not return BPE operation step")
 
-                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
+                        "ei"][0]['id']
 
                     GlobalClassCreateEi.ei_token = \
                         GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
