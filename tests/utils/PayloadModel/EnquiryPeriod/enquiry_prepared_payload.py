@@ -111,5 +111,4 @@ class EnquiryPreparePayload:
             "create enquiry: enquiry.author.contactPoint.telephone"
         payload['enquiry']['title'] = "create enquiry: enquiry.author.title"
         payload['enquiry']["description"] = "create enquiry: enquiry.author.description"
-
         return payload

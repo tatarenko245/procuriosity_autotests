@@ -163,3 +163,20 @@ class Requests:
         allure.attach(host_of_request + f"/do/enquiry", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return enquiry
+
+    @staticmethod
+    @allure.step('Prepared request: create Answer')
+    def create_answer(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, enquiry_id, enquiry_token,
+                      payload):
+        answer = requests.post(
+            url=host_of_request + f"/do/enquiry/{pn_ocid}/{ev_id}/{enquiry_id}",
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': enquiry_token
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/enquiry", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return answer
