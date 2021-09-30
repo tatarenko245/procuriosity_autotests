@@ -24,7 +24,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.requests import Requests
 
 
-@allure.parent_suite('Clarification')
+@allure.parent_suite('Tendering')
 @allure.suite('EV')
 @allure.sub_suite('BPE: Create CnOnPn')
 @allure.severity('Critical')
