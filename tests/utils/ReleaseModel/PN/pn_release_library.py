@@ -1,6 +1,3 @@
-import copy
-
-from tests.conftest import GlobalClassMetadata
 
 
 class ReleaseLibrary:

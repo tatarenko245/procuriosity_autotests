@@ -835,5 +835,3 @@ def time_bot(expected_time):
             time.sleep(3)
             break
     print("The time was expired")
-
-

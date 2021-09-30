@@ -2,7 +2,6 @@ import json
 
 import allure
 import requests
-from allure_commons._allure import step
 
 
 class PlatformAuthorization:

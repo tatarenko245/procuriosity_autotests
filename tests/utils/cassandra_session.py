@@ -1,12 +1,8 @@
-import copy
-
-import allure
-
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import Cluster, ProtocolVersion
 
 
-# yield  то эе самое что и return, только идет по интерациям
+# yield  те  саме що й return, тільки йде по ітераціями
 class CassandraSession:
     def __init__(self, cassandra_username, cassandra_password, cassandra_cluster):
         auth_provider = PlainTextAuthProvider(

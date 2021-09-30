@@ -24,7 +24,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.requests import Requests
 
 
-@allure.parent_suite('Tendering')
+@allure.parent_suite('Clarification')
 @allure.suite('EV')
 @allure.sub_suite('BPE: Create CnOnPn')
 @allure.severity('Critical')
@@ -197,7 +197,8 @@ class TestCreatePn:
                     quantity_of_items_object=2,
                     need_to_set_permanent_id_for_lots_array=True,
                     need_to_set_permanent_id_for_items_array=True,
-                    need_to_set_permanent_id_for_documents_array=True
+                    need_to_set_permanent_id_for_documents_array=True,
+                    based_stage_release=GlobalClassCreatePn.actual_pn_release
                 )
 
             synchronous_result_of_sending_the_request = Requests().create_cnonpn(
@@ -415,7 +416,8 @@ class TestCreatePn:
                     quantity_of_items_object=2,
                     need_to_set_permanent_id_for_lots_array=True,
                     need_to_set_permanent_id_for_items_array=True,
-                    need_to_set_permanent_id_for_documents_array=True
+                    need_to_set_permanent_id_for_documents_array=True,
+                    based_stage_release=GlobalClassCreatePn.actual_pn_release
                 )
 
             synchronous_result_of_sending_the_request = Requests().create_cnonpn(
@@ -765,7 +767,8 @@ class TestCreatePn:
                     quantity_of_items_object=1,
                     need_to_set_permanent_id_for_lots_array=False,
                     need_to_set_permanent_id_for_items_array=False,
-                    need_to_set_permanent_id_for_documents_array=False
+                    need_to_set_permanent_id_for_documents_array=False,
+                    based_stage_release=GlobalClassCreatePn.actual_pn_release
                 )
 
             synchronous_result_of_sending_the_request = Requests().create_cnonpn(

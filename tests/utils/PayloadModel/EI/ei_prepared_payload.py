@@ -1,7 +1,6 @@
 import copy
 import random
 
-from tests.conftest import GlobalClassCreateEi
 from tests.utils.PayloadModel.EI.ei_payload_library import PayloadLibrary
 from tests.utils.data_of_enum import cpv_category, cpv_goods_high_level, cpv_works_high_level, \
     cpv_services_high_level, typeOfBuyer, mainGeneralActivity, mainSectoralActivity, currency
