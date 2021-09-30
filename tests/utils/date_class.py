@@ -1,6 +1,8 @@
 import datetime
 import time
 
+import pytz
+
 
 class Date:
     @staticmethod
@@ -48,18 +50,17 @@ class Date:
         return start_date, end_date
 
     @staticmethod
-    def tender_period_end_date(interval=35, check_time_zone=3):
-        date = datetime.datetime.now()
+    def tender_period_end_date(interval=35):
+        date = datetime.datetime.now(pytz.utc)
 
-        duration_date_tender_end = date - datetime.timedelta(hours=check_time_zone) + datetime.timedelta(
-            seconds=interval)
+        duration_date_tender_end = date + datetime.timedelta(seconds=interval)
         end_date = duration_date_tender_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return end_date
 
     @staticmethod
-    def enquiry_period_end_date(interval=20, check_time_zone=3):
-        date = datetime.datetime.now()
-        duration_date_end = date - datetime.timedelta(hours=check_time_zone) + datetime.timedelta(seconds=interval)
+    def enquiry_period_end_date(interval=20):
+        date = datetime.datetime.now(pytz.utc)
+        duration_date_end = date + datetime.timedelta(seconds=interval)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return end_date
 
