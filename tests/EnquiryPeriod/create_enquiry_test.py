@@ -756,8 +756,7 @@ class TestCreateEnquiry:
                         cassandra_username=GlobalClassMetadata.cassandra_username,
                         cassandra_password=GlobalClassMetadata.cassandra_password,
                         cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                    if asynchronous_result_of_sending_the_request_was_checked_bpe_initiator is True \
-                            and asynchronous_result_of_sending_the_request_was_checked_platform_initiator is True:
+                    if compare_releases == expected_result:
                         database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
                         database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
                         database.pn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
@@ -1189,8 +1188,7 @@ class TestCreateEnquiry:
                         cassandra_username=GlobalClassMetadata.cassandra_username,
                         cassandra_password=GlobalClassMetadata.cassandra_password,
                         cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                    if asynchronous_result_of_sending_the_request_was_checked_bpe_initiator is True \
-                            and asynchronous_result_of_sending_the_request_was_checked_platform_initiator is True:
+                    if compare_releases == expected_result:
                         database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
                         database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
                         database.pn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
