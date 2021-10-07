@@ -346,22 +346,31 @@ class TestCreateAnswer:
                     if asynchronous_result_of_sending_the_request_was_checked is True:
                         GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
+
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
+
                         GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.enquiry_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateEi.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateFs.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreatePn.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateEnquiry.operation_id)
                     else:
@@ -791,27 +800,37 @@ class TestCreateAnswer:
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    if asynchronous_result_of_sending_the_request_was_checked is True:
+                    if compare_releases == expected_result:
                         GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
+
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
+
                         GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.enquiry_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateEi.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateFs.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreatePn.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateEnquiry.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateAnswer.operation_id)
                     else:
@@ -1238,27 +1257,37 @@ class TestCreateAnswer:
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    if asynchronous_result_of_sending_the_request_was_checked is True:
+                    if compare_releases == expected_result:
                         GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
+
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
+
                         GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.enquiry_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateEi.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateFs.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreatePn.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateEnquiry.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateAnswer.operation_id)
                     else:
@@ -1728,27 +1757,37 @@ class TestCreateAnswer:
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    if asynchronous_result_of_sending_the_request_was_checked is True:
+                    if compare_releases == expected_result:
                         GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
+
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
+
                         GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.enquiry_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateEi.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateFs.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreatePn.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateEnquiry.operation_id)
+
                         GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateAnswer.operation_id)
                     else:

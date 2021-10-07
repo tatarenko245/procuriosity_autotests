@@ -211,3 +211,9 @@ class GlobalClassCreateAnswer:
     actual_ms_release = None
     actual_ev_release = None
 
+
+class GlobalClassEnquiryPeriodEnd:
+    feed_point_message_bpe = None
+    actual_ms_release = None
+    actual_ev_release = None
+

@@ -51,6 +51,10 @@ class TestCreateCnOnPn:
             GlobalClassMetadata.metadata_document_url = "https://dev.bpe.eprocurement.systems/api/v1/storage/get"
         elif environment == "sandbox":
             GlobalClassMetadata.metadata_document_url = "http://storage.eprocurement.systems/get"
+        GlobalClassMetadata.database = CassandraSession(
+            cassandra_username=GlobalClassMetadata.cassandra_username,
+            cassandra_password=GlobalClassMetadata.cassandra_password,
+            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
 
     @allure.title('Check status code and message from Kafka topic after CnOnPn creating')
     def test_check_result_of_sending_the_request(self):
@@ -303,23 +307,36 @@ class TestCreateCnOnPn:
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked is True:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.pn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                        database.cnonpn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateCnOnPn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassUpdateCnOnPn.operation_id)
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateFs.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreatePn.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateCnOnPn.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassUpdateCnOnPn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateCnOnPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -575,13 +592,9 @@ class TestCreateCnOnPn:
                     If asynchronous_result_of_sending_the_request was False, then return process steps by
                     operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateCnOnPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
 
@@ -926,11 +939,7 @@ class TestCreateCnOnPn:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            database = CassandraSession(
-                                cassandra_username=GlobalClassMetadata.cassandra_username,
-                                cassandra_password=GlobalClassMetadata.cassandra_password,
-                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateCnOnPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -999,22 +1008,32 @@ class TestCreateCnOnPn:
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                    if asynchronous_result_of_sending_the_request_was_checked is True:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.pn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                        database.cnonpn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateCnOnPn.operation_id)
+                    if compare_releases == expected_result:
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateFs.operation_id)
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreatePn.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateCnOnPn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassCreateCnOnPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1268,13 +1287,9 @@ class TestCreateCnOnPn:
                     If asynchronous_result_of_sending_the_request was False, then return process steps by
                     operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateCnOnPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
 
@@ -1447,11 +1462,7 @@ class TestCreateCnOnPn:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            database = CassandraSession(
-                                cassandra_username=GlobalClassMetadata.cassandra_username,
-                                cassandra_password=GlobalClassMetadata.cassandra_password,
-                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateCnOnPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1504,22 +1515,33 @@ class TestCreateCnOnPn:
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                    if asynchronous_result_of_sending_the_request_was_checked is True:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.pn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                        database.cnonpn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateCnOnPn.operation_id)
+                    if compare_releases == expected_result:
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateFs.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreatePn.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateCnOnPn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassCreateCnOnPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1773,13 +1795,9 @@ class TestCreateCnOnPn:
                     If asynchronous_result_of_sending_the_request was False, then return process steps by
                     operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateCnOnPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
 
@@ -2066,11 +2084,7 @@ class TestCreateCnOnPn:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            database = CassandraSession(
-                                cassandra_username=GlobalClassMetadata.cassandra_username,
-                                cassandra_password=GlobalClassMetadata.cassandra_password,
-                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateCnOnPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -2133,22 +2147,33 @@ class TestCreateCnOnPn:
                 If TestCase was passed, then cLean up the database.
                 If TestCase was failed, then return process steps by operation-id.
                 """
-                database = CassandraSession(
-                    cassandra_username=GlobalClassMetadata.cassandra_username,
-                    cassandra_password=GlobalClassMetadata.cassandra_password,
-                    cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                if asynchronous_result_of_sending_the_request_was_checked is True:
-                    database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                    database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                    database.pn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                    database.cnonpn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                    database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
-                    database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
-                    database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
-                    database.cleanup_steps_of_process(operation_id=GlobalClassCreateCnOnPn.operation_id)
+                if compare_releases == expected_result:
+                    GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                        ei_id=GlobalClassCreateEi.ei_ocid)
+
+                    GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                        ei_id=GlobalClassCreateEi.ei_ocid)
+
+                    GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+                        pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                    GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+                        pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                        operation_id=GlobalClassCreateEi.operation_id)
+
+                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                        operation_id=GlobalClassCreateFs.operation_id)
+
+                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                        operation_id=GlobalClassCreatePn.operation_id)
+
+                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                        operation_id=GlobalClassCreateCnOnPn.operation_id)
                 else:
                     with allure.step('# Steps from Casandra DataBase'):
-                        steps = database.get_bpe_operation_step_by_operation_id(
+                        steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
                         allure.attach(steps, "Cassandra DataBase: steps of process")
             except ValueError:
@@ -2426,13 +2451,9 @@ class TestCreateCnOnPn:
                     If asynchronous_result_of_sending_the_request was False, then return process steps by
                     operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateCnOnPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
 
@@ -2720,11 +2741,7 @@ class TestCreateCnOnPn:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            database = CassandraSession(
-                                cassandra_username=GlobalClassMetadata.cassandra_username,
-                                cassandra_password=GlobalClassMetadata.cassandra_password,
-                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateCnOnPn.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -2778,22 +2795,33 @@ class TestCreateCnOnPn:
                 If TestCase was passed, then cLean up the database.
                 If TestCase was failed, then return process steps by operation-id.
                 """
-                database = CassandraSession(
-                    cassandra_username=GlobalClassMetadata.cassandra_username,
-                    cassandra_password=GlobalClassMetadata.cassandra_password,
-                    cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                if asynchronous_result_of_sending_the_request_was_checked is True:
-                    database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                    database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                    database.pn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                    database.cnonpn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                    database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
-                    database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
-                    database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
-                    database.cleanup_steps_of_process(operation_id=GlobalClassCreateCnOnPn.operation_id)
+                if compare_releases == expected_result:
+                    GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                        ei_id=GlobalClassCreateEi.ei_ocid)
+
+                    GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                        ei_id=GlobalClassCreateEi.ei_ocid)
+
+                    GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+                        pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                    GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+                        pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                        operation_id=GlobalClassCreateEi.operation_id)
+
+                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                        operation_id=GlobalClassCreateFs.operation_id)
+
+                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                        operation_id=GlobalClassCreatePn.operation_id)
+
+                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                        operation_id=GlobalClassCreateCnOnPn.operation_id)
                 else:
                     with allure.step('# Steps from Casandra DataBase'):
-                        steps = database.get_bpe_operation_step_by_operation_id(
+                        steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
                         allure.attach(steps, "Cassandra DataBase: steps of process")
             except ValueError:

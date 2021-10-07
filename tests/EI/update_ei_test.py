@@ -42,6 +42,10 @@ class TestUpdateEi:
         GlobalClassMetadata.hosts = Environment().choose_environment(GlobalClassMetadata.environment)
         GlobalClassMetadata.host_for_bpe = GlobalClassMetadata.hosts[1]
         GlobalClassMetadata.cassandra_cluster = GlobalClassMetadata.hosts[0]
+        GlobalClassMetadata.database = CassandraSession(
+            cassandra_username=GlobalClassMetadata.cassandra_username,
+            cassandra_password=GlobalClassMetadata.cassandra_password,
+            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
 
     @allure.title('Check status code and message from Kafka topic after EI updating')
     def test_check_result_of_sending_the_request(self):
@@ -64,7 +68,7 @@ class TestUpdateEi:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
-            synchronous_result_of_sending_the_request = Requests().create_ei(
+            Requests().create_ei(
 
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
@@ -73,60 +77,11 @@ class TestUpdateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
+            GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
+                "ei"][0]['id']
 
-            with allure.step('# See result: create EI'):
-                """
-                Check the results of TestCase.
-                """
-                with allure.step('# 1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    GlobalClassCreateEi.feed_point_message = \
-                        KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-                    allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
-
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassCreateEi.feed_point_message
-                    )
-
-                    try:
-                        """
-                        If asynchronous_result_of_sending_the_request was False, then return process steps by
-                        operation-id.
-                        """
-                        database = CassandraSession(
-                            cassandra_username=GlobalClassMetadata.cassandra_username,
-                            cassandra_password=GlobalClassMetadata.cassandra_password,
-                            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                        if asynchronous_result_of_sending_the_request_was_checked is False:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                steps = database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassCreateEi.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
-
-                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
-                        "ei"][0]['id']
-
-                    GlobalClassCreateEi.ei_token = \
-                        GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
-
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=True,
-                        actual_result=asynchronous_result_of_sending_the_request_was_checked
-                    )
+            GlobalClassCreateEi.ei_token = \
+                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
 
         with allure.step('# 3. Authorization platform one: update EI'):
             """
@@ -188,16 +143,15 @@ class TestUpdateEi:
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked is True:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -229,7 +183,7 @@ class TestUpdateEi:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
-            synchronous_result_of_sending_the_request = Requests().create_ei(
+            Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
                 x_operation_id=GlobalClassCreateEi.operation_id,
@@ -238,64 +192,15 @@ class TestUpdateEi:
                 payload=GlobalClassCreateEi.payload
             )
 
-            with allure.step('# See result: create EI'):
-                """
-                Check the results of TestCase.
-                """
-                with allure.step('# 1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    GlobalClassCreateEi.feed_point_message = \
-                        KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-                    allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
+            GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
+                "ei"][0]['id']
 
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassCreateEi.feed_point_message
-                    )
+            GlobalClassCreateEi.ei_token = \
+                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
 
-                    try:
-                        """
-                        If asynchronous_result_of_sending_the_request was False, then return process steps by
-                        operation-id.
-                        """
-                        database = CassandraSession(
-                            cassandra_username=GlobalClassMetadata.cassandra_username,
-                            cassandra_password=GlobalClassMetadata.cassandra_password,
-                            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                        if asynchronous_result_of_sending_the_request_was_checked is False:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                steps = database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassCreateEi.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
-
-                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
-                        "ei"][0]['id']
-
-                    GlobalClassCreateEi.ei_token = \
-                        GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
-
-                    actual_ei_release_before_updating = requests.get(
-                        url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreateEi.ei_ocid}").json()
-
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=True,
-                        actual_result=asynchronous_result_of_sending_the_request_was_checked
-                    )
-
+            actual_ei_release_before_updating = requests.get(
+                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                    f"{GlobalClassCreateEi.ei_ocid}").json()
         with allure.step('# 3. Authorization platform one: Update EI'):
             """
             Tender platform authorization for update expenditure item process.
@@ -354,13 +259,9 @@ class TestUpdateEi:
                     If asynchronous_result_of_sending_the_request was False, then return process steps by
                     operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -400,11 +301,7 @@ class TestUpdateEi:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            database = CassandraSession(
-                                cassandra_username=GlobalClassMetadata.cassandra_username,
-                                cassandra_password=GlobalClassMetadata.cassandra_password,
-                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -458,16 +355,15 @@ class TestUpdateEi:
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if compare_releases == expected_result:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -498,7 +394,7 @@ class TestUpdateEi:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
-            synchronous_result_of_sending_the_request = Requests().create_ei(
+            Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
                 x_operation_id=GlobalClassCreateEi.operation_id,
@@ -506,64 +402,15 @@ class TestUpdateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
+            GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
+                "ei"][0]['id']
 
-            with allure.step('# See result: create EI'):
-                """
-                Check the results of TestCase.
-                """
-                with allure.step('# 1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    GlobalClassCreateEi.feed_point_message = \
-                        KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-                    allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
+            GlobalClassCreateEi.ei_token = \
+                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
 
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassCreateEi.feed_point_message
-                    )
-
-                    try:
-                        """
-                        If asynchronous_result_of_sending_the_request was False, then return process steps by
-                        operation-id.
-                        """
-                        database = CassandraSession(
-                            cassandra_username=GlobalClassMetadata.cassandra_username,
-                            cassandra_password=GlobalClassMetadata.cassandra_password,
-                            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                        if asynchronous_result_of_sending_the_request_was_checked is False:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                steps = database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassCreateEi.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
-
-                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
-                        "ei"][0]['id']
-
-                    GlobalClassCreateEi.ei_token = \
-                        GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
-
-                    actual_ei_release_before_updating = requests.get(
-                        url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreateEi.ei_ocid}").json()
-
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=True,
-                        actual_result=asynchronous_result_of_sending_the_request_was_checked
-                    )
+            actual_ei_release_before_updating = requests.get(
+                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
         with allure.step('# 3. Authorization platform one: Update EI'):
             """
@@ -624,13 +471,9 @@ class TestUpdateEi:
                     If asynchronous_result_of_sending_the_request was False, then return process steps by
                     operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -670,11 +513,7 @@ class TestUpdateEi:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            database = CassandraSession(
-                                cassandra_username=GlobalClassMetadata.cassandra_username,
-                                cassandra_password=GlobalClassMetadata.cassandra_password,
-                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -732,16 +571,15 @@ class TestUpdateEi:
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if compare_releases == expected_result:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -784,7 +622,7 @@ class TestUpdateEi:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
-            synchronous_result_of_sending_the_request = Requests().create_ei(
+            Requests().create_ei(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
                 x_operation_id=GlobalClassCreateEi.operation_id,
@@ -792,64 +630,15 @@ class TestUpdateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
+            GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
+                "ei"][0]['id']
 
-            with allure.step('# See result: create EI'):
-                """
-                Check the results of TestCase.
-                """
-                with allure.step('# 1. Check status code'):
-                    """
-                    Check the synchronous_result_of_sending_the_request.
-                    """
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=202,
-                        actual_result=synchronous_result_of_sending_the_request.status_code
-                    )
-                with allure.step('# 2. Check message in feed point'):
-                    """
-                    Check the asynchronous_result_of_sending_the_request.
-                    """
-                    GlobalClassCreateEi.feed_point_message = \
-                        KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-                    allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
+            GlobalClassCreateEi.ei_token = \
+                GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
 
-                    asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                        GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                        environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassCreateEi.feed_point_message
-                    )
-
-                    try:
-                        """
-                        If asynchronous_result_of_sending_the_request was False, then return process steps by
-                        operation-id.
-                        """
-                        database = CassandraSession(
-                            cassandra_username=GlobalClassMetadata.cassandra_username,
-                            cassandra_password=GlobalClassMetadata.cassandra_password,
-                            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                        if asynchronous_result_of_sending_the_request_was_checked is False:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                steps = database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassCreateEi.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
-
-                    GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
-                        "ei"][0]['id']
-
-                    GlobalClassCreateEi.ei_token = \
-                        GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
-
-                    actual_ei_release_before_updating = requests.get(
-                        url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreateEi.ei_ocid}").json()
-
-                    assert compare_actual_result_and_expected_result(
-                        expected_result=True,
-                        actual_result=asynchronous_result_of_sending_the_request_was_checked
-                    )
+            actual_ei_release_before_updating = requests.get(
+                url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+                    f"{GlobalClassCreateEi.ei_ocid}").json()
 
         with allure.step('# 3. Authorization platform one: Update EI'):
             """
@@ -911,13 +700,9 @@ class TestUpdateEi:
                     If asynchronous_result_of_sending_the_request was False, then return process steps by
                     operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -957,11 +742,7 @@ class TestUpdateEi:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            database = CassandraSession(
-                                cassandra_username=GlobalClassMetadata.cassandra_username,
-                                cassandra_password=GlobalClassMetadata.cassandra_password,
-                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassCreateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1278,16 +1059,15 @@ class TestUpdateEi:
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
                     if compare_releases == expected_result:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = database.get_bpe_operation_step_by_operation_id(
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassUpdateEi.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
