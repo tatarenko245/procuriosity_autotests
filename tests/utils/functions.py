@@ -835,3 +835,148 @@ def time_bot(expected_time):
             time.sleep(3)
             break
     print("The time was expired")
+
+
+def generate_requirement_response_array(ev_release_criteria_array, payload):
+    copy.deepcopy(payload)
+    try:
+        """
+        Calculate quantity of object into payload['bid']['tenderers'] array.
+        """
+        tenderer_id_list = list()
+        for to in payload['bid']['tenderers']:
+            for o in to['identifier']:
+                if o == "id":
+                    tenderer_id_list.append(o)
+        quantity_of_tenderer_object = len(tenderer_id_list)
+    except ValueError:
+        raise ValueError("Impossibility to calculate quantity of groups into group of "
+                         "ev_release_criteria_array.")
+    try:
+        """
+        Calculate quantity of object into ev_release_criteria_array.
+        """
+        id_list = list()
+        for i in ev_release_criteria_array:
+            for i_1 in i:
+                if i_1 == "id":
+                    id_list.append(i_1)
+        quantity_of_criteria_object = len(id_list)
+    except ValueError:
+        raise ValueError("Impossibility to calculate quantity of criterion into ev_release_criteria_array.")
+
+    quantity_of_requirement_responses_objects = quantity_of_tenderer_object * quantity_of_criteria_object
+
+    # for i in range(quantity_of_requirement_responses_objects):
+    #     payload['bids']
+    #
+    #     response_json['id'] = str(i)
+    #     quantity_of_criteria_object -= 1
+    #
+    #
+    # list_of_requirement_response_objects = list()
+    # list_of_evidences_objects = list()
+    # try:
+    #     """
+    #     Build requirementResponses array with unique temporary id.
+    #     """
+    #     copy.deepcopy(requirement_response_object)
+    #     response_array = []
+    #
+    #     for i in range(quantity_of_criteria_object*quantity_of_tenderer_object):
+    #         response_json = copy.deepcopy(requirement_response_object)
+    #         response_json['id'] = str(i)
+    #         quantity_of_criteria_object -= 1
+    #
+    #         try:
+    #             """
+    #             Calculate quantity of evidences into requirement_response_object.
+    #             """
+    #             evidence_id_list = list()
+    #             for e in ev_release_criteria_array[quantity_of_criteria_object]:
+    #                 if e == "id":
+    #                     evidence_id_list.append(e)
+    #             quantity_of_evidence_object = len(evidence_id_list)
+    #             list_of_evidences_objects.append(evidence_id_list)
+    #         except ValueError:
+    #             raise ValueError("Impossibility to calculate quantity of groups into requirement_response_object.")
+    #
+    #         for evi in range(quantity_of_evidence_object):
+    #             response_json['evidences'][evi]['id'] = f"{i}-{evi}"
+    #             response_json['evidences'][evi]['title'] = f"{i}-evidences-{i}-{evi}.title"
+    #             response_json['evidences'][evi]['title'] = f"{i}-evidences-{i}-{evi}.description"
+    #
+    #
+    #         try:
+    #             """
+    #             Calculate quantity of groups into criterion of ev_release_criteria_array.
+    #             """
+    #             group_id_list = list()
+    #             for g in ev_release_criteria_array[quantity_of_criteria_object]:
+    #                 if g == "id":
+    #                     group_id_list.append(g)
+    #             quantity_of_group_object = len(group_id_list)
+    #             list_of_requirement_response_objects.append(group_id_list)
+    #         except ValueError:
+    #             raise ValueError("Impossibility to calculate quantity of groups into criterion of "
+    #                              "ev_release_criteria_array.")
+    #
+    #         try:
+    #             """
+    #             Calculate quantity of requirements into group of ev_release_criteria_array.
+    #             """
+    #             requirement_id_list = list()
+    #             quantity_of_group_object -= 1
+    #             while quantity_of_group_object >= 0:
+    #                 for r in ev_release_criteria_array[quantity_of_criteria_object]['requirementGroups'][
+    #                     quantity_of_group_object]:
+    #                     if r == "id":
+    #                         requirement_id_list.append(r)
+    #                 quantity_of_group_object -= 1
+    #             quantity_of_requirement_object = len(requirement_id_list)
+    #         except ValueError:
+    #             raise ValueError("Impossibility to calculate quantity of groups into group of "
+    #                              "ev_release_criteria_array.")
+    #
+    #         try:
+    #             """
+    #             Enrich response_json with value
+    #             """
+    #             quantity_of_requirement_object -= 1
+    #             while quantity_of_requirement_object >= 0:
+    #                 for el in ev_release_criteria_array[quantity_of_criteria_object]['requirementGroups'][
+    #                     quantity_of_group_object]['requirements'][quantity_of_requirement_object]:
+    #                     if el == "expectedValue":
+    #                         response_json['value'] = \
+    #                             ev_release_criteria_array[quantity_of_criteria_object]['requirementGroups'][
+    #                                 quantity_of_group_object]['requirements'][quantity_of_requirement_object][
+    #                                 'expectedValue']
+    #                     if el == "id":
+    #                         response_json['requirement']['id'] = \
+    #                             ev_release_criteria_array[quantity_of_criteria_object]['requirementGroups'][
+    #                                 quantity_of_group_object]['requirements'][quantity_of_requirement_object]['id']
+    #                         response_array.append(response_json)
+    #                 quantity_of_requirement_object -= 1
+    #
+    #             quantity_of_tenderer_object -= 1
+    #             while quantity_of_tenderer_object >= 0:
+    #                 for el in payload['bid']['tenderers'][quantity_of_tenderer_object]:
+    #                     if el == "name":
+    #                         response_json['relatedTenderer']['name'] = \
+    #                             payload['bid']['tenderers'][quantity_of_tenderer_object]['name']
+    #                         response_array.append(response_json)
+    #                 quantity_of_tenderer_object -= 1
+    #
+    #         except ValueError:
+    #             raise ValueError("Impossibility to Enrich response_json with value.")
+    #     quantity_of_tenderer_object -= 1
+    #
+    #
+    #     quantity_of_requirement_response_objects = len(list_of_requirement_response_objects)
+    #     new_array_response = []
+    #     for quantity_of_object in range(quantity_of_requirement_response_objects):
+    #         val = response_array[quantity_of_object-1]
+    #         new_array_response.append(copy.deepcopy(val))
+    except ValueError:
+        raise ValueError("Impossibility to build requirementResponses array with unique temporary id.")
+    return new_array_response

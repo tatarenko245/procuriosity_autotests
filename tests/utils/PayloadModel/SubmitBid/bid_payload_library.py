@@ -181,7 +181,7 @@ class PayloadLibrary:
                 },
                 "issuedThought": {
                     "id": None,
-                    "nama": None
+                    "name": None
                 },
                 "validityPeriod": {
                     "startDate": None,
@@ -205,7 +205,13 @@ class PayloadLibrary:
     def item_object():
         item = {
             "id": None,
-            "unit": None
+            "unit": {
+                "value": {
+                    "amount": None,
+                    "currency": None
+                },
+                "id": None
+            }
         }
         return item
 

@@ -58,3 +58,10 @@ documentType = ("tenderNotice",
 scale = ("MICRO",
          "SME",
          "LARGE",)
+
+documentType_for_bid = (
+    "illustration",
+    "submissionDocuments",
+    "x_qualificationDocuments",
+    "x_eligibilityDocuments",
+    "x_technicalDocuments",)
