@@ -11,6 +11,7 @@ import pytz
 import xlrd
 import allure
 from tests.conftest import GlobalClassMetadata
+from tests.utils.PayloadModel.SubmitBid.bid_payload_library import PayloadLibrary
 from tests.utils.data_of_enum import cpv_goods_low_level_03, cpv_goods_low_level_1, cpv_goods_low_level_2, \
     cpv_goods_low_level_3, cpv_goods_low_level_44, cpv_goods_low_level_48, cpv_works_low_level_45, \
     cpv_services_low_level_5, cpv_services_low_level_6, cpv_services_low_level_7, cpv_services_low_level_8, \
@@ -867,15 +868,50 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
 
     quantity_of_requirement_responses_objects = quantity_of_tenderer_object * quantity_of_criteria_object
 
-    # for i in range(quantity_of_requirement_responses_objects):
-    #     payload['bids']
-    #
-    #     response_json['id'] = str(i)
-    #     quantity_of_criteria_object -= 1
-    #
-    #
-    # list_of_requirement_response_objects = list()
-    # list_of_evidences_objects = list()
+    payload['bid']['requirementResponses'] = list()
+    constructor = copy.deepcopy(PayloadLibrary())
+    requirement_responses_object = constructor.requirement_response()
+    requirement_responses_object['evidences'] = constructor.evidence_object()
+
+    for i in range(quantity_of_requirement_responses_objects):
+        try:
+            """
+            Calculate quantity of object into ev_release_criteria_array['requirementGroups'].
+            """
+            for x in range(quantity_of_criteria_object):
+                groups_id_list = list()
+                for x_1 in ev_release_criteria_array[x]['requirementGroups']:
+                    for x_2 in x_1:
+                        if x_2 == "id":
+                            groups_id_list.append(x_2)
+                quantity_of_requirement_groups = len(groups_id_list)
+                choose_the_requirement_group = random.randint(0, quantity_of_requirement_groups - 1)
+
+                requirements_id_list = list()
+                for y in ev_release_criteria_array[x]['requirementGroups'][choose_the_requirement_group][
+                    'requirements']:
+                    for y_1 in y:
+                        if y_1 == "id":
+                            requirements_id_list.append(y_1)
+                quantity_of_requirements = len(requirements_id_list)
+
+
+                print("Кількість рекваєрментів")
+                print(quantity_of_requirements)
+        except ValueError:
+            raise ValueError("Impossibility to calculate quantity of criterion into "
+                             "ev_release_criteria_array['requirementGroups'].")
+
+        # Тут збагатити payload даними: requirement.id, requirement.expectedValue
+
+        requirement_responses_object['id'] = str(i)
+        payload['bid']['requirementResponses'].append(copy.deepcopy(requirement_responses_object))
+
+    print(("Перевiрка"))
+    print(payload['bid']['requirementResponses'])
+
+    list_of_requirement_response_objects = list()
+    list_of_evidences_objects = list()
     # try:
     #     """
     #     Build requirementResponses array with unique temporary id.
@@ -977,6 +1013,6 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
     #     for quantity_of_object in range(quantity_of_requirement_response_objects):
     #         val = response_array[quantity_of_object-1]
     #         new_array_response.append(copy.deepcopy(val))
-    except ValueError:
-        raise ValueError("Impossibility to build requirementResponses array with unique temporary id.")
-    return new_array_response
+    # except ValueError:
+    #     raise ValueError("Impossibility to build requirementResponses array with unique temporary id.")
+    # return new_array_response
