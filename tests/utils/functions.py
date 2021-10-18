@@ -16,6 +16,7 @@ from tests.utils.data_of_enum import cpv_goods_low_level_03, cpv_goods_low_level
     cpv_goods_low_level_3, cpv_goods_low_level_44, cpv_goods_low_level_48, cpv_works_low_level_45, \
     cpv_services_low_level_5, cpv_services_low_level_6, cpv_services_low_level_7, cpv_services_low_level_8, \
     cpv_services_low_level_92, cpv_services_low_level_98
+from tests.utils.date_class import Date
 from tests.utils.services.e_mdm_service import MdmService
 import time
 
@@ -840,6 +841,7 @@ def time_bot(expected_time):
 
 def generate_requirement_response_array(ev_release_criteria_array, payload):
     copy.deepcopy(payload)
+    date = Date()
     try:
         """
         Calculate quantity of object into payload['bid']['tenderers'] array.
@@ -866,153 +868,80 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
     except ValueError:
         raise ValueError("Impossibility to calculate quantity of criterion into ev_release_criteria_array.")
 
-    quantity_of_requirement_responses_objects = quantity_of_tenderer_object * quantity_of_criteria_object
+    try:
+        """
+        Calculate quantity of object into ev_release_criteria_array['requirementGroups'].
+        """
+        requirements_id_list = list()
+        requirements_expected_value_was_chose = list()
+
+        for x in range(quantity_of_criteria_object):
+            groups_id_list = list()
+            for x_1 in ev_release_criteria_array[x]['requirementGroups']:
+                for x_2 in x_1:
+                    if x_2 == "id":
+                        groups_id_list.append(x_2)
+            quantity_of_requirement_groups = len(groups_id_list)
+            choose_the_requirement_group = random.randint(0, quantity_of_requirement_groups - 1)
+
+            for y in ev_release_criteria_array[x]['requirementGroups'][choose_the_requirement_group][
+                'requirements']:
+                if "id" in y and "expectedValue" in y:
+                    requirements_id_list.append(y['id'])
+                    requirements_expected_value_was_chose.append(copy.deepcopy(
+                        {"id": y['id'],
+                         "value": y['expectedValue']}))
+                elif "id" in y and "minValue" in y:
+                    requirements_id_list.append(y['id'])
+                    requirements_expected_value_was_chose.append(copy.deepcopy(
+                        {"id": y['id'],
+                         "value": y['minValue']}))
+                elif "id" in y and "maxValue" in y:
+                    requirements_id_list.append(y['id'])
+                    requirements_expected_value_was_chose.append(copy.deepcopy(
+                        {"id": y['id'],
+                         "value": y['maxValue']}))
+        quantity_of_requirements = len(requirements_id_list)
+    except ValueError:
+        raise ValueError("Impossibility to calculate quantity of criterion into "
+                         "ev_release_criteria_array['requirementGroups'].")
+
+    list_of_requirements_expected_value_was_chose = requirements_expected_value_was_chose * quantity_of_tenderer_object
+    quantity_of_requirement_responses_objects = quantity_of_tenderer_object * quantity_of_requirements
 
     payload['bid']['requirementResponses'] = list()
     constructor = copy.deepcopy(PayloadLibrary())
     requirement_responses_object = constructor.requirement_response()
-    requirement_responses_object['evidences'] = constructor.evidence_object()
+    requirement_responses_object['evidences'] = [{}]
+    requirement_responses_object['evidences'][0] = constructor.evidence_object()
+
+    for t in range(quantity_of_tenderer_object):
+        for i in range(quantity_of_requirements):
+            requirement_responses_object['id'] = str(i)
+            requirement_responses_object['evidences'][0]['id'] = str(i)
+            requirement_responses_object['relatedTenderer']['name'] = \
+                payload['bid']['tenderers'][t]['name']
+            requirement_responses_object['relatedTenderer']['identifier']['id'] = \
+                payload['bid']['tenderers'][t]['identifier']['id']
+            requirement_responses_object['relatedTenderer']['identifier']['scheme'] = \
+                payload['bid']['tenderers'][t]['identifier']['scheme']
+
+            requirement_responses_object['evidences'][0]['title'] = "evidences.title"
+            requirement_responses_object['evidences'][0]['description'] = "evidences.description"
+            requirement_responses_object['evidences'][0]['relatedDocument']['id'] = \
+                payload['bid']['documents'][0]['id']
+
+            requirement_responses_object['period']['startDate'] = date.contact_period()[0]
+            requirement_responses_object['period']['endDate'] = date.contact_period()[1]
+            payload['bid']['requirementResponses'].append(copy.deepcopy(requirement_responses_object))
 
     for i in range(quantity_of_requirement_responses_objects):
-        try:
-            """
-            Calculate quantity of object into ev_release_criteria_array['requirementGroups'].
-            """
-            for x in range(quantity_of_criteria_object):
-                groups_id_list = list()
-                for x_1 in ev_release_criteria_array[x]['requirementGroups']:
-                    for x_2 in x_1:
-                        if x_2 == "id":
-                            groups_id_list.append(x_2)
-                quantity_of_requirement_groups = len(groups_id_list)
-                choose_the_requirement_group = random.randint(0, quantity_of_requirement_groups - 1)
+        payload['bid']['requirementResponses'][i]['requirement']['id'] = \
+            list_of_requirements_expected_value_was_chose[i]['id']
+        payload['bid']['requirementResponses'][i]['value'] = \
+            list_of_requirements_expected_value_was_chose[i]['value']
 
-                requirements_id_list = list()
-                for y in ev_release_criteria_array[x]['requirementGroups'][choose_the_requirement_group][
-                    'requirements']:
-                    for y_1 in y:
-                        if y_1 == "id":
-                            requirements_id_list.append(y_1)
-                quantity_of_requirements = len(requirements_id_list)
+        payload['bid']['requirementResponses'][i]['evidences'][0]['id'] = str(i)
+        payload['bid']['requirementResponses'][i]['id'] = str(i)
 
-
-                print("Кількість рекваєрментів")
-                print(quantity_of_requirements)
-        except ValueError:
-            raise ValueError("Impossibility to calculate quantity of criterion into "
-                             "ev_release_criteria_array['requirementGroups'].")
-
-        # Тут збагатити payload даними: requirement.id, requirement.expectedValue
-
-        requirement_responses_object['id'] = str(i)
-        payload['bid']['requirementResponses'].append(copy.deepcopy(requirement_responses_object))
-
-    print(("Перевiрка"))
-    print(payload['bid']['requirementResponses'])
-
-    list_of_requirement_response_objects = list()
-    list_of_evidences_objects = list()
-    # try:
-    #     """
-    #     Build requirementResponses array with unique temporary id.
-    #     """
-    #     copy.deepcopy(requirement_response_object)
-    #     response_array = []
-    #
-    #     for i in range(quantity_of_criteria_object*quantity_of_tenderer_object):
-    #         response_json = copy.deepcopy(requirement_response_object)
-    #         response_json['id'] = str(i)
-    #         quantity_of_criteria_object -= 1
-    #
-    #         try:
-    #             """
-    #             Calculate quantity of evidences into requirement_response_object.
-    #             """
-    #             evidence_id_list = list()
-    #             for e in ev_release_criteria_array[quantity_of_criteria_object]:
-    #                 if e == "id":
-    #                     evidence_id_list.append(e)
-    #             quantity_of_evidence_object = len(evidence_id_list)
-    #             list_of_evidences_objects.append(evidence_id_list)
-    #         except ValueError:
-    #             raise ValueError("Impossibility to calculate quantity of groups into requirement_response_object.")
-    #
-    #         for evi in range(quantity_of_evidence_object):
-    #             response_json['evidences'][evi]['id'] = f"{i}-{evi}"
-    #             response_json['evidences'][evi]['title'] = f"{i}-evidences-{i}-{evi}.title"
-    #             response_json['evidences'][evi]['title'] = f"{i}-evidences-{i}-{evi}.description"
-    #
-    #
-    #         try:
-    #             """
-    #             Calculate quantity of groups into criterion of ev_release_criteria_array.
-    #             """
-    #             group_id_list = list()
-    #             for g in ev_release_criteria_array[quantity_of_criteria_object]:
-    #                 if g == "id":
-    #                     group_id_list.append(g)
-    #             quantity_of_group_object = len(group_id_list)
-    #             list_of_requirement_response_objects.append(group_id_list)
-    #         except ValueError:
-    #             raise ValueError("Impossibility to calculate quantity of groups into criterion of "
-    #                              "ev_release_criteria_array.")
-    #
-    #         try:
-    #             """
-    #             Calculate quantity of requirements into group of ev_release_criteria_array.
-    #             """
-    #             requirement_id_list = list()
-    #             quantity_of_group_object -= 1
-    #             while quantity_of_group_object >= 0:
-    #                 for r in ev_release_criteria_array[quantity_of_criteria_object]['requirementGroups'][
-    #                     quantity_of_group_object]:
-    #                     if r == "id":
-    #                         requirement_id_list.append(r)
-    #                 quantity_of_group_object -= 1
-    #             quantity_of_requirement_object = len(requirement_id_list)
-    #         except ValueError:
-    #             raise ValueError("Impossibility to calculate quantity of groups into group of "
-    #                              "ev_release_criteria_array.")
-    #
-    #         try:
-    #             """
-    #             Enrich response_json with value
-    #             """
-    #             quantity_of_requirement_object -= 1
-    #             while quantity_of_requirement_object >= 0:
-    #                 for el in ev_release_criteria_array[quantity_of_criteria_object]['requirementGroups'][
-    #                     quantity_of_group_object]['requirements'][quantity_of_requirement_object]:
-    #                     if el == "expectedValue":
-    #                         response_json['value'] = \
-    #                             ev_release_criteria_array[quantity_of_criteria_object]['requirementGroups'][
-    #                                 quantity_of_group_object]['requirements'][quantity_of_requirement_object][
-    #                                 'expectedValue']
-    #                     if el == "id":
-    #                         response_json['requirement']['id'] = \
-    #                             ev_release_criteria_array[quantity_of_criteria_object]['requirementGroups'][
-    #                                 quantity_of_group_object]['requirements'][quantity_of_requirement_object]['id']
-    #                         response_array.append(response_json)
-    #                 quantity_of_requirement_object -= 1
-    #
-    #             quantity_of_tenderer_object -= 1
-    #             while quantity_of_tenderer_object >= 0:
-    #                 for el in payload['bid']['tenderers'][quantity_of_tenderer_object]:
-    #                     if el == "name":
-    #                         response_json['relatedTenderer']['name'] = \
-    #                             payload['bid']['tenderers'][quantity_of_tenderer_object]['name']
-    #                         response_array.append(response_json)
-    #                 quantity_of_tenderer_object -= 1
-    #
-    #         except ValueError:
-    #             raise ValueError("Impossibility to Enrich response_json with value.")
-    #     quantity_of_tenderer_object -= 1
-    #
-    #
-    #     quantity_of_requirement_response_objects = len(list_of_requirement_response_objects)
-    #     new_array_response = []
-    #     for quantity_of_object in range(quantity_of_requirement_response_objects):
-    #         val = response_array[quantity_of_object-1]
-    #         new_array_response.append(copy.deepcopy(val))
-    # except ValueError:
-    #     raise ValueError("Impossibility to build requirementResponses array with unique temporary id.")
-    # return new_array_response
+    return payload['bid']['requirementResponses']

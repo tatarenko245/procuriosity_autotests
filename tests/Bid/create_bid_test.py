@@ -19,7 +19,7 @@ from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.functions import compare_actual_result_and_expected_result, \
     get_value_from_classification_cpv_dictionary_xls, get_sum_of_lot, \
-    get_contract_period_for_ms_release, generate_tender_classification_id
+    get_contract_period_for_ms_release, generate_tender_classification_id, time_bot
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.requests import Requests
@@ -248,92 +248,93 @@ class TestCreatePn:
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
             time.sleep(1)
+            time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate'])
             bid_payload_class = copy.deepcopy(BidPreparePayload())
             GlobalClassCreateBid.payload = \
                 bid_payload_class.create_bid_full_data_model(
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
                 )
+
             print("BID PAYLOAD")
             print(json.dumps(GlobalClassCreateBid.payload))
 
-        # synchronous_result_of_sending_the_request = Requests().create_cnonpn(
-        #     host_of_request=GlobalClassMetadata.host_for_bpe,
-        #     access_token=GlobalClassCreateCnOnPn.access_token,
-        #     x_operation_id=GlobalClassCreateCnOnPn.operation_id,
-        #     pn_ocid=GlobalClassCreatePn.pn_ocid,
-        #     pn_id=GlobalClassCreatePn.pn_id,
-        #     pn_token=GlobalClassCreatePn.pn_token,
-        #     payload=GlobalClassCreateCnOnPn.payload
-        # )
-
-    # with allure.step('# 9. See result'):
-    #     """
-    #     Check the results of TestCase.
-    #     """
-    #     with allure.step('# 9.1. Check status code'):
-    #         """
-    #         Check the synchronous_result_of_sending_the_request.
-    #         """
-    #
-    #         assert compare_actual_result_and_expected_result(
-    #             expected_result=202,
-    #             actual_result=synchronous_result_of_sending_the_request.status_code
-    #         )
-    #     with allure.step('# 9.2. Check message in feed point'):
-    #         """
-    #         Check the asynchronous_result_of_sending_the_request.
-    #         """
-    #         GlobalClassCreateCnOnPn.feed_point_message = \
-    #             KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
-    #         allure.attach(str(GlobalClassCreateCnOnPn.feed_point_message), 'Message in feed point')
-    #
-    #         asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-    #             GlobalClassCreateCnOnPn.operation_id).create_cnonpn_message_is_successful(
-    #             environment=GlobalClassMetadata.environment,
-    #             kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
-    #             pn_ocid=GlobalClassCreatePn.pn_ocid
-    #         )
-    #         try:
-    #             """
-    #             If TestCase was passed, then cLean up the database.
-    #             If TestCase was failed, then return process steps by operation-id.
-    #             """
-    #             if asynchronous_result_of_sending_the_request_was_checked is True:
-    #                 GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-    #                     ei_id=GlobalClassCreateEi.ei_ocid)
-    #
-    #                 GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
-    #                     ei_id=GlobalClassCreateEi.ei_ocid)
-    #
-    #                 GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
-    #                     pn_ocid=GlobalClassCreatePn.pn_ocid)
-    #
-    #                 GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
-    #                     pn_ocid=GlobalClassCreatePn.pn_ocid)
-    #
-    #                 GlobalClassMetadata.database.cleanup_steps_of_process(
-    #                     operation_id=GlobalClassCreateEi.operation_id)
-    #
-    #                 GlobalClassMetadata.database.cleanup_steps_of_process(
-    #                     operation_id=GlobalClassCreateFs.operation_id)
-    #
-    #                 GlobalClassMetadata.database.cleanup_steps_of_process(
-    #                     operation_id=GlobalClassCreatePn.operation_id)
-    #
-    #                 GlobalClassMetadata.database.cleanup_steps_of_process(
-    #                     operation_id=GlobalClassCreateCnOnPn.operation_id)
-    #             else:
-    #                 with allure.step('# Steps from Casandra DataBase'):
-    #                     steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-    #                         operation_id=GlobalClassCreateCnOnPn.operation_id)
-    #                     allure.attach(steps, "Cassandra DataBase: steps of process")
-    #         except ValueError:
-    #             raise ValueError("Can not return BPE operation step")
-    #
-    #         assert compare_actual_result_and_expected_result(
-    #             expected_result=True,
-    #             actual_result=asynchronous_result_of_sending_the_request_was_checked
-    #         )
+        synchronous_result_of_sending_the_request = Requests().create_bid(
+            host_of_request=GlobalClassMetadata.host_for_bpe,
+            access_token=GlobalClassCreateBid.access_token,
+            x_operation_id=GlobalClassCreateBid.operation_id,
+            pn_ocid=GlobalClassCreatePn.pn_ocid,
+            ev_id=GlobalClassCreateCnOnPn.ev_id,
+            payload=GlobalClassCreateBid.payload
+        )
+        print("Перевірка синхронної відповіді")
+        print(synchronous_result_of_sending_the_request)
+        with allure.step('# 11. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 11.1. Check status code'):
+                """
+                Check the synchronous_result_of_sending_the_request.
+                """
+                assert compare_actual_result_and_expected_result(
+                    expected_result=202,
+                    actual_result=synchronous_result_of_sending_the_request.status_code
+                )
+            # with allure.step('# 11.2. Check message in feed point'):
+            #     """
+            #     Check the asynchronous_result_of_sending_the_request.
+            #     """
+            #     GlobalClassCreateCnOnPn.feed_point_message = \
+            #         KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+            #     allure.attach(str(GlobalClassCreateCnOnPn.feed_point_message), 'Message in feed point')
+            #
+            #     asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+            #         GlobalClassCreateCnOnPn.operation_id).create_cnonpn_message_is_successful(
+            #         environment=GlobalClassMetadata.environment,
+            #         kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
+            #         pn_ocid=GlobalClassCreatePn.pn_ocid
+            #     )
+            #     try:
+            #         """
+            #         If TestCase was passed, then cLean up the database.
+            #         If TestCase was failed, then return process steps by operation-id.
+            #         """
+            #         if asynchronous_result_of_sending_the_request_was_checked is True:
+            #             GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+            #                 ei_id=GlobalClassCreateEi.ei_ocid)
+            #
+            #             GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+            #                 ei_id=GlobalClassCreateEi.ei_ocid)
+            #
+            #             GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+            #                 pn_ocid=GlobalClassCreatePn.pn_ocid)
+            #
+            #             GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+            #                 pn_ocid=GlobalClassCreatePn.pn_ocid)
+            #
+            #             GlobalClassMetadata.database.cleanup_steps_of_process(
+            #                 operation_id=GlobalClassCreateEi.operation_id)
+            #
+            #             GlobalClassMetadata.database.cleanup_steps_of_process(
+            #                 operation_id=GlobalClassCreateFs.operation_id)
+            #
+            #             GlobalClassMetadata.database.cleanup_steps_of_process(
+            #                 operation_id=GlobalClassCreatePn.operation_id)
+            #
+            #             GlobalClassMetadata.database.cleanup_steps_of_process(
+            #                 operation_id=GlobalClassCreateCnOnPn.operation_id)
+            #         else:
+            #             with allure.step('# Steps from Casandra DataBase'):
+            #                 steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+            #                     operation_id=GlobalClassCreateCnOnPn.operation_id)
+            #                 allure.attach(steps, "Cassandra DataBase: steps of process")
+            #     except ValueError:
+            #         raise ValueError("Can not return BPE operation step")
+            #
+            #     assert compare_actual_result_and_expected_result(
+            #         expected_result=True,
+            #         actual_result=asynchronous_result_of_sending_the_request_was_checked
+            #     )
 
 # @allure.title('Check EV and MS releases data after CnOnPn creating with full data model with 2 lots and 2 '
 #               'items criteria, conversions, documents, auction')

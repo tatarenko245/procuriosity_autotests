@@ -65,3 +65,6 @@ documentType_for_bid = (
     "x_qualificationDocuments",
     "x_eligibilityDocuments",
     "x_technicalDocuments",)
+
+person_title = ("Mr.", "Ms.", "Mrs.",)
+business_function_job = ("authority", "contactPoint",)

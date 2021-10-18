@@ -115,7 +115,7 @@ class PayloadLibrary:
             "period": {
                 "startDate": None
             },
-            "documents": None
+            "documents": [None]
         }
         return business_function
 

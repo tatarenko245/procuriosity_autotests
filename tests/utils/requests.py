@@ -180,3 +180,18 @@ class Requests:
         allure.attach(host_of_request + f"/do/enquiry", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return answer
+
+    @staticmethod
+    @allure.step('Prepared request: create Bid')
+    def create_bid(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, payload):
+        bid = requests.post(
+            url=host_of_request + f"/do/bid/{pn_ocid}/{ev_id}",
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json'
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/bid", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return bid
