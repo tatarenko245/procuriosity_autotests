@@ -380,12 +380,12 @@ class BidPreparePayload:
         payload['bid']['tenderers'][0]['address']['addressDetails']['country']['description'] = \
             "tenderers.address.addressDetails.country.description: 0"
         payload['bid']['tenderers'][0]['address']['addressDetails']['country']['scheme'] = \
-            "tenderers.address.addressDetails.country.scheme: 0"
+            "iso-alpha2"
         payload['bid']['tenderers'][0]['address']['addressDetails']['region']['id'] = "1700000"
         payload['bid']['tenderers'][0]['address']['addressDetails']['region']['description'] = \
             "tenderers.address.addressDetails.region.description: 0"
         payload['bid']['tenderers'][0]['address']['addressDetails']['region']['scheme'] = \
-            "tenderers.address.addressDetails.region.scheme: 0"
+            "CUATM"
         payload['bid']['tenderers'][0]['address']['addressDetails']['locality']['id'] = "1701000"
         payload['bid']['tenderers'][0]['address']['addressDetails']['locality']['description'] = \
             "tenderers.address.addressDetails.locality.description: 0"
@@ -573,16 +573,14 @@ class BidPreparePayload:
             'description'] = \
             "tenderers.details.bankAccounts.address.addressDetails.country.description.: 0.0"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['address']['addressDetails']['country'][
-            'scheme'] = \
-            "tenderers.details.bankAccounts.address.addressDetails.country.scheme.: 0.0"
+            'scheme'] = "iso-alpha2"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['address']['addressDetails']['region']['id'] = \
             "1700000"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['address']['addressDetails']['region'][
             'description'] = \
             "tenderers.details.bankAccounts.address.addressDetails.region.description.: 0.0"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['address']['addressDetails']['region'][
-            'scheme'] = \
-            "tenderers.details.bankAccounts.address.addressDetails.region.scheme.: 0.0"
+            'scheme'] = "CUATM"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['address']['addressDetails']['locality']['id'] = \
             "1701000"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['address']['addressDetails']['locality'][
@@ -630,16 +628,14 @@ class BidPreparePayload:
             'description'] = \
             "tenderers.details.bankAccounts.address.addressDetails.country.description.: 0.1"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['address']['addressDetails']['country'][
-            'scheme'] = \
-            "tenderers.details.bankAccounts.address.addressDetails.country.scheme.: 0.1"
+            'scheme'] = "iso-alpha2"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['address']['addressDetails']['region']['id'] = \
             "1700000"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['address']['addressDetails']['region'][
             'description'] = \
             "tenderers.details.bankAccounts.address.addressDetails.region.description.: 0.1"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['address']['addressDetails']['region'][
-            'scheme'] = \
-            "tenderers.details.bankAccounts.address.addressDetails.region.scheme.: 0.1"
+            'scheme'] = "CUATM"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['address']['addressDetails']['locality']['id'] = \
             "1701000"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['address']['addressDetails']['locality'][
@@ -706,12 +702,12 @@ class BidPreparePayload:
         payload['bid']['tenderers'][1]['address']['addressDetails']['country']['description'] = \
             "tenderers.address.addressDetails.country.description: 1"
         payload['bid']['tenderers'][1]['address']['addressDetails']['country']['scheme'] = \
-            "tenderers.address.addressDetails.country.scheme: 1"
+            "iso-alpha2"
         payload['bid']['tenderers'][1]['address']['addressDetails']['region']['id'] = "1700000"
         payload['bid']['tenderers'][1]['address']['addressDetails']['region']['description'] = \
             "tenderers.address.addressDetails.region.description: 1"
         payload['bid']['tenderers'][1]['address']['addressDetails']['region']['scheme'] = \
-            "tenderers.address.addressDetails.region.scheme: 1"
+            "CUATM"
         payload['bid']['tenderers'][1]['address']['addressDetails']['locality']['id'] = "1701000"
         payload['bid']['tenderers'][1]['address']['addressDetails']['locality']['description'] = \
             "tenderers.address.addressDetails.locality.description: 1"
@@ -899,16 +895,14 @@ class BidPreparePayload:
             'description'] = \
             "tenderers.details.bankAccounts.address.addressDetails.country.description.: 1.0"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['address']['addressDetails']['country'][
-            'scheme'] = \
-            "tenderers.details.bankAccounts.address.addressDetails.country.scheme.: 1.0"
+            'scheme'] = "iso-alpha2"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['address']['addressDetails']['region']['id'] = \
             "1700000"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['address']['addressDetails']['region'][
             'description'] = \
             "tenderers.details.bankAccounts.address.addressDetails.region.description.: 1.0"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['address']['addressDetails']['region'][
-            'scheme'] = \
-            "tenderers.details.bankAccounts.address.addressDetails.region.scheme.: 1.0"
+            'scheme'] = "CUATM"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['address']['addressDetails']['locality']['id'] = \
             "1701000"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['address']['addressDetails']['locality'][
@@ -956,16 +950,14 @@ class BidPreparePayload:
             'description'] = \
             "tenderers.details.bankAccounts.address.addressDetails.country.description.: 1.1"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['address']['addressDetails']['country'][
-            'scheme'] = \
-            "tenderers.details.bankAccounts.address.addressDetails.country.scheme.: 1.1"
+            'scheme'] = "iso-alpha2"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['address']['addressDetails']['region']['id'] = \
             "1700000"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['address']['addressDetails']['region'][
             'description'] = \
             "tenderers.details.bankAccounts.address.addressDetails.region.description.: 1.1"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['address']['addressDetails']['region'][
-            'scheme'] = \
-            "tenderers.details.bankAccounts.address.addressDetails.region.scheme.: 1.1"
+            'scheme'] = "CUATM"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['address']['addressDetails']['locality']['id'] = \
             "1701000"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['address']['addressDetails']['locality'][
@@ -1030,5 +1022,5 @@ class BidPreparePayload:
             ev_release_criteria_array=based_stage_release['releases'][0]['tender']['criteria'],
             payload=payload
         )
-
+        del payload['bid']['requirementResponses'][2], payload['bid']['requirementResponses'][2]
         return payload

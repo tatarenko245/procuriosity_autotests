@@ -985,37 +985,39 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
 
         for x in range(quantity_of_criteria_object):
             groups_id_list = list()
-            for x_1 in ev_release_criteria_array[x]['requirementGroups']:
-                for x_2 in x_1:
-                    if x_2 == "id":
-                        groups_id_list.append(x_2)
-            quantity_of_requirement_groups = len(groups_id_list)
-            choose_the_requirement_group = random.randint(0, quantity_of_requirement_groups - 1)
+            if ev_release_criteria_array[x]['relatesTo'] == "lot" or ev_release_criteria_array[x][
+                'relatesTo'] == "tender" or ev_release_criteria_array[x]['relatesTo'] == "item":
+                for x_1 in ev_release_criteria_array[x]['requirementGroups']:
+                    for x_2 in x_1:
+                        if x_2 == "id":
+                            groups_id_list.append(x_2)
+                quantity_of_requirement_groups = len(groups_id_list)
+                choose_the_requirement_group = random.randint(0, quantity_of_requirement_groups - 1)
 
-            for y in ev_release_criteria_array[x]['requirementGroups'][choose_the_requirement_group][
-                'requirements']:
-                if "id" in y and "expectedValue" in y:
-                    requirements_id_list.append(y['id'])
-                    requirements_expected_value_was_chose.append(copy.deepcopy(
-                        {"id": y['id'],
-                         "value": y['expectedValue']}))
-                elif "id" in y and "minValue" in y:
-                    requirements_id_list.append(y['id'])
-                    requirements_expected_value_was_chose.append(copy.deepcopy(
-                        {"id": y['id'],
-                         "value": y['minValue']}))
-                elif "id" in y and "maxValue" in y:
-                    requirements_id_list.append(y['id'])
-                    requirements_expected_value_was_chose.append(copy.deepcopy(
-                        {"id": y['id'],
-                         "value": y['maxValue']}))
+                for y in ev_release_criteria_array[x]['requirementGroups'][choose_the_requirement_group][
+                    'requirements']:
+                    if "id" in y and "expectedValue" in y:
+                        requirements_id_list.append(y['id'])
+                        requirements_expected_value_was_chose.append(copy.deepcopy(
+                            {"id": y['id'],
+                             "value": y['expectedValue']}))
+                    elif "id" in y and "minValue" in y:
+                        requirements_id_list.append(y['id'])
+                        requirements_expected_value_was_chose.append(copy.deepcopy(
+                            {"id": y['id'],
+                             "value": y['minValue']}))
+                    elif "id" in y and "maxValue" in y:
+                        requirements_id_list.append(y['id'])
+                        requirements_expected_value_was_chose.append(copy.deepcopy(
+                            {"id": y['id'],
+                             "value": y['maxValue']}))
         quantity_of_requirements = len(requirements_id_list)
     except ValueError:
         raise ValueError("Impossibility to calculate quantity of criterion into "
                          "ev_release_criteria_array['requirementGroups'].")
 
     list_of_requirements_expected_value_was_chose = requirements_expected_value_was_chose * quantity_of_tenderer_object
-    quantity_of_requirement_responses_objects = quantity_of_tenderer_object * quantity_of_requirements
+    quantity_of_requirement_responses_objects = quantity_of_requirements * quantity_of_tenderer_object
 
     payload['bid']['requirementResponses'] = list()
     constructor = copy.deepcopy(PayloadLibrary())
@@ -1051,5 +1053,6 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
 
         payload['bid']['requirementResponses'][i]['evidences'][0]['id'] = str(i)
         payload['bid']['requirementResponses'][i]['id'] = str(i)
-
+    print("НАРЕШТІ")
+    print(payload['bid']['requirementResponses'])
     return payload['bid']['requirementResponses']
