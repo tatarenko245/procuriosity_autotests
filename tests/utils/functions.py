@@ -945,3 +945,111 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
         payload['bid']['requirementResponses'][i]['id'] = str(i)
 
     return payload['bid']['requirementResponses']
+
+
+def generate_requirement_response_array(ev_release_criteria_array, payload):
+    copy.deepcopy(payload)
+    date = Date()
+    try:
+        """
+        Calculate quantity of object into payload['bid']['tenderers'] array.
+        """
+        tenderer_id_list = list()
+        for to in payload['bid']['tenderers']:
+            for o in to['identifier']:
+                if o == "id":
+                    tenderer_id_list.append(o)
+        quantity_of_tenderer_object = len(tenderer_id_list)
+    except ValueError:
+        raise ValueError("Impossibility to calculate quantity of groups into group of "
+                         "ev_release_criteria_array.")
+    try:
+        """
+        Calculate quantity of object into ev_release_criteria_array.
+        """
+        id_list = list()
+        for i in ev_release_criteria_array:
+            for i_1 in i:
+                if i_1 == "id":
+                    id_list.append(i_1)
+        quantity_of_criteria_object = len(id_list)
+    except ValueError:
+        raise ValueError("Impossibility to calculate quantity of criterion into ev_release_criteria_array.")
+
+    try:
+        """
+        Calculate quantity of object into ev_release_criteria_array['requirementGroups'].
+        """
+        requirements_id_list = list()
+        requirements_expected_value_was_chose = list()
+
+        for x in range(quantity_of_criteria_object):
+            groups_id_list = list()
+            for x_1 in ev_release_criteria_array[x]['requirementGroups']:
+                for x_2 in x_1:
+                    if x_2 == "id":
+                        groups_id_list.append(x_2)
+            quantity_of_requirement_groups = len(groups_id_list)
+            choose_the_requirement_group = random.randint(0, quantity_of_requirement_groups - 1)
+
+            for y in ev_release_criteria_array[x]['requirementGroups'][choose_the_requirement_group][
+                'requirements']:
+                if "id" in y and "expectedValue" in y:
+                    requirements_id_list.append(y['id'])
+                    requirements_expected_value_was_chose.append(copy.deepcopy(
+                        {"id": y['id'],
+                         "value": y['expectedValue']}))
+                elif "id" in y and "minValue" in y:
+                    requirements_id_list.append(y['id'])
+                    requirements_expected_value_was_chose.append(copy.deepcopy(
+                        {"id": y['id'],
+                         "value": y['minValue']}))
+                elif "id" in y and "maxValue" in y:
+                    requirements_id_list.append(y['id'])
+                    requirements_expected_value_was_chose.append(copy.deepcopy(
+                        {"id": y['id'],
+                         "value": y['maxValue']}))
+        quantity_of_requirements = len(requirements_id_list)
+    except ValueError:
+        raise ValueError("Impossibility to calculate quantity of criterion into "
+                         "ev_release_criteria_array['requirementGroups'].")
+
+    list_of_requirements_expected_value_was_chose = requirements_expected_value_was_chose * quantity_of_tenderer_object
+    quantity_of_requirement_responses_objects = quantity_of_tenderer_object * quantity_of_requirements
+
+    payload['bid']['requirementResponses'] = list()
+    constructor = copy.deepcopy(PayloadLibrary())
+    requirement_responses_object = constructor.requirement_response()
+    requirement_responses_object['evidences'] = [{}]
+    requirement_responses_object['evidences'][0] = constructor.evidence_object()
+
+    for t in range(quantity_of_tenderer_object):
+        for i in range(quantity_of_requirements):
+            requirement_responses_object['id'] = str(i)
+            requirement_responses_object['evidences'][0]['id'] = str(i)
+            requirement_responses_object['relatedTenderer']['name'] = \
+                payload['bid']['tenderers'][t]['name']
+            requirement_responses_object['relatedTenderer']['identifier']['id'] = \
+                payload['bid']['tenderers'][t]['identifier']['id']
+            requirement_responses_object['relatedTenderer']['identifier']['scheme'] = \
+                payload['bid']['tenderers'][t]['identifier']['scheme']
+
+            requirement_responses_object['evidences'][0]['title'] = "evidences.title"
+            requirement_responses_object['evidences'][0]['description'] = "evidences.description"
+            requirement_responses_object['evidences'][0]['relatedDocument']['id'] = \
+                payload['bid']['documents'][0]['id']
+
+            requirement_responses_object['period']['startDate'] = date.contact_period()[0]
+            requirement_responses_object['period']['endDate'] = date.contact_period()[1]
+            payload['bid']['requirementResponses'].append(copy.deepcopy(requirement_responses_object))
+
+    for i in range(quantity_of_requirement_responses_objects):
+        payload['bid']['requirementResponses'][i]['requirement']['id'] = \
+            list_of_requirements_expected_value_was_chose[i]['id']
+        payload['bid']['requirementResponses'][i]['value'] = \
+            list_of_requirements_expected_value_was_chose[i]['value']
+
+        payload['bid']['requirementResponses'][i]['evidences'][0]['id'] = str(i)
+        payload['bid']['requirementResponses'][i]['id'] = str(i)
+
+    return payload['bid']['requirementResponses']
