@@ -14,6 +14,7 @@ class CassandraSession:
         )
         self.cluster = Cluster([cassandra_cluster], auth_provider=auth_provider, protocol_version=ProtocolVersion.V4)
         self.ocds_keyspace = self.cluster.connect('ocds')
+        self.orchestrator_keyspace = self.cluster.connect('orchestrator')
         self.access_keyspace = self.cluster.connect('access')
         self.clarification_keyspace = self.cluster.connect('clarification')
         self.auctions_keyspace = self.cluster.connect('auctions')
@@ -32,6 +33,10 @@ class CassandraSession:
             f"SELECT * FROM orchestrator_operation WHERE operation_id = '{operation_id}';").one()
         process_id = get_process_id.process_id
         self.ocds_keyspace.execute(f"DELETE FROM orchestrator_operation_step WHERE process_id = '{process_id}';")
+
+    def cleanup_steps_of_process_from_orchestrator(self, operation_id):
+        yield
+        self.orchestrator_keyspace.execute(f"DELETE FROM steps WHERE operation_id = '{operation_id}';")
 
     def fs_process_cleanup_table_of_services(self, ei_id):
         self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one()
@@ -55,6 +60,14 @@ class CassandraSession:
         self.clarification_keyspace.execute(f"DELETE FROM periods WHERE cpid='{pn_ocid}';")
         self.auctions_keyspace.execute(f"DELETE FROM auctions WHERE cpid='{pn_ocid}';")
         self.submission_keyspace.execute(f"DELETE FROM periods WHERE cpid='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+
+    def bid_process_cleanup_table_of_services(self, pn_ocid):
+        self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
+        self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
+        self.submission_keyspace.execute(f"DELETE FROM bids WHERE cpid='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")

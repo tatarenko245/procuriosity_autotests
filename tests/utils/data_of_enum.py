@@ -55,6 +55,17 @@ documentType = ("tenderNotice",
                 "contractArrangements",
                 "contractGuarantees",)
 
-scale = ("MICRO",
-         "SME",
-         "LARGE",)
+scale = ("micro",
+         "sme",
+         "large",)
+
+documentType_for_bid = (
+    "illustration",
+    "submissionDocuments",
+    "x_qualificationDocuments",
+    "x_eligibilityDocuments",
+    "x_technicalDocuments",)
+
+person_title = ("Mr.", "Ms.", "Mrs.",)
+business_function_type = ("authority", "contactPoint",)
+type_of_supplier = ("company", "individual",)
