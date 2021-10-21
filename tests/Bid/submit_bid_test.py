@@ -284,10 +284,30 @@ class TestCreateBid:
                 )
                 try:
                     """
+                    If asynchronous_result_of_sending_the_request was False, then return process steps by
+                    operation-id.
+                    """
+                    if asynchronous_result_of_sending_the_request_was_checked is False:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                                operation_id=GlobalClassCreateBid.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+            with allure.step('# 11.3. Check status into database'):
+                """
+                Check status into database by cpid into submission.bids.
+                """
+                bid_status_from_database = GlobalClassMetadata.database.get_bid_status_from_submission_bids_by_on_ocid(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid
+                )
+                try:
+                    """
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    if asynchronous_result_of_sending_the_request_was_checked is True:
+                    if bid_status_from_database == "pending":
                         GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
 
@@ -318,9 +338,12 @@ class TestCreateBid:
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=GlobalClassCreateBid.operation_id)
                     else:
+                        print(GlobalClassCreateBid.operation_id)
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                            steps = \
+                                GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id_from_orchestrator(
                                 operation_id=GlobalClassCreateBid.operation_id)
+                            print(steps)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
@@ -566,10 +589,30 @@ class TestCreateBid:
                 )
                 try:
                     """
+                    If asynchronous_result_of_sending_the_request was False, then return process steps by
+                    operation-id.
+                    """
+                    if asynchronous_result_of_sending_the_request_was_checked is False:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                                operation_id=GlobalClassCreateBid.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+            with allure.step('# 11.3. Check status into database'):
+                """
+                Check status into database by cpid into submission.bids.
+                """
+                bid_status_from_database = GlobalClassMetadata.database.get_bid_status_from_submission_bids_by_on_ocid(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid
+                )
+                try:
+                    """
                     If TestCase was passed, then cLean up the database.
                     If TestCase was failed, then return process steps by operation-id.
                     """
-                    if asynchronous_result_of_sending_the_request_was_checked is True:
+                    if bid_status_from_database == "pending":
                         GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
 
@@ -600,9 +643,12 @@ class TestCreateBid:
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=GlobalClassCreateBid.operation_id)
                     else:
+                        print(GlobalClassCreateBid.operation_id)
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassCreateBid.operation_id)
+                            steps = \
+                                GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id_from_orchestrator(
+                                    operation_id=GlobalClassCreateBid.operation_id)
+                            print(steps)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")

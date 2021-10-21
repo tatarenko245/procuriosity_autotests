@@ -985,8 +985,8 @@ class BidPreparePayload:
             ev_release_criteria_array=based_stage_release['releases'][0]['tender']['criteria'],
             payload=payload
         )
-        # # Поки не пофіксисли баг https://ustudio.atlassian.net/browse/ES-6923, то треба видалити об'єкти 2 та 3
-        # del payload['bid']['requirementResponses'][2], payload['bid']['requirementResponses'][2]
+        # Поки не пофіксисли баг https://ustudio.atlassian.net/browse/ES-6923, то треба видалити об'єкти 2 та 3
+        del payload['bid']['requirementResponses'][2], payload['bid']['requirementResponses'][2]
         return payload
 
     def create_bid_obligatory_data_model(
