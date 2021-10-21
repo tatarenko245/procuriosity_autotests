@@ -28,7 +28,6 @@ class BidPreparePayload:
         payload = {
             "bid": {}
         }
-
         try:
             """
             Update payload dictionary.
@@ -51,7 +50,6 @@ class BidPreparePayload:
             payload['bid']['requirementResponses'][0]['evidences'][1].update(
                 self.constructor.evidence_object()
             )
-
             payload['bid']['tenderers'] = [
                 {}, {}
             ]
@@ -76,7 +74,6 @@ class BidPreparePayload:
             payload['bid']['tenderers'][0]['persones'][1].update(
                 self.constructor.person_object()
             )
-
             payload['bid']['tenderers'][0]['details']['mainEconomicActivities'] = [
                 {}, {}
             ]
@@ -185,7 +182,6 @@ class BidPreparePayload:
             payload['bid']['tenderers'][0]['persones'][1]['businessFunctions'][1]['documents'][1].update(
                 self.constructor.document_object()
             )
-
             payload['bid']['tenderers'][1].update(
                 self.constructor.tenderers_object()
             )
@@ -207,7 +203,6 @@ class BidPreparePayload:
             payload['bid']['tenderers'][1]['persones'][1].update(
                 self.constructor.person_object()
             )
-
             payload['bid']['tenderers'][1]['details']['mainEconomicActivities'] = [
                 {}, {}
             ]
@@ -316,7 +311,6 @@ class BidPreparePayload:
             payload['bid']['tenderers'][1]['persones'][1]['businessFunctions'][1]['documents'][1].update(
                 self.constructor.document_object()
             )
-
             payload['bid']['relatedLots'] = [
                 {}
             ]
@@ -329,15 +323,7 @@ class BidPreparePayload:
             payload['bid']['documents'][1].update(
                 self.constructor.document_object()
             )
-
             del payload['bid']['items']
-            # payload['bid']['items'] = [
-            #     {}
-            # ]
-            # payload['bid']['items'][0].update(
-            #     self.constructor.item_object()
-            # )
-
         except KeyError:
             raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
 
@@ -442,7 +428,6 @@ class BidPreparePayload:
             "tenderers.persones.businessFunctions.documents.title: 0.0.1.1"
         payload['bid']['tenderers'][0]['persones'][0]['businessFunctions'][1]['documents'][1]['description'] = \
             "tenderers.persones.businessFunctions.documents.description: 0.0.1.1"
-
         payload['bid']['tenderers'][0]['persones'][1]['title'] = f"{random.choice(person_title)}"
         payload['bid']['tenderers'][0]['persones'][1]['name'] = "tenderers.persones.name: 0.1"
         payload['bid']['tenderers'][0]['persones'][1]['identifier']['scheme'] = \
@@ -581,7 +566,6 @@ class BidPreparePayload:
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['address']['addressDetails']['locality'][
             'scheme'] = \
             "tenderers.details.bankAccounts.address.addressDetails.locality.scheme.: 0.0"
-
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['identifier']['scheme'] = \
             "UA-MFO"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['identifier']['id'] = \
@@ -668,7 +652,6 @@ class BidPreparePayload:
             "tenderers.details.details.legalForm.id: 0."
         payload['bid']['tenderers'][0]['details']['legalForm']['uri'] = \
             "tenderers.details.details.legalForm.uri: 0."
-
         payload['bid']['tenderers'][1]['name'] = "tenderers.name: 1"
         payload['bid']['tenderers'][1]['identifier']['id'] = "tenderers.identifier.id: 1"
         payload['bid']['tenderers'][1]['identifier']['legalName'] = "tenderers.identifier.legalName: 1"
@@ -764,7 +747,6 @@ class BidPreparePayload:
             "tenderers.persones.businessFunctions.documents.title: 1.0.1.1"
         payload['bid']['tenderers'][1]['persones'][0]['businessFunctions'][1]['documents'][1]['description'] = \
             "tenderers.persones.businessFunctions.documents.description: 1.0.1.1"
-
         payload['bid']['tenderers'][1]['persones'][1]['title'] = f"{random.choice(person_title)}"
         payload['bid']['tenderers'][1]['persones'][1]['name'] = "tenderers.persones.name: 1.1"
         payload['bid']['tenderers'][1]['persones'][1]['identifier']['scheme'] = \
@@ -903,7 +885,6 @@ class BidPreparePayload:
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['address']['addressDetails']['locality'][
             'scheme'] = \
             "tenderers.details.bankAccounts.address.addressDetails.locality.scheme.: 1.0"
-
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['identifier']['scheme'] = \
             "UA-MFO"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['identifier']['id'] = \
@@ -990,7 +971,6 @@ class BidPreparePayload:
             "tenderers.details.details.legalForm.id: 1."
         payload['bid']['tenderers'][1]['details']['legalForm']['uri'] = \
             "tenderers.details.details.legalForm.uri: 1."
-
         payload['bid']['documents'][0]['documentType'] = f"{random.choice(documentType_for_bid)}"
         payload['bid']['documents'][0]['id'] = self.document_nine_was_uploaded[0]['data']['id']
         payload['bid']['documents'][0]['title'] = "tenderers.documents.title: 0."
@@ -1001,20 +981,10 @@ class BidPreparePayload:
         payload['bid']['documents'][1]['title'] = "tenderers.documents.title: 0."
         payload['bid']['documents'][1]['description'] = "tenderers.documents.description: 0."
         payload['bid']['documents'][1]['relatedLots'] = [based_stage_release['releases'][0]['tender']['lots'][0]['id']]
-
-        # payload['bid']['items'][0]['id'] = based_stage_release['releases'][0]['tender']['items'][0]['id']
-        # payload['bid']['items'][0]['unit']['value']['amount'] = \
-        #     based_stage_release['releases'][0]['tender']['lots'][0]['value']['amount']
-        # payload['bid']['items'][0]['unit']['value']['currency'] = \
-        #     based_stage_release['releases'][0]['tender']['lots'][0]['value']['currency']
-        # payload['bid']['items'][0]['unit']['id'] = \
-        #     based_stage_release['releases'][0]['tender']['items'][0]['unit']['id']
-
         payload['bid']['requirementResponses'] = generate_requirement_response_array(
             ev_release_criteria_array=based_stage_release['releases'][0]['tender']['criteria'],
             payload=payload
         )
-        del payload['bid']['requirementResponses'][2], payload['bid']['requirementResponses'][2]
         return payload
 
     def create_bid_obligatory_data_model(
@@ -1022,7 +992,6 @@ class BidPreparePayload:
         payload = {
             "bid": {}
         }
-
         try:
             """
             Update payload dictionary.
@@ -1039,7 +1008,6 @@ class BidPreparePayload:
             payload['bid']['relatedLots'] = [
                 {}
             ]
-
             del payload['bid']['requirementResponses']
             del payload['bid']['tenderers'][0]['identifier']['uri']
             del payload['bid']['tenderers'][0]['additionalIdentifiers']
@@ -1054,7 +1022,6 @@ class BidPreparePayload:
             del payload['bid']['tenderers'][0]['details']['typeOfSupplier']
             del payload['bid']['documents']
             del payload['bid']['items']
-
         except KeyError:
             raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
 
@@ -1067,7 +1034,6 @@ class BidPreparePayload:
         payload['bid']['tenderers'][0]['identifier']['id'] = "tenderers.identifier.id: 0"
         payload['bid']['tenderers'][0]['identifier']['legalName'] = "tenderers.identifier.legalName: 0"
         payload['bid']['tenderers'][0]['identifier']['scheme'] = "MD-IDNO"
-
         payload['bid']['tenderers'][0]['address']['streetAddress'] = "tenderers.address.streetAddress: 0"
         payload['bid']['tenderers'][0]['address']['addressDetails']['country']['id'] = "MD"
         payload['bid']['tenderers'][0]['address']['addressDetails']['country']['description'] = \

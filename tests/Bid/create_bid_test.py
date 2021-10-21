@@ -1,11 +1,7 @@
 import copy
-import json
 import time
-
 import allure
 import requests
-from deepdiff import DeepDiff
-
 from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, \
     GlobalClassCreateCnOnPn, GlobalClassCreateBid
 from tests.utils.PayloadModel.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
@@ -13,20 +9,16 @@ from tests.utils.PayloadModel.EI.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.FS.fs_prepared_payload import FsPreparePayload
 from tests.utils.PayloadModel.PN.pn_prepared_payload import PnPreparePayload
 from tests.utils.PayloadModel.SubmitBid.bid_prepared_payload import BidPreparePayload
-from tests.utils.ReleaseModel.CnOnPn.cnonpn_prepared_release import CnOnPnExpectedRelease
-
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.functions import compare_actual_result_and_expected_result, \
-    get_value_from_classification_cpv_dictionary_xls, get_sum_of_lot, \
-    get_contract_period_for_ms_release, generate_tender_classification_id, time_bot
+from tests.utils.functions import compare_actual_result_and_expected_result, time_bot
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.requests import Requests
 
 
 @allure.parent_suite('Tendering')
-@allure.suite('EV')
+@allure.suite('Bid')
 @allure.sub_suite('BPE: Submit Bid')
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/'
@@ -254,14 +246,14 @@ class TestCreateBid:
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
                 )
 
-        synchronous_result_of_sending_the_request = Requests().create_bid(
-            host_of_request=GlobalClassMetadata.host_for_bpe,
-            access_token=GlobalClassCreateBid.access_token,
-            x_operation_id=GlobalClassCreateBid.operation_id,
-            pn_ocid=GlobalClassCreatePn.pn_ocid,
-            ev_id=GlobalClassCreateCnOnPn.ev_id,
-            payload=GlobalClassCreateBid.payload
-        )
+            synchronous_result_of_sending_the_request = Requests().create_bid(
+                host_of_request=GlobalClassMetadata.host_for_bpe,
+                access_token=GlobalClassCreateBid.access_token,
+                x_operation_id=GlobalClassCreateBid.operation_id,
+                pn_ocid=GlobalClassCreatePn.pn_ocid,
+                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                payload=GlobalClassCreateBid.payload
+            )
 
         with allure.step('# 11. See result'):
             """
@@ -536,14 +528,14 @@ class TestCreateBid:
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
                 )
 
-        synchronous_result_of_sending_the_request = Requests().create_bid(
-            host_of_request=GlobalClassMetadata.host_for_bpe,
-            access_token=GlobalClassCreateBid.access_token,
-            x_operation_id=GlobalClassCreateBid.operation_id,
-            pn_ocid=GlobalClassCreatePn.pn_ocid,
-            ev_id=GlobalClassCreateCnOnPn.ev_id,
-            payload=GlobalClassCreateBid.payload
-        )
+            synchronous_result_of_sending_the_request = Requests().create_bid(
+                host_of_request=GlobalClassMetadata.host_for_bpe,
+                access_token=GlobalClassCreateBid.access_token,
+                x_operation_id=GlobalClassCreateBid.operation_id,
+                pn_ocid=GlobalClassCreatePn.pn_ocid,
+                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                payload=GlobalClassCreateBid.payload
+            )
 
         with allure.step('# 11. See result'):
             """
@@ -619,4 +611,3 @@ class TestCreateBid:
                     expected_result=True,
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
-
