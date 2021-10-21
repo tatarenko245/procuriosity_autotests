@@ -195,3 +195,17 @@ class Requests:
         allure.attach(host_of_request + f"/do/bid", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return bid
+
+    @staticmethod
+    @allure.step('Prepared request: withdraw Bid')
+    def withdraw_bid(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, bid_id, bid_token):
+        bid = requests.post(
+            url=host_of_request + f"/cancel/bid/{pn_ocid}/{ev_id}/{bid_id}",
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': bid_token
+            })
+        allure.attach(host_of_request + f"/cancel/bid", 'URL')
+        return bid

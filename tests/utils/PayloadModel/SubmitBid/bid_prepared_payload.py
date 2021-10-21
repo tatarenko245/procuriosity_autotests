@@ -985,6 +985,7 @@ class BidPreparePayload:
             ev_release_criteria_array=based_stage_release['releases'][0]['tender']['criteria'],
             payload=payload
         )
+        del payload['bid']['requirementResponses'][2], payload['bid']['requirementResponses'][2]
         return payload
 
     def create_bid_obligatory_data_model(

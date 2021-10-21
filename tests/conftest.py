@@ -227,3 +227,11 @@ class GlobalClassCreateBid:
     actual_ev_release = None
     bid_id = None
     bid_token = None
+
+
+class GlobalClassWithdrawBid:
+    access_token = None
+    operation_id = None
+    feed_point_message = None
+    actual_ms_release = None
+    actual_ev_release = None
