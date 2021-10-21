@@ -22,14 +22,6 @@ class BidPreparePayload:
         self.document_nine_was_uploaded = document_one.uploading_document()
         self.document_ten_was_uploaded = document_one.uploading_document()
         self.date = Date()
-        # document_one = Document("API.pdf")
-        # self.document_one_was_uploaded = document_one.uploading_document()
-        # self.document_two_was_uploaded = document_one.uploading_document()
-        # self.standard_criteria = MdmService.get_standard_criteria(
-        #     country=GlobalClassMetadata.country,
-        #     language=GlobalClassMetadata.language)
-        # self.contact_period = Date().contact_period()
-        # self.duration_period = Date().duration_period()
 
     def create_bid_full_data_model(
             self, based_stage_release):
@@ -193,7 +185,7 @@ class BidPreparePayload:
             payload['bid']['tenderers'][0]['persones'][1]['businessFunctions'][1]['documents'][1].update(
                 self.constructor.document_object()
             )
-            # =========
+
             payload['bid']['tenderers'][1].update(
                 self.constructor.tenderers_object()
             )
@@ -324,7 +316,7 @@ class BidPreparePayload:
             payload['bid']['tenderers'][1]['persones'][1]['businessFunctions'][1]['documents'][1].update(
                 self.constructor.document_object()
             )
-            # =========
+
             payload['bid']['relatedLots'] = [
                 {}
             ]
@@ -1023,4 +1015,77 @@ class BidPreparePayload:
             payload=payload
         )
         del payload['bid']['requirementResponses'][2], payload['bid']['requirementResponses'][2]
+        return payload
+
+    def create_bid_obligatory_data_model(
+            self, based_stage_release):
+        payload = {
+            "bid": {}
+        }
+
+        try:
+            """
+            Update payload dictionary.
+            """
+            payload['bid'].update(
+                self.constructor.bid_object()
+            )
+            payload['bid']['tenderers'] = [
+                {}
+            ]
+            payload['bid']['tenderers'][0].update(
+                self.constructor.tenderers_object()
+            )
+            payload['bid']['relatedLots'] = [
+                {}
+            ]
+
+            del payload['bid']['requirementResponses']
+            del payload['bid']['tenderers'][0]['identifier']['uri']
+            del payload['bid']['tenderers'][0]['additionalIdentifiers']
+            del payload['bid']['tenderers'][0]['address']['postalCode']
+            del payload['bid']['tenderers'][0]['contactPoint']['faxNumber']
+            del payload['bid']['tenderers'][0]['contactPoint']['url']
+            del payload['bid']['tenderers'][0]['persones']
+            del payload['bid']['tenderers'][0]['details']['mainEconomicActivities']
+            del payload['bid']['tenderers'][0]['details']['permits']
+            del payload['bid']['tenderers'][0]['details']['bankAccounts']
+            del payload['bid']['tenderers'][0]['details']['legalForm']
+            del payload['bid']['tenderers'][0]['details']['typeOfSupplier']
+            del payload['bid']['documents']
+            del payload['bid']['items']
+
+        except KeyError:
+            raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
+
+        payload['bid']['value']['amount'] = \
+            based_stage_release['releases'][0]['tender']['lots'][0]['value']['amount']
+        payload['bid']['value']['currency'] = \
+            based_stage_release['releases'][0]['tender']['lots'][0]['value']['currency']
+        payload['bid']['relatedLots'][0] = based_stage_release['releases'][0]['tender']['lots'][0]['id']
+        payload['bid']['tenderers'][0]['name'] = "tenderers.name: 0"
+        payload['bid']['tenderers'][0]['identifier']['id'] = "tenderers.identifier.id: 0"
+        payload['bid']['tenderers'][0]['identifier']['legalName'] = "tenderers.identifier.legalName: 0"
+        payload['bid']['tenderers'][0]['identifier']['scheme'] = "MD-IDNO"
+
+        payload['bid']['tenderers'][0]['address']['streetAddress'] = "tenderers.address.streetAddress: 0"
+        payload['bid']['tenderers'][0]['address']['addressDetails']['country']['id'] = "MD"
+        payload['bid']['tenderers'][0]['address']['addressDetails']['country']['description'] = \
+            "tenderers.address.addressDetails.country.description: 0"
+        payload['bid']['tenderers'][0]['address']['addressDetails']['country']['scheme'] = \
+            "iso-alpha2"
+        payload['bid']['tenderers'][0]['address']['addressDetails']['region']['id'] = "1700000"
+        payload['bid']['tenderers'][0]['address']['addressDetails']['region']['description'] = \
+            "tenderers.address.addressDetails.region.description: 0"
+        payload['bid']['tenderers'][0]['address']['addressDetails']['region']['scheme'] = \
+            "CUATM"
+        payload['bid']['tenderers'][0]['address']['addressDetails']['locality']['id'] = "1701000"
+        payload['bid']['tenderers'][0]['address']['addressDetails']['locality']['description'] = \
+            "tenderers.address.addressDetails.locality.description: 0"
+        payload['bid']['tenderers'][0]['address']['addressDetails']['locality']['scheme'] = \
+            "tenderers.address.addressDetails.locality.scheme: 0"
+        payload['bid']['tenderers'][0]['contactPoint']['name'] = "tenderers.contactPoint.name: 0"
+        payload['bid']['tenderers'][0]['contactPoint']['email'] = "tenderers.contactPoint.email: 0"
+        payload['bid']['tenderers'][0]['contactPoint']['telephone'] = "tenderers.contactPoint.telephone: 0"
+        payload['bid']['tenderers'][0]['details']['scale'] = f"{random.choice(scale)}"
         return payload
