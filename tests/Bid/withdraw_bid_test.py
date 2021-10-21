@@ -333,13 +333,15 @@ class TestCreateBid:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-            with allure.step('# 11.3. Check status into database'):
+            with allure.step('# 13.3. Check status into database'):
                 """
                 Check status into database by cpid into submission.bids.
                 """
                 bid_status_from_database = GlobalClassMetadata.database.get_bid_status_from_submission_bids_by_on_ocid(
                     pn_ocid=GlobalClassCreatePn.pn_ocid
                 )
+                allure.attach(bid_status_from_database, "Cassandra DataBase: actual status of bid")
+                allure.attach("withdrawn", " Expected status of bid")
                 try:
                     """
                     If TestCase was passed, then cLean up the database.
@@ -676,7 +678,7 @@ class TestCreateBid:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-            with allure.step('# 11.3. Check status into database'):
+            with allure.step('# 13.3. Check status into database'):
                 """
                 Check status into database by cpid into submission.bids.
                 """
