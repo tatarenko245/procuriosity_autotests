@@ -92,3 +92,14 @@ class CassandraSession:
                                                    f"AND pmd='{pmd}' AND operation_type='all' "
                                                    f"AND parameter='offsetExtended';").one()
         return data.value
+
+    def get_bid_status_from_submission_bids_by_on_ocid(self, pn_ocid):
+        get_bid_status = self.submission_keyspace.execute(
+            f"SELECT status FROM bids WHERE cpid = '{pn_ocid}';").one()
+        process_id = get_bid_status.status
+        return process_id
+
+    def get_bpe_operation_step_by_operation_id_from_orchestrator(self, operation_id):
+        steps = self.orchestrator_keyspace.execute(
+            f"SELECT * FROM steps WHERE operation_id = '{operation_id}' ALLOW FILTERING;").one()
+        return steps
