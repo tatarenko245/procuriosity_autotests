@@ -1035,24 +1035,18 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
                 payload['bid']['tenderers'][t]['identifier']['id']
             requirement_responses_object['relatedTenderer']['identifier']['scheme'] = \
                 payload['bid']['tenderers'][t]['identifier']['scheme']
-
             requirement_responses_object['evidences'][0]['title'] = "evidences.title"
             requirement_responses_object['evidences'][0]['description'] = "evidences.description"
             requirement_responses_object['evidences'][0]['relatedDocument']['id'] = \
                 payload['bid']['documents'][0]['id']
-
             requirement_responses_object['period']['startDate'] = date.contact_period()[0]
             requirement_responses_object['period']['endDate'] = date.contact_period()[1]
             payload['bid']['requirementResponses'].append(copy.deepcopy(requirement_responses_object))
-
     for i in range(quantity_of_requirement_responses_objects):
         payload['bid']['requirementResponses'][i]['requirement']['id'] = \
             list_of_requirements_expected_value_was_chose[i]['id']
         payload['bid']['requirementResponses'][i]['value'] = \
             list_of_requirements_expected_value_was_chose[i]['value']
-
         payload['bid']['requirementResponses'][i]['evidences'][0]['id'] = str(i)
         payload['bid']['requirementResponses'][i]['id'] = str(i)
-    print("НАРЕШТІ")
-    print(payload['bid']['requirementResponses'])
     return payload['bid']['requirementResponses']
