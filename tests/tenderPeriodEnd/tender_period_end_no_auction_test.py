@@ -3,13 +3,14 @@ import json
 import time
 import allure
 import requests
+from deepdiff import DeepDiff
+
 from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, \
-    GlobalClassCreateCnOnPn, GlobalClassCreateBid
+    GlobalClassCreateCnOnPn, GlobalClassCreateBid, GlobalClassTenderPeriodEndNoAuction
 from tests.utils.PayloadModel.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.EI.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.FS.fs_prepared_payload import FsPreparePayload
 from tests.utils.PayloadModel.PN.pn_prepared_payload import PnPreparePayload
-from tests.utils.PayloadModel.SubmitBid.bid_prepared_payload import BidPreparePayload
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.functions import compare_actual_result_and_expected_result, time_bot
@@ -48,7 +49,7 @@ class TestCreateBid:
             cassandra_password=GlobalClassMetadata.cassandra_password,
             cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
 
-    @allure.title('Check status code and message from Kafka topic after Bid creating, based on full data model')
+    @allure.title('Check message from Kafka topic, EV, MS releases if tender period expired without any bids')
     def test_check_result_of_sending_the_request_one(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
@@ -198,8 +199,7 @@ class TestCreateBid:
                     need_to_set_permanent_id_for_documents_array=True,
                     based_stage_release=GlobalClassCreatePn.actual_pn_release
                 )
-            print("PAYLOAD")
-            print(json.dumps(GlobalClassCreateCnOnPn.payload))
+
             Requests().create_cnonpn(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateCnOnPn.access_token,
@@ -235,123 +235,219 @@ class TestCreateBid:
             GlobalClassCreateBid.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateBid.access_token)
 
-        # with allure.step('# 10. Send request to create Bid'):
-        #     """
-        #     Send api request on BPE host for contract notice creating.
-        #     Save synchronous result of sending the request and asynchronous result of sending the request.
-        #     """
-        #     time.sleep(1)
-        #     time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate'])
-        #     bid_payload_class = copy.deepcopy(BidPreparePayload())
-        #     GlobalClassCreateBid.payload = \
-        #         bid_payload_class.create_bid_full_data_model(
-        #             based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
-        #         )
-        #
-        #     synchronous_result_of_sending_the_request = Requests().create_bid(
-        #         host_of_request=GlobalClassMetadata.host_for_bpe,
-        #         access_token=GlobalClassCreateBid.access_token,
-        #         x_operation_id=GlobalClassCreateBid.operation_id,
-        #         pn_ocid=GlobalClassCreatePn.pn_ocid,
-        #         ev_id=GlobalClassCreateCnOnPn.ev_id,
-        #         payload=GlobalClassCreateBid.payload
-        #     )
+        with allure.step('# 10. See result'):
+            """
+            Check the results of TestCase.
+            """
+            with allure.step('# 10.1. Check message in feed point'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate'])
+                time.sleep(1)
+                GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
+                    KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                 initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+                allure.attach(str(GlobalClassTenderPeriodEndNoAuction.feed_point_message), 'Message in feed point')
 
-        # with allure.step('# 11. See result'):
-        #     """
-        #     Check the results of TestCase.
-        #     """
-        #     with allure.step('# 11.1. Check status code'):
-        #         """
-        #         Check the synchronous_result_of_sending_the_request.
-        #         """
-        #         assert compare_actual_result_and_expected_result(
-        #             expected_result=202,
-        #             actual_result=synchronous_result_of_sending_the_request.status_code
-        #         )
-        #     with allure.step('# 11.2. Check message in feed point'):
-        #         """
-        #         Check the asynchronous_result_of_sending_the_request.
-        #         """
-        #         GlobalClassCreateBid.feed_point_message = \
-        #             KafkaMessage(GlobalClassCreateBid.operation_id).get_message_from_kafka()
-        #         allure.attach(str(GlobalClassCreateBid.feed_point_message), 'Message in feed point')
-        #
-        #         asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-        #             GlobalClassCreateBid.operation_id).create_bid_message_is_successful(
-        #             environment=GlobalClassMetadata.environment,
-        #             kafka_message=GlobalClassCreateBid.feed_point_message,
-        #             pn_ocid=GlobalClassCreatePn.pn_ocid,
-        #             ev_id=GlobalClassCreateCnOnPn.ev_id
-        #         )
-        #         try:
-        #             """
-        #             If asynchronous_result_of_sending_the_request was False, then return process steps by
-        #             operation-id.
-        #             """
-        #             if asynchronous_result_of_sending_the_request_was_checked is False:
-        #                 with allure.step('# Steps from Casandra DataBase'):
-        #                     steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-        #                         operation_id=GlobalClassCreateBid.operation_id)
-        #                     allure.attach(steps, "Cassandra DataBase: steps of process")
-        #         except ValueError:
-        #             raise ValueError("Can not return BPE operation step")
-        #
-        #     with allure.step('# 11.3. Check status into database'):
-        #         """
-        #         Check status into database by cpid into submission.bids.
-        #         """
-        #         bid_status_from_database = GlobalClassMetadata.database.get_bid_status_from_submission_bids_by_on_ocid(
-        #             pn_ocid=GlobalClassCreatePn.pn_ocid
-        #         )
-        #         allure.attach(bid_status_from_database, "Cassandra DataBase: actual status of bid")
-        #         allure.attach("pending", " Expected status of bid")
-        #         try:
-        #             """
-        #             If TestCase was passed, then cLean up the database.
-        #             If TestCase was failed, then return process steps by operation-id.
-        #             """
-        #             if bid_status_from_database == "pending":
-        #                 GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-        #                     ei_id=GlobalClassCreateEi.ei_ocid)
-        #
-        #                 GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
-        #                     ei_id=GlobalClassCreateEi.ei_ocid)
-        #
-        #                 GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
-        #                     pn_ocid=GlobalClassCreatePn.pn_ocid)
-        #
-        #                 GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
-        #                     pn_ocid=GlobalClassCreatePn.pn_ocid)
-        #
-        #                 GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
-        #                     pn_ocid=GlobalClassCreatePn.pn_ocid)
-        #
-        #                 GlobalClassMetadata.database.cleanup_steps_of_process(
-        #                     operation_id=GlobalClassCreateEi.operation_id)
-        #
-        #                 GlobalClassMetadata.database.cleanup_steps_of_process(
-        #                     operation_id=GlobalClassCreateFs.operation_id)
-        #
-        #                 GlobalClassMetadata.database.cleanup_steps_of_process(
-        #                     operation_id=GlobalClassCreatePn.operation_id)
-        #
-        #                 GlobalClassMetadata.database.cleanup_steps_of_process(
-        #                     operation_id=GlobalClassCreateCnOnPn.operation_id)
-        #
-        #                 GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-        #                     operation_id=GlobalClassCreateBid.operation_id)
-        #             else:
-        #                 print(GlobalClassCreateBid.operation_id)
-        #                 with allure.step('# Steps from Casandra DataBase'):
-        #                     steps = \
-        #                         GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-        #                         operation_id=GlobalClassCreateBid.operation_id)
-        #                     allure.attach(steps, "Cassandra DataBase: steps of process")
-        #         except ValueError:
-        #             raise ValueError("Can not return BPE operation step")
-        #
-        #         assert compare_actual_result_and_expected_result(
-        #             expected_result=True,
-        #             actual_result=asynchronous_result_of_sending_the_request_was_checked
-        #         )
+                asynchronous_result_of_expired_tender_period_end = \
+                    KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                 initiation="bpe").tender_period_end_message_is_successful(
+                        environment=GlobalClassMetadata.environment,
+                        kafka_message=GlobalClassTenderPeriodEndNoAuction.feed_point_message,
+                        pn_ocid=GlobalClassCreatePn.pn_ocid,
+                        ev_id=GlobalClassCreateCnOnPn.ev_id
+                    )
+
+                try:
+                    """
+                    If asynchronous_result_of_sending_the_request was False, then return process steps by
+                    operation-id.
+                    """
+                    if asynchronous_result_of_expired_tender_period_end is False:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                                operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message['X-OPERATION-ID'])
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+            with allure.step('# 10.2. Check EV release'):
+                """
+                Compare actual evaluation value release with expected evaluation value release model.
+                """
+                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ev_release)),
+                              "Actual EV release before tender period end expired")
+
+                GlobalClassTenderPeriodEndNoAuction.actual_ev_release = requests.get(
+                    url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateCnOnPn.ev_id}").json()
+
+                GlobalClassTenderPeriodEndNoAuction.actual_ms_release = requests.get(
+                    url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreatePn.pn_ocid}").json()
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release)),
+                              "Actual EV release after tender period end expired")
+
+                compare_releases = DeepDiff(
+                    GlobalClassCreateCnOnPn.actual_ev_release, GlobalClassTenderPeriodEndNoAuction.actual_ev_release)
+                dictionary_item_added_was_cleaned = \
+                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+                compare_releases = dict(compare_releases)
+
+                expected_result = {
+                    "dictionary_item_added": "['releases'][0]['awards']",
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                f"{GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['id'][46:59]}",
+                            "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                         f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": GlobalClassTenderPeriodEndNoAuction.feed_point_message['data'][
+                                'operationDate'],
+                            "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
+                        },
+                        "root['releases'][0]['tag'][0]": {
+                            "new_value": "tenderCancellation",
+                            "old_value": "tender"
+                        },
+                        "root['releases'][0]['tender']['status']": {
+                            "new_value": "unsuccessful",
+                            "old_value": "active"
+                        },
+                        "root['releases'][0]['tender']['statusDetails']": {
+                            "new_value": "empty",
+                            "old_value": "clarification"
+                        },
+                        "root['releases'][0]['tender']['lots'][0]['status']": {
+                            "new_value": "unsuccessful",
+                            "old_value": "active"
+                        },
+                        "root['releases'][0]['tender']['lots'][1]['status']": {
+                            "new_value": "unsuccessful",
+                            "old_value": "active"
+                        }
+                    }
+                }
+
+                try:
+                    """
+                        If compare_releases !=expected_result, then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                                operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message['X-OPERATION-ID'])
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
+
+            with allure.step('# 10.3. Check MS release'):
+                """
+                Compare multistage release with expected multistage release model.
+                """
+                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
+                              "Actual MS release before tender period end expired")
+
+                GlobalClassTenderPeriodEndNoAuction.actual_ms_release = requests.get(
+                    url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreatePn.pn_ocid}").json()
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ms_release)),
+                              "Actual MS release after tender period end expired")
+
+                compare_releases = dict(DeepDiff(
+                    GlobalClassCreateCnOnPn.actual_ms_release,
+                    GlobalClassTenderPeriodEndNoAuction.actual_ms_release))
+
+                expected_result = {
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{GlobalClassCreatePn.pn_ocid}-"
+                                f"{GlobalClassTenderPeriodEndNoAuction.actual_ms_release['releases'][0]['id'][29:42]}",
+                            "old_value": f"{GlobalClassCreatePn.pn_ocid}-"
+                                         f"{GlobalClassCreateCnOnPn.actual_ms_release['releases'][0]['id'][29:42]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": GlobalClassTenderPeriodEndNoAuction.feed_point_message['data'][
+                                'operationDate'],
+                            "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
+                        },
+                        "root['releases'][0]['tender']['status']": {
+                            "new_value": "unsuccessful",
+                            "old_value": "active"
+                        },
+                        "root['releases'][0]['tender']['statusDetails']": {
+                            "new_value": "empty",
+                            "old_value": "evaluation"
+                        }
+                    }
+                }
+                try:
+                    """
+                    If TestCase was passed, then cLean up the database.
+                    If TestCase was failed, then return process steps by operation-id.
+                    """
+                    if compare_releases == expected_result:
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateFs.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreatePn.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateCnOnPn.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                            operation_id=GlobalClassCreateBid.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                            operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message['X-OPERATION-ID'])
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = \
+                                GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id_from_orchestrator(
+                                    operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message[
+                                        'X-OPERATION-ID'])
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
