@@ -19,11 +19,11 @@ from tests.utils.requests import Requests
 
 @allure.parent_suite('Tendering')
 @allure.suite('Bid')
-@allure.sub_suite('BPE: Withdrawn Bid')
+@allure.sub_suite('BPE: Withdraw Bid')
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/'
                      'edit#gid=1012859229',
-                 name='Google sheets: Withdrawn Bid')
+                 name='Google sheets: Withdraw Bid')
 class TestCreateBid:
     def test_setup(self, environment, country, language, pmd, cassandra_username, cassandra_password):
         """
@@ -685,6 +685,8 @@ class TestCreateBid:
                 bid_status_from_database = GlobalClassMetadata.database.get_bid_status_from_submission_bids_by_on_ocid(
                     pn_ocid=GlobalClassCreatePn.pn_ocid
                 )
+                allure.attach(bid_status_from_database, "Cassandra DataBase: actual status of bid")
+                allure.attach("withdrawn", " Expected status of bid")
                 try:
                     """
                     If TestCase was passed, then cLean up the database.
