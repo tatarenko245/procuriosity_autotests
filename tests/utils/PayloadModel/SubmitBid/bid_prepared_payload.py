@@ -111,10 +111,10 @@ class BidPreparePayload:
                 {}, {}
             ]
             payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][0].update(
-                self.constructor.additional_identifiers_object()
+                self.constructor.additional_account_identifier_object()
             )
             payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][1].update(
-                self.constructor.additional_identifiers_object()
+                self.constructor.additional_account_identifier_object()
             )
             payload['bid']['tenderers'][0]['details']['bankAccounts'][1].update(
                 self.constructor.bank_account_object()
@@ -123,10 +123,10 @@ class BidPreparePayload:
                 {}, {}
             ]
             payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][0].update(
-                self.constructor.additional_identifiers_object()
+                self.constructor.additional_account_identifier_object()
             )
             payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][1].update(
-                self.constructor.additional_identifiers_object()
+                self.constructor.additional_account_identifier_object()
             )
             payload['bid']['tenderers'][0]['persones'][0]['businessFunctions'] = [
                 {}, {}
@@ -240,10 +240,10 @@ class BidPreparePayload:
                 {}, {}
             ]
             payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][0].update(
-                self.constructor.additional_identifiers_object()
+                self.constructor.additional_account_identifier_object()
             )
             payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][1].update(
-                self.constructor.additional_identifiers_object()
+                self.constructor.additional_account_identifier_object()
             )
             payload['bid']['tenderers'][1]['details']['bankAccounts'][1].update(
                 self.constructor.bank_account_object()
@@ -252,10 +252,10 @@ class BidPreparePayload:
                 {}, {}
             ]
             payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][0].update(
-                self.constructor.additional_identifiers_object()
+                self.constructor.additional_account_identifier_object()
             )
             payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][1].update(
-                self.constructor.additional_identifiers_object()
+                self.constructor.additional_account_identifier_object()
             )
             payload['bid']['tenderers'][1]['persones'][0]['businessFunctions'] = [
                 {}, {}
@@ -577,18 +577,10 @@ class BidPreparePayload:
             "fiscal"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][0]['id'] = \
             "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.id: 0.0.0"
-        payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][0]['legalName'] = \
-            "tenderers.details.bankAccounts.additionalAccountIdentifiers.legalName: 0.0.0"
-        payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][0]['uri'] = \
-            "tenderers.details.bankAccounts.additionalAccountIdentifiers.uri: 0.0.0"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][1]['scheme'] = \
             "fiscal"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][1]['id'] = \
             "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.id: 0.0.1"
-        payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][1]['legalName'] = \
-            "tenderers.details.bankAccounts.additionalAccountIdentifiers.legalName: 0.0.0"
-        payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][1]['uri'] = \
-            "tenderers.details.bankAccounts.additionalAccountIdentifiers.uri: 0.0.0"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['description'] = \
             "tenderers.details.bankAccounts.description.: 0.1"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['bankName'] = \
@@ -631,18 +623,10 @@ class BidPreparePayload:
             "fiscal"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][0]['id'] = \
             "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.id: 0.1.0"
-        payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][0]['legalName'] = \
-            "tenderers.details.bankAccounts.additionalAccountIdentifiers.legalName: 0.1.0"
-        payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][0]['uri'] = \
-            "tenderers.details.bankAccounts.additionalAccountIdentifiers.uri: 0.1.0"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][1]['scheme'] = \
             "fiscal"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][1]['id'] = \
             "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.id: 0.1.1"
-        payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][1]['legalName'] = \
-            "tenderers.details.bankAccounts.additionalAccountIdentifiers.legalName: 0.1.1"
-        payload['bid']['tenderers'][0]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][1]['uri'] = \
-            "tenderers.details.bankAccounts.additionalAccountIdentifiers.uri: 0.1.0"
         payload['bid']['tenderers'][0]['details']['legalForm']['scheme'] = \
             "MD-CFOJ"
         payload['bid']['tenderers'][0]['details']['legalForm']['description'] = \
@@ -896,18 +880,10 @@ class BidPreparePayload:
             "fiscal"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][0]['id'] = \
             "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.id: 1.0.0"
-        payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][0]['legalName'] = \
-            "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.legalName: 1.0.0"
-        payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][0]['uri'] = \
-            "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.uri: 1.0.0"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][1]['scheme'] = \
             "fiscal"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][1]['id'] = \
             "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.id: 1.0.1"
-        payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][1]['legalName'] = \
-            "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.legalName: 1.0.1"
-        payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['additionalAccountIdentifiers'][1]['uri'] = \
-            "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.uri: 1.0.1"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['description'] = \
             "tenderers.details.bankAccounts.description.: 1.1"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['bankName'] = \
@@ -950,18 +926,10 @@ class BidPreparePayload:
             "fiscal"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][0]['id'] = \
             "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.id: 1.1.0"
-        payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][0]['legalName'] = \
-            "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.legalName: 1.1.0"
-        payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][0]['uri'] = \
-            "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.uri: 1.1.0"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][1]['scheme'] = \
             "fiscal"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][1]['id'] = \
             "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.id: 1.1.1"
-        payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][1]['legalName'] = \
-            "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.legalName: 1.1.1"
-        payload['bid']['tenderers'][1]['details']['bankAccounts'][1]['additionalAccountIdentifiers'][1]['uri'] = \
-            "tenderers.details.bankAccounts.address.additionalAccountIdentifiers.uri: 1.1.1"
         payload['bid']['tenderers'][1]['details']['legalForm']['scheme'] = \
             "MD-CFOJ"
         payload['bid']['tenderers'][1]['details']['legalForm']['description'] = \
