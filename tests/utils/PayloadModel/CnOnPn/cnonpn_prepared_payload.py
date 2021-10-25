@@ -880,7 +880,7 @@ class CnOnPnPreparePayload:
         payload['tender']['documents'][1]['id'] = self.document_two_was_uploaded[0]["data"]["id"]
         payload['tender']['documents'][1]['title'] = "create cnonpn: tender.documents.title"
         payload['tender']['documents'][1]['description'] = "create cnonpn: tender.documents.description"
-        payload['tender']['documents'][1]['relatedLots'] = [payload['tender']['lots'][1]['id']]
+        payload['tender']['documents'][1]['relatedLots'] = [payload['tender']['lots'][0]['id']]
         try:
             """
             Set permanent id for documents array.

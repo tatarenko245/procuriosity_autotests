@@ -344,7 +344,7 @@ class TestCreateBid:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = \
                                 GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                operation_id=GlobalClassCreateBid.operation_id)
+                                    operation_id=GlobalClassCreateBid.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")

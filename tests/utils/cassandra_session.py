@@ -113,3 +113,14 @@ class CassandraSession:
         steps = self.orchestrator_keyspace.execute(
             f"SELECT * FROM steps WHERE operation_id = '{operation_id}' ALLOW FILTERING;").one()
         return steps
+
+    def get_min_bids_from_evaluation_rules(self, country, pmd, operation_type, parameter):
+        value = self.evaluation_keyspace.execute(
+            f"""SELECT "value" FROM rules WHERE "country"='{country}' AND "pmd" = '{pmd}' AND 
+            "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
+        return value.value
+
+    def set_min_bids_from_evaluation_rules(self, value, country, pmd, operation_type, parameter):
+        self.evaluation_keyspace.execute(
+            f"""UPDATE rules SET value = '{value}' WHERE "country"='{country}' AND "pmd" ='{pmd}' 
+            AND "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()

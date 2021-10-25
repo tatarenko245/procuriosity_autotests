@@ -328,8 +328,7 @@ class BidPreparePayload:
             raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
 
         payload['bid']['value']['amount'] = \
-            based_stage_release['releases'][0]['tender']['lots'][0]['value']['amount'] + \
-            based_stage_release['releases'][0]['tender']['lots'][1]['value']['amount']
+            based_stage_release['releases'][0]['tender']['lots'][0]['value']['amount']
         payload['bid']['value']['currency'] = \
             based_stage_release['releases'][0]['tender']['lots'][0]['value']['currency']
         payload['bid']['relatedLots'][0] = based_stage_release['releases'][0]['tender']['lots'][0]['id']
