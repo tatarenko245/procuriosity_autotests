@@ -178,7 +178,7 @@ def generate_criteria_array(quantity_of_criteria_object, criteria_object, quanti
                     f"{criteria_json['requirementGroups'][j]['id']}-{y}"
         criteria_array.append(criteria_json)
 
-    standard_criteria = MdmService().get_standard_criteria(
+    standard_criteria = MdmService(host=GlobalClassMetadata.host_for_services).get_standard_criteria(
         country=GlobalClassMetadata.country,
         language=GlobalClassMetadata.language)
 
