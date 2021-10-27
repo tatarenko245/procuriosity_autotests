@@ -801,10 +801,15 @@ class TestCreateBid:
                 except Exception:
                     raise Exception("Impossible to prepare expected awards array")
 
-                print("Actual parties array")
-                print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties']))
-                print("Expected parties array")
-                print(json.dumps(expected_parties_array))
+                print("Actual parties array 0")
+                print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'][0]))
+                print("Expected parties array 0")
+                print(json.dumps(expected_parties_array[0]))
+
+                print("Actual parties array 1")
+                print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'][1]))
+                print("Expected parties array 1")
+                print(json.dumps(expected_parties_array[1]))
 
                 # try:
                 #     """

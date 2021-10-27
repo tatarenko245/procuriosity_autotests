@@ -176,7 +176,6 @@ class TenderPeriodExpectedChanges:
 
                 quantity_of_tender_details_bank_accounts_objects_into_payload -= 1
                 while quantity_of_tender_details_bank_accounts_objects_into_payload >= 0:
-                    print(quantity_of_tender_details_bank_accounts_objects_into_payload)
                     bank_country_data = self.mdm.get_country(
                         country=payload_tenderers_array[quantity_tenderers]['details']['bankAccounts'][
                             quantity_of_tender_details_bank_accounts_objects_into_payload]['address'][
@@ -282,6 +281,46 @@ class TenderPeriodExpectedChanges:
                             quantity_of_persones_into_payload]['identifier']['scheme'] + "-" + \
                         payload_tenderers_array[quantity_tenderers]['persones'][
                             quantity_of_persones_into_payload]['identifier']['id']
+
+                    try:
+                        """
+                        Check how many quantity of object into release_parties_array['persones']['businessFunctions'].
+                        """
+                        list_of_release_party_persones_business_functions_id = list()
+                        for i in \
+                                release_parties_array[quantity_tenderers]['persones'][
+                                    quantity_of_persones_into_payload][
+                                    'businessFunctions']:
+                            for i_1 in i:
+                                if i_1 == "id":
+                                    list_of_release_party_persones_business_functions_id.append(i_1)
+                        quantity_of_business_functions_into_payload = \
+                            len(list_of_release_party_persones_business_functions_id)
+
+                    except KeyError:
+                        raise KeyError("Check ['releases']['tender']['parties'][*]['persones']['id']")
+                    quantity_of_business_functions_into_payload -= 1
+                    while quantity_of_business_functions_into_payload >= 0:
+                        try:
+                            check = is_it_uuid(
+                                uuid_to_test=release_parties_array[quantity_tenderers]['persones'][
+                                    quantity_of_persones_into_payload]['businessFunctions'][
+                                    quantity_of_business_functions_into_payload]['id'],
+                                version=4
+                            )
+                            if check is True:
+                                expected_parties_array[quantity_tenderers]['persones'][
+                                    quantity_of_persones_into_payload]['businessFunctions'][
+                                    quantity_of_business_functions_into_payload]['id'] = \
+                                    release_parties_array[quantity_tenderers]['persones'][
+                                        quantity_of_persones_into_payload]['businessFunctions'][
+                                        quantity_of_business_functions_into_payload]['id']
+                            else:
+                                raise ValueError("businessFunctions.id in release must be uuid version 4")
+                        except Exception:
+                            raise Exception("Check your businessFunctions array in release")
+
+                        quantity_of_business_functions_into_payload -= 1
                     quantity_of_persones_into_payload -= 1
                 quantity_tenderers -= 1
 
