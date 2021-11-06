@@ -218,7 +218,18 @@ class GlobalClassEnquiryPeriodEnd:
     actual_ev_release = None
 
 
-class GlobalClassCreateBid:
+class GlobalClassCreateFirstBid:
+    access_token = None
+    operation_id = None
+    payload = None
+    feed_point_message = None
+    actual_ms_release = None
+    actual_ev_release = None
+    bid_id = None
+    bid_token = None
+
+
+class GlobalClassCreateSecondBid:
     access_token = None
     operation_id = None
     payload = None

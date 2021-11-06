@@ -3,7 +3,7 @@ import time
 import allure
 import requests
 from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, \
-    GlobalClassCreateCnOnPn, GlobalClassCreateBid
+    GlobalClassCreateCnOnPn, GlobalClassCreateFirstBid
 from tests.utils.PayloadModel.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.EI.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.FS.fs_prepared_payload import FsPreparePayload
@@ -227,11 +227,11 @@ class TestCreateBid:
             Tender platform authorization for create contract notice process.
             As result get Tender platform's access token and process operation-id.
             """
-            GlobalClassCreateBid.access_token = PlatformAuthorization(
+            GlobalClassCreateFirstBid.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
-            GlobalClassCreateBid.operation_id = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateBid.access_token)
+            GlobalClassCreateFirstBid.operation_id = PlatformAuthorization(
+                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFirstBid.access_token)
 
         with allure.step('# 10. Send request to create Bid'):
             """
@@ -241,18 +241,18 @@ class TestCreateBid:
             time.sleep(1)
             time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate'])
             bid_payload_class = copy.deepcopy(BidPreparePayload())
-            GlobalClassCreateBid.payload = \
-                bid_payload_class.create_bid_full_data_model(
+            GlobalClassCreateFirstBid.payload = \
+                bid_payload_class.create_first_bid_full_data_model(
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
                 )
 
             synchronous_result_of_sending_the_request = Requests().create_bid(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
-                access_token=GlobalClassCreateBid.access_token,
-                x_operation_id=GlobalClassCreateBid.operation_id,
+                access_token=GlobalClassCreateFirstBid.access_token,
+                x_operation_id=GlobalClassCreateFirstBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
                 ev_id=GlobalClassCreateCnOnPn.ev_id,
-                payload=GlobalClassCreateBid.payload
+                payload=GlobalClassCreateFirstBid.payload
             )
 
         with allure.step('# 11. See result'):
@@ -271,14 +271,14 @@ class TestCreateBid:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                GlobalClassCreateBid.feed_point_message = \
-                    KafkaMessage(GlobalClassCreateBid.operation_id).get_message_from_kafka()
-                allure.attach(str(GlobalClassCreateBid.feed_point_message), 'Message in feed point')
+                GlobalClassCreateFirstBid.feed_point_message = \
+                    KafkaMessage(GlobalClassCreateFirstBid.operation_id).get_message_from_kafka()
+                allure.attach(str(GlobalClassCreateFirstBid.feed_point_message), 'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    GlobalClassCreateBid.operation_id).create_bid_message_is_successful(
+                    GlobalClassCreateFirstBid.operation_id).create_bid_message_is_successful(
                     environment=GlobalClassMetadata.environment,
-                    kafka_message=GlobalClassCreateBid.feed_point_message,
+                    kafka_message=GlobalClassCreateFirstBid.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
                     ev_id=GlobalClassCreateCnOnPn.ev_id
                 )
@@ -290,7 +290,7 @@ class TestCreateBid:
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassCreateBid.operation_id)
+                                operation_id=GlobalClassCreateFirstBid.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
@@ -338,13 +338,13 @@ class TestCreateBid:
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
 
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=GlobalClassCreateBid.operation_id)
+                            operation_id=GlobalClassCreateFirstBid.operation_id)
                     else:
-                        print(GlobalClassCreateBid.operation_id)
+                        print(GlobalClassCreateFirstBid.operation_id)
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = \
                                 GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                    operation_id=GlobalClassCreateBid.operation_id)
+                                    operation_id=GlobalClassCreateFirstBid.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
@@ -533,11 +533,11 @@ class TestCreateBid:
             Tender platform authorization for create contract notice process.
             As result get Tender platform's access token and process operation-id.
             """
-            GlobalClassCreateBid.access_token = PlatformAuthorization(
+            GlobalClassCreateFirstBid.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
-            GlobalClassCreateBid.operation_id = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateBid.access_token)
+            GlobalClassCreateFirstBid.operation_id = PlatformAuthorization(
+                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFirstBid.access_token)
 
         with allure.step('# 10. Send request to create Bid'):
             """
@@ -547,18 +547,18 @@ class TestCreateBid:
             time.sleep(1)
             time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate'])
             bid_payload_class = copy.deepcopy(BidPreparePayload())
-            GlobalClassCreateBid.payload = \
+            GlobalClassCreateFirstBid.payload = \
                 bid_payload_class.create_bid_obligatory_data_model(
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
                 )
 
             synchronous_result_of_sending_the_request = Requests().create_bid(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
-                access_token=GlobalClassCreateBid.access_token,
-                x_operation_id=GlobalClassCreateBid.operation_id,
+                access_token=GlobalClassCreateFirstBid.access_token,
+                x_operation_id=GlobalClassCreateFirstBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
                 ev_id=GlobalClassCreateCnOnPn.ev_id,
-                payload=GlobalClassCreateBid.payload
+                payload=GlobalClassCreateFirstBid.payload
             )
 
         with allure.step('# 11. See result'):
@@ -577,14 +577,14 @@ class TestCreateBid:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                GlobalClassCreateBid.feed_point_message = \
-                    KafkaMessage(GlobalClassCreateBid.operation_id).get_message_from_kafka()
-                allure.attach(str(GlobalClassCreateBid.feed_point_message), 'Message in feed point')
+                GlobalClassCreateFirstBid.feed_point_message = \
+                    KafkaMessage(GlobalClassCreateFirstBid.operation_id).get_message_from_kafka()
+                allure.attach(str(GlobalClassCreateFirstBid.feed_point_message), 'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    GlobalClassCreateBid.operation_id).create_bid_message_is_successful(
+                    GlobalClassCreateFirstBid.operation_id).create_bid_message_is_successful(
                     environment=GlobalClassMetadata.environment,
-                    kafka_message=GlobalClassCreateBid.feed_point_message,
+                    kafka_message=GlobalClassCreateFirstBid.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
                     ev_id=GlobalClassCreateCnOnPn.ev_id
                 )
@@ -596,7 +596,7 @@ class TestCreateBid:
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassCreateBid.operation_id)
+                                operation_id=GlobalClassCreateFirstBid.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
@@ -644,13 +644,13 @@ class TestCreateBid:
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
 
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=GlobalClassCreateBid.operation_id)
+                            operation_id=GlobalClassCreateFirstBid.operation_id)
                     else:
-                        print(GlobalClassCreateBid.operation_id)
+                        print(GlobalClassCreateFirstBid.operation_id)
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = \
                                 GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                    operation_id=GlobalClassCreateBid.operation_id)
+                                    operation_id=GlobalClassCreateFirstBid.operation_id)
                             print(steps)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:

@@ -6,7 +6,7 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, \
-    GlobalClassCreateCnOnPn, GlobalClassCreateBid, GlobalClassTenderPeriodEndNoAuction
+    GlobalClassCreateCnOnPn, GlobalClassCreateFirstBid, GlobalClassTenderPeriodEndNoAuction, GlobalClassCreateSecondBid
 from tests.utils.PayloadModel.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.EI.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.FS.fs_prepared_payload import FsPreparePayload
@@ -20,6 +20,10 @@ from tests.utils.functions import compare_actual_result_and_expected_result, tim
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.my_requests import Requests
+
+
+class GlobalClassCreate:
+    pass
 
 
 @allure.parent_suite('Awarding')
@@ -58,7 +62,7 @@ class TestCreateBid:
         elif environment == "sandbox":
             self.metadata_document_url = "http://storage.eprocurement.systems/get"
 
-    # @allure.title('Check message from Kafka topic, EV, MS releases if tender period expired without any bids')
+    # @allure.title('Are there bids for opening? -> False')
     # def test_check_result_of_sending_the_request_one(self):
     #     with allure.step('# 1. Authorization platform one: create EI'):
     #         """
@@ -332,12 +336,53 @@ class TestCreateBid:
     #                     }
     #                 }
     #             }
-    #
+    #             try:
+    #                 """
+    #                 Check that actual_ev_release['releases'][0]['awards'][0]['id'] is uuid version 4
+    #                 """
+    #                 check_awards_zero_id = is_it_uuid(
+    #                     uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+    #                         'releases'][0]['awards'][0]['id'],
+    #                     version=4
+    #                 )
+    #                 if check_awards_zero_id is True:
+    #                     pass
+    #                 else:
+    #                     raise Exception("actual_ev_release['releases'][0]['awards'][0]['id'] must be uuid version 4")
+    #             except Exception:
+    #                 raise Exception("Impossible to check that actual_ev_release['releases'][0]['awards'][0]['id'] "
+    #                                 "is uuid version 4")
+    #             try:
+    #                 """
+    #                 Check that actual_ev_release['releases'][0]['awards'][1]['id'] is uuid version 4
+    #                 """
+    #                 check_awards_one_id = is_it_uuid(
+    #                     uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+    #                         'releases'][0]['awards'][1]['id'],
+    #                     version=4
+    #                 )
+    #                 if check_awards_one_id is True:
+    #                     pass
+    #                 else:
+    #                     raise Exception("actual_ev_release['releases'][0]['awards'][1]['id'] must be uuid version 4")
+    #             except Exception:
+    #                 raise Exception("Impossible to check that actual_ev_release['releases'][0]['awards'][1]['id'] "
+    #                                 "is uuid version 4")
+    #             try:
+    #                 """
+    #                 Prepare expected awards array
+    #                 """
+    #                 expected_awards_array = TenderPeriodExpectedChanges(
+    #                     environment=GlobalClassMetadata.environment,
+    #                     language=GlobalClassMetadata.language).prepare_unsuccessful_awards_array()
+    #             except Exception:
+    #                 raise Exception("Impossible to prepare expected awards array")
     #             try:
     #                 """
     #                     If compare_releases !=expected_result, then return process steps by operation-id.
     #                     """
-    #                 if compare_releases == expected_result:
+    #                 if compare_releases == expected_result and expected_awards_array == \
+    #                         GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']:
     #                     pass
     #                 else:
     #                     with allure.step('# Steps from Casandra DataBase'):
@@ -350,6 +395,10 @@ class TestCreateBid:
     #             assert str(compare_actual_result_and_expected_result(
     #                 expected_result=expected_result,
     #                 actual_result=compare_releases
+    #             )) == str(True)
+    #             assert str(compare_actual_result_and_expected_result(
+    #                 expected_result=expected_awards_array,
+    #                 actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']
     #             )) == str(True)
     #
     #         with allure.step('# 9.3. Check MS release'):
@@ -431,9 +480,6 @@ class TestCreateBid:
     #                         operation_id=GlobalClassCreateCnOnPn.operation_id)
     #
     #                     GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-    #                         operation_id=GlobalClassCreateBid.operation_id)
-    #
-    #                     GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
     #                         operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message['X-OPERATION-ID'])
     #                 else:
     #                     with allure.step('# Steps from Casandra DataBase'):
@@ -449,11 +495,516 @@ class TestCreateBid:
     #                 expected_result=expected_result,
     #                 actual_result=compare_releases
     #             )) == str(True)
+    #
+    # @allure.title('Check message from Kafka topic, EV, MS releases if '
+    #               'Are there bids for opening? -> True -> Are there unsuccessful lots? -> False -> '
+    #               'Is tender unsuccessful? -> True')
+    # def test_check_result_of_sending_the_request_two(self):
+    #     with allure.step('# 1. Authorization platform one: create EI'):
+    #         """
+    #         Tender platform authorization for create expenditure item process.
+    #         As result get Tender platform's access token and process operation-id.
+    #         """
+    #         GlobalClassCreateEi.access_token = PlatformAuthorization(
+    #             GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
+    #
+    #         GlobalClassCreateEi.operation_id = PlatformAuthorization(
+    #             GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
+    #     with allure.step('# 2. Send request to create EI'):
+    #         """
+    #         Send api request on BPE host for expenditure item creation.
+    #         And save in variable ei_ocid.
+    #         """
+    #         ei_payload = copy.deepcopy(EiPreparePayload())
+    #         GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model(quantity_of_tender_item_object=2)
+    #         Requests().create_ei(
+    #             host_of_request=GlobalClassMetadata.host_for_bpe,
+    #             access_token=GlobalClassCreateEi.access_token,
+    #             x_operation_id=GlobalClassCreateEi.operation_id,
+    #             country=GlobalClassMetadata.country,
+    #             language=GlobalClassMetadata.language,
+    #             payload=GlobalClassCreateEi.payload
+    #         )
+    #         GlobalClassCreateEi.feed_point_message = \
+    #             KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+    #
+    #         GlobalClassCreateEi.ei_ocid = \
+    #             GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+    #
+    #         GlobalClassCreateEi.actual_ei_release = requests.get(
+    #             url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
+    #                 f"{GlobalClassCreateEi.ei_ocid}").json()
+    #     with allure.step('# 3. Authorization platform one: create FS'):
+    #         """
+    #         Tender platform authorization for create financial source process.
+    #         As result get Tender platform's access token and process operation-id.
+    #         """
+    #         GlobalClassCreateFs.access_token = PlatformAuthorization(
+    #             GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
+    #
+    #         GlobalClassCreateFs.operation_id = PlatformAuthorization(
+    #             GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
+    #     with allure.step('# 4. Send request to create FS'):
+    #         """
+    #         Send api request on BPE host for financial source creating.
+    #         And save in variable fs_id and fs_token.
+    #         """
+    #         time.sleep(1)
+    #         fs_payload = copy.deepcopy(FsPreparePayload())
+    #         GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
+    #         Requests().create_fs(
+    #             host_of_request=GlobalClassMetadata.host_for_bpe,
+    #             access_token=GlobalClassCreateFs.access_token,
+    #             x_operation_id=GlobalClassCreateFs.operation_id,
+    #             ei_ocid=GlobalClassCreateEi.ei_ocid,
+    #             payload=GlobalClassCreateFs.payload
+    #         )
+    #         GlobalClassCreateFs.feed_point_message = \
+    #             KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+    #
+    #         GlobalClassCreateFs.fs_id = \
+    #             GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
+    #
+    #         GlobalClassCreateFs.actual_fs_release = requests.get(
+    #             url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
+    #                 f"{GlobalClassCreateFs.fs_id}").json()
+    #     with allure.step('# 5. Authorization platform one: create PN'):
+    #         """
+    #         Tender platform authorization for create planning notice process.
+    #         As result get Tender platform's access token and process operation-id.
+    #         """
+    #         GlobalClassCreatePn.access_token = PlatformAuthorization(
+    #             GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
+    #
+    #         GlobalClassCreatePn.operation_id = PlatformAuthorization(
+    #             GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
+    #
+    #     with allure.step('# 6. Send request to create PN'):
+    #         """
+    #         Send api request on BPE host for planning notice creating.
+    #         Save synchronous result of sending the request and asynchronous result of sending the request.
+    #         Save pn_ocid and pn_token.
+    #         """
+    #         time.sleep(1)
+    #         pn_payload = copy.deepcopy(PnPreparePayload())
+    #         GlobalClassCreatePn.payload = \
+    #             pn_payload.create_pn_full_data_model_with_lots_and_items_full_based_on_one_fs(
+    #                 quantity_of_lot_object=1,
+    #                 quantity_of_item_object=1)
+    #
+    #         Requests().create_pn(
+    #             host_of_request=GlobalClassMetadata.host_for_bpe,
+    #             access_token=GlobalClassCreatePn.access_token,
+    #             x_operation_id=GlobalClassCreatePn.operation_id,
+    #             country=GlobalClassMetadata.country,
+    #             language=GlobalClassMetadata.language,
+    #             pmd=GlobalClassMetadata.pmd,
+    #             payload=GlobalClassCreatePn.payload
+    #         )
+    #         GlobalClassCreatePn.feed_point_message = \
+    #             KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+    #
+    #         GlobalClassCreatePn.pn_ocid = \
+    #             GlobalClassCreatePn.feed_point_message['data']['ocid']
+    #
+    #         GlobalClassCreatePn.pn_id = \
+    #             GlobalClassCreatePn.feed_point_message['data']['outcomes']['pn'][0]['id']
+    #
+    #         GlobalClassCreatePn.pn_token = \
+    #             GlobalClassCreatePn.feed_point_message['data']['outcomes']['pn'][0]['X-TOKEN']
+    #
+    #         GlobalClassCreatePn.actual_pn_release = requests.get(
+    #             url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+    #                 f"{GlobalClassCreatePn.pn_id}").json()
+    #
+    #         GlobalClassCreatePn.actual_ms_release = requests.get(
+    #             url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+    #                 f"{GlobalClassCreatePn.pn_ocid}").json()
+    #     with allure.step('# 7. Authorization platform one: create CnOnPn'):
+    #         """
+    #         Tender platform authorization for create contract notice process.
+    #         As result get Tender platform's access token and process operation-id.
+    #         """
+    #         GlobalClassCreateCnOnPn.access_token = PlatformAuthorization(
+    #             GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
+    #
+    #         GlobalClassCreateCnOnPn.operation_id = PlatformAuthorization(
+    #             GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateCnOnPn.access_token)
+    #     with allure.step('# 8. Send request to create CnOnPn'):
+    #         """
+    #         Send api request on BPE host for contract notice creating.
+    #         Save synchronous result of sending the request and asynchronous result of sending the request.
+    #         """
+    #         time.sleep(1)
+    #         cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
+    #         GlobalClassCreateCnOnPn.payload = \
+    #             cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv(
+    #                 enquiry_interval=121,
+    #                 tender_interval=300,
+    #                 quantity_of_lots_object=1,
+    #                 quantity_of_items_object=1,
+    #                 need_to_set_permanent_id_for_lots_array=True,
+    #                 need_to_set_permanent_id_for_items_array=True,
+    #                 need_to_set_permanent_id_for_documents_array=True,
+    #                 based_stage_release=GlobalClassCreatePn.actual_pn_release
+    #             )
+    #
+    #         Requests().create_cnonpn(
+    #             host_of_request=GlobalClassMetadata.host_for_bpe,
+    #             access_token=GlobalClassCreateCnOnPn.access_token,
+    #             x_operation_id=GlobalClassCreateCnOnPn.operation_id,
+    #             pn_ocid=GlobalClassCreatePn.pn_ocid,
+    #             pn_id=GlobalClassCreatePn.pn_id,
+    #             pn_token=GlobalClassCreatePn.pn_token,
+    #             payload=GlobalClassCreateCnOnPn.payload
+    #         )
+    #
+    #         GlobalClassCreateCnOnPn.feed_point_message = \
+    #             KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+    #
+    #         GlobalClassCreateCnOnPn.ev_id = \
+    #             GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
+    #
+    #         GlobalClassCreateCnOnPn.actual_ev_release = requests.get(
+    #             url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
+    #                 f"{GlobalClassCreateCnOnPn.ev_id}").json()
+    #
+    #         GlobalClassCreateCnOnPn.actual_ms_release = requests.get(
+    #             url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+    #                 f"{GlobalClassCreatePn.pn_ocid}").json()
+    #
+    #     with allure.step('# 9. Authorization platform one: create Bid'):
+    #         """
+    #         Tender platform authorization for create contract notice process.
+    #         As result get Tender platform's access token and process operation-id.
+    #         """
+    #         GlobalClassCreateFirstBid.access_token = PlatformAuthorization(
+    #             GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
+    #
+    #         GlobalClassCreateFirstBid.operation_id = PlatformAuthorization(
+    #             GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFirstBid.access_token)
+    #
+    #     with allure.step('# 10. Send request to create Bid'):
+    #         """
+    #         Send api request on BPE host for contract notice creating.
+    #         Save synchronous result of sending the request and asynchronous result of sending the request.
+    #         """
+    #         try:
+    #             """
+    #             Set specific value into submission.rules for this testcase
+    #             """
+    #             min_bids_from_submission_rules = GlobalClassMetadata.database.get_min_bids_from_submission_rules(
+    #                 country=GlobalClassMetadata.country,
+    #                 pmd=GlobalClassMetadata.pmd,
+    #                 operation_type='all',
+    #                 parameter='minBids'
+    #             )
+    #             if min_bids_from_submission_rules != "1":
+    #                 GlobalClassMetadata.database.set_min_bids_from_submission_rules(
+    #                     value='1',
+    #                     country=GlobalClassMetadata.country,
+    #                     pmd=GlobalClassMetadata.pmd,
+    #                     operation_type='all',
+    #                     parameter='minBids'
+    #                 )
+    #             else:
+    #                 pass
+    #         except Exception:
+    #             raise Exception("Impossible to set specific value into submission.rules")
+    #         try:
+    #             """
+    #             Set specific value into evaluation.rules for this testcase
+    #             """
+    #             min_bids_from_evaluation_rules = GlobalClassMetadata.database.get_min_bids_from_evaluation_rules(
+    #                 country=GlobalClassMetadata.country,
+    #                 pmd=GlobalClassMetadata.pmd,
+    #                 operation_type='all',
+    #                 parameter='minBids'
+    #             )
+    #             if min_bids_from_evaluation_rules == "1":
+    #                 GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
+    #                     value='2',
+    #                     country=GlobalClassMetadata.country,
+    #                     pmd=GlobalClassMetadata.pmd,
+    #                     operation_type='all',
+    #                     parameter='minBids'
+    #                 )
+    #             else:
+    #                 pass
+    #         except Exception:
+    #             raise Exception("Impossible to set specific value into evaluation.rules")
+    #         time.sleep(1)
+    #         time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate'])
+    #         bid_payload_class = copy.deepcopy(BidPreparePayload())
+    #         GlobalClassCreateFirstBid.payload = \
+    #             bid_payload_class.create_first_bid_full_data_model(
+    #                 based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
+    #             )
+    #         Requests().create_bid(
+    #             host_of_request=GlobalClassMetadata.host_for_bpe,
+    #             access_token=GlobalClassCreateFirstBid.access_token,
+    #             x_operation_id=GlobalClassCreateFirstBid.operation_id,
+    #             pn_ocid=GlobalClassCreatePn.pn_ocid,
+    #             ev_id=GlobalClassCreateCnOnPn.ev_id,
+    #             payload=GlobalClassCreateFirstBid.payload
+    #         )
+    #         GlobalClassCreateFirstBid.feed_point_message = \
+    #             KafkaMessage(GlobalClassCreateFirstBid.operation_id).get_message_from_kafka()
+    #     with allure.step('# 11. See result'):
+    #         """
+    #         Check the results of TestCase.
+    #         """
+    #         with allure.step('# 11.1. Check message in feed point'):
+    #             """
+    #             Check the asynchronous_result_of_sending_the_request.
+    #             """
+    #             time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate'])
+    #             time.sleep(1)
+    #             GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
+    #                 KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
+    #                              initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+    #
+    #             allure.attach(str(GlobalClassTenderPeriodEndNoAuction.feed_point_message), 'Message in feed point')
+    #
+    #             asynchronous_result_of_expired_tender_period_end = \
+    #                 KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
+    #                              initiation="bpe").tender_period_end_message_is_successful(
+    #                     environment=GlobalClassMetadata.environment,
+    #                     kafka_message=GlobalClassTenderPeriodEndNoAuction.feed_point_message,
+    #                     pn_ocid=GlobalClassCreatePn.pn_ocid,
+    #                     ev_id=GlobalClassCreateCnOnPn.ev_id
+    #                 )
+    #
+    #             try:
+    #                 """
+    #                 If asynchronous_result_of_sending_the_request was False, then return process steps by
+    #                 operation-id.
+    #                 """
+    #                 if asynchronous_result_of_expired_tender_period_end is False:
+    #                     with allure.step('# Steps from Casandra DataBase'):
+    #                         steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+    #                             operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message['X-OPERATION-ID'])
+    #                         allure.attach(steps, "Cassandra DataBase: steps of process")
+    #             except ValueError:
+    #                 raise ValueError("Can not return BPE operation step")
+    #
+    #         with allure.step('# 11.2. Check EV release'):
+    #             """
+    #             Compare actual evaluation value release with expected evaluation value release model.
+    #             """
+    #             time.sleep(2)
+    #             allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ev_release)),
+    #                           "Actual EV release before tender period end expired")
+    #
+    #             GlobalClassTenderPeriodEndNoAuction.actual_ev_release = requests.get(
+    #                 url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
+    #                     f"{GlobalClassCreateCnOnPn.ev_id}").json()
+    #
+    #             GlobalClassTenderPeriodEndNoAuction.actual_ms_release = requests.get(
+    #                 url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+    #                     f"{GlobalClassCreatePn.pn_ocid}").json()
+    #
+    #             allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release)),
+    #                           "Actual EV release after tender period end expired")
+    #             compare_releases = DeepDiff(
+    #                 GlobalClassCreateCnOnPn.actual_ev_release, GlobalClassTenderPeriodEndNoAuction.actual_ev_release)
+    #             dictionary_item_added_was_cleaned = \
+    #                 str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+    #             compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+    #             compare_releases = dict(compare_releases)
+    #             expected_result = {
+    #                 "dictionary_item_added": "['releases'][0]['awards']",
+    #                 "values_changed": {
+    #                     "root['releases'][0]['id']": {
+    #                         "new_value":
+    #                             f"{GlobalClassCreateCnOnPn.ev_id}-"
+    #                             f"{GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['id'][46:59]}",
+    #                         "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+    #                                      f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
+    #                     },
+    #                     "root['releases'][0]['date']": {
+    #                         "new_value": GlobalClassTenderPeriodEndNoAuction.feed_point_message['data'][
+    #                             'operationDate'],
+    #                         "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
+    #                     },
+    #                     "root['releases'][0]['tag'][0]": {
+    #                         'new_value': 'tenderCancellation',
+    #                         'old_value': 'tender'
+    #                     },
+    #                     "root['releases'][0]['tender']['status']": {
+    #                         'new_value': 'unsuccessful',
+    #                         'old_value': 'active'
+    #                     },
+    #                     "root['releases'][0]['tender']['statusDetails']": {
+    #                         'new_value': 'empty',
+    #                         'old_value': 'clarification'
+    #                     },
+    #                     "root['releases'][0]['tender']['lots'][0]['status']": {
+    #                         'new_value': 'unsuccessful',
+    #                         'old_value': 'active'
+    #                     }
+    #                 }
+    #             }
+    #             try:
+    #                 """
+    #                 Prepare expected awards array
+    #                 """
+    #                 expected_awards_array = TenderPeriodExpectedChanges(
+    #                     environment=GlobalClassMetadata.environment,
+    #                     language=GlobalClassMetadata.language
+    #                 ).prepare_unsuccessful_awards_array()
+    #             except Exception:
+    #                 raise Exception("Impossible to prepare expected awards array")
+    #             try:
+    #                 """
+    #                     If compare_releases !=expected_result, then return process steps by operation-id.
+    #                     """
+    #                 if compare_releases == expected_result and \
+    #                         expected_awards_array == \
+    #                         GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']:
+    #                     pass
+    #                 else:
+    #                     with allure.step('# Steps from Casandra DataBase'):
+    #                         steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+    #                             operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message['X-OPERATION-ID'])
+    #                         allure.attach(steps, "Cassandra DataBase: steps of process")
+    #             except ValueError:
+    #                 raise ValueError("Can not return BPE operation step")
+    #
+    #             assert str(compare_actual_result_and_expected_result(
+    #                 expected_result=expected_result,
+    #                 actual_result=compare_releases
+    #             )) == str(True)
+    #             assert str(compare_actual_result_and_expected_result(
+    #                 expected_result=expected_awards_array,
+    #                 actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']
+    #             )) == str(True)
+    #         with allure.step('# 11.3. Check MS release'):
+    #             """
+    #             Compare multistage release with expected multistage release model.
+    #             """
+    #             allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
+    #                           "Actual MS release before tender period end expired")
+    #
+    #             GlobalClassTenderPeriodEndNoAuction.actual_ms_release = requests.get(
+    #                 url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+    #                     f"{GlobalClassCreatePn.pn_ocid}").json()
+    #
+    #             allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ms_release)),
+    #                           "Actual MS release after tender period end expired")
+    #             compare_releases = dict(DeepDiff(
+    #                 GlobalClassCreateCnOnPn.actual_ms_release,
+    #                 GlobalClassTenderPeriodEndNoAuction.actual_ms_release))
+    #
+    #             expected_result = {
+    #                 "values_changed": {
+    #                     "root['releases'][0]['id']": {
+    #                         "new_value":
+    #                             f"{GlobalClassCreatePn.pn_ocid}-"
+    #                             f"{GlobalClassTenderPeriodEndNoAuction.actual_ms_release['releases'][0]['id'][29:42]}",
+    #                         "old_value": f"{GlobalClassCreatePn.pn_ocid}-"
+    #                                      f"{GlobalClassCreateCnOnPn.actual_ms_release['releases'][0]['id'][29:42]}"
+    #                     },
+    #                     "root['releases'][0]['date']": {
+    #                         "new_value": GlobalClassTenderPeriodEndNoAuction.feed_point_message['data'][
+    #                             'operationDate'],
+    #                         "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
+    #                     },
+    #                     "root['releases'][0]['tender']['status']": {
+    #                         "new_value": "unsuccessful",
+    #                         "old_value": "active"
+    #                     },
+    #                     "root['releases'][0]['tender']['statusDetails']": {
+    #                         "new_value": "empty",
+    #                         "old_value": "evaluation"
+    #                     }
+    #                 }
+    #             }
+    #             try:
+    #                 """
+    #                 If TestCase was passed, then cLean up the database.
+    #                 If TestCase was failed, then return process steps by operation-id.
+    #                 """
+    #                 if compare_releases == expected_result:
+    #                     GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+    #                         ei_id=GlobalClassCreateEi.ei_ocid)
+    #
+    #                     GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+    #                         ei_id=GlobalClassCreateEi.ei_ocid)
+    #
+    #                     GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+    #                         pn_ocid=GlobalClassCreatePn.pn_ocid)
+    #
+    #                     GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+    #                         pn_ocid=GlobalClassCreatePn.pn_ocid)
+    #
+    #                     GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
+    #                         pn_ocid=GlobalClassCreatePn.pn_ocid)
+    #
+    #                     GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
+    #                         pn_ocid=GlobalClassCreatePn.pn_ocid)
+    #
+    #                     GlobalClassMetadata.database.cleanup_steps_of_process(
+    #                         operation_id=GlobalClassCreateEi.operation_id)
+    #
+    #                     GlobalClassMetadata.database.cleanup_steps_of_process(
+    #                         operation_id=GlobalClassCreateFs.operation_id)
+    #
+    #                     GlobalClassMetadata.database.cleanup_steps_of_process(
+    #                         operation_id=GlobalClassCreatePn.operation_id)
+    #
+    #                     GlobalClassMetadata.database.cleanup_steps_of_process(
+    #                         operation_id=GlobalClassCreateCnOnPn.operation_id)
+    #
+    #                     GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+    #                         operation_id=GlobalClassCreateFirstBid.operation_id)
+    #
+    #                     GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+    #                         operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message['X-OPERATION-ID'])
+    #                 else:
+    #                     with allure.step('# Steps from Casandra DataBase'):
+    #                         steps = \
+    #                             GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id_from_orchestrator(
+    #                                 operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message[
+    #                                     'X-OPERATION-ID'])
+    #                         allure.attach(steps, "Cassandra DataBase: steps of process")
+    #                 try:
+    #                     """
+    #                     Rollback specific value into submission.rules
+    #                     """
+    #                     GlobalClassMetadata.database.set_min_bids_from_submission_rules(
+    #                         value=min_bids_from_submission_rules,
+    #                         country=GlobalClassMetadata.country,
+    #                         pmd=GlobalClassMetadata.pmd,
+    #                         operation_type='all',
+    #                         parameter='minBids'
+    #                     )
+    #                 except Exception:
+    #                     raise Exception("Impossible to rollback specific value into submission.rules")
+    #                 try:
+    #                     """
+    #                     Rollback specific value into evaluation.rules
+    #                     """
+    #                     GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
+    #                         value=min_bids_from_evaluation_rules,
+    #                         country=GlobalClassMetadata.country,
+    #                         pmd=GlobalClassMetadata.pmd,
+    #                         operation_type='all',
+    #                         parameter='minBids'
+    #                     )
+    #                 except Exception:
+    #                     raise Exception("Impossible to rollback specific value into evaluation.rules")
+    #             except ValueError:
+    #                 raise ValueError("Can not return BPE operation step")
+    #             assert str(compare_actual_result_and_expected_result(
+    #                 expected_result=expected_result,
+    #                 actual_result=compare_releases
+    #             )) == str(True)
 
     @allure.title('Check message from Kafka topic, EV, MS releases if '
                   'Are there bids for opening? -> True -> Are there unsuccessful lots? -> False -> '
-                  'Is tender unsuccessful? -> True')
-    def test_check_result_of_sending_the_request_two(self):
+                  'Is tender unsuccessful? -> False')
+    def test_check_result_of_sending_the_request_three(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
@@ -481,7 +1032,6 @@ class TestCreateBid:
             )
             GlobalClassCreateEi.feed_point_message = \
                 KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
@@ -627,18 +1177,98 @@ class TestCreateBid:
                 url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreatePn.pn_ocid}").json()
 
-        with allure.step('# 9. Authorization platform one: create Bid'):
+        with allure.step('# 9. Authorization platform one: create first Bid'):
             """
             Tender platform authorization for create contract notice process.
             As result get Tender platform's access token and process operation-id.
             """
-            GlobalClassCreateBid.access_token = PlatformAuthorization(
+            GlobalClassCreateFirstBid.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
-            GlobalClassCreateBid.operation_id = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateBid.access_token)
+            GlobalClassCreateFirstBid.operation_id = PlatformAuthorization(
+                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFirstBid.access_token)
 
-        with allure.step('# 10. Send request to create Bid'):
+        with allure.step('# 10. Send request to create first Bid'):
+            """
+            Send api request on BPE host for contract notice creating.
+            Save synchronous result of sending the request and asynchronous result of sending the request.
+            """
+            try:
+                """
+                Set specific value into submission.rules for this testcase
+                """
+                min_bids_from_submission_rules = GlobalClassMetadata.database.get_min_bids_from_submission_rules(
+                    country=GlobalClassMetadata.country,
+                    pmd=GlobalClassMetadata.pmd,
+                    operation_type='all',
+                    parameter='minBids'
+                )
+                if min_bids_from_submission_rules != "1":
+                    GlobalClassMetadata.database.set_min_bids_from_submission_rules(
+                        value='1',
+                        country=GlobalClassMetadata.country,
+                        pmd=GlobalClassMetadata.pmd,
+                        operation_type='all',
+                        parameter='minBids'
+                    )
+                else:
+                    pass
+            except Exception:
+                raise Exception("Impossible to set specific value into submission.rules")
+            try:
+                """
+                Set specific value into evaluation.rules for this testcase
+                """
+                min_bids_from_evaluation_rules = GlobalClassMetadata.database.get_min_bids_from_evaluation_rules(
+                    country=GlobalClassMetadata.country,
+                    pmd=GlobalClassMetadata.pmd,
+                    operation_type='all',
+                    parameter='minBids'
+                )
+                if min_bids_from_evaluation_rules != "1":
+                    GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
+                        value='1',
+                        country=GlobalClassMetadata.country,
+                        pmd=GlobalClassMetadata.pmd,
+                        operation_type='all',
+                        parameter='minBids'
+                    )
+                else:
+                    pass
+            except Exception:
+                raise Exception("Impossible to set specific value into evaluation.rules")
+
+            time.sleep(1)
+            time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate'])
+            bid_payload_class = copy.deepcopy(BidPreparePayload())
+            GlobalClassCreateFirstBid.payload = \
+                bid_payload_class.create_first_bid_full_data_model(
+                    based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
+                )
+
+            Requests().create_bid(
+                host_of_request=GlobalClassMetadata.host_for_bpe,
+                access_token=GlobalClassCreateFirstBid.access_token,
+                x_operation_id=GlobalClassCreateFirstBid.operation_id,
+                pn_ocid=GlobalClassCreatePn.pn_ocid,
+                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                payload=GlobalClassCreateFirstBid.payload
+            )
+            GlobalClassCreateFirstBid.feed_point_message = \
+                KafkaMessage(GlobalClassCreateFirstBid.operation_id).get_message_from_kafka()
+
+        with allure.step('# 11. Authorization platform one: create second Bid'):
+            """
+            Tender platform authorization for create contract notice process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            GlobalClassCreateSecondBid.access_token = PlatformAuthorization(
+                GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
+
+            GlobalClassCreateSecondBid.operation_id = PlatformAuthorization(
+                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateSecondBid.access_token)
+
+        with allure.step('# 12. Send request to create second Bid'):
             """
             Send api request on BPE host for contract notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -653,9 +1283,9 @@ class TestCreateBid:
                     operation_type='all',
                     parameter='minBids'
                 )
-                if min_bids_from_evaluation_rules == "1":
+                if min_bids_from_evaluation_rules != "1":
                     GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
-                        value='2',
+                        value='1',
                         country=GlobalClassMetadata.country,
                         pmd=GlobalClassMetadata.pmd,
                         operation_type='all',
@@ -669,25 +1299,27 @@ class TestCreateBid:
             time.sleep(1)
             time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate'])
             bid_payload_class = copy.deepcopy(BidPreparePayload())
-            GlobalClassCreateBid.payload = \
-                bid_payload_class.create_bid_full_data_model(
-                    based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
+            GlobalClassCreateSecondBid.payload = \
+                bid_payload_class.create_second_bid_full_data_model(
+                    based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release,
+
                 )
 
             Requests().create_bid(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
-                access_token=GlobalClassCreateBid.access_token,
-                x_operation_id=GlobalClassCreateBid.operation_id,
+                access_token=GlobalClassCreateSecondBid.access_token,
+                x_operation_id=GlobalClassCreateSecondBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
                 ev_id=GlobalClassCreateCnOnPn.ev_id,
-                payload=GlobalClassCreateBid.payload
+                payload=GlobalClassCreateSecondBid.payload
             )
-
-        with allure.step('# 11. See result'):
+            GlobalClassCreateSecondBid.feed_point_message = \
+                KafkaMessage(GlobalClassCreateSecondBid.operation_id).get_message_from_kafka()
+        with allure.step('# 13. See result'):
             """
             Check the results of TestCase.
             """
-            with allure.step('# 11.1. Check message in feed point'):
+            with allure.step('# 13.1. Check message in feed point'):
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
@@ -721,7 +1353,7 @@ class TestCreateBid:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-            with allure.step('# 11.2. Check EV release'):
+            with allure.step('# 13.2. Check EV release'):
                 """
                 Compare actual evaluation value release with expected evaluation value release model.
                 """
@@ -739,22 +1371,22 @@ class TestCreateBid:
 
                 allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release)),
                               "Actual EV release after tender period end expired")
-
                 compare_releases = DeepDiff(
                     GlobalClassCreateCnOnPn.actual_ev_release, GlobalClassTenderPeriodEndNoAuction.actual_ev_release)
                 dictionary_item_added_was_cleaned = \
                     str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
                 compare_releases = dict(compare_releases)
-                # print("DEEPDIFF")
-                # print(compare_releases)
+                expected_criteria_array_source_p_entity = TenderPeriodExpectedChanges(
+                    environment=GlobalClassMetadata.environment,
+                    language=GlobalClassMetadata.language
+                ).prepare_criteria_array_source_procuring_entity()
 
-                print("BID PAYLOAD")
-                print(json.dumps(GlobalClassCreateBid.payload))
                 expected_result = {
                     "dictionary_item_added": "['releases'][0]['parties'], "
                                              "['releases'][0]['awards'], "
-                                             "['releases'][0]['bids']",
+                                             "['releases'][0]['bids'], "
+                                             "['releases'][0]['tender']['awardPeriod']",
                     "values_changed": {
                         "root['releases'][0]['id']": {
                             "new_value":
@@ -769,21 +1401,17 @@ class TestCreateBid:
                             "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
                         },
                         "root['releases'][0]['tag'][0]": {
-                            'new_value': 'tenderCancellation',
+                            'new_value': 'award',
                             'old_value': 'tender'
                         },
-                        "root['releases'][0]['tender']['status']": {
-                            'new_value': 'unsuccessful',
-                            'old_value': 'active'
-                        },
                         "root['releases'][0]['tender']['statusDetails']": {
-                            'new_value': 'empty',
+                            'new_value': 'awarding',
                             'old_value': 'clarification'
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['status']": {
-                            'new_value': 'unsuccessful',
-                            'old_value': 'active'
                         }
+                    },
+                    "iterable_item_added": {
+                        f"root['releases'][0]['tender']['criteria'][{expected_criteria_array_source_p_entity[1]}]":
+                            expected_criteria_array_source_p_entity[0]
                     }
                 }
 
@@ -791,143 +1419,217 @@ class TestCreateBid:
                     """
                     Prepare expected parties array
                     """
-                    expected_parties_array = TenderPeriodExpectedChanges(
+                    final_expected_parties_array = list()
+                    set_of_parties_id_from_release = list()
+                    for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties']:
+                        for i_1 in i:
+                            if i_1 == "id":
+                                set_of_parties_id_from_release.append(i['id'])
+
+                    expected_parties_array_first = TenderPeriodExpectedChanges(
                         environment=GlobalClassMetadata.environment,
                         language=GlobalClassMetadata.language
-                    ).prepare_parties_array(
-                        payload_tenderers_array=GlobalClassCreateBid.payload['bid']['tenderers'],
-                        release_parties_array=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0][
-                            'parties'])
+                    ).prepare_array_of_parties_mapper_for_successful_tender(
+                        bid_payload=GlobalClassCreateFirstBid.payload)
+
+                    expected_parties_array_second = TenderPeriodExpectedChanges(
+                        environment=GlobalClassMetadata.environment,
+                        language=GlobalClassMetadata.language
+                    ).prepare_array_of_parties_mapper_for_successful_tender(
+                        bid_payload=GlobalClassCreateSecondBid.payload)
+
+                    expected_parties_array = expected_parties_array_first + expected_parties_array_second
+                    quantity_of_object_into_expected_parties_array = len(expected_parties_array)
+                    quantity_of_object_into_set_of_parties_id_from_release = len(set_of_parties_id_from_release)
+                    if quantity_of_object_into_expected_parties_array == \
+                            quantity_of_object_into_set_of_parties_id_from_release:
+                        for q in range(quantity_of_object_into_set_of_parties_id_from_release):
+                            for q_1 in range(quantity_of_object_into_expected_parties_array):
+                                if expected_parties_array[q_1]['id'] == set_of_parties_id_from_release[q]:
+                                    final_expected_parties_array.append(expected_parties_array[q_1]['value'])
+                    else:
+                        raise Exception("Error: quantity_of_object_into_expected_parties_array != "
+                                        "quantity_of_object_into_set_of_parties_id_from_release")
+                    for pa in range(quantity_of_object_into_expected_parties_array):
+                        try:
+                            """
+                            Check how many quantity of object into final_expected_parties_array['persones'].
+                            """
+                            list_of_final_party_persones_id = list()
+                            for i in final_expected_parties_array[pa]['persones']:
+                                for i_1 in i:
+                                    if i_1 == "identifier":
+                                        for i_2 in i['identifier']:
+                                            if i_2 == "id":
+                                                list_of_final_party_persones_id.append(i_2)
+                            quantity_of_persones_into_final_expected_parties_array = \
+                                len(list_of_final_party_persones_id)
+                        except Exception:
+                            raise Exception("Impossible to check how many quantity of object into "
+                                            "final_expected_parties_array['persones'].")
+                        for p in range(quantity_of_persones_into_final_expected_parties_array):
+                            try:
+                                """
+                                Check how many quantity of object into 
+                                final_expected_parties_array['persones']['businessFunctions'].
+                                """
+                                list_of_final_party_persones_business_functions_id = list()
+                                for i in \
+                                        final_expected_parties_array[pa]['persones'][p]['businessFunctions']:
+                                    for i_1 in i:
+                                        if i_1 == "id":
+                                            list_of_final_party_persones_business_functions_id.append(i_1)
+                                quantity_of_business_functions_into_final = \
+                                    len(list_of_final_party_persones_business_functions_id)
+                            except Exception:
+                                raise Exception("Impossible to check how many quantity of object into "
+                                                "into final_expected_parties_array['persones']['businessFunctions'].")
+                            for bf in range(quantity_of_business_functions_into_final):
+                                try:
+                                    check = is_it_uuid(
+                                        uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                            'releases'][0]['parties'][pa]['persones'][p]['businessFunctions'][bf]['id'],
+                                        version=4
+                                    )
+                                    if check is True:
+                                        final_expected_parties_array[pa]['persones'][p]['businessFunctions'][bf][
+                                            'id'] = GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                            'releases'][0]['parties'][pa]['persones'][p]['businessFunctions'][bf]['id']
+                                    else:
+                                        raise ValueError("businessFunctions.id in release must be uuid version 4")
+                                except Exception:
+                                    raise Exception("Check your businessFunctions array in release")
+                except Exception:
+                    raise Exception("Impossible to prepare expected parties array")
+                try:
+                    """
+                    Prepare expected awards array
+                    """
+                    final_expected_awards_array = list()
+
+                    set_of_awards_id_from_release = list()
+                    for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']:
+                        for i_1 in i:
+                            if i_1 == "id":
+                                set_of_awards_id_from_release.append(i['id'])
+                    quantity_of_object_into_set_of_awards_id_from_release = \
+                        len(set_of_awards_id_from_release)
+
+                    set_of_awards_suppliers_from_release = list()
+                    for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']:
+                        for i_1 in i:
+                            if i_1 == "suppliers":
+                                set_of_awards_suppliers_from_release.append(i['suppliers'])
+                    quantity_of_object_into_set_of_awards_suppliers_from_release = \
+                        len(set_of_awards_suppliers_from_release)
+
+                    expected_awards_array_first = TenderPeriodExpectedChanges(
+                        environment=GlobalClassMetadata.environment,
+                        language=GlobalClassMetadata.language
+                    ).prepare_array_of_awards_mapper(bid_payload=GlobalClassCreateFirstBid.payload)
+                    print("FIRST AWARD MAPPER")
+                    print(json.dumps(expected_awards_array_first))
+                    expected_awards_array_second = TenderPeriodExpectedChanges(
+                        environment=GlobalClassMetadata.environment,
+                        language=GlobalClassMetadata.language
+                    ).prepare_array_of_awards_mapper(bid_payload=GlobalClassCreateSecondBid.payload)
+
+                    expected_awards_array = expected_awards_array_first + expected_awards_array_second
+
+                    set_of_awards_id_from_expected_awards_array = list()
+                    for i in expected_awards_array:
+                        for i_1 in i:
+                            if i_1 == "id":
+                                set_of_awards_id_from_expected_awards_array.append(i['id'])
+
+                    quantity_of_object_into_set_of_awards_id_from_expected_awards_array = \
+                        len(set_of_awards_id_from_expected_awards_array)
+
+                    set_of_awards_suppliers_from_expected_awards_array = list()
+                    for i in expected_awards_array:
+                        for i_1 in i:
+                            if i_1 == "suppliers":
+                                set_of_awards_suppliers_from_expected_awards_array.append(i['suppliers'])
+
+                    quantity_of_object_into_set_of_awards_suppliers_from_expected_awards_array = \
+                        len(set_of_awards_suppliers_from_expected_awards_array)
+
+                    # if quantity_of_object_into_set_of_awards_id_from_release == \
+                    #         quantity_of_object_into_set_of_awards_id_from_expected_awards_array and \
+                    #         quantity_of_object_into_set_of_awards_suppliers_from_release == \
+                    #         quantity_of_object_into_set_of_awards_suppliers_from_expected_awards_array:
+                    print("CКІЛЬКИ ЇХ ТАМ")
+                    print(quantity_of_object_into_set_of_awards_suppliers_from_release)
+                    print(quantity_of_object_into_set_of_awards_id_from_expected_awards_array)
+                    for s in range(quantity_of_object_into_set_of_awards_suppliers_from_release):
+                        for ob in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']:
+                            if ob['suppliers'] == expected_awards_array[s]['suppliers']:
+                                final_expected_awards_array.append(expected_awards_array[s]['value'])
                 except Exception:
                     raise Exception("Impossible to prepare expected awards array")
+                print("EXPECTED AWARDS ARRAY")
+                print(json.dumps(final_expected_awards_array))
 
-                print("Actual parties array 0")
-                print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'][0]))
-                print("Expected parties array 0")
-                print(json.dumps(expected_parties_array[0]))
-
-                print("Actual parties array 1")
-                print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'][1]))
-                print("Expected parties array 1")
-                print(json.dumps(expected_parties_array[1]))
-
-                # try:
-                #     """
-                #     Prepare expected awards array
-                #     """
-                #     expected_awards_array = [
-                #         {
-                #             "id":
-                #                 GlobalClassTenderPeriodEndNoAuction.feed_point_message['data']['outcomes']['awards'][0][
-                #                     'id'],
-                #             "title": "The contract/lot is not awarded",
-                #             "description": "Other reasons (discontinuation of procedure)",
-                #             "status": "unsuccessful",
-                #             "statusDetails": "noOffersReceived",
-                #             "date": GlobalClassTenderPeriodEndNoAuction.feed_point_message['data']['operationDate'],
-                #             "relatedLots": GlobalClassCreateBid.payload['bid']['relatedLots']
-                #         }]
-                # except Exception:
-                #     raise Exception("Impossible to prepare expected awards array")
-                # print("Prepare expected awards array")
-                # print(json.dumps(expected_awards_array))
-                #
-                # print("Prepare actual awards array")
-                # print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']))
+                print("FIRST BID")
+                print(json.dumps(GlobalClassCreateFirstBid.payload))
+                print("Second BID")
+                print(json.dumps(GlobalClassCreateSecondBid.payload))
                 # try:
                 #     """
                 #     Prepare expected bid object
                 #     """
+                #     expected_bids_object = {"details": []}
+                #     expected_bids_object_second = TenderPeriodExpectedChanges(
+                #         environment=GlobalClassMetadata.environment,
+                #         language=GlobalClassMetadata.language
+                #     ).prepare_bid_details_array(
+                #         payload=GlobalClassCreateSecondBid.payload,
+                #         actual_ev_release=GlobalClassTenderPeriodEndNoAuction.actual_ev_release,
+                #         bid_feed_point_message=GlobalClassCreateSecondBid.feed_point_message)
+                #     expected_bids_object['details'].append(expected_bids_object_second)
+                #
+                #     expected_bids_object_first = TenderPeriodExpectedChanges(
+                #         environment=GlobalClassMetadata.environment,
+                #         language=GlobalClassMetadata.language
+                #     ).prepare_bid_details_array(
+                #         payload=GlobalClassCreateFirstBid.payload,
+                #         actual_ev_release=GlobalClassTenderPeriodEndNoAuction.actual_ev_release,
+                #         bid_feed_point_message=GlobalClassCreateFirstBid.feed_point_message)
+                #     expected_bids_object['details'].append(expected_bids_object_first)
+                #
+                #
                 #     try:
-                #         for i in GlobalClassCreateBid.payload['bid']['requirementResponses']:
+                #         """
+                #         Check how many quantity of object into expected_bids_array['details'].
+                #         """
+                #         list_of_expected_bids_details_id = list()
+                #         for i in expected_bids_object['details']:
                 #             for i_1 in i:
                 #                 if i_1 == "id":
-                #                     check_requirement_responses_id = is_it_uuid(i["id"], 4)
-                #                     if check_requirement_responses_id is True:
-                #                         pass
-                #                     else:
-                #                         raise Exception('check_requirement_responses_id is not UUID')
-                #                 if i_1 == "evidences":
-                #                     for i_2 in i['evidences']:
-                #                         for i_3 in i_2:
-                #                             if i_3 == "id":
-                #                                 check_evidences_id = is_it_uuid(i["id"], 4)
-                #                                 if check_evidences_id is True:
-                #                                     pass
-                #                                 else:
-                #                                     raise Exception('check_evidences_id is not UUID')
-                #     except KeyError:
-                #         raise KeyError('KeyError: id')
-                #
-                #     expected_bids_object = {
-                #         "details": [
-                #             {
-                #                 "id": GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'],
-                #                 "date": GlobalClassTenderPeriodEndNoAuction.feed_point_message['data']['operationDate'],
-                #                 "status": "pending",
-                #                 "tenderers": [
-                #                     {
-                #                         "id": f"{GlobalClassCreateBid.payload['bid']['tenderers'][0]['identifier']['scheme']}"
-                #                               f"-{GlobalClassCreateBid.payload['bid']['tenderers'][0]['identifier']['id']}",
-                #                         "name": GlobalClassCreateBid.payload['bid']['tenderers'][0]['name']
-                #                     },
-                #                     {
-                #                         "id": f"{GlobalClassCreateBid.payload['bid']['tenderers'][1]['identifier']['scheme']}"
-                #                               f"-{GlobalClassCreateBid.payload['bid']['tenderers'][1]['identifier']['id']}",
-                #                         "name": GlobalClassCreateBid.payload['bid']['tenderers'][1]['name']
-                #                     }
-                #                 ],
-                #                 "value": {
-                #                     "amount": GlobalClassCreateBid.payload['bid']['value']['amount'],
-                #                     "currency": GlobalClassCreateBid.payload['bid']['value']['currency']
-                #                 },
-                #                 "documents": [
-                #                     {
-                #                         "id": GlobalClassCreateBid.payload['bid']['documents'][0]['id'],
-                #                         "documentType": GlobalClassCreateBid.payload['bid']['documents'][0][
-                #                             'documentType'],
-                #                         "title": GlobalClassCreateBid.payload['bid']['documents'][0]['title'],
-                #                         "description": GlobalClassCreateBid.payload['bid']['documents'][0][
-                #                             'description'],
-                #                         "url": f"{self.metadata_document_url}/{GlobalClassCreateBid.payload['bid']['documents'][0]['id']}",
-                #                         "datePublished": GlobalClassTenderPeriodEndNoAuction.feed_point_message['data'][
-                #                             'operationDate'],
-                #                         "relatedLots": GlobalClassCreateBid.payload['bid']['documents'][0][
-                #                             'relatedLots']
-                #                     },
-                #                     {
-                #                         "id": GlobalClassCreateBid.payload['bid']['documents'][1]['id'],
-                #                         "documentType": GlobalClassCreateBid.payload['bid']['documents'][1][
-                #                             'documentType'],
-                #                         "title": GlobalClassCreateBid.payload['bid']['documents'][1]['title'],
-                #                         "description": GlobalClassCreateBid.payload['bid']['documents'][1][
-                #                             'description'],
-                #                         "url": f"{self.metadata_document_url}/{GlobalClassCreateBid.payload['bid']['documents'][1]['id']}",
-                #                         "datePublished": GlobalClassTenderPeriodEndNoAuction.feed_point_message['data'][
-                #                             'operationDate'],
-                #                         "relatedLots": GlobalClassCreateBid.payload['bid']['documents'][1][
-                #                             'relatedLots']
-                #                     }
-                #                 ],
-                #                 "relatedLots": GlobalClassCreateBid.payload['bid']['relatedLots'],
-                #                 "requirementResponses": GlobalClassCreateBid.payload['bid']['requirementResponses']
-                #             }
-                #         ]
-                #     }
+                #                     list_of_expected_bids_details_id.append(i_1)
+                #         quantity_of_details_id_into_expected_bids = len(list_of_expected_bids_details_id)
+                #     except Exception:
+                #         raise Exception("Impossible to calculate how many quantity of object into "
+                #                         "expected_bids_array['details']")
+                #     for d in range(quantity_of_details_id_into_expected_bids):
+                #         expected_bids_object['details'][d]['id'] = \
+                #             GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'][
+                #                 'details'][d]['id']
                 # except Exception:
                 #     raise Exception("Impossible to prepare expected bids object")
-                # print("expected_bids_object")
-                # print(json.dumps(expected_bids_object))
-                #
-                # print("Prepare actual bids object")
-                # print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']))
+                # print("ПЕРЕВЫРКА ЗАРАЗ")
+                # print(expected_bids_object)
                 # try:
                 #     """
                 #         If compare_releases !=expected_result, then return process steps by operation-id.
                 #         """
                 #     if compare_releases == expected_result and \
+                #             expected_parties_array == \
+                #             GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'] and \
                 #             expected_awards_array == \
-                #             GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']:
+                #             GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] and \
+                #             expected_bids_object == \
+                #             GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']:
                 #         pass
                 #     else:
                 #         with allure.step('# Steps from Casandra DataBase'):
@@ -936,13 +1638,49 @@ class TestCreateBid:
                 #             allure.attach(steps, "Cassandra DataBase: steps of process")
                 # except ValueError:
                 #     raise ValueError("Can not return BPE operation step")
-                #
+                # print("Actual EV release before tender period end expired")
+                # print(json.dumps(GlobalClassCreateCnOnPn.actual_ev_release))
+                # print("Actual EV release after tender period end expired")
+                # print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release))
+                # print("------")
+                # print("ACTUAL DIFF")
+                # print(json.dumps(compare_releases))
+                # print("EXPECTED DIFF")
+                # print(json.dumps(expected_result))
+                # print("------")
+                # print("Actual parties")
+                # print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties']))
+                # print("Expected parties")
+                # print(json.dumps(final_expected_parties_array))
+                # print("------")
+                print("Actual awards")
+                print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']))
+                # print("Expected awards")
+                # print(json.dumps(expected_awards_array))
+                # print("------")
+                # print("Actual bids")
+                # print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']))
+                # print("Expected bids")
+                # print(json.dumps(expected_bids_object))
+
                 # assert str(compare_actual_result_and_expected_result(
                 #     expected_result=expected_result,
                 #     actual_result=compare_releases
                 # )) == str(True)
-            #
-            # with allure.step('# 10.3. Check MS release'):
+                # assert str(compare_actual_result_and_expected_result(
+                #     expected_result=expected_parties_array,
+                #     actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties']
+                # )) == str(True)
+                # assert str(compare_actual_result_and_expected_result(
+                #     expected_result=expected_awards_array,
+                #     actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']
+                # )) == str(True)
+                # assert str(compare_actual_result_and_expected_result(
+                #     expected_result=expected_bids_object,
+                #     actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']
+                # )) == str(True)
+
+            # with allure.step('# 11.3. Check MS release'):
             #     """
             #     Compare multistage release with expected multistage release model.
             #     """
@@ -955,7 +1693,6 @@ class TestCreateBid:
             #
             #     allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ms_release)),
             #                   "Actual MS release after tender period end expired")
-            #
             #     compare_releases = dict(DeepDiff(
             #         GlobalClassCreateCnOnPn.actual_ms_release,
             #         GlobalClassTenderPeriodEndNoAuction.actual_ms_release))
@@ -1032,9 +1769,35 @@ class TestCreateBid:
             #                         operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message[
             #                             'X-OPERATION-ID'])
             #                 allure.attach(steps, "Cassandra DataBase: steps of process")
+            #
+            #         try:
+            #             """
+            #             Rollback specific value into submission.rules
+            #             """
+            #             GlobalClassMetadata.database.set_min_bids_from_submission_rules(
+            #                 value=min_bids_from_submission_rules,
+            #                 country=GlobalClassMetadata.country,
+            #                 pmd=GlobalClassMetadata.pmd,
+            #                 operation_type='all',
+            #                 parameter='minBids'
+            #             )
+            #         except Exception:
+            #             raise Exception("Impossible to rollback specific value into submission.rules")
+            #         try:
+            #             """
+            #             Rollback specific value into evaluation.rules
+            #             """
+            #             GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
+            #                 value=min_bids_from_evaluation_rules,
+            #                 country=GlobalClassMetadata.country,
+            #                 pmd=GlobalClassMetadata.pmd,
+            #                 operation_type='all',
+            #                 parameter='minBids'
+            #             )
+            #         except Exception:
+            #             raise Exception("Impossible to rollback specific value into evaluation.rules")
             #     except ValueError:
             #         raise ValueError("Can not return BPE operation step")
-            #
             #     assert str(compare_actual_result_and_expected_result(
             #         expected_result=expected_result,
             #         actual_result=compare_releases
