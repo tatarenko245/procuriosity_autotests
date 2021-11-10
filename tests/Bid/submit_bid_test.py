@@ -242,7 +242,7 @@ class TestCreateBid:
             time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate'])
             bid_payload_class = copy.deepcopy(BidPreparePayload())
             GlobalClassCreateFirstBid.payload = \
-                bid_payload_class.create_first_bid_full_data_model(
+                bid_payload_class.create_first_bid_full_data_model_with_requirement_responses(
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
                 )
 
