@@ -913,3 +913,81 @@ class KafkaMessage:
             return True
         else:
             return False
+
+    @staticmethod
+    def tender_period_end_message_is_successful(environment, kafka_message, pn_ocid, ev_id):
+        tender_url = None
+        if environment == "dev":
+            tender_url = "http://dev.public.eprocurement.systems/tenders/"
+        if environment == "sandbox":
+            tender_url = "http://public.eprocurement.systems/tenders/"
+
+        check_x_operation_id = None
+        check_x_response_id = None
+        check_initiator = None
+        check_oc_id = None
+        check_url = None
+        check_operation_date = None
+
+        try:
+            if "X-OPERATION-ID" in kafka_message:
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 1)
+        except KeyError:
+            raise KeyError('KeyError: X-OPERATION-ID')
+
+        try:
+            if "X-RESPONSE-ID" in kafka_message:
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+        except KeyError:
+            raise KeyError('KeyError: X-RESPONSE-ID')
+        try:
+            if "initiator" in kafka_message:
+                check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "bpe")
+        except KeyError:
+            raise KeyError('KeyError: initiator')
+        try:
+            if "ocid" in kafka_message["data"]:
+                check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{ev_id}")
+        except KeyError:
+            raise KeyError('KeyError: ocid')
+        try:
+            if "url" in kafka_message["data"]:
+                check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
+                                            f"{tender_url}{pn_ocid}/{ev_id}")
+        except KeyError:
+            raise KeyError('KeyError: url')
+        try:
+            if "operationDate" in kafka_message["data"]:
+                check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
+        except KeyError:
+            raise KeyError('KeyError: operationDate')
+
+        if check_x_operation_id is True and check_x_response_id is True and check_initiator is True and \
+                check_oc_id is True and check_url is True and check_operation_date is True:
+            pass
+        else:
+            return False
+
+        try:
+            for i in kafka_message["data"]["outcomes"]["awards"]:
+                for i_1 in i:
+                    if i_1 == "id":
+                        check_award_id = is_it_uuid(i["id"], 4)
+                        if check_award_id is True:
+                            pass
+                        else:
+                            return False
+        except KeyError:
+            raise KeyError('KeyError: id')
+        try:
+            for i in kafka_message["data"]["outcomes"]["awards"]:
+                for i_1 in i:
+                    if i_1 == "X-TOKEN":
+                        check_award_token = is_it_uuid(i["X-TOKEN"], 4)
+                        if check_award_token is True:
+                            pass
+                        else:
+                            return False
+        except KeyError:
+            raise KeyError('KeyError: token')
+        return True

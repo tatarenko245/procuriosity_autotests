@@ -16,7 +16,7 @@ from tests.utils.environment import Environment
 from tests.utils.functions import compare_actual_result_and_expected_result, is_it_uuid
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.requests import Requests
+from tests.utils.my_requests import Requests
 
 
 @allure.parent_suite('Planning')

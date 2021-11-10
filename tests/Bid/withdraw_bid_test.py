@@ -3,7 +3,7 @@ import time
 import allure
 import requests
 from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, \
-    GlobalClassCreateCnOnPn, GlobalClassCreateBid, GlobalClassWithdrawBid
+    GlobalClassCreateCnOnPn, GlobalClassCreateFirstBid, GlobalClassWithdrawBid
 from tests.utils.PayloadModel.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.EI.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.FS.fs_prepared_payload import FsPreparePayload
@@ -14,7 +14,7 @@ from tests.utils.environment import Environment
 from tests.utils.functions import compare_actual_result_and_expected_result, time_bot
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.requests import Requests
+from tests.utils.my_requests import Requests
 
 
 @allure.parent_suite('Tendering')
@@ -228,11 +228,11 @@ class TestCreateBid:
             Tender platform authorization for create contract notice process.
             As result get Tender platform's access token and process operation-id.
             """
-            GlobalClassCreateBid.access_token = PlatformAuthorization(
+            GlobalClassCreateFirstBid.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
-            GlobalClassCreateBid.operation_id = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateBid.access_token)
+            GlobalClassCreateFirstBid.operation_id = PlatformAuthorization(
+                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFirstBid.access_token)
 
         with allure.step('# 10. Send request to create Bid'):
             """
@@ -242,28 +242,28 @@ class TestCreateBid:
             time.sleep(1)
             time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate'])
             bid_payload_class = copy.deepcopy(BidPreparePayload())
-            GlobalClassCreateBid.payload = \
-                bid_payload_class.create_bid_full_data_model(
+            GlobalClassCreateFirstBid.payload = \
+                bid_payload_class.create_first_bid_full_data_model_with_requirement_responses(
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
                 )
 
             Requests().create_bid(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
-                access_token=GlobalClassCreateBid.access_token,
-                x_operation_id=GlobalClassCreateBid.operation_id,
+                access_token=GlobalClassCreateFirstBid.access_token,
+                x_operation_id=GlobalClassCreateFirstBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
                 ev_id=GlobalClassCreateCnOnPn.ev_id,
-                payload=GlobalClassCreateBid.payload
+                payload=GlobalClassCreateFirstBid.payload
             )
 
-            GlobalClassCreateBid.feed_point_message = \
-                KafkaMessage(GlobalClassCreateBid.operation_id).get_message_from_kafka()
+            GlobalClassCreateFirstBid.feed_point_message = \
+                KafkaMessage(GlobalClassCreateFirstBid.operation_id).get_message_from_kafka()
 
-            GlobalClassCreateBid.bid_id = \
-                GlobalClassCreateBid.feed_point_message['data']['outcomes']['bids'][0]['id']
+            GlobalClassCreateFirstBid.bid_id = \
+                GlobalClassCreateFirstBid.feed_point_message['data']['outcomes']['bids'][0]['id']
 
-            GlobalClassCreateBid.bid_token = \
-                GlobalClassCreateBid.feed_point_message['data']['outcomes']['bids'][0]['X-TOKEN']
+            GlobalClassCreateFirstBid.bid_token = \
+                GlobalClassCreateFirstBid.feed_point_message['data']['outcomes']['bids'][0]['X-TOKEN']
 
         with allure.step('# 11. Authorization platform one: withdraw Bid'):
             """
@@ -289,8 +289,8 @@ class TestCreateBid:
                 x_operation_id=GlobalClassWithdrawBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
                 ev_id=GlobalClassCreateCnOnPn.ev_id,
-                bid_id=GlobalClassCreateBid.bid_id,
-                bid_token=GlobalClassCreateBid.bid_token
+                bid_id=GlobalClassCreateFirstBid.bid_id,
+                bid_token=GlobalClassCreateFirstBid.bid_token
             )
 
         with allure.step('# 13. See result'):
@@ -376,7 +376,7 @@ class TestCreateBid:
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
 
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=GlobalClassCreateBid.operation_id)
+                            operation_id=GlobalClassCreateFirstBid.operation_id)
 
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=GlobalClassWithdrawBid.operation_id)
@@ -573,11 +573,11 @@ class TestCreateBid:
             Tender platform authorization for create contract notice process.
             As result get Tender platform's access token and process operation-id.
             """
-            GlobalClassCreateBid.access_token = PlatformAuthorization(
+            GlobalClassCreateFirstBid.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
-            GlobalClassCreateBid.operation_id = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateBid.access_token)
+            GlobalClassCreateFirstBid.operation_id = PlatformAuthorization(
+                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFirstBid.access_token)
 
         with allure.step('# 10. Send request to create Bid'):
             """
@@ -587,28 +587,28 @@ class TestCreateBid:
             time.sleep(1)
             time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate'])
             bid_payload_class = copy.deepcopy(BidPreparePayload())
-            GlobalClassCreateBid.payload = \
+            GlobalClassCreateFirstBid.payload = \
                 bid_payload_class.create_bid_obligatory_data_model(
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
                 )
 
             Requests().create_bid(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
-                access_token=GlobalClassCreateBid.access_token,
-                x_operation_id=GlobalClassCreateBid.operation_id,
+                access_token=GlobalClassCreateFirstBid.access_token,
+                x_operation_id=GlobalClassCreateFirstBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
                 ev_id=GlobalClassCreateCnOnPn.ev_id,
-                payload=GlobalClassCreateBid.payload
+                payload=GlobalClassCreateFirstBid.payload
             )
             time.sleep(1)
-            GlobalClassCreateBid.feed_point_message = \
-                KafkaMessage(GlobalClassCreateBid.operation_id).get_message_from_kafka()
+            GlobalClassCreateFirstBid.feed_point_message = \
+                KafkaMessage(GlobalClassCreateFirstBid.operation_id).get_message_from_kafka()
 
-            GlobalClassCreateBid.bid_id = \
-                GlobalClassCreateBid.feed_point_message['data']['outcomes']['bids'][0]['id']
+            GlobalClassCreateFirstBid.bid_id = \
+                GlobalClassCreateFirstBid.feed_point_message['data']['outcomes']['bids'][0]['id']
 
-            GlobalClassCreateBid.bid_token = \
-                GlobalClassCreateBid.feed_point_message['data']['outcomes']['bids'][0]['X-TOKEN']
+            GlobalClassCreateFirstBid.bid_token = \
+                GlobalClassCreateFirstBid.feed_point_message['data']['outcomes']['bids'][0]['X-TOKEN']
 
         with allure.step('# 11. Authorization platform one: withdraw Bid'):
             """
@@ -634,8 +634,8 @@ class TestCreateBid:
                 x_operation_id=GlobalClassWithdrawBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
                 ev_id=GlobalClassCreateCnOnPn.ev_id,
-                bid_id=GlobalClassCreateBid.bid_id,
-                bid_token=GlobalClassCreateBid.bid_token
+                bid_id=GlobalClassCreateFirstBid.bid_id,
+                bid_token=GlobalClassCreateFirstBid.bid_token
             )
 
         with allure.step('# 13. See result'):
@@ -721,7 +721,7 @@ class TestCreateBid:
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
 
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=GlobalClassCreateBid.operation_id)
+                            operation_id=GlobalClassCreateFirstBid.operation_id)
 
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=GlobalClassWithdrawBid.operation_id)

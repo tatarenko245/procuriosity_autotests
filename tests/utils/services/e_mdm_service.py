@@ -7,13 +7,16 @@ from tests.utils.http_manager import HttpManager
 
 
 class MdmService:
-    @staticmethod
-    def process_ei_data(country, language):
+    def __init__(self, host):
+        self.port = HttpManager().e_mdm_service()[0]
+        self.host = host
+        print(self.host)
+
+    def process_ei_data(self, country, language):
         time_at_now = Date().time_at_now()
-        port = HttpManager().e_mdm_service()[0]
         command = HttpManager().e_mdm_service()[1]
         data = requests.post(
-            url=GlobalClassMetadata.host_for_services + f":{port}/{command}",
+            url=f"{self.host}:{self.port}/{command}",
             json={
                 "id": str(uuid.uuid1()),
                 "command": "processEiData",
@@ -144,13 +147,11 @@ class MdmService:
             })
         return data.json()
 
-    @staticmethod
-    def process_fs_data(ei_id, country, language):
+    def process_fs_data(self, ei_id, country, language):
         time_at_now = Date().time_at_now()
-        port = HttpManager().e_mdm_service()[0]
         command = HttpManager().e_mdm_service()[1]
         data = requests.post(
-            url=GlobalClassMetadata.host_for_services + f":{port}/{command}",
+            url=f"{self.host}:{self.port}/{command}",
             json={
                 "id": str(uuid.uuid1()),
                 "command": "processFsData",
@@ -328,3 +329,28 @@ class MdmService:
                     if criteria['classification']['id'][0:16] == "CRITERION.OTHER.":
                         other_criteria_list.append(criteria['classification'])
         return data.json(), exclusion_ground_criteria_list, selection_criteria_list, other_criteria_list
+
+    def get_country(self, country, language):
+        data = requests.get(url=f"{self.host}:{self.port}/addresses/countries/{country}",
+                            params={
+                                'lang': language
+                            }).json()
+
+        return data
+
+    def get_region(self, country, region, language):
+        data = requests.get(url=f"{self.host}:"
+                                f"{self.port}/addresses/countries/{country}/regions/{region}",
+                            params={
+                                'lang': language
+                            }).json()
+        return data
+
+    def get_locality(self, country, region, locality, language):
+        data = requests.get(url=f"{self.host}:"
+                                f"{self.port}/addresses/countries/{country}/regions/{region}/"
+                                f"localities/{locality}",
+                            params={
+                                'lang': language
+                            }).json()
+        return data

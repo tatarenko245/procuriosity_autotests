@@ -19,6 +19,7 @@ class CassandraSession:
         self.clarification_keyspace = self.cluster.connect('clarification')
         self.auctions_keyspace = self.cluster.connect('auctions')
         self.submission_keyspace = self.cluster.connect('submission')
+        self.evaluation_keyspace = self.cluster.connect('evaluation')
 
     def ei_process_cleanup_table_of_services(self, ei_id):
         self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one()
@@ -72,6 +73,15 @@ class CassandraSession:
         self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
 
+    def tender_period_end_process_cleanup_table_of_services(self, pn_ocid):
+        self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
+        self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
+        self.evaluation_keyspace.execute(f"DELETE FROM awards WHERE cpid='{pn_ocid}';")
+        self.submission_keyspace.execute(f"DELETE FROM bids WHERE cpid='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+
     def enquiry_process_cleanup_table_of_services(self, pn_ocid):
         self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
         self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
@@ -103,3 +113,31 @@ class CassandraSession:
         steps = self.orchestrator_keyspace.execute(
             f"SELECT * FROM steps WHERE operation_id = '{operation_id}' ALLOW FILTERING;").one()
         return steps
+
+    def get_min_bids_from_evaluation_rules(self, country, pmd, operation_type, parameter):
+        value = self.evaluation_keyspace.execute(
+            f"""SELECT "value" FROM rules WHERE "country"='{country}' AND "pmd" = '{pmd}' AND 
+            "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
+        return value.value
+
+    def set_min_bids_from_evaluation_rules(self, value, country, pmd, operation_type, parameter):
+        self.evaluation_keyspace.execute(
+            f"""UPDATE rules SET value = '{value}' WHERE "country"='{country}' AND "pmd" ='{pmd}' 
+            AND "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
+
+    def get_bids_from_submission_bids(self, cpid, bid_id):
+        value = self.submission_keyspace.execute(
+            f"SELECT * FROM submission.bids WHERE cpid = '{cpid}' AND id = '{bid_id}' ALLOW FILTERING;"
+        ).one()
+        return value.json_data
+
+    def get_min_bids_from_submission_rules(self, country, pmd, operation_type, parameter):
+        value = self.submission_keyspace.execute(
+            f"""SELECT "value" FROM rules WHERE "country"='{country}' AND "pmd" = '{pmd}' AND 
+            "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
+        return value.value
+
+    def set_min_bids_from_submission_rules(self, value, country, pmd, operation_type, parameter):
+        self.submission_keyspace.execute(
+            f"""UPDATE rules SET value = '{value}' WHERE "country"='{country}' AND "pmd" ='{pmd}' 
+            AND "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
