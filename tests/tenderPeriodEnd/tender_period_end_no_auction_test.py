@@ -22,10 +22,6 @@ from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.my_requests import Requests
 
 
-class GlobalClassCreate:
-    pass
-
-
 @allure.parent_suite('Awarding')
 @allure.suite('Tender period end no auction')
 @allure.sub_suite('BPE: ')
@@ -392,6 +388,9 @@ class TestCreateBid:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                 'releases'][0]['awards'])), "Actual awards array")
+                allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
                     actual_result=compare_releases
@@ -1306,6 +1305,18 @@ class TestCreateBid:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                 'releases'][0]['awards'])), "Actual awards array")
+                allure.attach(str(json.dumps(final_expected_awards_array)), "Expected awards array")
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                 'releases'][0]['bids'])), "Actual bids array")
+                allure.attach(str(json.dumps(final_expected_bids_object)), "Expected bids array")
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                 'releases'][0]['parties'])), "Actual paries array")
+                allure.attach(str(json.dumps(final_expected_parties_array)), "Expected parties array")
+
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
                     actual_result=compare_releases
@@ -2199,6 +2210,23 @@ class TestCreateBid:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                 'releases'][0]['awards'])), "Actual awards array")
+                allure.attach(str(json.dumps(final_expected_awards_array)), "Expected awards array")
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                 'releases'][0]['bids'])), "Actual bids array")
+                allure.attach(str(json.dumps(final_expected_bids_object)), "Expected bids array")
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                 'releases'][0]['tender']['criteria'])), "Actual criteria array")
+                allure.attach(str(json.dumps(final_expected_criteria_array)), "Expected criteria array")
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                 'releases'][0]['parties'])), "Actual paries array")
+                allure.attach(str(json.dumps(final_expected_parties_array)), "Expected parties array")
+
 
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
