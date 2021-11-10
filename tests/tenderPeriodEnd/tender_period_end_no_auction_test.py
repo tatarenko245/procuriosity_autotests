@@ -2227,7 +2227,6 @@ class TestCreateBid:
                                                  'releases'][0]['parties'])), "Actual paries array")
                 allure.attach(str(json.dumps(final_expected_parties_array)), "Expected parties array")
 
-
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
                     actual_result=compare_releases
