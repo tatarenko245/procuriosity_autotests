@@ -797,7 +797,7 @@ class TestCreateBid:
             time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate'])
             bid_payload_class = copy.deepcopy(BidPreparePayload())
             GlobalClassCreateSecondBid.payload = \
-                bid_payload_class.create_first_bid_full_data_model_with_requirement_responses(
+                bid_payload_class.create_second_bid_full_data_model_with_requirement_responses(
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release,
 
                 )
@@ -942,6 +942,7 @@ class TestCreateBid:
                     expected_parties_array = expected_parties_array_first + expected_parties_array_second
                     quantity_of_object_into_expected_parties_array = len(expected_parties_array)
                     quantity_of_object_into_list_of_parties_id_from_release = len(list_of_parties_id_from_release)
+
                     if quantity_of_object_into_expected_parties_array == \
                             quantity_of_object_into_list_of_parties_id_from_release:
                         for q in range(quantity_of_object_into_list_of_parties_id_from_release):
