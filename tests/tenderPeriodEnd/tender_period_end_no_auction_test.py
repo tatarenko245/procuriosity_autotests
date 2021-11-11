@@ -1306,41 +1306,50 @@ class TestCreateBid:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                 'releases'][0]['awards'])), "Actual awards array")
-                allure.attach(str(json.dumps(final_expected_awards_array)), "Expected awards array")
-
-                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                 'releases'][0]['bids'])), "Actual bids array")
-                allure.attach(str(json.dumps(final_expected_bids_object)), "Expected bids array")
-
-                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                 'releases'][0]['parties'])), "Actual parties array")
-                allure.attach(str(json.dumps(final_expected_parties_array)), "Expected parties array")
+                if expected_result != compare_releases:
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    raise Exception("Error into comparing releases")
+                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'] != \
+                    final_expected_parties_array:
+                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                     'releases'][0]['parties'])), "Actual parties array")
+                    allure.attach(str(json.dumps(final_expected_parties_array)), "Expected parties array")
+                    raise Exception("Error into comparing parties")
+                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] != \
+                    final_expected_awards_array:
+                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                     'releases'][0]['awards'])), "Actual awards array")
+                    allure.attach(str(json.dumps(final_expected_awards_array)), "Expected awards array")
+                    raise Exception("Error into comparing awards")
+                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] != \
+                    final_expected_awards_array:
+                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                     'releases'][0]['awards'])), "Actual awards array")
+                    allure.attach(str(json.dumps(final_expected_awards_array)), "Expected awards array")
+                    raise Exception("Error into comparing awards")
+                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] != \
+                        final_expected_bids_object:
+                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                                     'releases'][0]['bids'])), "Actual bids array")
+                    allure.attach(str(json.dumps(final_expected_bids_object)), "Expected bids array")
+                    raise Exception("Error into comparing bids")
 
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
-                    name_of_expected_result="expected_result",
-                    actual_result=compare_releases,
-                    name_of_actual_result="compare_releases"
+                    actual_result=compare_releases
                 )) == str(True)
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=final_expected_parties_array,
-                    name_of_expected_result="Expected parties array",
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'],
-                    name_of_actual_result="Actual parties array"
+                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties']
                 )) == str(True)
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=final_expected_awards_array,
-                    name_of_expected_result="Expected awards array",
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'],
-                    name_of_actual_result="Actual awards array"
+                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']
                 )) == str(True)
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=final_expected_bids_object,
-                    name_of_expected_result="Expected bids array",
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'],
-                    name_of_actual_result="Actual bids array"
+                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']
                 )) == str(True)
 
             with allure.step('# 11.3. Check MS release'):
@@ -1442,6 +1451,12 @@ class TestCreateBid:
                         raise Exception("Impossible to rollback specific value into evaluation.rules")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
+
+                if expected_result != compare_releases:
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    raise Exception("Error into comparing releases")
+
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
                     actual_result=compare_releases

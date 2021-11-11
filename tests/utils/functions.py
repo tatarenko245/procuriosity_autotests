@@ -22,10 +22,9 @@ import time
 
 
 @allure.step('Compare actual and expected results')
-def compare_actual_result_and_expected_result(expected_result, actual_result, name_of_expected_result=None,
-                                              name_of_actual_result=None):
-    allure.attach(str(expected_result), f"Expected result:{name_of_expected_result}")
-    allure.attach(str(actual_result), f"Actual result: {name_of_actual_result}")
+def compare_actual_result_and_expected_result(expected_result, actual_result):
+    allure.attach(str(expected_result), "Expected result")
+    allure.attach(str(actual_result), "Actual result")
     if expected_result == actual_result:
         return True
     else:
