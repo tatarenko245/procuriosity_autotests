@@ -509,7 +509,8 @@ class TestCreateBid:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check message from Kafka topic, EV, MS releases if '
+    @allure.title('Баг https://ustudio.atlassian.net/browse/ES-7059'
+                  'Check message from Kafka topic, EV, MS releases if '
                   'Is tenderPeriodExpired -> True -> Are there bids for opening? -> True -> '
                   'Are there unsuccessful lots? -> False -> '
                   'Is tender unsuccessful? -> False -> Is there award criteria -> True -> Stage -> EV')
@@ -752,8 +753,7 @@ class TestCreateBid:
             bid_payload_class = copy.deepcopy(BidPreparePayload())
             GlobalClassCreateFirstBid.payload = \
                 bid_payload_class.create_first_bid_full_data_model_with_requirement_responses(
-                    based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
-                )
+                    based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release)
 
             Requests().create_bid(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -812,9 +812,7 @@ class TestCreateBid:
             bid_payload_class = copy.deepcopy(BidPreparePayload())
             GlobalClassCreateSecondBid.payload = \
                 bid_payload_class.create_second_bid_full_data_model_with_requirement_responses(
-                    based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release,
-
-                )
+                    based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release)
 
             Requests().create_bid(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -843,8 +841,7 @@ class TestCreateBid:
                 GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
                                  initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
-                print("БАГА")
-                print(GlobalClassTenderPeriodEndNoAuction.feed_point_message)
+
                 allure.attach(str(GlobalClassTenderPeriodEndNoAuction.feed_point_message), 'Message in feed point')
 
                 asynchronous_result_of_expired_tender_period_end = \
