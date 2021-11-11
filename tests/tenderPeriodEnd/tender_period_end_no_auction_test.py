@@ -1317,26 +1317,30 @@ class TestCreateBid:
                 allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                                                  'releases'][0]['parties'])), "Actual parties array")
                 allure.attach(str(json.dumps(final_expected_parties_array)), "Expected parties array")
-                print("Actual parties array")
-                print(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                 'releases'][0]['parties']))
-                print("Expected parties array")
-                print(json.dumps(final_expected_parties_array))
+
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
-                    actual_result=compare_releases
+                    name_of_expected_result="expected_result",
+                    actual_result=compare_releases,
+                    name_of_actual_result="compare_releases"
                 )) == str(True)
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=final_expected_parties_array,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties']
+                    name_of_expected_result="Expected parties array",
+                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'],
+                    name_of_actual_result="Actual parties array"
                 )) == str(True)
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=final_expected_awards_array,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']
+                    name_of_expected_result="Expected awards array",
+                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'],
+                    name_of_actual_result="Actual awards array"
                 )) == str(True)
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=final_expected_bids_object,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']
+                    name_of_expected_result="Expected bids array",
+                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'],
+                    name_of_actual_result="Actual bids array"
                 )) == str(True)
 
             with allure.step('# 11.3. Check MS release'):
