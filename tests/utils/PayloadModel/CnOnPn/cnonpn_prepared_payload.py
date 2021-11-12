@@ -32,50 +32,6 @@ class CnOnPnPreparePayload:
             self, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
             based_stage_release, need_to_set_permanent_id_for_lots_array=False,
             need_to_set_permanent_id_for_items_array=False, need_to_set_permanent_id_for_documents_array=False):
-        payload = {
-            "planning": {},
-            "tender": {}
-        }
-
-        try:
-            """
-            Update payload dictionary.
-            """
-            payload['planning'].update(self.constructor.planning_object())
-            payload['tender'].update(self.constructor.tender_object())
-            payload['tender']['electronicAuctions']['details'] = [{}, {}]
-            payload['tender']['electronicAuctions']['details'][0].update(
-                self.constructor.tender_electronic_auctions_details_object())
-            payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'] = [{}]
-            payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'][0].update(
-                self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
-            payload['tender']['electronicAuctions']['details'][1].update(
-                self.constructor.tender_electronic_auctions_details_object())
-            payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'] = [{}]
-            payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'][0].update(
-                self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
-            payload['tender']['lots'] = [{}]
-            payload['tender']['lots'][0].update(self.constructor.tender_lots_object())
-            payload['tender']['lots'][0]['options'] = [{}, {}]
-            payload['tender']['lots'][0]['options'][0].update(self.constructor.tender_lots_option_object())
-            payload['tender']['lots'][0]['options'][1].update(self.constructor.tender_lots_option_object())
-            payload['tender']['lots'][0]['recurrence']['dates'] = [{}, {}]
-            payload['tender']['lots'][0]['recurrence']['dates'][0].update(
-                self.constructor.tender_lots_recurrence_dates_object())
-            payload['tender']['lots'][0]['recurrence']['dates'][1].update(
-                self.constructor.tender_lots_recurrence_dates_object())
-
-            payload['tender']['items'] = [{}]
-            payload['tender']['items'][0].update(self.constructor.tender_item_object())
-            payload['tender']['items'][0]['additionalClassifications'] = [{}]
-            payload['tender']['items'][0]['additionalClassifications'][0].update(
-                self.constructor.buyer_additional_identifiers_object())
-
-            payload['tender']['documents'] = [{}, {}]
-            payload['tender']['documents'][0].update(self.constructor.tender_document_object())
-            payload['tender']['documents'][1].update(self.constructor.tender_document_object())
-        except KeyError:
-            raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
 
         try:
             item_classification_id = None
@@ -111,6 +67,104 @@ class CnOnPnPreparePayload:
         except KeyError:
             raise KeyError("Check tender_classification_id")
 
+        payload = {
+            "planning": {},
+            "tender": {}
+        }
+
+        try:
+            """
+            Update payload dictionary.
+            """
+            payload['planning'].update(self.constructor.planning_object())
+            payload['tender'].update(self.constructor.tender_object())
+            for ql in range(quantity_of_lots_object):
+                payload['tender']['lots'].append(self.constructor.tender_lots_object())
+                payload['tender']['lots'][ql]['options'] = [{}, {}]
+                payload['tender']['lots'][ql]['options'][0].update(self.constructor.tender_lots_option_object())
+                payload['tender']['lots'][ql]['options'][1].update(self.constructor.tender_lots_option_object())
+                payload['tender']['lots'][ql]['recurrence']['dates'] = [{}, {}]
+                payload['tender']['lots'][ql]['recurrence']['dates'][0].update(
+                    self.constructor.tender_lots_recurrence_dates_object())
+                payload['tender']['lots'][ql]['recurrence']['dates'][1].update(
+                    self.constructor.tender_lots_recurrence_dates_object())
+
+                payload['tender']['lots'][ql]['id'] = "create cnonpn: tender.lots.id"
+                payload['tender']['lots'][ql]['internalId'] = "create cnonpn: tender.lots.internalId"
+                payload['tender']['lots'][ql]['title'] = "create cnonpn: tender.lots.title"
+                payload['tender']['lots'][ql]['description'] = "create cnonpn: tender.lots.description"
+                payload['tender']['lots'][ql]['value']['amount'] = 4000.05
+                payload['tender']['lots'][ql]['value']['currency'] = \
+                    GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                payload['tender']['lots'][ql]['contractPeriod']['startDate'] = self.contact_period[0]
+                payload['tender']['lots'][ql]['contractPeriod']['endDate'] = self.contact_period[1]
+                payload['tender']['lots'][ql]['placeOfPerformance']['address']['streetAddress'] = \
+                    "create cnonpn: tender.lots.placeOfPerformance.address.streetAddress"
+                payload['tender']['lots'][ql]['placeOfPerformance']['address']['postalCode'] = \
+                    "create cnonpn: tender.lots.placeOfPerformance.address.postalCode"
+                payload['tender']['lots'][ql]['placeOfPerformance']['address']['addressDetails']['country']['id'] = "MD"
+                payload['tender']['lots'][ql]['placeOfPerformance']['address']['addressDetails']['region'][
+                    'id'] = "1700000"
+                payload['tender']['lots'][ql]['placeOfPerformance']['address']['addressDetails']['locality'][
+                    'id'] = "1701000"
+                payload['tender']['lots'][ql]['placeOfPerformance']['address']['addressDetails']['locality'][
+                    'description'] = \
+                    "create cnonpn: tender.lots.placeOfPerformance.address.addressDetails.locality.description"
+                payload['tender']['lots'][ql]['placeOfPerformance']['address']['addressDetails']['locality']['scheme'] = \
+                    "CUATM"
+                payload['tender']['lots'][ql]['placeOfPerformance']['description'] = \
+                    "create cnonpn: tender.lots.placeOfPerformance.description"
+                payload['tender']['lots'][ql]['hasOptions'] = True
+                payload['tender']['lots'][ql]['options'][0][
+                    'description'] = "create CNonPN: tender.lots[0].options.description"
+                payload['tender']['lots'][ql]['options'][0]['period']['durationInDays'] = 180
+                payload['tender']['lots'][ql]['options'][0]['period']['startDate'] = self.duration_period[0]
+                payload['tender']['lots'][ql]['options'][0]['period']['endDate'] = self.duration_period[1]
+                payload['tender']['lots'][ql]['options'][0]['period']['maxExtentDate'] = self.duration_period[1]
+                payload['tender']['lots'][ql]['options'][1][
+                    'description'] = "create CNonPN: tender.lots[0].options.description"
+                payload['tender']['lots'][ql]['options'][1]['period']['durationInDays'] = 180
+                payload['tender']['lots'][ql]['options'][1]['period']['startDate'] = self.duration_period[0]
+                payload['tender']['lots'][ql]['options'][1]['period']['endDate'] = self.duration_period[1]
+                payload['tender']['lots'][ql]['options'][1]['period']['maxExtentDate'] = self.duration_period[1]
+                payload['tender']['lots'][ql]['hasRecurrence'] = True
+                payload['tender']['lots'][ql]['recurrence']['dates'][0]['startDate'] = self.duration_period[0]
+                payload['tender']['lots'][ql]['recurrence']['dates'][1]['startDate'] = self.duration_period[0]
+                payload['tender']['lots'][ql]['recurrence'][
+                    'description'] = "create CNonPN: tender.lots.recurrence.description"
+                payload['tender']['lots'][ql]['hasRenewal'] = True
+                payload['tender']['lots'][ql]['renewal'][
+                    'description'] = "create CNonPN: tender.lots.renewal.description"
+                payload['tender']['lots'][ql]['renewal']['minimumRenewals'] = 2
+                payload['tender']['lots'][ql]['renewal']['maximumRenewals'] = 5
+                payload['tender']['lots'][ql]['renewal']['period']['durationInDays'] = 365
+                payload['tender']['lots'][ql]['renewal']['period']['startDate'] = self.duration_period[0]
+                payload['tender']['lots'][ql]['renewal']['period']['endDate'] = self.duration_period[1]
+                payload['tender']['lots'][ql]['renewal']['period']['maxExtentDate'] = self.duration_period[1]
+
+            for qi in range(quantity_of_items_object):
+                payload['tender']['items'].append(self.constructor.tender_item_object())
+                payload['tender']['items'][qi]['additionalClassifications'].append(
+                    self.constructor.buyer_additional_identifiers_object())
+
+                payload['tender']['items'][qi]['id'] = "0"
+                payload['tender']['items'][qi]['internalId'] = "create cnonpn: tender.items.internalId"
+                payload['tender']['items'][qi]['classification']['id'] = item_classification_id
+                payload['tender']['items'][qi]['classification']['scheme'] = "CPV"
+                payload['tender']['items'][qi]['classification']['description'] = \
+                    "create cnonpn: tender.items.classification.description"
+                payload['tender']['items'][qi]['quantity'] = 60.00
+                payload['tender']['items'][qi]['unit']['id'] = "20"
+                payload['tender']['items'][qi]['unit']['name'] = "create cnonpn: tender.items.unit.name"
+                payload['tender']['items'][qi]['additionalClassifications'][0]['id'] = "AA08-2"
+                payload['tender']['items'][qi]['additionalClassifications'][0]['scheme'] = "CPVS"
+                payload['tender']['items'][qi]['additionalClassifications'][0]['description'] = \
+                    "create cnonpn: tender.items.additionalClassifications.description"
+                payload['tender']['items'][qi]['description'] = "create CNonPN: tender.items.description"
+                payload['tender']['items'][qi]['relatedLot'] = payload['tender']['lots'][qi]['id']
+        except KeyError:
+            raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
+
         payload['planning']['rationale'] = "create cnonpn: planning.rationale"
         payload['planning']['budget']['description'] = "create cnonpn: planning.budget.description"
         payload['tender']['procurementMethodRationale'] = "create cnonpn: tender.procurementMethodRationale"
@@ -122,51 +176,6 @@ class CnOnPnPreparePayload:
         payload['tender']['procuringEntity'] = \
             GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']
 
-        payload['tender']['lots'][0]['id'] = "create cnonpn: tender.lots.id"
-        payload['tender']['lots'][0]['internalId'] = "create cnonpn: tender.lots.internalId"
-        payload['tender']['lots'][0]['title'] = "create cnonpn: tender.lots.title"
-        payload['tender']['lots'][0]['description'] = "create cnonpn: tender.lots.description"
-        payload['tender']['lots'][0]['value']['amount'] = 4000.05
-        payload['tender']['lots'][0]['value']['currency'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
-        payload['tender']['lots'][0]['contractPeriod']['startDate'] = self.contact_period[0]
-        payload['tender']['lots'][0]['contractPeriod']['endDate'] = self.contact_period[1]
-        payload['tender']['lots'][0]['placeOfPerformance']['address']['streetAddress'] = \
-            "create cnonpn: tender.lots.placeOfPerformance.address.streetAddress"
-        payload['tender']['lots'][0]['placeOfPerformance']['address']['postalCode'] = \
-            "create cnonpn: tender.lots.placeOfPerformance.address.postalCode"
-        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['country']['id'] = "MD"
-        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['region']['id'] = "1700000"
-        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['id'] = "1701000"
-        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['description'] = \
-            "create cnonpn: tender.lots.placeOfPerformance.address.addressDetails.locality.description"
-        payload['tender']['lots'][0]['placeOfPerformance']['address']['addressDetails']['locality']['scheme'] = \
-            "CUATM"
-        payload['tender']['lots'][0]['placeOfPerformance']['description'] = \
-            "create cnonpn: tender.lots.placeOfPerformance.description"
-        payload['tender']['lots'][0]['hasOptions'] = True
-        payload['tender']['lots'][0]['options'][0]['description'] = "create CNonPN: tender.lots[0].options.description"
-        payload['tender']['lots'][0]['options'][0]['period']['durationInDays'] = 180
-        payload['tender']['lots'][0]['options'][0]['period']['startDate'] = self.duration_period[0]
-        payload['tender']['lots'][0]['options'][0]['period']['endDate'] = self.duration_period[1]
-        payload['tender']['lots'][0]['options'][0]['period']['maxExtentDate'] = self.duration_period[1]
-        payload['tender']['lots'][0]['options'][1]['description'] = "create CNonPN: tender.lots[0].options.description"
-        payload['tender']['lots'][0]['options'][1]['period']['durationInDays'] = 180
-        payload['tender']['lots'][0]['options'][1]['period']['startDate'] = self.duration_period[0]
-        payload['tender']['lots'][0]['options'][1]['period']['endDate'] = self.duration_period[1]
-        payload['tender']['lots'][0]['options'][1]['period']['maxExtentDate'] = self.duration_period[1]
-        payload['tender']['lots'][0]['hasRecurrence'] = True
-        payload['tender']['lots'][0]['recurrence']['dates'][0]['startDate'] = self.duration_period[0]
-        payload['tender']['lots'][0]['recurrence']['dates'][1]['startDate'] = self.duration_period[0]
-        payload['tender']['lots'][0]['recurrence']['description'] = "create CNonPN: tender.lots.recurrence.description"
-        payload['tender']['lots'][0]['hasRenewal'] = True
-        payload['tender']['lots'][0]['renewal']['description'] = "create CNonPN: tender.lots.renewal.description"
-        payload['tender']['lots'][0]['renewal']['minimumRenewals'] = 2
-        payload['tender']['lots'][0]['renewal']['maximumRenewals'] = 5
-        payload['tender']['lots'][0]['renewal']['period']['durationInDays'] = 365
-        payload['tender']['lots'][0]['renewal']['period']['startDate'] = self.duration_period[0]
-        payload['tender']['lots'][0]['renewal']['period']['endDate'] = self.duration_period[1]
-        payload['tender']['lots'][0]['renewal']['period']['maxExtentDate'] = self.duration_period[1]
         payload['tender']['lots'] = generate_lots_array(
             quantity_of_object=quantity_of_lots_object,
             lot_object=payload['tender']['lots'][0])
@@ -184,21 +193,6 @@ class CnOnPnPreparePayload:
         except KeyError:
             raise KeyError("Could not to set permanent id for lots array. Key 'lots' was not found.")
 
-        payload['tender']['items'][0]['id'] = "0"
-        payload['tender']['items'][0]['internalId'] = "create cnonpn: tender.items.internalId"
-        payload['tender']['items'][0]['classification']['id'] = item_classification_id
-        payload['tender']['items'][0]['classification']['scheme'] = "CPV"
-        payload['tender']['items'][0]['classification']['description'] = \
-            "create cnonpn: tender.items.classification.description"
-        payload['tender']['items'][0]['quantity'] = 60.00
-        payload['tender']['items'][0]['unit']['id'] = "20"
-        payload['tender']['items'][0]['unit']['name'] = "create cnonpn: tender.items.unit.name"
-        payload['tender']['items'][0]['additionalClassifications'][0]['id'] = "AA08-2"
-        payload['tender']['items'][0]['additionalClassifications'][0]['scheme'] = "CPVS"
-        payload['tender']['items'][0]['additionalClassifications'][0]['description'] = \
-            "create cnonpn: tender.items.additionalClassifications.description"
-        payload['tender']['items'][0]['description'] = "create CNonPN: tender.items.description"
-        payload['tender']['items'][0]['relatedLot'] = payload['tender']['lots'][0]['id']
         payload['tender']['items'] = generate_items_array(
             quantity_of_object=quantity_of_items_object,
             item_object=payload['tender']['items'][0],
@@ -218,6 +212,24 @@ class CnOnPnPreparePayload:
         except KeyError:
             raise KeyError("Could not to set permanent id for items array. Key 'items' was not found.")
 
+        for ql in range(quantity_of_lots_object):
+            payload['tender']['electronicAuctions']['details'].append(
+                self.constructor.tender_electronic_auctions_details_object())
+            payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+            payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+            payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                payload['tender']['lots'][ql]['id']
+            payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                'eligibleMinimumDifference']['amount'] = 10.00
+            payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                'eligibleMinimumDifference']['currency'] = \
+                GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+
+        payload['tender']['documents'] = [{}, {}]
+        payload['tender']['documents'][0].update(self.constructor.tender_document_object())
+        payload['tender']['documents'][1].update(self.constructor.tender_document_object())
+
         payload['tender']['documents'][0]['documentType'] = f"{random.choice(documentType)}"
         payload['tender']['documents'][0]['id'] = self.document_one_was_uploaded[0]["data"]["id"]
         payload['tender']['documents'][0]['title'] = "create cnonpn: tender.documents.title"
@@ -228,7 +240,8 @@ class CnOnPnPreparePayload:
         payload['tender']['documents'][1]['id'] = self.document_two_was_uploaded[0]["data"]["id"]
         payload['tender']['documents'][1]['title'] = "create cnonpn: tender.documents.title"
         payload['tender']['documents'][1]['description'] = "create cnonpn: tender.documents.description"
-        payload['tender']['documents'][1]['relatedLots'] = [payload['tender']['lots'][1]['id']]
+        payload['tender']['documents'][1]['relatedLots'] = [payload['tender']['lots'][0]['id']]
+
         try:
             """
             Set permanent id for documents array.
@@ -241,21 +254,6 @@ class CnOnPnPreparePayload:
                 pass
         except KeyError:
             raise KeyError("Could not to set permanent id for items array. Key 'documents' was not found.")
-
-        payload['tender']['electronicAuctions']['details'][0]['id'] = "0"
-        payload['tender']['electronicAuctions']['details'][0]['relatedLot'] = payload['tender']['lots'][0]['id']
-        payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'][0][
-            'eligibleMinimumDifference']['amount'] = 10.00
-        payload['tender']['electronicAuctions']['details'][0]['electronicAuctionModalities'][0][
-            'eligibleMinimumDifference']['currency'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
-        payload['tender']['electronicAuctions']['details'][1]['id'] = "1"
-        payload['tender']['electronicAuctions']['details'][1]['relatedLot'] = payload['tender']['lots'][1]['id']
-        payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'][0][
-            'eligibleMinimumDifference']['amount'] = 10.00
-        payload['tender']['electronicAuctions']['details'][1]['electronicAuctionModalities'][0][
-            'eligibleMinimumDifference']['currency'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
 
         try:
             """
@@ -1364,6 +1362,7 @@ class CnOnPnPreparePayload:
             raise KeyError("Could not to set permanent id for items array. Key 'documents' was not found.")
 
         return payload
+
     # ========================================
 
     def update_cnonpn_full_data_model_with_lots_items_documents_auction(
