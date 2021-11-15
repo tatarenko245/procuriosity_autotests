@@ -1143,8 +1143,8 @@ class TestCreateBid:
                                 """
                                 if len(awards_status_details_list) > 1:
                                     for award in range(quantity_of_object_into_list_of_awards_id_from_release):
-                                        if final_expected_awards_array[award][
-                                            'relatedBid'] == GlobalClassCreateFirstBid.bid_id:
+                                        if final_expected_awards_array[award]['relatedBid'] == \
+                                                GlobalClassCreateFirstBid.bid_id:
                                             final_expected_awards_array[award]['statusDetails'] = "awaiting"
                                         else:
                                             final_expected_awards_array[award]['statusDetails'] = "empty"
@@ -1157,8 +1157,8 @@ class TestCreateBid:
                                 Check 'statusDetails' into final_expected_awards_array.
                                 """
                                 for award in range(quantity_of_object_into_list_of_awards_id_from_release):
-                                    if final_expected_awards_array[award][
-                                        'relatedBid'] == GlobalClassCreateFirstBid.bid_id:
+                                    if final_expected_awards_array[award]['relatedBid'] == \
+                                            GlobalClassCreateFirstBid.bid_id:
                                         final_expected_awards_array[award]['statusDetails'] = "awaiting"
                                     else:
                                         final_expected_awards_array[award]['statusDetails'] = "empty"
@@ -1213,8 +1213,8 @@ class TestCreateBid:
                         GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]'bids']['details'].
                         """
                         list_of_releases_bids_details_tenderers = list()
-                        for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0][
-                            'bids']['details']:
+                        for i in \
+                                GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']['details']:
                             for i_1 in i:
                                 if i_1 == "tenderers":
                                     list_of_releases_bids_details_tenderers.append(i['tenderers'])
@@ -1251,8 +1251,9 @@ class TestCreateBid:
                                 'details']['requirementResponses'].
                                 """
                                 list_of_release_requirement_responses_id = list()
-                                for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'][
-                                    'details'][d]['requirementResponses']:
+                                for i in \
+                                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'][
+                                            'details'][d]['requirementResponses']:
                                     for i_1 in i:
                                         if i_1 == "id":
                                             list_of_release_requirement_responses_id.append(i_1)
@@ -1351,8 +1352,8 @@ class TestCreateBid:
                                                      'releases'][0]['bids'])), "Actual bids array")
                     allure.attach(str(json.dumps(final_expected_bids_object)), "Expected bids array")
                     raise Exception("Error into comparing bids")
-                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
-                    'awardPeriod']['startDate'] != final_expected_award_period_object:
+                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod'] != \
+                        final_expected_award_period_object:
                     allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                                                      'releases'][0]['tender']['awardPeriod']['startDate'])),
                                   "Actual awardPeriod object")
@@ -2120,8 +2121,8 @@ class TestCreateBid:
                                 """
                                 if len(awards_status_details_list) > 1:
                                     for award in range(quantity_of_object_into_list_of_awards_id_from_release):
-                                        if final_expected_awards_array[award][
-                                            'relatedBid'] == GlobalClassCreateFirstBid.bid_id:
+                                        if final_expected_awards_array[award]['relatedBid'] == \
+                                                GlobalClassCreateFirstBid.bid_id:
                                             final_expected_awards_array[award]['statusDetails'] = "awaiting"
                                         else:
                                             final_expected_awards_array[award]['statusDetails'] = "empty"
@@ -2156,8 +2157,8 @@ class TestCreateBid:
                                 """
                                 if len(awards_status_details_list) > 1:
                                     for award in range(quantity_of_object_into_list_of_awards_id_from_release):
-                                        if final_expected_awards_array[award][
-                                            'relatedBid'] == GlobalClassCreateFirstBid.bid_id:
+                                        if final_expected_awards_array[award]['relatedBid'] == \
+                                                GlobalClassCreateFirstBid.bid_id:
                                             final_expected_awards_array[award]['statusDetails'] = "awaiting"
                                         else:
                                             final_expected_awards_array[award]['statusDetails'] = "empty"
@@ -2210,8 +2211,8 @@ class TestCreateBid:
                         GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]'bids']['details'].
                         """
                         list_of_releases_bids_details_tenderers = list()
-                        for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0][
-                            'bids']['details']:
+                        for i in \
+                                GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']['details']:
                             for i_1 in i:
                                 if i_1 == "tenderers":
                                     list_of_releases_bids_details_tenderers.append(i['tenderers'])
@@ -2304,8 +2305,8 @@ class TestCreateBid:
                     allure.attach(str(json.dumps(final_expected_criteria_array)), "Expected criteria array")
                     raise Exception("Error into comparing criteria")
                 elif \
-                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod'][
-                            'startDate'] != final_expected_award_period_object:
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod'] \
+                        != final_expected_award_period_object:
                     allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                                                      'releases'][0]['tender']['awardPeriod']['startDate'])),
                                   "Actual awardPeriod object")

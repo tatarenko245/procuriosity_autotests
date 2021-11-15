@@ -230,246 +230,6 @@ class TenderPeriodExpectedChanges:
             }
         }
         return expected_criteria_array_source_procuring_entity, quantity_of_criteria_object_into_release
-# -----------------------------------------------------------------------------------------------
-    def prepare_bid_details_mapper(self, bid_payload, bid_feed_point_message):
-        expected_bid_object = {}
-        expected_bid_object.update(self.constructor.ev_release_bid_object())
-        expected_bid_object['details'].append(self.constructor.ev_release_bid_details_object())
-        try:
-            """
-            Check how many quantity of object into payload['bid']['tenderers'].
-            """
-            list_of_payload_tenderer_id = list()
-            for tenderer_object in bid_payload['bid']['tenderers']:
-                for i in tenderer_object['identifier']:
-                    if i == "id":
-                        list_of_payload_tenderer_id.append(i)
-            quantity_of_tender_object_into_payload = len(list_of_payload_tenderer_id)
-        except Exception:
-            raise Exception("Check payload['bid']['tenderers']['identifier']['id']")
-        try:
-            check = is_it_uuid(
-                uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids']['details'][0][
-                    'id'],
-                version=4
-            )
-            if check is True:
-                expected_bid_object['details'][0]['id'] = \
-                    GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids']['details'][0]['id']
-            else:
-                raise ValueError("businessFunctions.id in release must be uuid version 4")
-        except Exception:
-            raise Exception("Check your businessFunctions array in release")
-        expected_bid_object['details'][0]['status'] = "pending"
-        expected_bid_object['details'][0]['date'] = bid_feed_point_message['data']['operationDate']
-        for q in range(quantity_of_tender_object_into_payload):
-            expected_bid_object['details'][0]['tenderers'].append(
-                self.constructor.ev_release_bid_details_tenderer_object())
-            expected_bid_object['details'][0]['tenderers'][q]['id'] = \
-                f"{bid_payload['bid']['tenderers'][q]['identifier']['scheme']}-" \
-                f"{bid_payload['bid']['tenderers'][q]['identifier']['id']}"
-            expected_bid_object['details'][0]['tenderers'][q]['name'] = bid_payload['bid']['tenderers'][q]['name']
-        expected_bid_object['details'][0]['value']['amount'] = bid_payload['bid']['value']['amount']
-        expected_bid_object['details'][0]['value']['currency'] = bid_payload['bid']['value']['currency']
-        try:
-            """
-            Check how many quantity of object into payload['bid']['documents'].
-            """
-            list_of_payload_bid_documents_id = list()
-            for i in bid_payload['bid']['documents']:
-                for i_1 in i:
-                    if i_1 == "id":
-                        list_of_payload_bid_documents_id.append(i_1)
-            quantity_of_bid_documents_into_payload = len(list_of_payload_bid_documents_id)
-        except Exception:
-            raise Exception("Check payload['bid']['documents']['id']")
-        for q_one in range(quantity_of_bid_documents_into_payload):
-            if GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
-                'awardCriteriaDetails'] == "automated" and \
-                    bid_payload['bid']['documents'][q_one]['documentType'] == "submissionDocuments" or \
-                    GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
-                        'awardCriteriaDetails'] == "automated" and \
-                    bid_payload['bid']['documents'][q_one]['documentType'] == "x_eligibilityDocuments" or \
-                    GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
-                        'awardCriteriaDetails'] == "manual":
-                some_document = list()
-                some_document.append(self.constructor.ev_release_bid_details_document_object())
-                some_document[0]['id'] = bid_payload['bid']['documents'][q_one]['id']
-                some_document[0]['documentType'] = bid_payload['bid']['documents'][q_one]['documentType']
-                some_document[0]['title'] = bid_payload['bid']['documents'][q_one]['title']
-                some_document[0]['description'] = bid_payload['bid']['documents'][q_one]['description']
-                some_document[0]['url'] = f"{self.metadata_document_url}/" + bid_payload['bid'][
-                    'documents'][q_one]['id']
-                some_document[0]['datePublished'] = \
-                    GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
-                some_document[0]['relatedLots'] = bid_payload['bid']['documents'][q_one]['relatedLots']
-                expected_bid_object['details'][0]['documents'].append(some_document[0])
-
-        expected_bid_object['details'][0]['relatedLots'] = bid_payload['bid']['relatedLots']
-
-        if "requirementResponses" in bid_payload['bid']:
-            try:
-                """
-                Check how many quantity of object into payload['bid']['requirementResponses'].
-                """
-                list_of_payload_requirement_responses_id = list()
-                for ob in bid_payload['bid']['requirementResponses']:
-                    for i in ob:
-                        if i == "id":
-                            list_of_payload_requirement_responses_id.append(i)
-                quantity_of_requirement_responses_object_into_payload = len(list_of_payload_requirement_responses_id)
-            except Exception:
-                raise Exception("Check payload['bid']['requirementResponses']['id']")
-            try:
-                """
-                Check how many quantity of object into actual_ev_release['releases'][0]['bids']['details']
-                ['requirementResponses'].
-                """
-                list_of_release_requirement_responses_id = list()
-                for i in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids'][
-                    'details'][0]['requirementResponses']:
-                    for i_1 in i:
-                        if i_1 == "id":
-                            list_of_release_requirement_responses_id.append(i_1)
-                quantity_of_requirement_responses_object_into_release = len(list_of_release_requirement_responses_id)
-            except Exception:
-                raise Exception("Check object into actual_ev_release['releases'][0]['bids']['details']"
-                                "['requirementResponses']['id']")
-            try:
-                """
-                Compare quantity of quantity of object into payload['bid']['requirementResponses'] and 
-                object into actual_ev_release['releases'][0]['bids']['details']['requirementResponses'].
-                """
-                if quantity_of_requirement_responses_object_into_payload == \
-                        quantity_of_requirement_responses_object_into_release:
-                    pass
-                else:
-                    raise Exception("Quantity of of payload['bid']['requirementResponses'] != "
-                                    "quantity of object into "
-                                    "actual_ev_release['releases'][0]['bids']['details']['requirementResponses']")
-            except Exception:
-                raise Exception("Impossible to Compare quantity of quantity of object into "
-                                "payload['bid']['requirementResponses'] and object into "
-                                "actual_ev_release['releases'][0]['bids']['details']['requirementResponses']")
-            for q_two in range(quantity_of_requirement_responses_object_into_payload):
-                expected_bid_object['details'][0]['requirementResponses'].append(
-                    self.constructor.ev_release_bid_details_requirement_response_object()
-                )
-                try:
-                    check = is_it_uuid(
-                        uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids'][
-                            'details'][0]['requirementResponses'][q_two]['id'],
-                        version=4
-                    )
-                    if check is True:
-                        expected_bid_object['details'][0]['requirementResponses'][q_two]['id'] = \
-                            GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids']['details'][0][
-                                'requirementResponses'][q_two]['id']
-                    else:
-                        raise ValueError("requirementResponses.id in release must be uuid version 4")
-                except Exception:
-                    raise Exception("Check your requirementResponses array in release")
-
-                expected_bid_object['details'][0]['requirementResponses'][q_two]['value'] = \
-                    bid_payload['bid']['requirementResponses'][q_two]['value']
-                expected_bid_object['details'][0]['requirementResponses'][q_two]['period']['startDate'] = \
-                    bid_payload['bid']['requirementResponses'][q_two]['period']['startDate']
-                expected_bid_object['details'][0]['requirementResponses'][q_two]['period']['endDate'] = \
-                    bid_payload['bid']['requirementResponses'][q_two]['period']['endDate']
-                expected_bid_object['details'][0]['requirementResponses'][q_two]['requirement']['id'] = \
-                    bid_payload['bid']['requirementResponses'][q_two]['requirement']['id']
-
-                related_tenderer_identifier = \
-                    f"{bid_payload['bid']['requirementResponses'][q_two]['relatedTenderer']['identifier']['scheme']}-" \
-                    f"{bid_payload['bid']['requirementResponses'][q_two]['relatedTenderer']['identifier']['id']}"
-                for q in range(quantity_of_tender_object_into_payload):
-                    expected_bid_object['details'][0]['requirementResponses'][q_two]['relatedTenderer']['id'] = \
-                        related_tenderer_identifier
-                    expected_bid_object['details'][0]['requirementResponses'][q_two]['relatedTenderer']['name'] = \
-                        bid_payload['bid']['requirementResponses'][q_two]['relatedTenderer']['name']
-
-                try:
-                    """
-                    Check how many quantity of object into payload['bid']['requirementResponses']['evidences'].
-                    """
-                    list_of_payload_requirement_responses_evidences_id = list()
-                    for i in bid_payload['bid']['requirementResponses'][q_two]['evidences']:
-                        for i_1 in i:
-                            if i_1 == "id":
-                                list_of_payload_requirement_responses_evidences_id.append(i_1)
-                    quantity_of_evidences_object_into_payload = len(list_of_payload_requirement_responses_evidences_id)
-                except Exception:
-                    raise Exception("Check payload['bid']['requirementResponses']['evidences']['id']")
-                try:
-                    """
-                    Check how many quantity of object into actual_ev_release['releases'][0]['bids']['details']
-                    ['requirementResponses']['evidences'].
-                    """
-                    list_of_release_requirement_responses_evidences_id = list()
-                    for i in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids']['details'][0][
-                        'requirementResponses'][q_two]['evidences']:
-                        for i_1 in i:
-                            if i_1 == "id":
-                                list_of_release_requirement_responses_evidences_id.append(i_1)
-                    quantity_of_evidences_into_release = len(list_of_release_requirement_responses_evidences_id)
-                except Exception:
-                    raise Exception("Check object into actual_ev_release['releases'][0]['bids']['details']"
-                                    "['requirementResponses']['evidences']['id']")
-                try:
-                    """
-                    Compare quantity of object into payload['bid']['requirementResponses']['evidences'] and 
-                    object into actual_ev_release['releases'][0]['bids']['details']['requirementResponses']
-                    ['evidences'].
-                    """
-                    if quantity_of_evidences_object_into_payload == quantity_of_evidences_into_release:
-                        pass
-                    else:
-                        raise Exception("Quantity of object into payload['bid']['requirementResponses']['evidences'] "
-                                        "!= object into actual_ev_release['releases'][0]['bids']['details']"
-                                        "['requirementResponses']['evidences']")
-                except Exception:
-                    raise Exception("Impossible to compare quantity of object into "
-                                    "payload['bid']['requirementResponses']['evidences'] and "
-                                    "object into actual_ev_release['releases'][0]['bids']['details']"
-                                    "['requirementResponses']['evidences']")
-                for q_three in range(quantity_of_evidences_object_into_payload):
-                    expected_bid_object['details'][0]['requirementResponses'][q_two]['evidences'].append(
-                        self.constructor.ev_release_bid_details_requirement_response_evidences_object()
-                    )
-                    try:
-                        check = is_it_uuid(
-                            uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids'][
-                                'details'][0]['requirementResponses'][q_two]['evidences'][q_three]['id'],
-                            version=4
-                        )
-                        if check is True:
-                            expected_bid_object['details'][0]['requirementResponses'][q_two][
-                                'evidences'][q_three]['id'] = \
-                                GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids'][
-                                    'details'][0]['requirementResponses'][q_two]['evidences'][q_three]['id']
-                        else:
-                            raise ValueError("requirementResponses.id in release must be uuid version 4")
-                    except Exception:
-                        raise Exception("Check your requirementResponses array in release")
-                    expected_bid_object['details'][0]['requirementResponses'][q_two]['evidences'][q_three]['title'] = \
-                        bid_payload['bid']['requirementResponses'][q_two]['evidences'][q_three]['title']
-                    expected_bid_object['details'][0]['requirementResponses'][q_two]['evidences'][q_three][
-                        'description'] = bid_payload['bid']['requirementResponses'][q_two][
-                        'evidences'][q_three]['description']
-                    expected_bid_object['details'][0]['requirementResponses'][q_two]['evidences'][q_three][
-                        'relatedDocument']['id'] = \
-                        bid_payload['bid']['requirementResponses'][q_two]['evidences'][q_three]['relatedDocument']['id']
-        else:
-            del expected_bid_object['details'][0]['requirementResponses']
-
-        if str(expected_bid_object['details'][0]['documents']) == str([]):
-            del expected_bid_object['details'][0]['documents']
-
-        expected_bid_object_mapper = {
-            "tenderers": expected_bid_object['details'][0]['tenderers'],
-            "value": expected_bid_object['details'][0]
-        }
-        return expected_bid_object_mapper
 
     def prepare_array_of_parties_mapper_for_successful_tender(self, bid_payload):
         expected_array_of_parties_mapper = []
@@ -535,8 +295,7 @@ class TenderPeriodExpectedChanges:
                         "description": tenderer_region_data['data']['description'],
                         "uri": tenderer_region_data['data']['uri']
                     }
-                    if bid_payload['bid']['tenderers'][t]['address']['addressDetails']['locality'][
-                        'scheme'] == "CUATM":
+                    if bid_payload['bid']['tenderers'][t]['address']['addressDetails']['locality']['scheme'] == "CUATM":
                         tenderer_locality_data = self.mdm.get_locality(
                             country=bid_payload['bid']['tenderers'][t]['address']['addressDetails'][
                                 'country']['id'],
@@ -645,8 +404,9 @@ class TenderPeriodExpectedChanges:
                             "description": bank_region_data['data']['description'],
                             "uri": bank_region_data['data']['uri']
                         }
-                        if bid_payload['bid']['tenderers'][t]['details']['bankAccounts'][b]['address'][
-                            'addressDetails']['locality']['scheme'] == "CUATM":
+                        if \
+                                bid_payload['bid']['tenderers'][t]['details']['bankAccounts'][b]['address'][
+                                    'addressDetails']['locality']['scheme'] == "CUATM":
                             bank_locality_data = self.mdm.get_locality(
                                 country=bid_payload['bid']['tenderers'][t]['details']['bankAccounts'][b]['address'][
                                     'addressDetails']['country']['id'],
@@ -885,8 +645,7 @@ class TenderPeriodExpectedChanges:
                     """
                     Set 'relatedBid' into successful_award_array[al]['relatedLots'].
                     """
-                    for detail in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids'][
-                        'details']:
+                    for detail in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids']['details']:
                         if detail['tenderers'] == successful_award_object['suppliers']:
                             successful_award_object['relatedBid'] = detail['id']
                 except Exception:
@@ -929,8 +688,9 @@ class TenderPeriodExpectedChanges:
                                 into criterion 'CRITERION.SELECTION' and 'CRITERION.OTHER'.
                                 """
                                 for rs in list_of_payload_requirement_id:
-                                    for cr in GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                                        'releases'][0]['tender']['criteria']:
+                                    for cr in \
+                                            GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0][
+                                                'tender']['criteria']:
                                         if cr['classification']['id'][:20] == "CRITERION.SELECTION." and \
                                                 cr['relatesTo'] == "tenderer" or \
                                                 cr['classification']['id'][:20] == "CRITERION.SELECTION." and \
@@ -987,7 +747,10 @@ class TenderPeriodExpectedChanges:
                                         for x in bid_payload['bid']['requirementResponses']:
                                             if x['requirement']['id'] == y['id']:
                                                 for z in coefficients_array_from_release:
+
                                                     for z_1 in z['coefficients']:
+                                                        """ z_1 is dict """
+                                                        """# z_1['value'] is float """
                                                         if z_1['value'] == x['value']:
                                                             successful_award_object['weightedValue']['amount'] = \
                                                                 round(successful_award_object['value']['amount'] *
@@ -1017,3 +780,245 @@ class TenderPeriodExpectedChanges:
         except Exception:
             raise Exception("Impossible to prepare successful award object framework.")
         return expected_array_of_awards_mapper
+
+    def prepare_bid_details_mapper(self, bid_payload, bid_feed_point_message):
+        expected_bid_object = {}
+        expected_bid_object.update(self.constructor.ev_release_bid_object())
+        expected_bid_object['details'].append(self.constructor.ev_release_bid_details_object())
+        try:
+            """
+            Check how many quantity of object into payload['bid']['tenderers'].
+            """
+            list_of_payload_tenderer_id = list()
+            for tenderer_object in bid_payload['bid']['tenderers']:
+                for i in tenderer_object['identifier']:
+                    if i == "id":
+                        list_of_payload_tenderer_id.append(i)
+            quantity_of_tender_object_into_payload = len(list_of_payload_tenderer_id)
+        except Exception:
+            raise Exception("Check payload['bid']['tenderers']['identifier']['id']")
+        try:
+            check = is_it_uuid(
+                uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids']['details'][0][
+                    'id'],
+                version=4
+            )
+            if check is True:
+                expected_bid_object['details'][0]['id'] = \
+                    GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids']['details'][0]['id']
+            else:
+                raise ValueError("businessFunctions.id in release must be uuid version 4")
+        except Exception:
+            raise Exception("Check your businessFunctions array in release")
+        expected_bid_object['details'][0]['status'] = "pending"
+        expected_bid_object['details'][0]['date'] = bid_feed_point_message['data']['operationDate']
+        for q in range(quantity_of_tender_object_into_payload):
+            expected_bid_object['details'][0]['tenderers'].append(
+                self.constructor.ev_release_bid_details_tenderer_object())
+            expected_bid_object['details'][0]['tenderers'][q]['id'] = \
+                f"{bid_payload['bid']['tenderers'][q]['identifier']['scheme']}-" \
+                f"{bid_payload['bid']['tenderers'][q]['identifier']['id']}"
+            expected_bid_object['details'][0]['tenderers'][q]['name'] = bid_payload['bid']['tenderers'][q]['name']
+        expected_bid_object['details'][0]['value']['amount'] = bid_payload['bid']['value']['amount']
+        expected_bid_object['details'][0]['value']['currency'] = bid_payload['bid']['value']['currency']
+        try:
+            """
+            Check how many quantity of object into payload['bid']['documents'].
+            """
+            list_of_payload_bid_documents_id = list()
+            for i in bid_payload['bid']['documents']:
+                for i_1 in i:
+                    if i_1 == "id":
+                        list_of_payload_bid_documents_id.append(i_1)
+            quantity_of_bid_documents_into_payload = len(list_of_payload_bid_documents_id)
+        except Exception:
+            raise Exception("Check payload['bid']['documents']['id']")
+        for q_one in range(quantity_of_bid_documents_into_payload):
+            if GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
+                'awardCriteriaDetails'] == "automated" and \
+                    bid_payload['bid']['documents'][q_one]['documentType'] == "submissionDocuments" or \
+                    GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
+                        'awardCriteriaDetails'] == "automated" and \
+                    bid_payload['bid']['documents'][q_one]['documentType'] == "x_eligibilityDocuments" or \
+                    GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
+                        'awardCriteriaDetails'] == "manual":
+                some_document = list()
+                some_document.append(self.constructor.ev_release_bid_details_document_object())
+                some_document[0]['id'] = bid_payload['bid']['documents'][q_one]['id']
+                some_document[0]['documentType'] = bid_payload['bid']['documents'][q_one]['documentType']
+                some_document[0]['title'] = bid_payload['bid']['documents'][q_one]['title']
+                some_document[0]['description'] = bid_payload['bid']['documents'][q_one]['description']
+                some_document[0]['url'] = f"{self.metadata_document_url}/" + bid_payload['bid'][
+                    'documents'][q_one]['id']
+                some_document[0]['datePublished'] = \
+                    GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
+                some_document[0]['relatedLots'] = bid_payload['bid']['documents'][q_one]['relatedLots']
+                expected_bid_object['details'][0]['documents'].append(some_document[0])
+
+        expected_bid_object['details'][0]['relatedLots'] = bid_payload['bid']['relatedLots']
+
+        if "requirementResponses" in bid_payload['bid']:
+            try:
+                """
+                Check how many quantity of object into payload['bid']['requirementResponses'].
+                """
+                list_of_payload_requirement_responses_id = list()
+                for ob in bid_payload['bid']['requirementResponses']:
+                    for i in ob:
+                        if i == "id":
+                            list_of_payload_requirement_responses_id.append(i)
+                quantity_of_requirement_responses_object_into_payload = len(list_of_payload_requirement_responses_id)
+            except Exception:
+                raise Exception("Check payload['bid']['requirementResponses']['id']")
+            try:
+                """
+                Check how many quantity of object into actual_ev_release['releases'][0]['bids']['details']
+                ['requirementResponses'].
+                """
+                list_of_release_requirement_responses_id = list()
+                for i in \
+                        GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids']['details'][0][
+                            'requirementResponses']:
+                    for i_1 in i:
+                        if i_1 == "id":
+                            list_of_release_requirement_responses_id.append(i_1)
+                quantity_of_requirement_responses_object_into_release = len(list_of_release_requirement_responses_id)
+            except Exception:
+                raise Exception("Check object into actual_ev_release['releases'][0]['bids']['details']"
+                                "['requirementResponses']['id']")
+            try:
+                """
+                Compare quantity of quantity of object into payload['bid']['requirementResponses'] and 
+                object into actual_ev_release['releases'][0]['bids']['details']['requirementResponses'].
+                """
+                if quantity_of_requirement_responses_object_into_payload == \
+                        quantity_of_requirement_responses_object_into_release:
+                    pass
+                else:
+                    raise Exception("Quantity of of payload['bid']['requirementResponses'] != "
+                                    "quantity of object into "
+                                    "actual_ev_release['releases'][0]['bids']['details']['requirementResponses']")
+            except Exception:
+                raise Exception("Impossible to Compare quantity of quantity of object into "
+                                "payload['bid']['requirementResponses'] and object into "
+                                "actual_ev_release['releases'][0]['bids']['details']['requirementResponses']")
+            for q_two in range(quantity_of_requirement_responses_object_into_payload):
+                expected_bid_object['details'][0]['requirementResponses'].append(
+                    self.constructor.ev_release_bid_details_requirement_response_object()
+                )
+                try:
+                    check = is_it_uuid(
+                        uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids'][
+                            'details'][0]['requirementResponses'][q_two]['id'],
+                        version=4
+                    )
+                    if check is True:
+                        expected_bid_object['details'][0]['requirementResponses'][q_two]['id'] = \
+                            GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids']['details'][0][
+                                'requirementResponses'][q_two]['id']
+                    else:
+                        raise ValueError("requirementResponses.id in release must be uuid version 4")
+                except Exception:
+                    raise Exception("Check your requirementResponses array in release")
+
+                expected_bid_object['details'][0]['requirementResponses'][q_two]['value'] = \
+                    bid_payload['bid']['requirementResponses'][q_two]['value']
+                expected_bid_object['details'][0]['requirementResponses'][q_two]['period']['startDate'] = \
+                    bid_payload['bid']['requirementResponses'][q_two]['period']['startDate']
+                expected_bid_object['details'][0]['requirementResponses'][q_two]['period']['endDate'] = \
+                    bid_payload['bid']['requirementResponses'][q_two]['period']['endDate']
+                expected_bid_object['details'][0]['requirementResponses'][q_two]['requirement']['id'] = \
+                    bid_payload['bid']['requirementResponses'][q_two]['requirement']['id']
+
+                related_tenderer_identifier = \
+                    f"{bid_payload['bid']['requirementResponses'][q_two]['relatedTenderer']['identifier']['scheme']}-" \
+                    f"{bid_payload['bid']['requirementResponses'][q_two]['relatedTenderer']['identifier']['id']}"
+                for q in range(quantity_of_tender_object_into_payload):
+                    expected_bid_object['details'][0]['requirementResponses'][q_two]['relatedTenderer']['id'] = \
+                        related_tenderer_identifier
+                    expected_bid_object['details'][0]['requirementResponses'][q_two]['relatedTenderer']['name'] = \
+                        bid_payload['bid']['requirementResponses'][q_two]['relatedTenderer']['name']
+
+                try:
+                    """
+                    Check how many quantity of object into payload['bid']['requirementResponses']['evidences'].
+                    """
+                    list_of_payload_requirement_responses_evidences_id = list()
+                    for i in bid_payload['bid']['requirementResponses'][q_two]['evidences']:
+                        for i_1 in i:
+                            if i_1 == "id":
+                                list_of_payload_requirement_responses_evidences_id.append(i_1)
+                    quantity_of_evidences_object_into_payload = len(list_of_payload_requirement_responses_evidences_id)
+                except Exception:
+                    raise Exception("Check payload['bid']['requirementResponses']['evidences']['id']")
+                try:
+                    """
+                    Check how many quantity of object into actual_ev_release['releases'][0]['bids']['details']
+                    ['requirementResponses']['evidences'].
+                    """
+                    list_of_release_requirement_responses_evidences_id = list()
+                    for i in \
+                            GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids']['details'][0][
+                                'requirementResponses'][q_two]['evidences']:
+                        for i_1 in i:
+                            if i_1 == "id":
+                                list_of_release_requirement_responses_evidences_id.append(i_1)
+                    quantity_of_evidences_into_release = len(list_of_release_requirement_responses_evidences_id)
+                except Exception:
+                    raise Exception("Check object into actual_ev_release['releases'][0]['bids']['details']"
+                                    "['requirementResponses']['evidences']['id']")
+                try:
+                    """
+                    Compare quantity of object into payload['bid']['requirementResponses']['evidences'] and 
+                    object into actual_ev_release['releases'][0]['bids']['details']['requirementResponses']
+                    ['evidences'].
+                    """
+                    if quantity_of_evidences_object_into_payload == quantity_of_evidences_into_release:
+                        pass
+                    else:
+                        raise Exception("Quantity of object into payload['bid']['requirementResponses']['evidences'] "
+                                        "!= object into actual_ev_release['releases'][0]['bids']['details']"
+                                        "['requirementResponses']['evidences']")
+                except Exception:
+                    raise Exception("Impossible to compare quantity of object into "
+                                    "payload['bid']['requirementResponses']['evidences'] and "
+                                    "object into actual_ev_release['releases'][0]['bids']['details']"
+                                    "['requirementResponses']['evidences']")
+                for q_three in range(quantity_of_evidences_object_into_payload):
+                    expected_bid_object['details'][0]['requirementResponses'][q_two]['evidences'].append(
+                        self.constructor.ev_release_bid_details_requirement_response_evidences_object()
+                    )
+                    try:
+                        check = is_it_uuid(
+                            uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids'][
+                                'details'][0]['requirementResponses'][q_two]['evidences'][q_three]['id'],
+                            version=4
+                        )
+                        if check is True:
+                            expected_bid_object['details'][0]['requirementResponses'][q_two][
+                                'evidences'][q_three]['id'] = \
+                                GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['bids'][
+                                    'details'][0]['requirementResponses'][q_two]['evidences'][q_three]['id']
+                        else:
+                            raise ValueError("requirementResponses.id in release must be uuid version 4")
+                    except Exception:
+                        raise Exception("Check your requirementResponses array in release")
+                    expected_bid_object['details'][0]['requirementResponses'][q_two]['evidences'][q_three]['title'] = \
+                        bid_payload['bid']['requirementResponses'][q_two]['evidences'][q_three]['title']
+                    expected_bid_object['details'][0]['requirementResponses'][q_two]['evidences'][q_three][
+                        'description'] = bid_payload['bid']['requirementResponses'][q_two][
+                        'evidences'][q_three]['description']
+                    expected_bid_object['details'][0]['requirementResponses'][q_two]['evidences'][q_three][
+                        'relatedDocument']['id'] = \
+                        bid_payload['bid']['requirementResponses'][q_two]['evidences'][q_three]['relatedDocument']['id']
+        else:
+            del expected_bid_object['details'][0]['requirementResponses']
+
+        if str(expected_bid_object['details'][0]['documents']) == str([]):
+            del expected_bid_object['details'][0]['documents']
+
+        expected_bid_object_mapper = {
+            "tenderers": expected_bid_object['details'][0]['tenderers'],
+            "value": expected_bid_object['details'][0]
+        }
+        return expected_bid_object_mapper
