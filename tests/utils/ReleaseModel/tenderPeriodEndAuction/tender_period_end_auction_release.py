@@ -96,6 +96,141 @@ class TenderPeriodExpectedChanges:
                 pass
         return expected_awards_array
 
+    @staticmethod
+    def prepare_criteria_array_source_procuring_entity():
+        quantity_of_criteria_object_into_release = 0
+        if "criteria" in GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']:
+            try:
+                """
+                Check how many quantity of object into GlobalClassCreateCnOnPn.actual_ev_release[
+                'releases'][0]['tender']['criteria'].
+                """
+                list_of_release_render_criteria_id = list()
+                for criteria_object in GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']['criteria']:
+                    for i in criteria_object:
+                        if i == "id":
+                            list_of_release_render_criteria_id.append(i)
+                quantity_of_criteria_object_into_release = len(list_of_release_render_criteria_id)
+            except Exception:
+                raise Exception("Impossible to check how many quantity of object into "
+                                "GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']['criteria']")
+
+        try:
+            """
+            Check 'id', 'requirementGroups.id', 'requirements.id' into 
+            GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['criteria'][*].
+            """
+            check_criteria_id = is_it_uuid(
+                uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
+                    'criteria'][quantity_of_criteria_object_into_release]['id'],
+                version=4
+            )
+            if check_criteria_id is True:
+                pass
+            else:
+                raise ValueError("The 'id' into GlobalClassTenderPeriodEndNoAuction.actual_ev_release["
+                                 "'releases'][0]['tender']['criteria'][*] must be uuid version 4")
+            check_criteria_requirement_groups_id = is_it_uuid(
+                uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                    'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
+                    'requirementGroups'][0]['id'],
+                version=4
+            )
+            if check_criteria_requirement_groups_id is True:
+                pass
+            else:
+                raise ValueError("The 'requirementGroups.id' into "
+                                 "GlobalClassTenderPeriodEndNoAuction.actual_ev_release["
+                                 "'releases'][0]['tender']['criteria'][*] must be uuid version 4")
+            check_criteria_requirement_groups_requirements_id = is_it_uuid(
+                uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                    'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
+                    'requirementGroups'][0]['requirements'][0]['id'],
+                version=4
+            )
+            if check_criteria_requirement_groups_requirements_id is True:
+                pass
+            else:
+                raise ValueError("The 'requirements.id' into "
+                                 "GlobalClassTenderPeriodEndNoAuction.actual_ev_release["
+                                 "'releases'][0]['tender']['criteria'][*]['requirementGroups'][*] "
+                                 "must be uuid version 4")
+        except Exception:
+            raise Exception("The 'id' and 'requirementGroups.id' and 'requirements.id' into "
+                            "GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]["
+                            "'tender']['criteria'][*] must be uuid version 4")
+
+        expected_criteria_array_source_procuring_entity = {
+            "id": GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release]['id'],
+            "title": "Declaration of absence of conflict of interest and confidentiality",
+            "source": "procuringEntity",
+            "description": "Conflict of interest",
+            "requirementGroups": [
+                {
+                    "id": GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                        'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
+                        'requirementGroups'][0]['id'],
+                    "requirements": [
+                        {
+                            "id": GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                                'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
+                                'requirementGroups'][0]['requirements'][0]['id'],
+                            "title": "I am aware of Article 24 of Directive 2014/24/EU on "
+                                     "public procurement, which states that: \"The concept of "
+                                     "conflicts of interest shall at least cover any situation "
+                                     "where staff members of the contracting authority or of "
+                                     "a procurement service provider acting on behalf of "
+                                     "the contracting authority who are involved in the conduct of "
+                                     "the procurement procedure or may influence the outcome of "
+                                     "that procedure have, directly or indirectly, a financial, "
+                                     "economic or other personal interest which might be perceived "
+                                     "to compromise their impartiality and independence in the "
+                                     "context of the procurement procedure.\"\nto the best of my "
+                                     "knowledge and belief I have no conflict of interest with the "
+                                     "operators who have submitted a tender for this procurement, "
+                                     "including persons or members of a consortium, or with "
+                                     "the subcontractors proposed;\nthere are no facts or "
+                                     "circumstances, past or present, or that could arise in the "
+                                     "foreseeable future, which might call into question my "
+                                     "independence in the eyes of any party;\nif I discover during "
+                                     "the course of the [project/evaluation] that such a conflict "
+                                     "exists or could arise, I will inform the contracting "
+                                     "authority without delay;\nI am encouraged to report "
+                                     "a situation or risk of conflict of interest as well as any "
+                                     "type of wrongdoing or fraud (i.e. whistleblowing), and if I "
+                                     "do so, I should not be treated unfairly or be sanctioned;\nI "
+                                     "understand that the contracting authority reserves the right "
+                                     "to verify this information.",
+                            "dataType": "boolean",
+                            "status": "active",
+                            "datePublished": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
+                                'operationDate'],
+                            "expectedValue": True
+                        },
+                        {
+                            "id": GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                                'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
+                                'requirementGroups'][0]['requirements'][1]['id'],
+                            "title": "I confirm that I will keep all matters entrusted to me confidential. "
+                                     "I will not communicate outside the [project team/evaluation committee] "
+                                     "any confidential information that is revealed to me or that I have discovered. "
+                                     "I will not make any adverse use of information given to me.",
+                            "dataType": "boolean",
+                            "status": "active",
+                            "datePublished": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
+                                'operationDate'],
+                            "expectedValue": True
+                        }]
+                }],
+            "relatesTo": "award",
+            "classification": {
+                "scheme": "ESPD-2.2.1",
+                "id": "CRITERION.EXCLUSION.CONFLICT_OF_INTEREST.PROCEDURE_PARTICIPATION"
+            }
+        }
+        return expected_criteria_array_source_procuring_entity, quantity_of_criteria_object_into_release
+# -----------------------------------------------------------------------------------------------
     def prepare_bid_details_mapper(self, bid_payload, bid_feed_point_message):
         expected_bid_object = {}
         expected_bid_object.update(self.constructor.ev_release_bid_object())
@@ -335,141 +470,6 @@ class TenderPeriodExpectedChanges:
             "value": expected_bid_object['details'][0]
         }
         return expected_bid_object_mapper
-
-    @staticmethod
-    def prepare_criteria_array_source_procuring_entity():
-        quantity_of_criteria_object_into_release = 0
-        if "criteria" in GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']:
-            try:
-                """
-                Check how many quantity of object into GlobalClassCreateCnOnPn.actual_ev_release[
-                'releases'][0]['tender']['criteria'].
-                """
-                list_of_release_render_criteria_id = list()
-                for criteria_object in GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']['criteria']:
-                    for i in criteria_object:
-                        if i == "id":
-                            list_of_release_render_criteria_id.append(i)
-                quantity_of_criteria_object_into_release = len(list_of_release_render_criteria_id)
-            except Exception:
-                raise Exception("Impossible to check how many quantity of object into "
-                                "GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']['criteria']")
-
-        try:
-            """
-            Check 'id', 'requirementGroups.id', 'requirements.id' into 
-            GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['criteria'][*].
-            """
-            check_criteria_id = is_it_uuid(
-                uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
-                    'criteria'][quantity_of_criteria_object_into_release]['id'],
-                version=4
-            )
-            if check_criteria_id is True:
-                pass
-            else:
-                raise ValueError("The 'id' into GlobalClassTenderPeriodEndNoAuction.actual_ev_release["
-                                 "'releases'][0]['tender']['criteria'][*] must be uuid version 4")
-            check_criteria_requirement_groups_id = is_it_uuid(
-                uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                    'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
-                    'requirementGroups'][0]['id'],
-                version=4
-            )
-            if check_criteria_requirement_groups_id is True:
-                pass
-            else:
-                raise ValueError("The 'requirementGroups.id' into "
-                                 "GlobalClassTenderPeriodEndNoAuction.actual_ev_release["
-                                 "'releases'][0]['tender']['criteria'][*] must be uuid version 4")
-            check_criteria_requirement_groups_requirements_id = is_it_uuid(
-                uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                    'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
-                    'requirementGroups'][0]['requirements'][0]['id'],
-                version=4
-            )
-            if check_criteria_requirement_groups_requirements_id is True:
-                pass
-            else:
-                raise ValueError("The 'requirements.id' into "
-                                 "GlobalClassTenderPeriodEndNoAuction.actual_ev_release["
-                                 "'releases'][0]['tender']['criteria'][*]['requirementGroups'][*] "
-                                 "must be uuid version 4")
-        except Exception:
-            raise Exception("The 'id' and 'requirementGroups.id' and 'requirements.id' into "
-                            "GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]["
-                            "'tender']['criteria'][*] must be uuid version 4")
-
-        expected_criteria_array_source_procuring_entity = {
-            "id": GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release]['id'],
-            "title": "Declaration of absence of conflict of interest and confidentiality",
-            "source": "procuringEntity",
-            "description": "Conflict of interest",
-            "requirementGroups": [
-                {
-                    "id": GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                        'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
-                        'requirementGroups'][0]['id'],
-                    "requirements": [
-                        {
-                            "id": GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                                'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
-                                'requirementGroups'][0]['requirements'][0]['id'],
-                            "title": "I am aware of Article 24 of Directive 2014/24/EU on "
-                                     "public procurement, which states that: \"The concept of "
-                                     "conflicts of interest shall at least cover any situation "
-                                     "where staff members of the contracting authority or of "
-                                     "a procurement service provider acting on behalf of "
-                                     "the contracting authority who are involved in the conduct of "
-                                     "the procurement procedure or may influence the outcome of "
-                                     "that procedure have, directly or indirectly, a financial, "
-                                     "economic or other personal interest which might be perceived "
-                                     "to compromise their impartiality and independence in the "
-                                     "context of the procurement procedure.\"\nto the best of my "
-                                     "knowledge and belief I have no conflict of interest with the "
-                                     "operators who have submitted a tender for this procurement, "
-                                     "including persons or members of a consortium, or with "
-                                     "the subcontractors proposed;\nthere are no facts or "
-                                     "circumstances, past or present, or that could arise in the "
-                                     "foreseeable future, which might call into question my "
-                                     "independence in the eyes of any party;\nif I discover during "
-                                     "the course of the [project/evaluation] that such a conflict "
-                                     "exists or could arise, I will inform the contracting "
-                                     "authority without delay;\nI am encouraged to report "
-                                     "a situation or risk of conflict of interest as well as any "
-                                     "type of wrongdoing or fraud (i.e. whistleblowing), and if I "
-                                     "do so, I should not be treated unfairly or be sanctioned;\nI "
-                                     "understand that the contracting authority reserves the right "
-                                     "to verify this information.",
-                            "dataType": "boolean",
-                            "status": "active",
-                            "datePublished": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
-                                'operationDate'],
-                            "expectedValue": True
-                        },
-                        {
-                            "id": GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                                'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
-                                'requirementGroups'][0]['requirements'][1]['id'],
-                            "title": "I confirm that I will keep all matters entrusted to me confidential. "
-                                     "I will not communicate outside the [project team/evaluation committee] "
-                                     "any confidential information that is revealed to me or that I have discovered. "
-                                     "I will not make any adverse use of information given to me.",
-                            "dataType": "boolean",
-                            "status": "active",
-                            "datePublished": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
-                                'operationDate'],
-                            "expectedValue": True
-                        }]
-                }],
-            "relatesTo": "award",
-            "classification": {
-                "scheme": "ESPD-2.2.1",
-                "id": "CRITERION.EXCLUSION.CONFLICT_OF_INTEREST.PROCEDURE_PARTICIPATION"
-            }
-        }
-        return expected_criteria_array_source_procuring_entity, quantity_of_criteria_object_into_release
 
     def prepare_array_of_parties_mapper_for_successful_tender(self, bid_payload):
         expected_array_of_parties_mapper = []

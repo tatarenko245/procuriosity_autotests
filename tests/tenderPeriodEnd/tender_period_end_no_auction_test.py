@@ -2298,13 +2298,14 @@ class TestCreateBid:
                     allure.attach(str(json.dumps(final_expected_bids_object)), "Expected bids array")
                     raise Exception("Error into comparing bids")
                 elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['criteria'] != \
-                        final_expected_bids_object:
+                        final_expected_criteria_array:
                     allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                                                      'releases'][0]['tender']['criteria'])), "Actual criteria array")
                     allure.attach(str(json.dumps(final_expected_criteria_array)), "Expected criteria array")
-                    raise Exception("Error into comparing bids")
-                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
-                    'awardPeriod']['startDate'] != final_expected_award_period_object:
+                    raise Exception("Error into comparing criteria")
+                elif \
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod'][
+                            'startDate'] != final_expected_award_period_object:
                     allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                                                      'releases'][0]['tender']['awardPeriod']['startDate'])),
                                   "Actual awardPeriod object")
