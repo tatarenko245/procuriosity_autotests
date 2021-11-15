@@ -28,19 +28,19 @@ class PayloadLibrary:
                 ],
             "electronicAuctions":
                 {
-                    "details": [None]
+                    "details": []
                 },
             "procuringEntity":
                 {
                     "id": None,
-                    "persones": [None]
+                    "persones": []
 
                 },
             "criteria": [],
             "conversions": [],
-            "lots": None,
-            "items": None,
-            "documents": None
+            "lots": [],
+            "items": [],
+            "documents": []
         }
         return tender_object
 
@@ -61,7 +61,7 @@ class PayloadLibrary:
             "relatedItem": None,
             "rationale": None,
             "description": None,
-            "coefficients": [None]
+            "coefficients": []
         }
         return conversion_object
 
@@ -77,7 +77,7 @@ class PayloadLibrary:
             "description": None,
             "relatesTo": None,
             "relatedItem": None,
-            "requirementGroups": [None]
+            "requirementGroups": []
         }
         return criteria_object
 
@@ -107,7 +107,7 @@ class PayloadLibrary:
                 "startDate": None,
                 "endDate": None
             },
-            "eligibleEvidences": [None]
+            "eligibleEvidences": []
         }
         return requirement_object
 
@@ -116,7 +116,7 @@ class PayloadLibrary:
         requirement_group_object = {
             "id": None,
             "description": None,
-            "requirements": [None]
+            "requirements": []
         }
         return requirement_group_object
 
@@ -130,7 +130,7 @@ class PayloadLibrary:
                 "id": None,
                 "uri": None
             },
-            "businessFunctions": [None]
+            "businessFunctions": []
         }
         return persones_object
 
@@ -143,7 +143,7 @@ class PayloadLibrary:
             "period": {
                 "startDate"
             },
-            "documents": [None]
+            "documents": []
         }
         return business_function_object
 
@@ -152,7 +152,7 @@ class PayloadLibrary:
         details_object = {
             "id": None,
             "relatedLot": None,
-            "electronicAuctionModalities": [None]
+            "electronicAuctionModalities": []
         }
         return details_object
 
@@ -222,10 +222,10 @@ class PayloadLibrary:
                 "description": None
             },
             "hasOptions": None,
-            "options": [None],
+            "options": [],
             "hasRecurrence": None,
             "recurrence": {
-                "dates": [None],
+                "dates": [],
                 "description": None
             },
             "hasRenewal": None,
@@ -253,7 +253,7 @@ class PayloadLibrary:
                 "scheme": None,
                 "description": None
             },
-            "additionalClassifications": None,
+            "additionalClassifications": [],
             "quantity": None,
             "unit": {
                 "id": None,
@@ -280,7 +280,7 @@ class PayloadLibrary:
             "id": None,
             "title": None,
             "description": None,
-            "relatedLots": [None]
+            "relatedLots": []
         }
         return document_object
 

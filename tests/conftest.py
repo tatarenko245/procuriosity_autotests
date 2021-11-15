@@ -254,3 +254,11 @@ class GlobalClassTenderPeriodEndNoAuction:
     actual_ev_release = None
     award_id = None
     award_token = None
+
+
+class GlobalClassTenderPeriodEndAuction:
+    feed_point_message = None
+    actual_ms_release = None
+    actual_ev_release = None
+    award_id = None
+    award_token = None
