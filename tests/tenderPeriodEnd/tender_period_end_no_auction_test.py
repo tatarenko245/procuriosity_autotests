@@ -250,7 +250,7 @@ class TestCreateBid:
 
                 asynchronous_result_of_expired_tender_period_end = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").tender_period_end_message_is_successful_awards_array(
+                                 initiation="bpe").tender_period_end_no_auction_message_is_successful(
                         environment=GlobalClassMetadata.environment,
                         kafka_message=GlobalClassTenderPeriodEndNoAuction.feed_point_message,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
@@ -846,7 +846,7 @@ class TestCreateBid:
 
                 asynchronous_result_of_expired_tender_period_end = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").tender_period_end_message_is_successful_awards_array(
+                                 initiation="bpe").tender_period_end_no_auction_message_is_successful(
                         environment=GlobalClassMetadata.environment,
                         kafka_message=GlobalClassTenderPeriodEndNoAuction.feed_point_message,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
@@ -1832,7 +1832,7 @@ class TestCreateBid:
 
                 asynchronous_result_of_expired_tender_period_end = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").tender_period_end_message_is_successful_awards_array(
+                                 initiation="bpe").tender_period_end_no_auction_message_is_successful(
                         environment=GlobalClassMetadata.environment,
                         kafka_message=GlobalClassTenderPeriodEndNoAuction.feed_point_message,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
