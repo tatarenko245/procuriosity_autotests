@@ -6,7 +6,7 @@ import time
 import allure
 import requests
 
-from tests.utils.functions import is_it_uuid
+from tests.utils.functions import is_it_uuid, get_project_root
 
 
 class KafkaMessage:
@@ -914,80 +914,568 @@ class KafkaMessage:
         else:
             return False
 
+    # @staticmethod
+    # def tender_period_end_message_is_successful_awards_array(environment, kafka_message, pn_ocid, ev_id):
+    #     tender_url = None
+    #     if environment == "dev":
+    #         tender_url = "http://dev.public.eprocurement.systems/tenders/"
+    #     if environment == "sandbox":
+    #         tender_url = "http://public.eprocurement.systems/tenders/"
+    #
+    #     check_x_operation_id = None
+    #     check_x_response_id = None
+    #     check_initiator = None
+    #     check_oc_id = None
+    #     check_url = None
+    #     check_operation_date = None
+    #
+    #     try:
+    #         if "X-OPERATION-ID" in kafka_message:
+    #             check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 1)
+    #     except KeyError:
+    #         raise KeyError('KeyError: X-OPERATION-ID')
+    #
+    #     try:
+    #         if "X-RESPONSE-ID" in kafka_message:
+    #             check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+    #     except KeyError:
+    #         raise KeyError('KeyError: X-RESPONSE-ID')
+    #     try:
+    #         if "initiator" in kafka_message:
+    #             check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "bpe")
+    #     except KeyError:
+    #         raise KeyError('KeyError: initiator')
+    #     try:
+    #         if "ocid" in kafka_message["data"]:
+    #             check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{ev_id}")
+    #     except KeyError:
+    #         raise KeyError('KeyError: ocid')
+    #     try:
+    #         if "url" in kafka_message["data"]:
+    #             check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
+    #                                         f"{tender_url}{pn_ocid}/{ev_id}")
+    #     except KeyError:
+    #         raise KeyError('KeyError: url')
+    #     try:
+    #         if "operationDate" in kafka_message["data"]:
+    #             check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
+    #     except KeyError:
+    #         raise KeyError('KeyError: operationDate')
+    #
+    #     if check_x_operation_id is True and check_x_response_id is True and check_initiator is True and \
+    #             check_oc_id is True and check_url is True and check_operation_date is True:
+    #         pass
+    #     else:
+    #         return False
+    #
+    #     try:
+    #         for i in kafka_message["data"]["outcomes"]["awards"]:
+    #             for i_1 in i:
+    #                 if i_1 == "id":
+    #                     check_award_id = is_it_uuid(i["id"], 4)
+    #                     if check_award_id is True:
+    #                         pass
+    #                     else:
+    #                         return False
+    #     except KeyError:
+    #         raise KeyError('KeyError: id')
+    #     try:
+    #         for i in kafka_message["data"]["outcomes"]["awards"]:
+    #             for i_1 in i:
+    #                 if i_1 == "X-TOKEN":
+    #                     check_award_token = is_it_uuid(i["X-TOKEN"], 4)
+    #                     if check_award_token is True:
+    #                         pass
+    #                     else:
+    #                         return False
+    #     except KeyError:
+    #         raise KeyError('KeyError: token')
+    #     return True
+
     @staticmethod
     def tender_period_end_message_is_successful(environment, kafka_message, pn_ocid, ev_id):
         tender_url = None
+        auction_url = None
         if environment == "dev":
             tender_url = "http://dev.public.eprocurement.systems/tenders/"
+            auction_url = "http://auction.eprocurement.systems/auctions/"
         if environment == "sandbox":
             tender_url = "http://public.eprocurement.systems/tenders/"
-
-        check_x_operation_id = None
-        check_x_response_id = None
-        check_initiator = None
-        check_oc_id = None
-        check_url = None
-        check_operation_date = None
+            auction_url = "https://eauction.eprocurement.systems/auctions/"
 
         try:
-            if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 1)
+            """
+            Check X-OPERATION-ID into message from feed point.
+            """
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 1)
+            if check_x_operation_id is True:
+                pass
+            else:
+                log_msg_one = f"{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_message_is_successful -> \n" \
+                              f"Actual result: {kafka_message['X-OPERATION-ID']} is not correct.\n" \
+                              f"Expected result: actual result must be UUID v.1\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
         except KeyError:
+            log_msg_one = f"{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_message_is_successful -> \n" \
+                          f"KeyError: X-OPERATION-ID\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
-            if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+            """
+            Check X-RESPONSE-ID into message from feed point.
+            """
+
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            if check_x_response_id is True:
+                pass
+            else:
+                log_msg_one = f"{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_message_is_successful -> \n" \
+                              f"Actual result: {kafka_message['X-RESPONSE-ID']} is not correct.\n" \
+                              f"Expected result: actual result must be UUID v.4\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
         except KeyError:
+            log_msg_one = f"{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_message_is_successful -> \n" \
+                          f"KeyError: X-RESPONSE-ID\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
             raise KeyError('KeyError: X-RESPONSE-ID')
+
         try:
             if "initiator" in kafka_message:
                 check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "bpe")
+                if check_initiator is True:
+                    pass
+            else:
+                log_msg_one = f"{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_message_is_successful -> \n" \
+                              f"Actual result: {kafka_message['initiator']} is not correct.\n" \
+                              f"Expected result: bpe\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
         except KeyError:
+            log_msg_one = f"{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_message_is_successful -> \n" \
+                          f"KeyError: initiator\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
             raise KeyError('KeyError: initiator')
+
         try:
             if "ocid" in kafka_message["data"]:
                 check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{ev_id}")
+                if check_oc_id is True:
+                    pass
+            else:
+                log_msg_one = f"{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_message_is_successful -> \n" \
+                              f"Actual result: {kafka_message['data']['ocid']} is not correct.\n" \
+                              f"Expected result: {ev_id}\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
         except KeyError:
-            raise KeyError('KeyError: ocid')
+            log_msg_one = f"{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_message_is_successful -> \n" \
+                          f"KeyError: data.ocid\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: data.ocid')
+
         try:
             if "url" in kafka_message["data"]:
                 check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
                                             f"{tender_url}{pn_ocid}/{ev_id}")
+                if check_url is True:
+                    pass
+            else:
+                log_msg_one = f"{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_message_is_successful -> \n" \
+                              f"Actual result: {kafka_message['data']['url']} is not correct.\n" \
+                              f"Expected result: {tender_url}{pn_ocid}/{ev_id}\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
         except KeyError:
-            raise KeyError('KeyError: url')
+            log_msg_one = f"{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_message_is_successful -> \n" \
+                          f"KeyError: data.url\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: data.url')
+
         try:
             if "operationDate" in kafka_message["data"]:
                 check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
+                if check_operation_date is True:
+                    pass
+            else:
+                log_msg_one = f"{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_message_is_successful -> \n" \
+                              f"Actual result: {kafka_message['data']['operationDate']} is not correct.\n" \
+                              f"Expected result: actual result must compare with pattern 202*-*-*T*:*:*Z\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
         except KeyError:
-            raise KeyError('KeyError: operationDate')
-
-        if check_x_operation_id is True and check_x_response_id is True and check_initiator is True and \
-                check_oc_id is True and check_url is True and check_operation_date is True:
-            pass
-        else:
-            return False
+            log_msg_one = f"{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_message_is_successful -> \n" \
+                          f"KeyError: data.operationDate\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: data.operationDate')
 
         try:
-            for i in kafka_message["data"]["outcomes"]["awards"]:
-                for i_1 in i:
-                    if i_1 == "id":
-                        check_award_id = is_it_uuid(i["id"], 4)
-                        if check_award_id is True:
-                            pass
-                        else:
-                            return False
-        except KeyError:
-            raise KeyError('KeyError: id')
-        try:
-            for i in kafka_message["data"]["outcomes"]["awards"]:
-                for i_1 in i:
-                    if i_1 == "X-TOKEN":
-                        check_award_token = is_it_uuid(i["X-TOKEN"], 4)
-                        if check_award_token is True:
-                            pass
-                        else:
-                            return False
-        except KeyError:
-            raise KeyError('KeyError: token')
+            """
+            Check kafka_message['data']['outcomes'].
+            """
+            if environment == "dev":
+                if "links" in kafka_message['data']['outcomes']:
+                    for i in kafka_message['data']['outcomes']['links']:
+                        for i_1 in i:
+                            if i_1 == "relatedBid":
+                                check_link_id = is_it_uuid(i["relatedBid"], 4)
+                                if check_link_id is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {i['relatedBid']} is not correct.\n" \
+                                                  f"Expected result: actual result must be UUID v.4\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                            if i_1 == "url":
+                                url = i['url']
+                                check_url_first_part = \
+                                    fnmatch.fnmatch(url[0:90], f"{auction_url}/{ev_id}")
+                                if check_url_first_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[0:90]} is not correct.\n" \
+                                                  f"Expected result: {auction_url}{ev_id}\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                                check_url_second_part = \
+                                    is_it_uuid(url[91:127], 4)
+                                if check_url_second_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[91:127]} is not correct.\n" \
+                                                  f"Expected result: actual result must be UUID v.4\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                                check_url_third_part = \
+                                    fnmatch.fnmatch(url[127:135], "?bid_id=")
+                                if check_url_third_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[127:135]} is not correct.\n" \
+                                                  f"Expected result: ?bid_id=\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                                check_url_fourth_part = \
+                                    fnmatch.fnmatch(url[135:171], i['relatedBid'])
+                                if check_url_fourth_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[135:171]} is not correct.\n" \
+                                                  f"Expected result: {i['relatedBid']}\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                                check_url_fifth_part = \
+                                    fnmatch.fnmatch(url[171:176], "&sign=")
+                                if check_url_fifth_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[171:176]} is not correct.\n" \
+                                                  f"Expected result: &sign=\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                                check_url_sixth_part = is_it_uuid(url[176:210], 4)
+                                if check_url_sixth_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[176:210]} is not correct.\n" \
+                                                  f"Expected result: actual result must be UUID v.4\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                else:
+                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                  f"File = kafka_message.py -> \n" \
+                                  f"Class = KafkaMessage -> \n" \
+                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                  f"KeyError: data.outcomes.links\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+
+                if "awards" in kafka_message['data']['outcomes']:
+                    for i in kafka_message['data']['outcomes']['awards']:
+                        for i_1 in i:
+                            if i_1 == "id":
+                                check_award_id = is_it_uuid(i["id"], 4)
+                                if check_award_id is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {i['id']} is not correct.\n" \
+                                                  f"Expected result: actual result must be UUID v.4\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                            if i_1 == "X-TOKEN":
+                                check_award_token = is_it_uuid(i["X-TOKEN"], 4)
+                                if check_award_token is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {i['X-TOKEN']} is not correct.\n" \
+                                                  f"Expected result: actual result must be UUID v.4\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                else:
+                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                  f"File = kafka_message.py -> \n" \
+                                  f"Class = KafkaMessage -> \n" \
+                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                  f"KeyError: data.outcomes.awards\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+
+            elif environment == "sandbox":
+                if "links" in kafka_message['data']['outcomes']:
+                    for i in kafka_message['data']['outcomes']['links']:
+                        for i_1 in i:
+                            if i_1 == "relatedBid":
+                                check_link_id = is_it_uuid(i["relatedBid"], 4)
+                                if check_link_id is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {i['relatedBid']} is not correct.\n" \
+                                                  f"Expected result: actual result must be UUID v.4\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                            if i_1 == "url":
+                                url = i['url']
+                                check_url_first_part = \
+                                    fnmatch.fnmatch(url[0:92], f"{auction_url}{ev_id}")
+                                if check_url_first_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[0:92]} is not correct.\n" \
+                                                  f"Expected result: {auction_url}{ev_id}\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                                check_url_second_part = \
+                                    is_it_uuid(url[93:129], 4)
+                                if check_url_second_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[93:129]} is not correct.\n" \
+                                                  f"Expected result: actual result must be UUID v.4\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                                check_url_third_part = \
+                                    fnmatch.fnmatch(url[129:137], "?bid_id=")
+                                if check_url_third_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[129:137]} is not correct.\n" \
+                                                  f"Expected result: ?bid_id=\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                                check_url_fourth_part = \
+                                    fnmatch.fnmatch(url[137:173], i['relatedBid'])
+                                if check_url_fourth_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[137:173]} is not correct.\n" \
+                                                  f"Expected result: {i['relatedBid']}\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                                check_url_fifth_part = \
+                                    fnmatch.fnmatch(url[173:179], "&sign=")
+                                if check_url_fifth_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[173:179]} is not correct.\n" \
+                                                  f"Expected result: {i['relatedBid']}\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                                check_url_sixth_part = is_it_uuid(url[179:216], 4)
+                                if check_url_sixth_part is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {url[179:216]} is not correct.\n" \
+                                                  f"Expected result: actual result must be UUID v.4\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+                else:
+                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                  f"File = kafka_message.py -> \n" \
+                                  f"Class = KafkaMessage -> \n" \
+                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                  f"KeyError: data.outcomes.links\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+
+                if "awards" in kafka_message['data']['outcomes']:
+                    for i in kafka_message['data']['outcomes']['awards']:
+                        for i_1 in i:
+                            if i_1 == "id":
+                                check_award_id = is_it_uuid(i["id"], 4)
+                                if check_award_id is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {i['id']} is not correct.\n" \
+                                                  f"Expected result: actual result must be UUID v.4\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+
+                            if i_1 == "X-TOKEN":
+                                check_award_token = is_it_uuid(i["X-TOKEN"], 4)
+                                if check_award_token is True:
+                                    pass
+                                else:
+                                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                                  f"File = kafka_message.py -> \n" \
+                                                  f"Class = KafkaMessage -> \n" \
+                                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                                  f"Actual result: {i['X-TOKEN']} is not correct.\n" \
+                                                  f"Expected result: actual result must be UUID v.4\n"
+                                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                        logfile.write(log_msg_one)
+                                    return False
+                else:
+                    log_msg_one = f"{datetime.datetime.now()}\n" \
+                                  f"File = kafka_message.py -> \n" \
+                                  f"Class = KafkaMessage -> \n" \
+                                  f"Method = tender_period_end_message_is_successful -> \n" \
+                                  f"KeyError: data.outcomes.awards\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+        except Exception:
+            raise Exception("Impossible to check kafka_message['data']['outcomes'].")
         return True

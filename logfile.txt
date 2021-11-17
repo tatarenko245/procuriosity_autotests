@@ -1,0 +1,6 @@
+2021-11-16 18:23:13.048227
+File = kafka_message.py
+->Class = KafkaMessage ->
+Method = tender_period_end_message_is_successful ->
+Actual value 'http://auction.eprocurement.systems/auctions/ocds-t1s2t3-MD-1637079481741-EV-1637079484778' is not correct.
+Expected value is http://auction.eprocurement.systems/auctions//ocds-t1s2t3-MD-1637079481741-EV-1637079484778
