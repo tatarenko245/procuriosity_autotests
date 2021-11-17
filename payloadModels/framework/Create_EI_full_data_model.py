@@ -1,4 +1,4 @@
-create_ei = {
+create_ei_full_data_model = {
     "tender": {
         "title": "tender.title",
         "description": "tender.description",

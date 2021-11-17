@@ -1,4 +1,4 @@
-create_fs = {
+create_fs_full_data_model = {
   "tender":
   {
     "procuringEntity": {

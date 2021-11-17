@@ -1,4 +1,4 @@
-update_ap = {
+update_ap_full_data_model = {
     "tender": {
         "title": "tender title upd",
         "description": "tender description upd",

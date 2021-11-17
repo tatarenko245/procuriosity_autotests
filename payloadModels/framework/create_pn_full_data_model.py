@@ -1,4 +1,4 @@
-create_pn = {
+create_pn_full_data_model = {
     "planning": {
         "rationale": "reason for budget",
         "budget": {

@@ -1,4 +1,4 @@
-create_fa = {
+create_fa_full_data_model = {
     "tender": {
         "title": "tender.title AP",
         "value": {
