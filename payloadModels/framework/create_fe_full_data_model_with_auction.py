@@ -1,4 +1,4 @@
-  create_fe_full_data_model_without_auction = {
+  create_fe_full_data_model_with_auction = {
 	"preQualification": {
 		"period": {
 			"endDate": "2021-11-03T12:43:00Z"
