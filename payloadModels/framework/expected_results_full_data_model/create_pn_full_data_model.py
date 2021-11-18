@@ -250,3 +250,52 @@ create_pn_full_data_model_ms = {
   	}
   }
 
+create_pn_full_data_model_pn = {
+ 	"ocid": "ocds-t1s2t3-MD-1637228317635-PN-1637228317635",
+ 	"compiledRelease": {
+ 		"ocid": "ocds-t1s2t3-MD-1637228317635-PN-1637228317635",
+ 		"id": "ocds-t1s2t3-MD-1637228317635-PN-1637228317635-1637228317656",
+ 		"date": "2021-11-18T09:38:37Z",
+ 		"tag": ["planning"],
+ 		"language": "ro",
+ 		"initiationType": "tender",
+ 		"tender": {
+ 			"id": "082c92ea-3a01-459c-bebb-034e77fc7e70",
+ 			"title": "Planning Notice",
+ 			"description": "Contracting process is planned",
+ 			"status": "planning",
+ 			"statusDetails": "planning",
+ 			"lotGroups": [{
+ 				"optionToCombine": false
+ 			}],
+ 			"tenderPeriod": {
+ 				"startDate": "2020-12-01T00:07:00Z"
+ 			},
+ 			"hasEnquiries": false,
+ 			"documents": [{
+ 				"id": "92f6d26c-cd55-4192-9a2a-798d934c6fc9-1633002324899",
+ 				"documentType": "evaluationCriteria",
+ 				"title": "document title",
+ 				"description": "document description",
+ 				"url": "https://dev.bpe.eprocurement.systems/api/v1/storage/get/92f6d26c-cd55-4192-9a2a-798d934c6fc9-1633002324899",
+ 				"datePublished": "2021-09-30T11:54:20Z"
+ 			}],
+ 			"submissionMethod": ["electronicSubmission"],
+ 			"submissionMethodDetails": "Lista platformelor: achizitii, ebs, licitatie, yptender",
+ 			"submissionMethodRationale": ["Ofertele vor fi primite prin intermediul unei platforme electronice de achiziții publice"],
+ 			"requiresElectronicCatalogue": false
+ 		},
+ 		"hasPreviousNotice": false,
+ 		"purposeOfNotice": {
+ 			"isACallForCompetition": false
+ 		},
+ 		"relatedProcesses": [{
+ 			"id": "4e67e583-4853-11ec-b310-c7ecf598564f",
+ 			"relationship": ["parent"],
+ 			"scheme": "ocid",
+ 			"identifier": "ocds-t1s2t3-MD-1637228317635",
+ 			"uri": "http://dev.public.eprocurement.systems/tenders/ocds-t1s2t3-MD-1637228317635/ocds-t1s2t3-MD-1637228317635"
+ 		}]
+ 	}
+ }
+
