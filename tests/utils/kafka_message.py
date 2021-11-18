@@ -1575,7 +1575,7 @@ class KafkaMessage:
                                     return False
 
                                 check_url_third_part = \
-                                    fnmatch.fnmatch(url[129:135], "?bid_id=")
+                                    fnmatch.fnmatch(url[129:137], "?bid_id=")
                                 if check_url_third_part is True:
                                     pass
                                 else:
@@ -1583,7 +1583,7 @@ class KafkaMessage:
                                                   f"File = kafka_message.py -> \n" \
                                                   f"Class = KafkaMessage -> \n" \
                                                   f"Method = tender_period_end_message_is_successful -> \n" \
-                                                  f"Actual result: check_url_third_part = {url[127:135]} " \
+                                                  f"Actual result: check_url_third_part = {url[129:137]} " \
                                                   f"is not correct.\n" \
                                                   f"Expected result: ?bid_id=\n"
                                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
@@ -1591,7 +1591,7 @@ class KafkaMessage:
                                     return False
 
                                 check_url_fourth_part = \
-                                    fnmatch.fnmatch(url[136:171], i['relatedBid'])
+                                    fnmatch.fnmatch(url[137:173], i['relatedBid'])
                                 if check_url_fourth_part is True:
                                     pass
                                 else:
@@ -1599,7 +1599,7 @@ class KafkaMessage:
                                                   f"File = kafka_message.py -> \n" \
                                                   f"Class = KafkaMessage -> \n" \
                                                   f"Method = tender_period_end_message_is_successful -> \n" \
-                                                  f"Actual result: check_url_fourth_part = {url[136:171]} " \
+                                                  f"Actual result: check_url_fourth_part = {url[137:173]} " \
                                                   f"is not correct.\n" \
                                                   f"Expected result: {i['relatedBid']}\n"
                                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
@@ -1607,7 +1607,7 @@ class KafkaMessage:
                                     return False
 
                                 check_url_fifth_part = \
-                                    fnmatch.fnmatch(url[171:177], "&sign=")
+                                    fnmatch.fnmatch(url[173:179], "&sign=")
                                 if check_url_fifth_part is True:
                                     pass
                                 else:
@@ -1615,14 +1615,14 @@ class KafkaMessage:
                                                   f"File = kafka_message.py -> \n" \
                                                   f"Class = KafkaMessage -> \n" \
                                                   f"Method = tender_period_end_message_is_successful -> \n" \
-                                                  f"Actual result: check_url_fifth_part = {url[171:177]} " \
+                                                  f"Actual result: check_url_fifth_part = {url[173:179]} " \
                                                   f"is not correct.\n" \
                                                   f"Expected result: &sign=\n"
                                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                                         logfile.write(log_msg_one)
                                     return False
 
-                                check_url_sixth_part = is_it_uuid(url[177:210], 4)
+                                check_url_sixth_part = is_it_uuid(url[179:215], 4)
                                 if check_url_sixth_part is True:
                                     pass
                                 else:
@@ -1630,7 +1630,7 @@ class KafkaMessage:
                                                   f"File = kafka_message.py -> \n" \
                                                   f"Class = KafkaMessage -> \n" \
                                                   f"Method = tender_period_end_message_is_successful -> \n" \
-                                                  f"Actual result: check_url_sixth_part = {url[176:210]} " \
+                                                  f"Actual result: check_url_sixth_part = {url[179:215]} " \
                                                   f"is not correct.\n" \
                                                   f"Expected result: actual result must be UUID v.4\n"
                                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:

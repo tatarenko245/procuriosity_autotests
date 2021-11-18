@@ -1,7 +1,7 @@
 import copy
 
 from tests.conftest import GlobalClassMetadata, GlobalClassTenderPeriodEndAuction, \
-    GlobalClassCreateCnOnPn
+    GlobalClassCreateCnOnPn, GlobalClassCreateFirstBid, GlobalClassCreateSecondBid
 from tests.utils.ReleaseModel.tenderPeriodEndNoAuction.tender_period_end_no_auction_release_library import \
     ReleaseLibrary
 from tests.utils.functions import is_it_uuid
@@ -78,22 +78,88 @@ class TenderPeriodExpectedChanges:
                             "object into actual_ev_release['releases'][0]['tender']['lots']")
         expected_awards_array = []
         for q in range(quantity_of_lots_object_into_release):
-            expected_awards_array.append(self.constructor.ev_release_unsuccessful_award_object())
-            expected_awards_array[q]['title'] = "The contract/lot is not awarded"
-            expected_awards_array[q]['description'] = "Other reasons (discontinuation of procedure)"
-            expected_awards_array[q]['status'] = "unsuccessful"
-            expected_awards_array[q]['statusDetails'] = "noOffersReceived"
-            expected_awards_array[q]['date'] = \
-                GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
-            expected_awards_array[q]['relatedLots'] = \
-                [GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['lots'][q]['id']]
+            if GlobalClassCreateFirstBid.payload is not None:
+                if GlobalClassCreateFirstBid.payload['bid']['relatedLots'][0] != \
+                        GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']['lots'][q]['id']:
+                    expected_award_object = self.constructor.ev_release_unsuccessful_award_object()
+                    expected_award_object['title'] = "The contract/lot is not awarded"
+                    expected_award_object['description'] = "Other reasons (discontinuation of procedure)"
+                    expected_award_object['status'] = "unsuccessful"
+                    expected_award_object['statusDetails'] = "noOffersReceived"
+                    expected_award_object['date'] = \
+                        GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
+                    expected_award_object['relatedLots'] = \
+                        [GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['lots'][q]['id']]
 
-            if GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards'][q]['relatedLots'][0] == \
-                    expected_awards_array[q]['relatedLots'][0]:
-                expected_awards_array[q]['id'] = \
-                    GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards'][q]['id']
+                    for a in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
+                        if a['relatedLots'][0] == expected_award_object['relatedLots'][0]:
+                            expected_award_object['id'] = a['id']
+
+                            expected_awards_array.append(expected_award_object)
+                else:
+                    pass
+
+            elif GlobalClassCreateFirstBid.payload is not None and GlobalClassCreateSecondBid.payload is not None:
+                if GlobalClassCreateFirstBid.payload['bid']['relatedLots'][0] != \
+                        GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']['lots'][q]['id'] \
+                        or GlobalClassCreateSecondBid.payload['bid']['relatedLots'][0] != \
+                        GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']['lots'][q]['id']:
+                    expected_award_object = self.constructor.ev_release_unsuccessful_award_object()
+                    expected_award_object['title'] = "The contract/lot is not awarded"
+                    expected_award_object['description'] = "Other reasons (discontinuation of procedure)"
+                    expected_award_object['status'] = "unsuccessful"
+                    expected_award_object['statusDetails'] = "noOffersReceived"
+                    expected_award_object['date'] = \
+                        GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
+                    expected_award_object['relatedLots'] = \
+                        [GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['lots'][q]['id']]
+
+                    for a in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
+                        if a['relatedLots'][0] == expected_award_object['relatedLots'][0]:
+                            expected_award_object['id'] = a['id']
+
+                            expected_awards_array.append(expected_award_object)
+                else:
+                    pass
+
+            elif GlobalClassCreateSecondBid.payload is not None:
+                if GlobalClassCreateSecondBid.payload['bid']['relatedLots'][0] != \
+                        GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']['lots'][q]['id']:
+                    expected_award_object = self.constructor.ev_release_unsuccessful_award_object()
+                    expected_award_object['title'] = "The contract/lot is not awarded"
+                    expected_award_object['description'] = "Other reasons (discontinuation of procedure)"
+                    expected_award_object['status'] = "unsuccessful"
+                    expected_award_object['statusDetails'] = "noOffersReceived"
+                    expected_award_object['date'] = \
+                        GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
+                    expected_award_object['relatedLots'] = \
+                        [GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['lots'][q]['id']]
+
+                    for a in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
+                        if a['relatedLots'][0] == expected_award_object['relatedLots'][0]:
+                            expected_award_object['id'] = a['id']
+
+                            expected_awards_array.append(expected_award_object)
+                else:
+                    pass
+
             else:
-                pass
+                expected_award_object = self.constructor.ev_release_unsuccessful_award_object()
+                expected_award_object['title'] = "The contract/lot is not awarded"
+                expected_award_object['description'] = "Other reasons (discontinuation of procedure)"
+                expected_award_object['status'] = "unsuccessful"
+                expected_award_object['statusDetails'] = "noOffersReceived"
+                expected_award_object['date'] = \
+                    GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
+                expected_award_object['relatedLots'] = \
+                    [GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['lots'][q]['id']]
+
+                for a in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
+                    if a['relatedLots'][0] == expected_award_object['relatedLots'][0]:
+                        expected_award_object['id'] = a['id']
+
+                        expected_awards_array.append(expected_award_object)
+
         return expected_awards_array
 
     @staticmethod
