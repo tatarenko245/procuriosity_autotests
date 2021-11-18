@@ -69,7 +69,7 @@
 
 						],
 
-						"expectedValue": 4,
+						"expectedValue": 4.00,
 						"period": {
 							"startDate": "2021-12-26T14:45:00Z",
 							"endDate": "2021-12-30T14:45:00Z"
@@ -101,7 +101,7 @@
 								"title": "2",
 								"description": "3",
 								"type": "document",
-								".relatedDocument": {
+								"relatedDocument": {
 									"id": ""
 								}
 							},
@@ -156,16 +156,15 @@
 							{
 								"id": "08",
 								"title": "string",
-								"/description": "string",
+								"description": "string",
 								"type": "document",
-								"/relatedDocument": {
+								"relatedDocument": {
 									"id": "{{doc}}"
 								}
 							}
 						],
 						"minValue": 2.5,
 						"maxValue": 3.3,
-						"/expectedValue": 4,
 						"period": {
 							"startDate": "2021-12-26T14:45:00Z",
 							"endDate": "2021-12-30T14:45:00Z"
@@ -180,7 +179,6 @@
 					"id": "CRITERION.SELECTION.TECHNICAL_PROFESSIONAL_ABILITY.CERTIFICATES.ENVIRONMENTAL_MANAGEMENT.ENV_INDEPENDENT_CERTIFICATE",
 					"scheme": "ESPD-2.2.1"
 				},
-				"/relatedItem": "{{lot-id-1}}",
 				"relatesTo": "tenderer",
 				"description": "criteria description",
 				"requirementGroups": [{
@@ -191,23 +189,21 @@
 						"title": "Your age???",
 						"description": "sdrg",
 						"dataType": "number",
-						"/status": "active",
-						"/datePublished": "2021-12-26T14:45:00Z",
 						"eligibleEvidences": [{
 								"id": "7555",
 								"title": "2",
 								"description": "3",
 								"type": "document",
-								".relatedDocument": {
+								"relatedDocument": {
 									"id": ""
 								}
 							},
 							{
 								"id": "55558",
 								"title": "string",
-								"/description": "string",
+								"description": "string",
 								"type": "document",
-								"/relatedDocument": {
+								"relatedDocument": {
 									"id": "{{doc}}"
 								}
 							}
