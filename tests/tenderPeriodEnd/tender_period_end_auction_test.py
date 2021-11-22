@@ -286,34 +286,34 @@ class TestTenderPeriodENdAuction:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('# 9.2. Check EV release'):
-                    """
-                    Compare actual evaluation value release with expected evaluation value release model.
-                    """
-                    allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ev_release)),
-                                  "Actual EV release before tender period end expired")
+            with allure.step('# 9.2. Check EV release'):
+                """
+                Compare actual evaluation value release with expected evaluation value release model.
+                """
+                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ev_release)),
+                              "Actual EV release before tender period end expired")
 
-                    GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
-                        url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreateCnOnPn.ev_id}").json()
+                GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
+                    url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateCnOnPn.ev_id}").json()
 
-                    GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
-                        url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreatePn.pn_ocid}").json()
+                GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
+                    url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreatePn.pn_ocid}").json()
 
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release)),
-                                  "Actual EV release after tender period end expired")
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release)),
+                              "Actual EV release after tender period end expired")
 
-                    compare_releases = DeepDiff(
-                        GlobalClassCreateCnOnPn.actual_ev_release, GlobalClassTenderPeriodEndAuction.actual_ev_release)
-                    dictionary_item_added_was_cleaned = \
-                        str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                    compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
-                    compare_releases = dict(compare_releases)
+                compare_releases = DeepDiff(
+                    GlobalClassCreateCnOnPn.actual_ev_release, GlobalClassTenderPeriodEndAuction.actual_ev_release)
+                dictionary_item_added_was_cleaned = \
+                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+                compare_releases = dict(compare_releases)
 
-                    expected_releases_id = \
-                        f"{GlobalClassCreateCnOnPn.ev_id}-" \
-                        f"{GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['id'][46:59]}"
+                expected_releases_id = \
+                    f"{GlobalClassCreateCnOnPn.ev_id}-" \
+                    f"{GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['id'][46:59]}"
                 expected_result = {
                     "dictionary_item_added": "['releases'][0]['awards']",
                     "values_changed": {
@@ -3260,258 +3260,258 @@ class TestTenderPeriodENdAuction:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('# 13.2. Check EV release'):
-                    """
-                    Compare actual evaluation value release with expected evaluation value release model.
-                    """
-                    time.sleep(2)
-                    allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ev_release)),
-                                  "Actual EV release before tender period end expired")
+            with allure.step('# 13.2. Check EV release'):
+                """
+                Compare actual evaluation value release with expected evaluation value release model.
+                """
+                time.sleep(2)
+                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ev_release)),
+                              "Actual EV release before tender period end expired")
 
-                    GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
-                        url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreateCnOnPn.ev_id}").json()
+                GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
+                    url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateCnOnPn.ev_id}").json()
 
-                    GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
-                        url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreatePn.pn_ocid}").json()
+                GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
+                    url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreatePn.pn_ocid}").json()
 
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release)),
-                                  "Actual EV release after tender period end expired")
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release)),
+                              "Actual EV release after tender period end expired")
 
-                    compare_releases = DeepDiff(
-                        GlobalClassCreateCnOnPn.actual_ev_release,
-                        GlobalClassTenderPeriodEndAuction.actual_ev_release)
-                    dictionary_item_added_was_cleaned = \
-                        str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                    compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
-                    compare_releases = dict(compare_releases)
+                compare_releases = DeepDiff(
+                    GlobalClassCreateCnOnPn.actual_ev_release,
+                    GlobalClassTenderPeriodEndAuction.actual_ev_release)
+                dictionary_item_added_was_cleaned = \
+                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+                compare_releases = dict(compare_releases)
 
-                    period_end_actual_ev_release = GlobalClassTenderPeriodEndAuction.actual_ev_release
-                    expected_result = {
-                        "dictionary_item_added": "['releases'][0]['awards']",
-                        "values_changed": {
-                            "root['releases'][0]['id']": {
-                                "new_value":
-                                    f"{GlobalClassCreateCnOnPn.ev_id}-"
-                                    f"{period_end_actual_ev_release['releases'][0]['id'][46:59]}",
-                                "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
-                                             f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
-                            },
-                            "root['releases'][0]['date']": {
-                                "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
-                                    'operationDate'],
-                                "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
-                            },
-                            "root['releases'][0]['tag'][0]": {
-                                'new_value': 'award',
-                                'old_value': 'tender'
-                            },
-                            "root['releases'][0]['tender']['statusDetails']": {
-                                'new_value': 'auction',
-                                'old_value': 'clarification'
-                            },
-                            "root['releases'][0]['tender']['lots'][1]['status']": {
-                                "new_value": "unsuccessful",
-                                "old_value": "active"
-                            }
+                period_end_actual_ev_release = GlobalClassTenderPeriodEndAuction.actual_ev_release
+                expected_result = {
+                    "dictionary_item_added": "['releases'][0]['awards']",
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                f"{period_end_actual_ev_release['releases'][0]['id'][46:59]}",
+                            "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                         f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
+                                'operationDate'],
+                            "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
+                        },
+                        "root['releases'][0]['tag'][0]": {
+                            'new_value': 'award',
+                            'old_value': 'tender'
+                        },
+                        "root['releases'][0]['tender']['statusDetails']": {
+                            'new_value': 'auction',
+                            'old_value': 'clarification'
+                        },
+                        "root['releases'][0]['tender']['lots'][1]['status']": {
+                            "new_value": "unsuccessful",
+                            "old_value": "active"
                         }
                     }
+                }
 
-                    try:
-                        """
-                        Check that actual_ev_release['releases'][0]['awards'][0]['id'] is uuid version 4
-                        """
-                        check_awards_zero_id = is_it_uuid(
-                            uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                                'releases'][0]['awards'][0]['id'],
-                            version=4
-                        )
-                        if check_awards_zero_id is True:
-                            pass
-                        else:
-                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                          f"File = kafka_message.py -> \n" \
-                                          f"Class = TestTenderPeriodENdAuction -> \n" \
-                                          f"Method = test_check_result_of_sending_the_request_five -> \n" \
-                                          f"Actual result: check_awards_zero_id = {check_awards_zero_id} " \
-                                          f"is not correct.\n" \
-                                          f"Expected result: actual result must be UUID v.4\n"
-                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                                logfile.write(log_msg_one)
-                            raise Exception(
-                                "actual_ev_release['releases'][0]['awards'][0]['id'] must be uuid version 4")
-                    except KeyError:
+                try:
+                    """
+                    Check that actual_ev_release['releases'][0]['awards'][0]['id'] is uuid version 4
+                    """
+                    check_awards_zero_id = is_it_uuid(
+                        uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                            'releases'][0]['awards'][0]['id'],
+                        version=4
+                    )
+                    if check_awards_zero_id is True:
+                        pass
+                    else:
                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                       f"File = kafka_message.py -> \n" \
                                       f"Class = TestTenderPeriodENdAuction -> \n" \
                                       f"Method = test_check_result_of_sending_the_request_five -> \n" \
-                                      f"KeyError: actual_ev_release['releases'][0]['awards'][0]['id']\n"
+                                      f"Actual result: check_awards_zero_id = {check_awards_zero_id} " \
+                                      f"is not correct.\n" \
+                                      f"Expected result: actual result must be UUID v.4\n"
                         with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                             logfile.write(log_msg_one)
-                        raise KeyError("Impossible to check that actual_ev_release['releases'][0]['awards'][0]['id'] "
-                                       "is uuid version 4")
+                        raise Exception(
+                            "actual_ev_release['releases'][0]['awards'][0]['id'] must be uuid version 4")
+                except KeyError:
+                    log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                  f"File = kafka_message.py -> \n" \
+                                  f"Class = TestTenderPeriodENdAuction -> \n" \
+                                  f"Method = test_check_result_of_sending_the_request_five -> \n" \
+                                  f"KeyError: actual_ev_release['releases'][0]['awards'][0]['id']\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+                    raise KeyError("Impossible to check that actual_ev_release['releases'][0]['awards'][0]['id'] "
+                                   "is uuid version 4")
 
-                    try:
-                        """
-                        Prepare expected awards array
-                        """
-                        expected_awards_array = TenderPeriodExpectedChanges(
-                            environment=GlobalClassMetadata.environment,
-                            language=GlobalClassMetadata.language).prepare_unsuccessful_awards_array()
-                    except Exception:
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = kafka_message.py -> \n" \
-                                      f"Class = TestTenderPeriodENdAuction -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_five -> \n" \
-                                      f"Localization: expected_awards_array\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise Exception("Impossible to prepare expected awards array")
-
-                    try:
-                        """
-                            If compare_releases !=expected_result, then return process steps by operation-id.
-                            """
-                        if compare_releases == expected_result and expected_awards_array == \
-                                GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
-                            pass
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
-
-                    if expected_result != compare_releases:
-                        allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                        allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                        raise Exception("Error into comparing releases")
-
-                    elif GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards'] != \
-                            expected_awards_array:
-                        allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                                                         'releases'][0]['awards'])), "Actual awards array")
-                        allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
-                        raise Exception("Error into comparing awards")
-
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_result,
-                        actual_result=compare_releases
-                    )) == str(True)
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_awards_array,
-                        actual_result=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
-                    )) == str(True)
-
-                with allure.step('# 13.3. Check MS release'):
+                try:
                     """
-                    Compare multistage release with expected multistage release model.
+                    Prepare expected awards array
                     """
-                    allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
-                                  "Actual MS release before tender period end expired")
+                    expected_awards_array = TenderPeriodExpectedChanges(
+                        environment=GlobalClassMetadata.environment,
+                        language=GlobalClassMetadata.language).prepare_unsuccessful_awards_array()
+                except Exception:
+                    log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                  f"File = kafka_message.py -> \n" \
+                                  f"Class = TestTenderPeriodENdAuction -> \n" \
+                                  f"Method = test_check_result_of_sending_the_request_five -> \n" \
+                                  f"Localization: expected_awards_array\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+                    raise Exception("Impossible to prepare expected awards array")
 
-                    GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
-                        url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreatePn.pn_ocid}").json()
-
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ms_release)),
-                                  "Actual MS release after tender period end expired")
-
-                    compare_releases = dict(DeepDiff(
-                        GlobalClassCreateCnOnPn.actual_ms_release,
-                        GlobalClassTenderPeriodEndAuction.actual_ms_release))
-
-                    expected_result = {}
-
-                    try:
+                try:
+                    """
+                        If compare_releases !=expected_result, then return process steps by operation-id.
                         """
-                        If TestCase was passed, then cLean up the database.
-                        If TestCase was failed, then return process steps by operation-id.
-                        """
-                        if compare_releases == expected_result:
-                            GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                                ei_id=GlobalClassCreateEi.ei_ocid)
-
-                            GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
-                                ei_id=GlobalClassCreateEi.ei_ocid)
-
-                            GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
-
-                            GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
-
-                            GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
-
-                            GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreateEi.operation_id)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreateFs.operation_id)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreatePn.operation_id)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreateCnOnPn.operation_id)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                                operation_id=GlobalClassCreateFirstBid.operation_id)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                    if compare_releases == expected_result and expected_awards_array == \
+                            GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                database = GlobalClassMetadata.database
-                                steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                    operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[
-                                        'X-OPERATION-ID'])
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
-                        try:
-                            """
-                            Rollback specific value into submission.rules
-                            """
-                            GlobalClassMetadata.database.set_min_bids_from_submission_rules(
-                                value=min_bids_from_submission_rules,
-                                country=GlobalClassMetadata.country,
-                                pmd=GlobalClassMetadata.pmd,
-                                operation_type='all',
-                                parameter='minBids'
-                            )
-                        except Exception:
-                            raise Exception("Impossible to rollback specific value into submission.rules")
-                        try:
-                            """
-                            Rollback specific value into evaluation.rules
-                            """
-                            GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
-                                value=min_bids_from_evaluation_rules,
-                                country=GlobalClassMetadata.country,
-                                pmd=GlobalClassMetadata.pmd,
-                                operation_type='all',
-                                parameter='minBids'
-                            )
-                        except Exception:
-                            raise Exception("Impossible to rollback specific value into evaluation.rules")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
+                if expected_result != compare_releases:
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    raise Exception("Error into comparing releases")
 
-                    if expected_result != compare_releases:
-                        allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                        allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                        raise Exception("Error into comparing releases")
+                elif GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards'] != \
+                        expected_awards_array:
+                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                                                     'releases'][0]['awards'])), "Actual awards array")
+                    allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
+                    raise Exception("Error into comparing awards")
 
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_result,
-                        actual_result=compare_releases
-                    )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_awards_array,
+                    actual_result=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
+                )) == str(True)
+
+            with allure.step('# 13.3. Check MS release'):
+                """
+                Compare multistage release with expected multistage release model.
+                """
+                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
+                              "Actual MS release before tender period end expired")
+
+                GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
+                    url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreatePn.pn_ocid}").json()
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ms_release)),
+                              "Actual MS release after tender period end expired")
+
+                compare_releases = dict(DeepDiff(
+                    GlobalClassCreateCnOnPn.actual_ms_release,
+                    GlobalClassTenderPeriodEndAuction.actual_ms_release))
+
+                expected_result = {}
+
+                try:
+                    """
+                    If TestCase was passed, then cLean up the database.
+                    If TestCase was failed, then return process steps by operation-id.
+                    """
+                    if compare_releases == expected_result:
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateFs.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreatePn.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateCnOnPn.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                            operation_id=GlobalClassCreateFirstBid.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                            operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            database = GlobalClassMetadata.database
+                            steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
+                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[
+                                    'X-OPERATION-ID'])
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+
+                    try:
+                        """
+                        Rollback specific value into submission.rules
+                        """
+                        GlobalClassMetadata.database.set_min_bids_from_submission_rules(
+                            value=min_bids_from_submission_rules,
+                            country=GlobalClassMetadata.country,
+                            pmd=GlobalClassMetadata.pmd,
+                            operation_type='all',
+                            parameter='minBids'
+                        )
+                    except Exception:
+                        raise Exception("Impossible to rollback specific value into submission.rules")
+                    try:
+                        """
+                        Rollback specific value into evaluation.rules
+                        """
+                        GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
+                            value=min_bids_from_evaluation_rules,
+                            country=GlobalClassMetadata.country,
+                            pmd=GlobalClassMetadata.pmd,
+                            operation_type='all',
+                            parameter='minBids'
+                        )
+                    except Exception:
+                        raise Exception("Impossible to rollback specific value into evaluation.rules")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                if expected_result != compare_releases:
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    raise Exception("Error into comparing releases")
+
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
 
     @allure.title("Check message from Kafka topic, EV, MS releases, "
                   "on the flow ´Is tenderPeriodExpired -> True -> Are there bids for opening? -> True -> "
@@ -3902,255 +3902,255 @@ class TestTenderPeriodENdAuction:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('# 13.2. Check EV release'):
-                    """
-                    Compare actual evaluation value release with expected evaluation value release model.
-                    """
-                    time.sleep(2)
-                    allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ev_release)),
-                                  "Actual EV release before tender period end expired")
+            with allure.step('# 13.2. Check EV release'):
+                """
+                Compare actual evaluation value release with expected evaluation value release model.
+                """
+                time.sleep(2)
+                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ev_release)),
+                              "Actual EV release before tender period end expired")
 
-                    GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
-                        url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreateCnOnPn.ev_id}").json()
+                GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
+                    url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateCnOnPn.ev_id}").json()
 
-                    GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
-                        url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreatePn.pn_ocid}").json()
+                GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
+                    url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreatePn.pn_ocid}").json()
 
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release)),
-                                  "Actual EV release after tender period end expired")
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release)),
+                              "Actual EV release after tender period end expired")
 
-                    compare_releases = DeepDiff(
-                        GlobalClassCreateCnOnPn.actual_ev_release,
-                        GlobalClassTenderPeriodEndAuction.actual_ev_release)
-                    dictionary_item_added_was_cleaned = \
-                        str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                    compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
-                    compare_releases = dict(compare_releases)
+                compare_releases = DeepDiff(
+                    GlobalClassCreateCnOnPn.actual_ev_release,
+                    GlobalClassTenderPeriodEndAuction.actual_ev_release)
+                dictionary_item_added_was_cleaned = \
+                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+                compare_releases = dict(compare_releases)
 
-                    period_end_actual_ev_release = GlobalClassTenderPeriodEndAuction.actual_ev_release
-                    expected_result = {
-                        "dictionary_item_added": "['releases'][0]['awards']",
-                        "values_changed": {
-                            "root['releases'][0]['id']": {
-                                "new_value":
-                                    f"{GlobalClassCreateCnOnPn.ev_id}-"
-                                    f"{period_end_actual_ev_release['releases'][0]['id'][46:59]}",
-                                "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
-                                             f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
-                            },
-                            "root['releases'][0]['date']": {
-                                "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
-                                    'operationDate'],
-                                "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
-                            },
-                            "root['releases'][0]['tag'][0]": {
-                                'new_value': 'award',
-                                'old_value': 'tender'
-                            },
-                            "root['releases'][0]['tender']['statusDetails']": {
-                                'new_value': 'auction',
-                                'old_value': 'clarification'
-                            },
-                            "root['releases'][0]['tender']['lots'][1]['status']": {
-                                "new_value": "unsuccessful",
-                                "old_value": "active"
-                            }
+                period_end_actual_ev_release = GlobalClassTenderPeriodEndAuction.actual_ev_release
+                expected_result = {
+                    "dictionary_item_added": "['releases'][0]['awards']",
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                f"{period_end_actual_ev_release['releases'][0]['id'][46:59]}",
+                            "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                         f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
+                                'operationDate'],
+                            "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
+                        },
+                        "root['releases'][0]['tag'][0]": {
+                            'new_value': 'award',
+                            'old_value': 'tender'
+                        },
+                        "root['releases'][0]['tender']['statusDetails']": {
+                            'new_value': 'auction',
+                            'old_value': 'clarification'
+                        },
+                        "root['releases'][0]['tender']['lots'][1]['status']": {
+                            "new_value": "unsuccessful",
+                            "old_value": "active"
                         }
                     }
+                }
 
-                    try:
-                        """
-                        Check that actual_ev_release['releases'][0]['awards'][0]['id'] is uuid version 4
-                        """
-                        check_awards_zero_id = is_it_uuid(
-                            uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                                'releases'][0]['awards'][0]['id'],
-                            version=4
-                        )
-                        if check_awards_zero_id is True:
-                            pass
-                        else:
-                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                          f"File = kafka_message.py -> \n" \
-                                          f"Class = TestTenderPeriodENdAuction -> \n" \
-                                          f"Method = test_check_result_of_sending_the_request_five -> \n" \
-                                          f"Actual result: check_awards_zero_id = {check_awards_zero_id} " \
-                                          f"is not correct.\n" \
-                                          f"Expected result: actual result must be UUID v.4\n"
-                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                                logfile.write(log_msg_one)
-                            raise Exception(
-                                "actual_ev_release['releases'][0]['awards'][0]['id'] must be uuid version 4")
-                    except KeyError:
+                try:
+                    """
+                    Check that actual_ev_release['releases'][0]['awards'][0]['id'] is uuid version 4
+                    """
+                    check_awards_zero_id = is_it_uuid(
+                        uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                            'releases'][0]['awards'][0]['id'],
+                        version=4
+                    )
+                    if check_awards_zero_id is True:
+                        pass
+                    else:
                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                       f"File = kafka_message.py -> \n" \
                                       f"Class = TestTenderPeriodENdAuction -> \n" \
                                       f"Method = test_check_result_of_sending_the_request_five -> \n" \
-                                      f"KeyError: actual_ev_release['releases'][0]['awards'][0]['id']\n"
+                                      f"Actual result: check_awards_zero_id = {check_awards_zero_id} " \
+                                      f"is not correct.\n" \
+                                      f"Expected result: actual result must be UUID v.4\n"
                         with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                             logfile.write(log_msg_one)
-                        raise KeyError("Impossible to check that actual_ev_release['releases'][0]['awards'][0]['id'] "
-                                       "is uuid version 4")
+                        raise Exception(
+                            "actual_ev_release['releases'][0]['awards'][0]['id'] must be uuid version 4")
+                except KeyError:
+                    log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                  f"File = kafka_message.py -> \n" \
+                                  f"Class = TestTenderPeriodENdAuction -> \n" \
+                                  f"Method = test_check_result_of_sending_the_request_five -> \n" \
+                                  f"KeyError: actual_ev_release['releases'][0]['awards'][0]['id']\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+                    raise KeyError("Impossible to check that actual_ev_release['releases'][0]['awards'][0]['id'] "
+                                   "is uuid version 4")
 
-                    try:
-                        """
-                        Prepare expected awards array
-                        """
-                        expected_awards_array = TenderPeriodExpectedChanges(
-                            environment=GlobalClassMetadata.environment,
-                            language=GlobalClassMetadata.language).prepare_unsuccessful_awards_array()
-                    except Exception:
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = kafka_message.py -> \n" \
-                                      f"Class = TestTenderPeriodENdAuction -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_five -> \n" \
-                                      f"Localization: expected_awards_array\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise Exception("Impossible to prepare expected awards array")
-
-                    try:
-                        """
-                            If compare_releases !=expected_result, then return process steps by operation-id.
-                            """
-                        if compare_releases == expected_result and expected_awards_array == \
-                                GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
-                            pass
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
-
-                    if expected_result != compare_releases:
-                        allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                        allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                        raise Exception("Error into comparing releases")
-
-                    elif GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards'] != \
-                            expected_awards_array:
-                        allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                                                         'releases'][0]['awards'])), "Actual awards array")
-                        allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
-                        raise Exception("Error into comparing awards")
-
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_result,
-                        actual_result=compare_releases
-                    )) == str(True)
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_awards_array,
-                        actual_result=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
-                    )) == str(True)
-
-                with allure.step('# 13.3. Check MS release'):
+                try:
                     """
-                    Compare multistage release with expected multistage release model.
+                    Prepare expected awards array
                     """
-                    allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
-                                  "Actual MS release before tender period end expired")
+                    expected_awards_array = TenderPeriodExpectedChanges(
+                        environment=GlobalClassMetadata.environment,
+                        language=GlobalClassMetadata.language).prepare_unsuccessful_awards_array()
+                except Exception:
+                    log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                  f"File = kafka_message.py -> \n" \
+                                  f"Class = TestTenderPeriodENdAuction -> \n" \
+                                  f"Method = test_check_result_of_sending_the_request_five -> \n" \
+                                  f"Localization: expected_awards_array\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+                    raise Exception("Impossible to prepare expected awards array")
 
-                    GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
-                        url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
-                            f"{GlobalClassCreatePn.pn_ocid}").json()
-
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ms_release)),
-                                  "Actual MS release after tender period end expired")
-
-                    compare_releases = dict(DeepDiff(
-                        GlobalClassCreateCnOnPn.actual_ms_release,
-                        GlobalClassTenderPeriodEndAuction.actual_ms_release))
-
-                    expected_result = {}
-
-                    try:
+                try:
+                    """
+                        If compare_releases !=expected_result, then return process steps by operation-id.
                         """
-                        If TestCase was passed, then cLean up the database.
-                        If TestCase was failed, then return process steps by operation-id.
-                        """
-                        if compare_releases == expected_result:
-                            GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                                ei_id=GlobalClassCreateEi.ei_ocid)
-
-                            GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
-                                ei_id=GlobalClassCreateEi.ei_ocid)
-
-                            GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
-
-                            GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
-
-                            GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
-
-                            GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreateEi.operation_id)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreateFs.operation_id)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreatePn.operation_id)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreateCnOnPn.operation_id)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                                operation_id=GlobalClassCreateFirstBid.operation_id)
-
-                            GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                    if compare_releases == expected_result and expected_awards_array == \
+                            GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                database = GlobalClassMetadata.database
-                                steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                    operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[
-                                        'X-OPERATION-ID'])
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
-                        try:
-                            """
-                            Rollback specific value into submission.rules
-                            """
-                            GlobalClassMetadata.database.set_min_bids_from_submission_rules(
-                                value=min_bids_from_submission_rules,
-                                country=GlobalClassMetadata.country,
-                                pmd=GlobalClassMetadata.pmd,
-                                operation_type='all',
-                                parameter='minBids'
-                            )
-                        except Exception:
-                            raise Exception("Impossible to rollback specific value into submission.rules")
-                        try:
-                            """
-                            Rollback specific value into evaluation.rules
-                            """
-                            GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
-                                value=min_bids_from_evaluation_rules,
-                                country=GlobalClassMetadata.country,
-                                pmd=GlobalClassMetadata.pmd,
-                                operation_type='all',
-                                parameter='minBids'
-                            )
-                        except Exception:
-                            raise Exception("Impossible to rollback specific value into evaluation.rules")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
+                if expected_result != compare_releases:
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    raise Exception("Error into comparing releases")
 
-                    if expected_result != compare_releases:
-                        allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                        allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                        raise Exception("Error into comparing releases")
+                elif GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards'] != \
+                        expected_awards_array:
+                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                                                     'releases'][0]['awards'])), "Actual awards array")
+                    allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
+                    raise Exception("Error into comparing awards")
 
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_result,
-                        actual_result=compare_releases
-                    )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_awards_array,
+                    actual_result=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
+                )) == str(True)
+
+            with allure.step('# 13.3. Check MS release'):
+                """
+                Compare multistage release with expected multistage release model.
+                """
+                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
+                              "Actual MS release before tender period end expired")
+
+                GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
+                    url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreatePn.pn_ocid}").json()
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ms_release)),
+                              "Actual MS release after tender period end expired")
+
+                compare_releases = dict(DeepDiff(
+                    GlobalClassCreateCnOnPn.actual_ms_release,
+                    GlobalClassTenderPeriodEndAuction.actual_ms_release))
+
+                expected_result = {}
+
+                try:
+                    """
+                    If TestCase was passed, then cLean up the database.
+                    If TestCase was failed, then return process steps by operation-id.
+                    """
+                    if compare_releases == expected_result:
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
+
+                        GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateFs.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreatePn.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateCnOnPn.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                            operation_id=GlobalClassCreateFirstBid.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                            operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            database = GlobalClassMetadata.database
+                            steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
+                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[
+                                    'X-OPERATION-ID'])
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+
+                    try:
+                        """
+                        Rollback specific value into submission.rules
+                        """
+                        GlobalClassMetadata.database.set_min_bids_from_submission_rules(
+                            value=min_bids_from_submission_rules,
+                            country=GlobalClassMetadata.country,
+                            pmd=GlobalClassMetadata.pmd,
+                            operation_type='all',
+                            parameter='minBids'
+                        )
+                    except Exception:
+                        raise Exception("Impossible to rollback specific value into submission.rules")
+                    try:
+                        """
+                        Rollback specific value into evaluation.rules
+                        """
+                        GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
+                            value=min_bids_from_evaluation_rules,
+                            country=GlobalClassMetadata.country,
+                            pmd=GlobalClassMetadata.pmd,
+                            operation_type='all',
+                            parameter='minBids'
+                        )
+                    except Exception:
+                        raise Exception("Impossible to rollback specific value into evaluation.rules")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                if expected_result != compare_releases:
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    raise Exception("Error into comparing releases")
+
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)

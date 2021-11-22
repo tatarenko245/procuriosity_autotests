@@ -1,0 +1,468 @@
+2021-11-22T16:44:54.405921+0200 DEBUG Debug:
+2021-11-22T16:44:54.406390+0200 INFO Info:
+2021-11-22T16:44:54.406521+0200 ERROR Error:
+2021-11-22T16:55:29.057730+0200 ERROR An error has been caught in function 'pytest_pyfunc_call', process 'MainProcess' (11833), thread 'MainThread' (140126417397568):
+Traceback (most recent call last):
+
+  File "/snap/pycharm-community/256/plugins/python-ce/helpers/pycharm/_jb_pytest_runner.py", line 51, in <module>
+    sys.exit(pytest.main(args, plugins_to_load + [Plugin]))
+    │   │    │      │    │     │                  └ <class '__main__.Plugin'>
+    │   │    │      │    │     └ [<module 'teamcity.pytest_plugin' from '/snap/pycharm-community/256/plugins/python-ce/helpers/pycharm/teamcity/pytest_plugin....
+    │   │    │      │    └ ['--country=MD', '--language=ro', '--environment=dev', '--cassandra_username=caclient', '--cassandra_password=6AH7vbrkMWnfK',...
+    │   │    │      └ <function main at 0x7f71b7dcd040>
+    │   │    └ <module 'pytest' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pytest/__init__.py'>
+    │   └ <built-in function exit>
+    └ <module 'sys' (built-in)>
+
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/config/__init__.py", line 162, in main
+    ret: Union[ExitCode, int] = config.hook.pytest_cmdline_main(
+         │     │                │      │    └ <_HookCaller 'pytest_cmdline_main'>
+         │     │                │      └ <pluggy.hooks._HookRelay object at 0x7f71b722c7f0>
+         │     │                └ <_pytest.config.Config object at 0x7f71b71b8e50>
+         │     └ <enum 'ExitCode'>
+         └ typing.Union
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/hooks.py", line 286, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+           │    │         │     │    │                └ {'config': <_pytest.config.Config object at 0x7f71b71b8e50>}
+           │    │         │     │    └ <function _HookCaller.get_hookimpls at 0x7f71b7ed1790>
+           │    │         │     └ <_HookCaller 'pytest_cmdline_main'>
+           │    │         └ <_HookCaller 'pytest_cmdline_main'>
+           │    └ <bound method PluginManager._hookexec of <_pytest.config.PytestPluginManager object at 0x7f71b7280520>>
+           └ <_HookCaller 'pytest_cmdline_main'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 93, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+           │    │               │     │        └ {'config': <_pytest.config.Config object at 0x7f71b71b8e50>}
+           │    │               │     └ [<HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages...
+           │    │               └ <_HookCaller 'pytest_cmdline_main'>
+           │    └ <function PluginManager.__init__.<locals>.<lambda> at 0x7f71b7221c10>
+           └ <_pytest.config.PytestPluginManager object at 0x7f71b7280520>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 84, in <lambda>
+    self._inner_hookexec = lambda hook, methods, kwargs: hook.multicall(
+                                  │     │        │       │    └ <function _multicall at 0x7f71b7ec3b80>
+                                  │     │        │       └ <_HookCaller 'pytest_cmdline_main'>
+                                  │     │        └ {'config': <_pytest.config.Config object at 0x7f71b71b8e50>}
+                                  │     └ [<HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages...
+                                  └ <_HookCaller 'pytest_cmdline_main'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/callers.py", line 187, in _multicall
+    res = hook_impl.function(*args)
+          │         │         └ [<_pytest.config.Config object at 0x7f71b71b8e50>]
+          │         └ <function pytest_cmdline_main at 0x7f71b7d12430>
+          └ <HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/...
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/main.py", line 316, in pytest_cmdline_main
+    return wrap_session(config, _main)
+           │            │       └ <function _main at 0x7f71b7d124c0>
+           │            └ <_pytest.config.Config object at 0x7f71b71b8e50>
+           └ <function wrap_session at 0x7f71b7d123a0>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/main.py", line 269, in wrap_session
+    session.exitstatus = doit(config, session) or 0
+    │       │            │    │       └ <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>
+    │       │            │    └ <_pytest.config.Config object at 0x7f71b71b8e50>
+    │       │            └ <function _main at 0x7f71b7d124c0>
+    │       └ <ExitCode.OK: 0>
+    └ <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/main.py", line 323, in _main
+    config.hook.pytest_runtestloop(session=session)
+    │      │    │                          └ <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>
+    │      │    └ <_HookCaller 'pytest_runtestloop'>
+    │      └ <pluggy.hooks._HookRelay object at 0x7f71b722c7f0>
+    └ <_pytest.config.Config object at 0x7f71b71b8e50>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/hooks.py", line 286, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+           │    │         │     │    │                └ {'session': <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>}
+           │    │         │     │    └ <function _HookCaller.get_hookimpls at 0x7f71b7ed1790>
+           │    │         │     └ <_HookCaller 'pytest_runtestloop'>
+           │    │         └ <_HookCaller 'pytest_runtestloop'>
+           │    └ <bound method PluginManager._hookexec of <_pytest.config.PytestPluginManager object at 0x7f71b7280520>>
+           └ <_HookCaller 'pytest_runtestloop'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 93, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+           │    │               │     │        └ {'session': <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>}
+           │    │               │     └ [<HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages...
+           │    │               └ <_HookCaller 'pytest_runtestloop'>
+           │    └ <function PluginManager.__init__.<locals>.<lambda> at 0x7f71b7221c10>
+           └ <_pytest.config.PytestPluginManager object at 0x7f71b7280520>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 84, in <lambda>
+    self._inner_hookexec = lambda hook, methods, kwargs: hook.multicall(
+                                  │     │        │       │    └ <function _multicall at 0x7f71b7ec3b80>
+                                  │     │        │       └ <_HookCaller 'pytest_runtestloop'>
+                                  │     │        └ {'session': <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>}
+                                  │     └ [<HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages...
+                                  └ <_HookCaller 'pytest_runtestloop'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/callers.py", line 187, in _multicall
+    res = hook_impl.function(*args)
+          │         │         └ [<Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>]
+          │         └ <function pytest_runtestloop at 0x7f71b7d125e0>
+          └ <HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/...
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/main.py", line 348, in pytest_runtestloop
+    item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+    │    │                                        │              └ <Function test_check_result_of_sending_the_request_three>
+    │    │                                        └ <Function test_check_result_of_sending_the_request_two>
+    │    └ <member 'config' of 'Node' objects>
+    └ <Function test_check_result_of_sending_the_request_two>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/hooks.py", line 286, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+           │    │         │     │    │                └ {'item': <Function test_check_result_of_sending_the_request_two>, 'nextitem': <Function test_check_result_of_sending_the_requ...
+           │    │         │     │    └ <function _HookCaller.get_hookimpls at 0x7f71b7ed1790>
+           │    │         │     └ <_HookCaller 'pytest_runtest_protocol'>
+           │    │         └ <_HookCaller 'pytest_runtest_protocol'>
+           │    └ <bound method PluginManager._hookexec of <_pytest.config.PytestPluginManager object at 0x7f71b7280520>>
+           └ <_HookCaller 'pytest_runtest_protocol'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 93, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+           │    │               │     │        └ {'item': <Function test_check_result_of_sending_the_request_two>, 'nextitem': <Function test_check_result_of_sending_the_requ...
+           │    │               │     └ [<HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+           │    │               └ <_HookCaller 'pytest_runtest_protocol'>
+           │    └ <function PluginManager.__init__.<locals>.<lambda> at 0x7f71b7221c10>
+           └ <_pytest.config.PytestPluginManager object at 0x7f71b7280520>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 84, in <lambda>
+    self._inner_hookexec = lambda hook, methods, kwargs: hook.multicall(
+                                  │     │        │       │    └ <function _multicall at 0x7f71b7ec3b80>
+                                  │     │        │       └ <_HookCaller 'pytest_runtest_protocol'>
+                                  │     │        └ {'item': <Function test_check_result_of_sending_the_request_two>, 'nextitem': <Function test_check_result_of_sending_the_requ...
+                                  │     └ [<HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+                                  └ <_HookCaller 'pytest_runtest_protocol'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/callers.py", line 187, in _multicall
+    res = hook_impl.function(*args)
+          │         │         └ [<Function test_check_result_of_sending_the_request_two>, <Function test_check_result_of_sending_the_request_three>]
+          │         └ <function pytest_runtest_protocol at 0x7f71b7d09e50>
+          └ <HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packa...
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 109, in pytest_runtest_protocol
+    runtestprotocol(item, nextitem=nextitem)
+    │               │              └ <Function test_check_result_of_sending_the_request_three>
+    │               └ <Function test_check_result_of_sending_the_request_two>
+    └ <function runtestprotocol at 0x7f71b7d09ee0>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 126, in runtestprotocol
+    reports.append(call_and_report(item, "call", log))
+    │       │      │               │             └ True
+    │       │      │               └ <Function test_check_result_of_sending_the_request_two>
+    │       │      └ <function call_and_report at 0x7f71b7d0c310>
+    │       └ <method 'append' of 'list' objects>
+    └ [<TestReport 'tender_period_end_auction_test.py::TestTenderPeriodENdAuction::test_check_result_of_sending_the_request_two' wh...
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 215, in call_and_report
+    call = call_runtest_hook(item, when, **kwds)
+           │                 │     │       └ {}
+           │                 │     └ 'call'
+           │                 └ <Function test_check_result_of_sending_the_request_two>
+           └ <function call_runtest_hook at 0x7f71b7d0c430>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 254, in call_runtest_hook
+    return CallInfo.from_call(
+           │        └ <classmethod object at 0x7f71b7d02cd0>
+           └ <class '_pytest.runner.CallInfo'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 311, in from_call
+    result: Optional[TResult] = func()
+            │        │          └ <function call_runtest_hook.<locals>.<lambda> at 0x7f71b66baf70>
+            │        └ +TResult
+            └ typing.Optional
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 255, in <lambda>
+    lambda: ihook(item=item, **kwds), when=when, reraise=reraise
+            │          │       └ {}
+            │          └ <Function test_check_result_of_sending_the_request_two>
+            └ <_HookCaller 'pytest_runtest_call'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/hooks.py", line 286, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+           │    │         │     │    │                └ {'item': <Function test_check_result_of_sending_the_request_two>}
+           │    │         │     │    └ <function _HookCaller.get_hookimpls at 0x7f71b7ed1790>
+           │    │         │     └ <_HookCaller 'pytest_runtest_call'>
+           │    │         └ <_HookCaller 'pytest_runtest_call'>
+           │    └ <bound method PluginManager._hookexec of <_pytest.config.PytestPluginManager object at 0x7f71b7280520>>
+           └ <_HookCaller 'pytest_runtest_call'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 93, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+           │    │               │     │        └ {'item': <Function test_check_result_of_sending_the_request_two>}
+           │    │               │     └ [<HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+           │    │               └ <_HookCaller 'pytest_runtest_call'>
+           │    └ <function PluginManager.__init__.<locals>.<lambda> at 0x7f71b7221c10>
+           └ <_pytest.config.PytestPluginManager object at 0x7f71b7280520>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 84, in <lambda>
+    self._inner_hookexec = lambda hook, methods, kwargs: hook.multicall(
+                                  │     │        │       │    └ <function _multicall at 0x7f71b7ec3b80>
+                                  │     │        │       └ <_HookCaller 'pytest_runtest_call'>
+                                  │     │        └ {'item': <Function test_check_result_of_sending_the_request_two>}
+                                  │     └ [<HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+                                  └ <_HookCaller 'pytest_runtest_call'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/callers.py", line 187, in _multicall
+    res = hook_impl.function(*args)
+          │         │         └ [<Function test_check_result_of_sending_the_request_two>]
+          │         └ <function pytest_runtest_call at 0x7f71b7d0c0d0>
+          └ <HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packa...
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 162, in pytest_runtest_call
+    item.runtest()
+    │    └ <function Function.runtest at 0x7f71b8186b80>
+    └ <Function test_check_result_of_sending_the_request_two>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/python.py", line 1641, in runtest
+    self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+    │    │                                   └ <Function test_check_result_of_sending_the_request_two>
+    │    └ <property object at 0x7f71b7d6c900>
+    └ <Function test_check_result_of_sending_the_request_two>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/hooks.py", line 286, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+           │    │         │     │    │                └ {'pyfuncitem': <Function test_check_result_of_sending_the_request_two>}
+           │    │         │     │    └ <function _HookCaller.get_hookimpls at 0x7f71b7ed1790>
+           │    │         │     └ <_HookCaller 'pytest_pyfunc_call'>
+           │    │         └ <_HookCaller 'pytest_pyfunc_call'>
+           │    └ <bound method PluginManager._hookexec of <_pytest.config.PytestPluginManager object at 0x7f71b7280520>>
+           └ <_HookCaller 'pytest_pyfunc_call'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 93, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+           │    │               │     │        └ {'pyfuncitem': <Function test_check_result_of_sending_the_request_two>}
+           │    │               │     └ [<HookImpl plugin_name='python', plugin=<module '_pytest.python' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+           │    │               └ <_HookCaller 'pytest_pyfunc_call'>
+           │    └ <function PluginManager.__init__.<locals>.<lambda> at 0x7f71b7221c10>
+           └ <_pytest.config.PytestPluginManager object at 0x7f71b7280520>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 84, in <lambda>
+    self._inner_hookexec = lambda hook, methods, kwargs: hook.multicall(
+                                  │     │        │       │    └ <function _multicall at 0x7f71b7ec3b80>
+                                  │     │        │       └ <_HookCaller 'pytest_pyfunc_call'>
+                                  │     │        └ {'pyfuncitem': <Function test_check_result_of_sending_the_request_two>}
+                                  │     └ [<HookImpl plugin_name='python', plugin=<module '_pytest.python' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+                                  └ <_HookCaller 'pytest_pyfunc_call'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/callers.py", line 187, in _multicall
+    res = hook_impl.function(*args)
+          │         │         └ [<Function test_check_result_of_sending_the_request_two>]
+          │         └ <function pytest_pyfunc_call at 0x7f71b817e280>
+          └ <HookImpl plugin_name='python', plugin=<module '_pytest.python' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packa...
+> File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/python.py", line 183, in pytest_pyfunc_call
+    result = testfunction(**testargs)
+             │              └ {}
+             └ <bound method TestTenderPeriodENdAuction.test_check_result_of_sending_the_request_two of <tests.tenderPeriodEnd.tender_period...
+
+  File "/home/mr_el/Documents/git/tests/tenderPeriodEnd/tender_period_end_auction_test.py", line 815, in test_check_result_of_sending_the_request_two
+    KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
+    │                 │                       └ 'ocds-t1s2t3-MD-1637592617749-EV-1637592620560'
+    │                 └ <class 'tests.conftest.GlobalClassCreateCnOnPn'>
+    └ <class 'tests.utils.kafka_message.KafkaMessage'>
+
+  File "/home/mr_el/Documents/git/tests/utils/kafka_message.py", line 77, in get_message_from_kafka_by_ocid_and_initiator
+    del kafka_message[0]['_id']
+        └ []
+
+IndexError: list index out of range
+2021-11-22T17:00:47.378880+0200 ERROR An error has been caught in function 'pytest_pyfunc_call', process 'MainProcess' (11833), thread 'MainThread' (140126417397568):
+Traceback (most recent call last):
+
+  File "/snap/pycharm-community/256/plugins/python-ce/helpers/pycharm/_jb_pytest_runner.py", line 51, in <module>
+    sys.exit(pytest.main(args, plugins_to_load + [Plugin]))
+    │   │    │      │    │     │                  └ <class '__main__.Plugin'>
+    │   │    │      │    │     └ [<module 'teamcity.pytest_plugin' from '/snap/pycharm-community/256/plugins/python-ce/helpers/pycharm/teamcity/pytest_plugin....
+    │   │    │      │    └ ['--country=MD', '--language=ro', '--environment=dev', '--cassandra_username=caclient', '--cassandra_password=6AH7vbrkMWnfK',...
+    │   │    │      └ <function main at 0x7f71b7dcd040>
+    │   │    └ <module 'pytest' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pytest/__init__.py'>
+    │   └ <built-in function exit>
+    └ <module 'sys' (built-in)>
+
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/config/__init__.py", line 162, in main
+    ret: Union[ExitCode, int] = config.hook.pytest_cmdline_main(
+         │     │                │      │    └ <_HookCaller 'pytest_cmdline_main'>
+         │     │                │      └ <pluggy.hooks._HookRelay object at 0x7f71b722c7f0>
+         │     │                └ <_pytest.config.Config object at 0x7f71b71b8e50>
+         │     └ <enum 'ExitCode'>
+         └ typing.Union
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/hooks.py", line 286, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+           │    │         │     │    │                └ {'config': <_pytest.config.Config object at 0x7f71b71b8e50>}
+           │    │         │     │    └ <function _HookCaller.get_hookimpls at 0x7f71b7ed1790>
+           │    │         │     └ <_HookCaller 'pytest_cmdline_main'>
+           │    │         └ <_HookCaller 'pytest_cmdline_main'>
+           │    └ <bound method PluginManager._hookexec of <_pytest.config.PytestPluginManager object at 0x7f71b7280520>>
+           └ <_HookCaller 'pytest_cmdline_main'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 93, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+           │    │               │     │        └ {'config': <_pytest.config.Config object at 0x7f71b71b8e50>}
+           │    │               │     └ [<HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages...
+           │    │               └ <_HookCaller 'pytest_cmdline_main'>
+           │    └ <function PluginManager.__init__.<locals>.<lambda> at 0x7f71b7221c10>
+           └ <_pytest.config.PytestPluginManager object at 0x7f71b7280520>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 84, in <lambda>
+    self._inner_hookexec = lambda hook, methods, kwargs: hook.multicall(
+                                  │     │        │       │    └ <function _multicall at 0x7f71b7ec3b80>
+                                  │     │        │       └ <_HookCaller 'pytest_cmdline_main'>
+                                  │     │        └ {'config': <_pytest.config.Config object at 0x7f71b71b8e50>}
+                                  │     └ [<HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages...
+                                  └ <_HookCaller 'pytest_cmdline_main'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/callers.py", line 187, in _multicall
+    res = hook_impl.function(*args)
+          │         │         └ [<_pytest.config.Config object at 0x7f71b71b8e50>]
+          │         └ <function pytest_cmdline_main at 0x7f71b7d12430>
+          └ <HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/...
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/main.py", line 316, in pytest_cmdline_main
+    return wrap_session(config, _main)
+           │            │       └ <function _main at 0x7f71b7d124c0>
+           │            └ <_pytest.config.Config object at 0x7f71b71b8e50>
+           └ <function wrap_session at 0x7f71b7d123a0>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/main.py", line 269, in wrap_session
+    session.exitstatus = doit(config, session) or 0
+    │       │            │    │       └ <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>
+    │       │            │    └ <_pytest.config.Config object at 0x7f71b71b8e50>
+    │       │            └ <function _main at 0x7f71b7d124c0>
+    │       └ <ExitCode.OK: 0>
+    └ <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/main.py", line 323, in _main
+    config.hook.pytest_runtestloop(session=session)
+    │      │    │                          └ <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>
+    │      │    └ <_HookCaller 'pytest_runtestloop'>
+    │      └ <pluggy.hooks._HookRelay object at 0x7f71b722c7f0>
+    └ <_pytest.config.Config object at 0x7f71b71b8e50>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/hooks.py", line 286, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+           │    │         │     │    │                └ {'session': <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>}
+           │    │         │     │    └ <function _HookCaller.get_hookimpls at 0x7f71b7ed1790>
+           │    │         │     └ <_HookCaller 'pytest_runtestloop'>
+           │    │         └ <_HookCaller 'pytest_runtestloop'>
+           │    └ <bound method PluginManager._hookexec of <_pytest.config.PytestPluginManager object at 0x7f71b7280520>>
+           └ <_HookCaller 'pytest_runtestloop'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 93, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+           │    │               │     │        └ {'session': <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>}
+           │    │               │     └ [<HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages...
+           │    │               └ <_HookCaller 'pytest_runtestloop'>
+           │    └ <function PluginManager.__init__.<locals>.<lambda> at 0x7f71b7221c10>
+           └ <_pytest.config.PytestPluginManager object at 0x7f71b7280520>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 84, in <lambda>
+    self._inner_hookexec = lambda hook, methods, kwargs: hook.multicall(
+                                  │     │        │       │    └ <function _multicall at 0x7f71b7ec3b80>
+                                  │     │        │       └ <_HookCaller 'pytest_runtestloop'>
+                                  │     │        └ {'session': <Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>}
+                                  │     └ [<HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages...
+                                  └ <_HookCaller 'pytest_runtestloop'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/callers.py", line 187, in _multicall
+    res = hook_impl.function(*args)
+          │         │         └ [<Session tenderPeriodEnd exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=7>]
+          │         └ <function pytest_runtestloop at 0x7f71b7d125e0>
+          └ <HookImpl plugin_name='main', plugin=<module '_pytest.main' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/...
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/main.py", line 348, in pytest_runtestloop
+    item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+    │    │                                        │              └ <Function test_check_result_of_sending_the_request_four>
+    │    │                                        └ <Function test_check_result_of_sending_the_request_three>
+    │    └ <member 'config' of 'Node' objects>
+    └ <Function test_check_result_of_sending_the_request_three>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/hooks.py", line 286, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+           │    │         │     │    │                └ {'item': <Function test_check_result_of_sending_the_request_three>, 'nextitem': <Function test_check_result_of_sending_the_re...
+           │    │         │     │    └ <function _HookCaller.get_hookimpls at 0x7f71b7ed1790>
+           │    │         │     └ <_HookCaller 'pytest_runtest_protocol'>
+           │    │         └ <_HookCaller 'pytest_runtest_protocol'>
+           │    └ <bound method PluginManager._hookexec of <_pytest.config.PytestPluginManager object at 0x7f71b7280520>>
+           └ <_HookCaller 'pytest_runtest_protocol'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 93, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+           │    │               │     │        └ {'item': <Function test_check_result_of_sending_the_request_three>, 'nextitem': <Function test_check_result_of_sending_the_re...
+           │    │               │     └ [<HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+           │    │               └ <_HookCaller 'pytest_runtest_protocol'>
+           │    └ <function PluginManager.__init__.<locals>.<lambda> at 0x7f71b7221c10>
+           └ <_pytest.config.PytestPluginManager object at 0x7f71b7280520>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 84, in <lambda>
+    self._inner_hookexec = lambda hook, methods, kwargs: hook.multicall(
+                                  │     │        │       │    └ <function _multicall at 0x7f71b7ec3b80>
+                                  │     │        │       └ <_HookCaller 'pytest_runtest_protocol'>
+                                  │     │        └ {'item': <Function test_check_result_of_sending_the_request_three>, 'nextitem': <Function test_check_result_of_sending_the_re...
+                                  │     └ [<HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+                                  └ <_HookCaller 'pytest_runtest_protocol'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/callers.py", line 187, in _multicall
+    res = hook_impl.function(*args)
+          │         │         └ [<Function test_check_result_of_sending_the_request_three>, <Function test_check_result_of_sending_the_request_four>]
+          │         └ <function pytest_runtest_protocol at 0x7f71b7d09e50>
+          └ <HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packa...
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 109, in pytest_runtest_protocol
+    runtestprotocol(item, nextitem=nextitem)
+    │               │              └ <Function test_check_result_of_sending_the_request_four>
+    │               └ <Function test_check_result_of_sending_the_request_three>
+    └ <function runtestprotocol at 0x7f71b7d09ee0>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 126, in runtestprotocol
+    reports.append(call_and_report(item, "call", log))
+    │       │      │               │             └ True
+    │       │      │               └ <Function test_check_result_of_sending_the_request_three>
+    │       │      └ <function call_and_report at 0x7f71b7d0c310>
+    │       └ <method 'append' of 'list' objects>
+    └ [<TestReport 'tender_period_end_auction_test.py::TestTenderPeriodENdAuction::test_check_result_of_sending_the_request_three' ...
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 215, in call_and_report
+    call = call_runtest_hook(item, when, **kwds)
+           │                 │     │       └ {}
+           │                 │     └ 'call'
+           │                 └ <Function test_check_result_of_sending_the_request_three>
+           └ <function call_runtest_hook at 0x7f71b7d0c430>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 254, in call_runtest_hook
+    return CallInfo.from_call(
+           │        └ <classmethod object at 0x7f71b7d02cd0>
+           └ <class '_pytest.runner.CallInfo'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 311, in from_call
+    result: Optional[TResult] = func()
+            │        │          └ <function call_runtest_hook.<locals>.<lambda> at 0x7f71b6bce940>
+            │        └ +TResult
+            └ typing.Optional
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 255, in <lambda>
+    lambda: ihook(item=item, **kwds), when=when, reraise=reraise
+            │          │       └ {}
+            │          └ <Function test_check_result_of_sending_the_request_three>
+            └ <_HookCaller 'pytest_runtest_call'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/hooks.py", line 286, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+           │    │         │     │    │                └ {'item': <Function test_check_result_of_sending_the_request_three>}
+           │    │         │     │    └ <function _HookCaller.get_hookimpls at 0x7f71b7ed1790>
+           │    │         │     └ <_HookCaller 'pytest_runtest_call'>
+           │    │         └ <_HookCaller 'pytest_runtest_call'>
+           │    └ <bound method PluginManager._hookexec of <_pytest.config.PytestPluginManager object at 0x7f71b7280520>>
+           └ <_HookCaller 'pytest_runtest_call'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 93, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+           │    │               │     │        └ {'item': <Function test_check_result_of_sending_the_request_three>}
+           │    │               │     └ [<HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+           │    │               └ <_HookCaller 'pytest_runtest_call'>
+           │    └ <function PluginManager.__init__.<locals>.<lambda> at 0x7f71b7221c10>
+           └ <_pytest.config.PytestPluginManager object at 0x7f71b7280520>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 84, in <lambda>
+    self._inner_hookexec = lambda hook, methods, kwargs: hook.multicall(
+                                  │     │        │       │    └ <function _multicall at 0x7f71b7ec3b80>
+                                  │     │        │       └ <_HookCaller 'pytest_runtest_call'>
+                                  │     │        └ {'item': <Function test_check_result_of_sending_the_request_three>}
+                                  │     └ [<HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+                                  └ <_HookCaller 'pytest_runtest_call'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/callers.py", line 187, in _multicall
+    res = hook_impl.function(*args)
+          │         │         └ [<Function test_check_result_of_sending_the_request_three>]
+          │         └ <function pytest_runtest_call at 0x7f71b7d0c0d0>
+          └ <HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packa...
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/runner.py", line 162, in pytest_runtest_call
+    item.runtest()
+    │    └ <function Function.runtest at 0x7f71b8186b80>
+    └ <Function test_check_result_of_sending_the_request_three>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/python.py", line 1641, in runtest
+    self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+    │    │                                   └ <Function test_check_result_of_sending_the_request_three>
+    │    └ <property object at 0x7f71b7d6c900>
+    └ <Function test_check_result_of_sending_the_request_three>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/hooks.py", line 286, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+           │    │         │     │    │                └ {'pyfuncitem': <Function test_check_result_of_sending_the_request_three>}
+           │    │         │     │    └ <function _HookCaller.get_hookimpls at 0x7f71b7ed1790>
+           │    │         │     └ <_HookCaller 'pytest_pyfunc_call'>
+           │    │         └ <_HookCaller 'pytest_pyfunc_call'>
+           │    └ <bound method PluginManager._hookexec of <_pytest.config.PytestPluginManager object at 0x7f71b7280520>>
+           └ <_HookCaller 'pytest_pyfunc_call'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 93, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+           │    │               │     │        └ {'pyfuncitem': <Function test_check_result_of_sending_the_request_three>}
+           │    │               │     └ [<HookImpl plugin_name='python', plugin=<module '_pytest.python' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+           │    │               └ <_HookCaller 'pytest_pyfunc_call'>
+           │    └ <function PluginManager.__init__.<locals>.<lambda> at 0x7f71b7221c10>
+           └ <_pytest.config.PytestPluginManager object at 0x7f71b7280520>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/manager.py", line 84, in <lambda>
+    self._inner_hookexec = lambda hook, methods, kwargs: hook.multicall(
+                                  │     │        │       │    └ <function _multicall at 0x7f71b7ec3b80>
+                                  │     │        │       └ <_HookCaller 'pytest_pyfunc_call'>
+                                  │     │        └ {'pyfuncitem': <Function test_check_result_of_sending_the_request_three>}
+                                  │     └ [<HookImpl plugin_name='python', plugin=<module '_pytest.python' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-pack...
+                                  └ <_HookCaller 'pytest_pyfunc_call'>
+  File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/pluggy/callers.py", line 187, in _multicall
+    res = hook_impl.function(*args)
+          │         │         └ [<Function test_check_result_of_sending_the_request_three>]
+          │         └ <function pytest_pyfunc_call at 0x7f71b817e280>
+          └ <HookImpl plugin_name='python', plugin=<module '_pytest.python' from '/home/mr_el/Documents/git/venv/lib/python3.8/site-packa...
+> File "/home/mr_el/Documents/git/venv/lib/python3.8/site-packages/_pytest/python.py", line 183, in pytest_pyfunc_call
+    result = testfunction(**testargs)
+             │              └ {}
+             └ <bound method TestTenderPeriodENdAuction.test_check_result_of_sending_the_request_three of <tests.tenderPeriodEnd.tender_peri...
+
+  File "/home/mr_el/Documents/git/tests/tenderPeriodEnd/tender_period_end_auction_test.py", line 2153, in test_check_result_of_sending_the_request_three
+    raise Exception("Error into comparing parties")
+
+Exception: Error into comparing parties

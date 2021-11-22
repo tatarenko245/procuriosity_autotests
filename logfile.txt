@@ -1,0 +1,18 @@
+
+2021-11-22 16:50:12.045382
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-22 17:00:44.043144
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-22 17:06:02.060821
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
