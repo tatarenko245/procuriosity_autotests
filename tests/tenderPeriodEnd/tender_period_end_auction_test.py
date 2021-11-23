@@ -67,7 +67,7 @@ class TestTenderPeriodENdAuction:
                   "PN: full data model, 2 lots, 2 items;"
                   "CnOnPn: full data model with auction, 2 lots, 2 items, criteria, conversions."
                   )
-    @logger.catch
+
     def test_check_result_of_sending_the_request_one(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
@@ -537,7 +537,7 @@ class TestTenderPeriodENdAuction:
                   "CnOnPn: full data model with auction, 2 lots, 2 items, criteria, conversions;"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot."
                   )
-    @logger.catch
+
     def test_check_result_of_sending_the_request_two(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
@@ -1430,7 +1430,7 @@ class TestTenderPeriodENdAuction:
                   "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions;"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot."
                   )
-    @logger.catch
+
     def test_check_result_of_sending_the_request_three(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
@@ -2309,7 +2309,7 @@ class TestTenderPeriodENdAuction:
                   "First Bid: full data model with 2 tenderers, in relation to the first lot;"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot."
                   )
-    @logger.catch
+
     def test_check_result_of_sending_the_request_four(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
@@ -2877,7 +2877,7 @@ class TestTenderPeriodENdAuction:
                   "CnOnPn: full data model with auction, 2 lots, 2 items, criteria, conversions;"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot;"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.")
-    @logger.catch
+
     def test_check_result_of_sending_the_request_five(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
@@ -3518,7 +3518,7 @@ class TestTenderPeriodENdAuction:
                   "CnOnPn: obligatory data model with auction, 2 lots, 2 items;"
                   "First Bid: obligatory data model with 1 tenderers, in relation to the first lot;"
                   "Second Bid: obligatory data model with 1 tenderers, in relation to the first lot.")
-    @logger.catch
+
     def test_check_result_of_sending_the_request_six(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
