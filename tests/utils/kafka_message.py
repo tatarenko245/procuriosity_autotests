@@ -47,9 +47,6 @@ class KafkaMessage:
                                           f"Probably, there is an error.\n"
                             with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                                 logfile.write(log_msg_one)
-                            print(f"Message: Could not get message: {kafka_message}.\n"
-                                  f"Check message into Kafka topic.\n"
-                                  f"Probably, there is an error.\n")
                             assert str(kafka_message) != str([])
 
                     del kafka_message['_id']
@@ -73,9 +70,6 @@ class KafkaMessage:
                                   f"Probably, there is an error.\n"
                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                         logfile.write(log_msg_one)
-                    print(f"Message: Could not get message: {kafka_message}.\n"
-                          f"Check message into Kafka topic.\n"
-                          f"Probably, there is an error.\n")
                     assert str(kafka_message) != str([])
 
         del kafka_message['_id']
@@ -116,9 +110,6 @@ class KafkaMessage:
                                           f"Probably, there is an error.\n"
                             with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                                 logfile.write(log_msg_one)
-                            print(f"Message: Could not get message: {kafka_message}.\n"
-                                  f"Check message into Kafka topic.\n"
-                                  f"Probably, there is an error.\n")
                             assert str(kafka_message) != str([])
 
                     del kafka_message['_id']
@@ -142,9 +133,6 @@ class KafkaMessage:
                                   f"Probably, there is an error.\n"
                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                         logfile.write(log_msg_one)
-                    print(f"Message: Could not get message: {kafka_message}.\n"
-                          f"Check message into Kafka topic.\n"
-                          f"Probably, there is an error.\n")
                     assert str(kafka_message) != str([])
 
         del kafka_message[0]['_id']
