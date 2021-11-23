@@ -22,3 +22,15 @@ File = kafka_message.py ->
 Class = KafkaMessage -> 
 Method = tender_period_end_auction_message_is_successful -> 
 KeyError: X-OPERATION-ID
+
+2021-11-23 15:05:09.049470
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_auction_message_is_successful -> 
+Actual message: []
+
+2021-11-23 15:20:19.058081
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_auction_message_is_successful -> 
+Actual message: []
