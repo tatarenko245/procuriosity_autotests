@@ -1,12 +1,8 @@
 import datetime
 import fnmatch
-import json
 import time
-
 import allure
-import pytest
 import requests
-
 from tests.utils.functions import is_it_uuid, get_project_root
 
 
