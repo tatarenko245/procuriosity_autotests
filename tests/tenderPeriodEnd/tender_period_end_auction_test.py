@@ -20,13 +20,6 @@ from tests.utils.functions import time_bot, is_it_uuid, compare_actual_result_an
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
-from loguru import logger
-
-logger.add(f"{get_project_root()}/debug.log", format="{time} {level} {message}",
-           level="DEBUG", rotation="1 day", compression="zip")
-logger.debug("Debug:")
-logger.info("Info:")
-logger.error("Error:")
 
 
 @allure.parent_suite('Awarding')

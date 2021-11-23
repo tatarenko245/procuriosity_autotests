@@ -13,4 +13,3 @@ deepdiff~=5.5.0
 cassandra-driver~=3.25.0
 pytest-testrail
 pytz~=2021.1
-loguru
