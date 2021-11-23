@@ -74,6 +74,18 @@ class KafkaMessage:
             kafka_message = requests.get(
                 url=url
             ).json()
+        if str(kafka_message) == str([]):
+            with allure.step('Receive message in feed-point'):
+                allure.attach(json.dumps(kafka_message), 'Message in feed-point')
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_auction_message_is_successful -> \n" \
+                          f"KeyError: X-OPERATION-ID\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise ValueError('Empty data')
+
         del kafka_message[0]['_id']
         with allure.step('Receive message in feed-point'):
             allure.attach(json.dumps(kafka_message), 'Message in feed-point')
