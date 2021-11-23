@@ -38,14 +38,19 @@ class KafkaMessage:
                     if str(kafka_message) == str([]):
                         with allure.step('Receive message in feed-point'):
                             allure.attach(json.dumps(kafka_message), 'Message in feed-point')
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = kafka_message.py -> \n" \
-                                      f"Class = KafkaMessage -> \n" \
-                                      f"Method = tender_period_end_auction_message_is_successful -> \n" \
-                                      f"Actual message: {kafka_message}\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise ValueError('Empty data')
+                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                          f"File = kafka_message.py -> \n" \
+                                          f"Class = KafkaMessage -> \n" \
+                                          f"Method = get_message_from_kafka -> \n" \
+                                          f"Message: Could not get message: {kafka_message}.\n" \
+                                          f"Check message into Kafka topic.\n" \
+                                          f"Probably, there is an error.\n"
+                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                logfile.write(log_msg_one)
+                            print(f"Message: Could not get message: {kafka_message}.\n"
+                                  f"Check message into Kafka topic.\n"
+                                  f"Probably, there is an error.\n")
+                            assert str(kafka_message) != str([])
 
                     del kafka_message['_id']
                     return kafka_message
@@ -59,14 +64,19 @@ class KafkaMessage:
             if str(kafka_message) == str([]):
                 with allure.step('Receive message in feed-point'):
                     allure.attach(json.dumps(kafka_message), 'Message in feed-point')
-                log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                              f"File = kafka_message.py -> \n" \
-                              f"Class = KafkaMessage -> \n" \
-                              f"Method = tender_period_end_auction_message_is_successful -> \n" \
-                              f"Actual message: {kafka_message}\n"
-                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                    logfile.write(log_msg_one)
-                raise ValueError('Empty data')
+                    log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                  f"File = kafka_message.py -> \n" \
+                                  f"Class = KafkaMessage -> \n" \
+                                  f"Method = get_message_from_kafka -> \n" \
+                                  f"Message: Could not get message: {kafka_message}.\n" \
+                                  f"Check message into Kafka topic.\n" \
+                                  f"Probably, there is an error.\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+                    print(f"Message: Could not get message: {kafka_message}.\n"
+                          f"Check message into Kafka topic.\n"
+                          f"Probably, there is an error.\n")
+                    assert str(kafka_message) != str([])
 
         del kafka_message['_id']
         with allure.step('Receive message in feed-point'):
@@ -97,14 +107,19 @@ class KafkaMessage:
                     if str(kafka_message) == str([]):
                         with allure.step('Receive message in feed-point'):
                             allure.attach(json.dumps(kafka_message), 'Message in feed-point')
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = kafka_message.py -> \n" \
-                                      f"Class = KafkaMessage -> \n" \
-                                      f"Method = tender_period_end_auction_message_is_successful -> \n" \
-                                      f"Actual message: {kafka_message}\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise ValueError('Empty data')
+                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                          f"File = kafka_message.py -> \n" \
+                                          f"Class = KafkaMessage -> \n" \
+                                          f"Method = get_message_from_kafka_by_ocid_and_initiator -> \n" \
+                                          f"Message: Could not get message: {kafka_message}.\n" \
+                                          f"Check message into Kafka topic.\n" \
+                                          f"Probably, there is an error.\n"
+                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                logfile.write(log_msg_one)
+                            print(f"Message: Could not get message: {kafka_message}.\n"
+                                  f"Check message into Kafka topic.\n"
+                                  f"Probably, there is an error.\n")
+                            assert str(kafka_message) != str([])
 
                     del kafka_message['_id']
                     return kafka_message
@@ -116,18 +131,21 @@ class KafkaMessage:
             ).json()
 
             if str(kafka_message) == str([]):
-
                 with allure.step('Receive message in feed-point'):
                     allure.attach(json.dumps(kafka_message), 'Message in feed-point')
-                log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                              f"File = kafka_message.py -> \n" \
-                              f"Class = KafkaMessage -> \n" \
-                              f"Method = tender_period_end_auction_message_is_successful -> \n" \
-                              f"Actual message: {kafka_message}\n"
-                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                    logfile.write(log_msg_one)
+                    log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                  f"File = kafka_message.py -> \n" \
+                                  f"Class = KafkaMessage -> \n" \
+                                  f"Method = get_message_from_kafka_by_ocid_and_initiator -> \n" \
+                                  f"Message: Could not get message: {kafka_message}.\n" \
+                                  f"Check message into Kafka topic.\n" \
+                                  f"Probably, there is an error.\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+                    print(f"Message: Could not get message: {kafka_message}.\n"
+                          f"Check message into Kafka topic.\n"
+                          f"Probably, there is an error.\n")
                     assert str(kafka_message) != str([])
-                raise ValueError('Empty data')
 
         del kafka_message[0]['_id']
         with allure.step('Receive message in feed-point'):
