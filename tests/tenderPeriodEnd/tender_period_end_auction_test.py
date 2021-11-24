@@ -241,7 +241,6 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreateCnOnPn.actual_ms_release = requests.get(
                 url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreatePn.pn_ocid}").json()
-
         with allure.step('# 9. See result'):
             """
             Check the results of test case running.
@@ -419,37 +418,28 @@ class TestTenderPeriodEndAuction:
                     raise ValueError("Could not return BPE operation step")
 
                 if expected_result != compare_releases:
-                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-
-                    @allure.title('Compare actual EV release and expected EV release')
-                    def compare_test():
-                        allure.attach(str(compare_releases), "Actual result")
-                        allure.attach(str(expected_result), "Expected result")
+                    with allure.step('Compare actual EV release and expected EV release'):
+                        allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                        allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                         assert expected_result == compare_releases
                 elif GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards'] != \
                         expected_awards_array:
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                                                     'releases'][0]['awards'])), "Actual awards array")
-                    allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
-
-                    @allure.title('Compare actual awards array and expected awards array.')
-                    def compare_test():
-                        allure.attach(str(compare_releases), "Actual result")
-                        allure.attach(str(expected_result), "Expected result")
+                    with allure.step('Compare actual awards array and expected awards array.'):
+                        allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                                                         'releases'][0]['awards'])), "Actual awards array")
+                        allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
                         assert expected_awards_array == \
                                GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
 
-                @allure.title('Compare actual EV release and expected EV release')
-                def compare_test():
-                    allure.attach(str(compare_releases), "Actual result")
-                    allure.attach(str(expected_result), "Expected result")
+                with allure.step('Compare actual EV release and expected EV release'):
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                     assert expected_result == compare_releases
 
-                @allure.title('Compare actual awards array and expected awards array.')
-                def compare_test():
-                    allure.attach(str(compare_releases), "Actual result")
-                    allure.attach(str(expected_result), "Expected result")
+                with allure.step('Compare actual awards array and expected awards array.'):
+                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                                                     'releases'][0]['awards'])), "Actual awards array")
+                    allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
                     assert expected_awards_array == \
                            GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
             with allure.step('# 9.3. Check MS release'):
@@ -551,19 +541,14 @@ class TestTenderPeriodEndAuction:
                     raise ValueError("Could not return BPE operation step")
 
                 if expected_result != compare_releases:
-                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-
-                    @allure.title('Compare actual MS release and expected MS release')
-                    def compare_test():
-                        allure.attach(str(compare_releases), "Actual result")
-                        allure.attach(str(expected_result), "Expected result")
+                    with allure.step('Compare actual MS release and expected MS release'):
+                        allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                        allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                         assert expected_result == compare_releases
 
-                @allure.title('Compare actual MS release and expected MS release')
-                def compare_test():
-                    allure.attach(str(compare_releases), "Actual result")
-                    allure.attach(str(expected_result), "Expected result")
+                with allure.step('Compare actual MS release and expected MS release'):
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                     assert expected_result == compare_releases
 
     # @allure.title("Баг https://ustudio.atlassian.net/browse/ES-6888 "
