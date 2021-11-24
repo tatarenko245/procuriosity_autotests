@@ -422,7 +422,7 @@ class TestTenderPeriodEndAuction:
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
 
-                    @allure.step('Compare actual EV release and expected EV release')
+                    @allure.title('Compare actual EV release and expected EV release')
                     def compare():
                         allure.attach(str(compare_releases), "Actual result")
                         allure.attach(str(expected_result), "Expected result")
@@ -433,20 +433,20 @@ class TestTenderPeriodEndAuction:
                                                      'releases'][0]['awards'])), "Actual awards array")
                     allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
 
-                    @allure.step('Compare actual awards array and expected awards array.')
+                    @allure.title('Compare actual awards array and expected awards array.')
                     def compare():
                         allure.attach(str(compare_releases), "Actual result")
                         allure.attach(str(expected_result), "Expected result")
                         assert expected_awards_array == \
                                GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
 
-                @allure.step('Compare actual EV release and expected EV release')
+                @allure.title('Compare actual EV release and expected EV release')
                 def compare():
                     allure.attach(str(compare_releases), "Actual result")
                     allure.attach(str(expected_result), "Expected result")
                     assert expected_result == compare_releases
 
-                @allure.step('Compare actual awards array and expected awards array.')
+                @allure.title('Compare actual awards array and expected awards array.')
                 def compare():
                     allure.attach(str(compare_releases), "Actual result")
                     allure.attach(str(expected_result), "Expected result")
@@ -554,13 +554,13 @@ class TestTenderPeriodEndAuction:
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
 
-                    @allure.step('Compare actual MS release and expected MS release')
+                    @allure.title('Compare actual MS release and expected MS release')
                     def compare():
                         allure.attach(str(compare_releases), "Actual result")
                         allure.attach(str(expected_result), "Expected result")
                         assert expected_result == compare_releases
 
-                @allure.step('Compare actual MS release and expected MS release')
+                @allure.title('Compare actual MS release and expected MS release')
                 def compare():
                     allure.attach(str(compare_releases), "Actual result")
                     allure.attach(str(expected_result), "Expected result")
