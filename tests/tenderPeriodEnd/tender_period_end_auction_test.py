@@ -288,9 +288,15 @@ class TestTenderPeriodEndAuction:
                 """
                 Compare actual evaluation value release with expected evaluation value release model.
                 """
+                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ev_release)),
+                              "Actual EV release before tender period end expired")
+
                 GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
                     url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
                         f"{GlobalClassCreateCnOnPn.ev_id}").json()
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release)),
+                              "Actual EV release after tender period end expired")
 
                 compare_releases = DeepDiff(
                     GlobalClassCreateCnOnPn.actual_ev_release, GlobalClassTenderPeriodEndAuction.actual_ev_release)
@@ -411,20 +417,6 @@ class TestTenderPeriodEndAuction:
                         logfile.write(log_msg_one)
                     raise ValueError("Could not return BPE operation step")
 
-                if expected_result != compare_releases:
-                    with allure.step('Compare actual EV release and expected EV release'):
-                        allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                        allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                        assert expected_result == compare_releases
-                elif GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards'] != \
-                        expected_awards_array:
-                    with allure.step('Compare actual awards array and expected awards array.'):
-                        allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                                                         'releases'][0]['awards'])), "Actual awards array")
-                        allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
-                        assert expected_awards_array == \
-                               GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
-
                 with allure.step('Compare actual EV release and expected EV release'):
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
@@ -440,9 +432,15 @@ class TestTenderPeriodEndAuction:
                 """
                 Compare multistage release with expected multistage release model.
                 """
+                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
+                              "Actual MS release before tender period end expired")
+
                 GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
                     url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
                         f"{GlobalClassCreatePn.pn_ocid}").json()
+
+                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ms_release)),
+                              "Actual MS release after tender period end expired")
 
                 compare_releases = dict(DeepDiff(
                     GlobalClassCreateCnOnPn.actual_ms_release,
@@ -527,12 +525,6 @@ class TestTenderPeriodEndAuction:
                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                         logfile.write(log_msg_one)
                     raise ValueError("Could not return BPE operation step")
-
-                if expected_result != compare_releases:
-                    with allure.step('Compare actual MS release and expected MS release'):
-                        allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                        allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                        assert expected_result == compare_releases
 
                 with allure.step('Compare actual MS release and expected MS release'):
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
