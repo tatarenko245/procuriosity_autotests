@@ -288,15 +288,9 @@ class TestTenderPeriodEndAuction:
                 """
                 Compare actual evaluation value release with expected evaluation value release model.
                 """
-                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ev_release)),
-                              "Actual EV release before tender period end expired")
-
                 GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
                     url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
                         f"{GlobalClassCreateCnOnPn.ev_id}").json()
-
-                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release)),
-                              "Actual EV release after tender period end expired")
 
                 compare_releases = DeepDiff(
                     GlobalClassCreateCnOnPn.actual_ev_release, GlobalClassTenderPeriodEndAuction.actual_ev_release)
@@ -446,15 +440,9 @@ class TestTenderPeriodEndAuction:
                 """
                 Compare multistage release with expected multistage release model.
                 """
-                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
-                              "Actual MS release before tender period end expired")
-
                 GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
                     url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
                         f"{GlobalClassCreatePn.pn_ocid}").json()
-
-                allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ms_release)),
-                              "Actual MS release after tender period end expired")
 
                 compare_releases = dict(DeepDiff(
                     GlobalClassCreateCnOnPn.actual_ms_release,
