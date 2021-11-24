@@ -421,28 +421,37 @@ class TestTenderPeriodEndAuction:
                 if expected_result != compare_releases:
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_result,
-                        actual_result=compare_releases
-                    )) == str(True)
+
+                    @allure.step('Compare actual EV release and expected EV release')
+                    def compare():
+                        allure.attach(str(compare_releases), "Actual result")
+                        allure.attach(str(expected_result), "Expected result")
+                        assert expected_result == compare_releases
                 elif GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards'] != \
                         expected_awards_array:
                     allure.attach(str(json.dumps(GlobalClassTenderPeriodEndAuction.actual_ev_release[
                                                      'releases'][0]['awards'])), "Actual awards array")
                     allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_awards_array,
-                        actual_result=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
-                    )) == str(True)
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_awards_array,
-                    actual_result=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
-                )) == str(True)
+                    @allure.step('Compare actual awards array and expected awards array.')
+                    def compare():
+                        allure.attach(str(compare_releases), "Actual result")
+                        allure.attach(str(expected_result), "Expected result")
+                        assert expected_awards_array == \
+                               GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
+
+                @allure.step('Compare actual EV release and expected EV release')
+                def compare():
+                    allure.attach(str(compare_releases), "Actual result")
+                    allure.attach(str(expected_result), "Expected result")
+                    assert expected_result == compare_releases
+
+                @allure.step('Compare actual awards array and expected awards array.')
+                def compare():
+                    allure.attach(str(compare_releases), "Actual result")
+                    allure.attach(str(expected_result), "Expected result")
+                    assert expected_awards_array == \
+                           GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']
             with allure.step('# 9.3. Check MS release'):
                 """
                 Compare multistage release with expected multistage release model.
@@ -544,15 +553,18 @@ class TestTenderPeriodEndAuction:
                 if expected_result != compare_releases:
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_result,
-                        actual_result=compare_releases
-                    )) == str(True)
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                    @allure.step('Compare actual MS release and expected MS release')
+                    def compare():
+                        allure.attach(str(compare_releases), "Actual result")
+                        allure.attach(str(expected_result), "Expected result")
+                        assert expected_result == compare_releases
+
+                @allure.step('Compare actual MS release and expected MS release')
+                def compare():
+                    allure.attach(str(compare_releases), "Actual result")
+                    allure.attach(str(expected_result), "Expected result")
+                    assert expected_result == compare_releases
 
     # @allure.title("Баг https://ustudio.atlassian.net/browse/ES-6888 "
     #               "------------------------------------------------"
