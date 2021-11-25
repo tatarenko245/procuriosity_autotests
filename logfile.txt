@@ -80,3 +80,23 @@ Method = get_message_from_kafka_by_ocid_and_initiator ->
 Message: Could not get message: [].
 Check message into Kafka topic.
 Probably, there is an error.
+
+2021-11-25 12:23:45.043301
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-25 12:29:02.044808
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = get_message_from_kafka_by_ocid_and_initiator -> 
+Message: Could not get message: [].
+Check message into Kafka topic.
+Probably, there is an error.
+
+2021-11-25 12:34:18.043330
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
