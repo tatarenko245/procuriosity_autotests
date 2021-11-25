@@ -191,8 +191,9 @@ class TenderPeriodExpectedChanges:
                 ['requirementResponses'].
                 """
                 list_of_release_requirement_responses_id = list()
-                for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'][
-                    'details'][0]['requirementResponses']:
+                for i in \
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']['details'][0][
+                            'requirementResponses']:
                     for i_1 in i:
                         if i_1 == "id":
                             list_of_release_requirement_responses_id.append(i_1)
@@ -271,8 +272,9 @@ class TenderPeriodExpectedChanges:
                     ['requirementResponses']['evidences'].
                     """
                     list_of_release_requirement_responses_evidences_id = list()
-                    for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']['details'][0][
-                        'requirementResponses'][q_two]['evidences']:
+                    for i in \
+                            GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']['details'][0][
+                                'requirementResponses'][q_two]['evidences']:
                         for i_1 in i:
                             if i_1 == "id":
                                 list_of_release_requirement_responses_evidences_id.append(i_1)
@@ -311,7 +313,7 @@ class TenderPeriodExpectedChanges:
                             expected_bid_object['details'][0]['requirementResponses'][q_two][
                                 'evidences'][q_three]['id'] = \
                                 GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'][
-                                'details'][0]['requirementResponses'][q_two]['evidences'][q_three]['id']
+                                    'details'][0]['requirementResponses'][q_two]['evidences'][q_three]['id']
                         else:
                             raise ValueError("requirementResponses.id in release must be uuid version 4")
                     except Exception:
@@ -535,17 +537,11 @@ class TenderPeriodExpectedChanges:
                         "description": tenderer_region_data['data']['description'],
                         "uri": tenderer_region_data['data']['uri']
                     }
-                    if bid_payload['bid']['tenderers'][t]['address']['addressDetails']['locality'][
-                        'scheme'] == "CUATM":
+                    if bid_payload['bid']['tenderers'][t]['address']['addressDetails']['locality']['scheme'] == "CUATM":
                         tenderer_locality_data = self.mdm.get_locality(
-                            country=
-                            bid_payload['bid']['tenderers'][t]['address']['addressDetails'][
-                                'country']['id'],
-                            region=bid_payload['bid']['tenderers'][t]['address']['addressDetails'][
-                                'region']['id'],
-                            locality=
-                            bid_payload['bid']['tenderers'][t]['address']['addressDetails'][
-                                'locality']['id'],
+                            country=bid_payload['bid']['tenderers'][t]['address']['addressDetails']['country']['id'],
+                            region=bid_payload['bid']['tenderers'][t]['address']['addressDetails']['region']['id'],
+                            locality=bid_payload['bid']['tenderers'][t]['address']['addressDetails']['locality']['id'],
                             language=self.language
                         )
                         tenderer_locality_object = {
@@ -647,8 +643,9 @@ class TenderPeriodExpectedChanges:
                             "description": bank_region_data['data']['description'],
                             "uri": bank_region_data['data']['uri']
                         }
-                        if bid_payload['bid']['tenderers'][t]['details']['bankAccounts'][b]['address'][
-                            'addressDetails']['locality']['scheme'] == "CUATM":
+                        if \
+                                bid_payload['bid']['tenderers'][t]['details']['bankAccounts'][b]['address'][
+                                    'addressDetails']['locality']['scheme'] == "CUATM":
                             bank_locality_data = self.mdm.get_locality(
                                 country=bid_payload['bid']['tenderers'][t]['details']['bankAccounts'][b]['address'][
                                     'addressDetails']['country']['id'],
@@ -887,8 +884,8 @@ class TenderPeriodExpectedChanges:
                     """
                     Set 'relatedBid' into successful_award_array[al]['relatedLots'].
                     """
-                    for detail in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'][
-                        'details']:
+                    for detail in \
+                            GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']['details']:
                         if detail['tenderers'] == successful_award_object['suppliers']:
                             successful_award_object['relatedBid'] = detail['id']
                 except Exception:
@@ -931,8 +928,9 @@ class TenderPeriodExpectedChanges:
                                 into criterion 'CRITERION.SELECTION' and 'CRITERION.OTHER'.
                                 """
                                 for rs in list_of_payload_requirement_id:
-                                    for cr in GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                        'releases'][0]['tender']['criteria']:
+                                    for cr in \
+                                            GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0][
+                                                'tender']['criteria']:
                                         if cr['classification']['id'][:20] == "CRITERION.SELECTION." and \
                                                 cr['relatesTo'] == "tenderer" or \
                                                 cr['classification']['id'][:20] == "CRITERION.SELECTION." and \
@@ -989,7 +987,10 @@ class TenderPeriodExpectedChanges:
                                         for x in bid_payload['bid']['requirementResponses']:
                                             if x['requirement']['id'] == y['id']:
                                                 for z in coefficients_array_from_release:
+
                                                     for z_1 in z['coefficients']:
+                                                        """ z_1 is dict """
+                                                        """# z_1['value'] is float """
                                                         if z_1['value'] == x['value']:
                                                             successful_award_object['weightedValue']['amount'] = \
                                                                 round(successful_award_object['value']['amount'] *
