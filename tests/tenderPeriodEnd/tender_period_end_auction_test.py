@@ -1431,7 +1431,7 @@ class TestTenderPeriodEndAuction:
                     final_expected_criteria_array = TenderPeriodExpectedChanges(
                         environment=GlobalClassMetadata.environment,
                         language=GlobalClassMetadata.language).prepare_criteria_array_source_procuring_entity(
-                        feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0]))
+                        feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0])
                 except Exception:
                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                   f"File = tender_period_end_auction_test.py -> \n" \
@@ -2005,7 +2005,7 @@ class TestTenderPeriodEndAuction:
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language
                 ).prepare_criteria_array_source_procuring_entity(
-                feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0]))
+                feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0])
 
                 expected_result = {
                     "dictionary_item_added": "['releases'][0]['parties'], "
