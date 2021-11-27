@@ -1117,8 +1117,9 @@ class TestTenderPeriodEndAuction:
                     expected_awards_array_first = TenderPeriodExpectedChanges(
                         environment=GlobalClassMetadata.environment,
                         language=GlobalClassMetadata.language
-                    ).prepare_array_of_awards_mapper(bid_payload=GlobalClassCreateFirstBid.payload,
-                    feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0])
+                    ).prepare_array_of_awards_mapper(
+                        bid_payload=GlobalClassCreateFirstBid.payload,
+                        feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0])
 
                     expected_awards_array = expected_awards_array_first
 
@@ -1339,8 +1340,7 @@ class TestTenderPeriodEndAuction:
                     ).prepare_bid_details_mapper(
                         bid_payload=GlobalClassCreateFirstBid.payload,
                         bid_feed_point_message=GlobalClassCreateFirstBid.feed_point_message,
-                        feed_point_message=
-                                                         GlobalClassTenderPeriodEndAuction.feed_point_message[0])
+                        feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0])
                     expected_bids_array.append(expected_bids_object_first)
 
                     try:
@@ -2005,7 +2005,7 @@ class TestTenderPeriodEndAuction:
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language
                 ).prepare_criteria_array_source_procuring_entity(
-                feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0])
+                    feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0])
 
                 expected_result = {
                     "dictionary_item_added": "['releases'][0]['parties'], "
@@ -2198,8 +2198,9 @@ class TestTenderPeriodEndAuction:
                     expected_awards_array_first = TenderPeriodExpectedChanges(
                         environment=GlobalClassMetadata.environment,
                         language=GlobalClassMetadata.language
-                    ).prepare_array_of_awards_mapper(bid_payload=GlobalClassCreateFirstBid.payload,
-                    feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0])
+                    ).prepare_array_of_awards_mapper(
+                        bid_payload=GlobalClassCreateFirstBid.payload,
+                        feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0])
 
                     expected_awards_array = expected_awards_array_first
 
@@ -2418,8 +2419,7 @@ class TestTenderPeriodEndAuction:
                     ).prepare_bid_details_mapper(
                         bid_payload=GlobalClassCreateFirstBid.payload,
                         bid_feed_point_message=GlobalClassCreateFirstBid.feed_point_message,
-                        feed_point_message=
-                                                         GlobalClassTenderPeriodEndAuction.feed_point_message[0])
+                        feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0])
                     expected_bids_array.append(expected_bids_object_first)
 
                     try:
@@ -3418,16 +3418,16 @@ class TestTenderPeriodEndAuction:
                     expected_awards_array_first = TenderPeriodExpectedChanges(
                         environment=GlobalClassMetadata.environment,
                         language=GlobalClassMetadata.language
-                    ).prepare_array_of_awards_mapper(bid_payload=GlobalClassCreateFirstBid.payload,
-                                                     feed_point_message=
-                                                     GlobalClassTenderPeriodEndAuction.feed_point_message[1])
+                    ).prepare_array_of_awards_mapper(
+                        bid_payload=GlobalClassCreateFirstBid.payload,
+                        feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[1])
 
                     expected_awards_array_second = TenderPeriodExpectedChanges(
                         environment=GlobalClassMetadata.environment,
                         language=GlobalClassMetadata.language
-                    ).prepare_array_of_awards_mapper(bid_payload=GlobalClassCreateSecondBid.payload,
-                                                     feed_point_message=
-                                                     GlobalClassTenderPeriodEndAuction.feed_point_message[1])
+                    ).prepare_array_of_awards_mapper(
+                        bid_payload=GlobalClassCreateSecondBid.payload,
+                        feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[1])
 
                     expected_awards_array = expected_awards_array_first + expected_awards_array_second
 
@@ -3646,8 +3646,7 @@ class TestTenderPeriodEndAuction:
                     ).prepare_bid_details_mapper(
                         bid_payload=GlobalClassCreateFirstBid.payload,
                         bid_feed_point_message=GlobalClassCreateFirstBid.feed_point_message,
-                        feed_point_message=
-                        GlobalClassTenderPeriodEndAuction.feed_point_message[1]
+                        feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[1]
                     )
                     expected_bids_array.append(expected_bids_object_first)
 
@@ -3657,8 +3656,7 @@ class TestTenderPeriodEndAuction:
                     ).prepare_bid_details_mapper(
                         bid_payload=GlobalClassCreateSecondBid.payload,
                         bid_feed_point_message=GlobalClassCreateSecondBid.feed_point_message,
-                        feed_point_message=
-                        GlobalClassTenderPeriodEndAuction.feed_point_message[1]
+                        feed_point_message=GlobalClassTenderPeriodEndAuction.feed_point_message[1]
                     )
                     expected_bids_array.append(expected_bids_object_second)
 
