@@ -163,7 +163,7 @@ class TenderPeriodExpectedChanges:
         return expected_awards_array
 
     @staticmethod
-    def prepare_criteria_array_source_procuring_entity():
+    def prepare_criteria_array_source_procuring_entity(feed_point_message):
         quantity_of_criteria_object_into_release = 0
         if "criteria" in GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']:
             try:
@@ -270,8 +270,7 @@ class TenderPeriodExpectedChanges:
                                      "to verify this information.",
                             "dataType": "boolean",
                             "status": "active",
-                            "datePublished": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
-                                'operationDate'],
+                            "datePublished": feed_point_message['data']['operationDate'],
                             "expectedValue": True
                         },
                         {
@@ -284,8 +283,7 @@ class TenderPeriodExpectedChanges:
                                      "I will not make any adverse use of information given to me.",
                             "dataType": "boolean",
                             "status": "active",
-                            "datePublished": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
-                                'operationDate'],
+                            "datePublished": feed_point_message['data']['operationDate'],
                             "expectedValue": True
                         }]
                 }],
@@ -297,7 +295,7 @@ class TenderPeriodExpectedChanges:
         }
         return expected_criteria_array_source_procuring_entity, quantity_of_criteria_object_into_release
 
-    def prepare_array_of_parties_mapper_for_successful_tender(self, bid_payload):
+    def prepare_array_of_parties_mapper_for_successful_tender(self, feed_point_message, bid_payload):
         expected_array_of_parties_mapper = []
         try:
             """
@@ -630,8 +628,7 @@ class TenderPeriodExpectedChanges:
                             bid_payload['bid']['tenderers'][t]['persones'][p][
                                 'businessFunctions'][bf]['documents'][bfd]['id']
                         party_object['persones'][p]['businessFunctions'][bf]['documents'][bfd][
-                            'datePublished'] = GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
-                            'operationDate']
+                            'datePublished'] = feed_point_message['data']['operationDate']
             party_object['roles'] = ["tenderer", "supplier"]
             mapper = {
                 "id": party_object['id'],
@@ -640,7 +637,7 @@ class TenderPeriodExpectedChanges:
             expected_array_of_parties_mapper.append(mapper)
         return expected_array_of_parties_mapper
 
-    def prepare_array_of_awards_mapper(self, bid_payload):
+    def prepare_array_of_awards_mapper(self, bid_payload, feed_point_message):
         expected_array_of_awards_mapper = list()
         try:
             """
@@ -682,8 +679,7 @@ class TenderPeriodExpectedChanges:
                 successful_award_object.update(self.constructor.ev_release_successful_award_object())
                 successful_award_object['status'] = "pending"
                 successful_award_object['statusDetails'] = "awaiting"
-                successful_award_object['date'] = \
-                    GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
+                successful_award_object['date'] = feed_point_message['data']['operationDate']
                 successful_award_object['value'] = bid_payload['bid']['value']
 
                 try:
@@ -847,7 +843,7 @@ class TenderPeriodExpectedChanges:
             raise Exception("Impossible to prepare successful award object framework.")
         return expected_array_of_awards_mapper
 
-    def prepare_bid_details_mapper(self, bid_payload, bid_feed_point_message):
+    def prepare_bid_details_mapper(self, bid_payload, bid_feed_point_message, feed_point_message):
         expected_bid_object = {}
         expected_bid_object.update(self.constructor.ev_release_bid_object())
         expected_bid_object['details'].append(self.constructor.ev_release_bid_details_object())
@@ -916,8 +912,7 @@ class TenderPeriodExpectedChanges:
                 some_document[0]['description'] = bid_payload['bid']['documents'][q_one]['description']
                 some_document[0]['url'] = f"{self.metadata_document_url}/" + bid_payload['bid'][
                     'documents'][q_one]['id']
-                some_document[0]['datePublished'] = \
-                    GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
+                some_document[0]['datePublished'] = feed_point_message['data']['operationDate']
                 some_document[0]['relatedLots'] = bid_payload['bid']['documents'][q_one]['relatedLots']
                 expected_bid_object['details'][0]['documents'].append(some_document[0])
 

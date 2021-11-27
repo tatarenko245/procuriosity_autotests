@@ -101,7 +101,8 @@ class KafkaMessage:
                             logfile.write(log_msg_one)
                         assert str(kafka_message) != str([])
 
-                    del kafka_message['_id']
+                    for i in kafka_message:
+                        del i['_id']
                     return kafka_message
             print('The message was not found in Kafka topic')
 
@@ -122,8 +123,9 @@ class KafkaMessage:
                     logfile.write(log_msg_one)
                 assert str(kafka_message) != str([])
 
-        del kafka_message[0]['_id']
-        return kafka_message[0]
+        for i in kafka_message:
+            del i['_id']
+        return kafka_message
 
     @staticmethod
     def create_ei_message_is_successful(environment, kafka_message):
