@@ -257,13 +257,13 @@ class TestTenderPeriodEndAuction:
                 GlobalClassTenderPeriodEndAuction.feed_point_message = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
                                  initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
-                allure.attach(str(GlobalClassTenderPeriodEndAuction.feed_point_message), 'Message from feed point')
+                allure.attach(str(GlobalClassTenderPeriodEndAuction.feed_point_message[0]), 'Message from feed point')
 
                 check_the_asynchronous_result_of_expired_tender_period_end = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
                                  initiation="bpe").tender_period_end_auction_message_is_successful(
                         environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassTenderPeriodEndAuction.feed_point_message,
+                        kafka_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0],
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
                         ev_id=GlobalClassCreateCnOnPn.ev_id
                     )
@@ -275,7 +275,7 @@ class TestTenderPeriodEndAuction:
                     if check_the_asynchronous_result_of_expired_tender_period_end is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
+                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
@@ -320,7 +320,7 @@ class TestTenderPeriodEndAuction:
                                          f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
+                            "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data'][
                                 'operationDate'],
                             "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
                         },
@@ -407,7 +407,7 @@ class TestTenderPeriodEndAuction:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
+                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
@@ -459,7 +459,7 @@ class TestTenderPeriodEndAuction:
                                          f"{GlobalClassCreateCnOnPn.actual_ms_release['releases'][0]['id'][29:42]}"
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
+                            "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data'][
                                 'operationDate'],
                             "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
                         },
@@ -510,12 +510,12 @@ class TestTenderPeriodEndAuction:
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
 
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
+                            operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = \
                                 GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                    operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[
+                                    operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
                                         'X-OPERATION-ID'])
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -836,13 +836,13 @@ class TestTenderPeriodEndAuction:
                 GlobalClassTenderPeriodEndAuction.feed_point_message = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
                                  initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
-                allure.attach(str(GlobalClassTenderPeriodEndAuction.feed_point_message), 'Message in feed point')
+                allure.attach(str(GlobalClassTenderPeriodEndAuction.feed_point_message[0]), 'Message in feed point')
 
                 asynchronous_result_of_expired_tender_period_end = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
                                  initiation="bpe").tender_period_end_auction_message_is_successful(
                         environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassTenderPeriodEndAuction.feed_point_message,
+                        kafka_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0],
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
                         ev_id=GlobalClassCreateCnOnPn.ev_id
                     )
@@ -855,7 +855,7 @@ class TestTenderPeriodEndAuction:
                     if asynchronous_result_of_expired_tender_period_end is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
+                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
@@ -909,7 +909,7 @@ class TestTenderPeriodEndAuction:
                                          f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
+                            "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data'][
                                 'operationDate'],
                             "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
                         },
@@ -1458,8 +1458,7 @@ class TestTenderPeriodEndAuction:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[
-                                    'X-OPERATION-ID'])
+                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
@@ -1576,12 +1575,12 @@ class TestTenderPeriodEndAuction:
                             operation_id=GlobalClassCreateFirstBid.operation_id)
 
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
+                            operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             database = GlobalClassMetadata.database
                             steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
+                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                             allure.attach(steps, "Cassandra DataBase: steps of process")
 
                     try:
@@ -1948,13 +1947,13 @@ class TestTenderPeriodEndAuction:
                 GlobalClassTenderPeriodEndAuction.feed_point_message = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
                                  initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
-                allure.attach(str(GlobalClassTenderPeriodEndAuction.feed_point_message), 'Message in feed point')
+                allure.attach(str(GlobalClassTenderPeriodEndAuction.feed_point_message[0]), 'Message in feed point')
 
                 asynchronous_result_of_expired_tender_period_end = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
                                  initiation="bpe").tender_period_end_auction_message_is_successful(
                         environment=GlobalClassMetadata.environment,
-                        kafka_message=GlobalClassTenderPeriodEndAuction.feed_point_message,
+                        kafka_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0],
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
                         ev_id=GlobalClassCreateCnOnPn.ev_id
                     )
@@ -1966,7 +1965,7 @@ class TestTenderPeriodEndAuction:
                     if asynchronous_result_of_expired_tender_period_end is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
+                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
@@ -2021,7 +2020,7 @@ class TestTenderPeriodEndAuction:
                                          f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message['data'][
+                            "new_value": GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data'][
                                 'operationDate'],
                             "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
                         },
@@ -2535,8 +2534,7 @@ class TestTenderPeriodEndAuction:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[
-                                    'X-OPERATION-ID'])
+                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
@@ -2652,13 +2650,13 @@ class TestTenderPeriodEndAuction:
                             operation_id=GlobalClassCreateFirstBid.operation_id)
 
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
+                            operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             database = GlobalClassMetadata.database
                             steps = \
                                 database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                    operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[
+                                    operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
                                         'X-OPERATION-ID'])
                             allure.attach(steps, "Cassandra DataBase: steps of process")
 
@@ -3137,7 +3135,7 @@ class TestTenderPeriodEndAuction:
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
                                  initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
 
-                allure.attach(str(GlobalClassTenderPeriodEndAuction.feed_point_message), 'Message in feed point')
+                allure.attach(str(GlobalClassTenderPeriodEndAuction.feed_point_message[0]), 'Message in feed point')
 
                 asynchronous_result_of_expired_tender_period_end_auction_links = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
@@ -3222,7 +3220,14 @@ class TestTenderPeriodEndAuction:
                     "dictionary_item_added": "['releases'][0]['parties'], "
                                              "['releases'][0]['awards'], "
                                              "['releases'][0]['bids'], "
-                                             "['releases'][0]['tender']['awardPeriod']",
+                                             "['releases'][0]['tender']['awardPeriod'], "
+                                             "['releases'][0]['tender']['auctionPeriod']['endDate'], "
+                                             "['releases'][0]['tender']['electronicAuctions']['details'][0]"
+                                             "['electronicAuctionResult'], "
+                                             "['releases'][0]['tender']['electronicAuctions']['details'][0]"
+                                             "['electronicAuctionProgress'], "
+                                             "['releases'][0]['tender']['electronicAuctions']['details'][0]"
+                                             "['auctionPeriod']['endDate']",
                     "values_changed": {
                         "root['releases'][0]['id']": {
                             "new_value":
@@ -3243,6 +3248,13 @@ class TestTenderPeriodEndAuction:
                         "root['releases'][0]['tender']['statusDetails']": {
                             'new_value': 'awarding',
                             'old_value': 'clarification'
+                        },
+                        "root['releases'][0]['tender']['electronicAuctions']['details'][0]['auctionPeriod']"
+                        "['startDate']": {
+                            "new_value": GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0][
+                                'tender']['auctionPeriod']['startDate'],
+                            "old_value": GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0][
+                                'tender']['auctionPeriod']['endDate']
                         }
                     },
                     "iterable_item_added": {
