@@ -1,0 +1,102 @@
+
+2021-11-22 16:50:12.045382
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-22 17:00:44.043144
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-22 17:06:02.060821
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-23 14:11:02.048041
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_auction_message_is_successful -> 
+KeyError: X-OPERATION-ID
+
+2021-11-23 15:05:09.049470
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_auction_message_is_successful -> 
+Actual message: []
+
+2021-11-23 15:20:19.058081
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_auction_message_is_successful -> 
+Actual message: []
+
+2021-11-23 17:50:18.068743
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-23 18:08:50.083168
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-23 18:14:10.060060
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = get_message_from_kafka_by_ocid_and_initiator -> 
+Message: Could not get message: [].
+Check message into Kafka topic.
+Probably, there is an error.
+
+2021-11-23 18:19:27.053059
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-23 18:24:46.065172
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-24 13:53:32.048959
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-24 14:54:55.043422
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = get_message_from_kafka_by_ocid_and_initiator -> 
+Message: Could not get message: [].
+Check message into Kafka topic.
+Probably, there is an error.
+
+2021-11-25 12:23:45.043301
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-25 12:29:02.044808
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = get_message_from_kafka_by_ocid_and_initiator -> 
+Message: Could not get message: [].
+Check message into Kafka topic.
+Probably, there is an error.
+
+2021-11-25 12:34:18.043330
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links

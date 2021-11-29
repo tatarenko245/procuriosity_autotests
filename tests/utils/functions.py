@@ -423,7 +423,7 @@ def generate_tender_classification_id(items_array):
     return tender_classification_id
 
 
-# This function returns 'procuriosity_autotests' dir
+# This function returns root dir, for example 'procuriosity_autotests' dir
 def get_project_root() -> Path:
     return Path(__file__).parent.parent.parent
 
