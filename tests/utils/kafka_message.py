@@ -99,6 +99,13 @@ class KafkaMessage:
                                       f"Probably, there is an error.\n"
                         with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                             logfile.write(log_msg_one)
+                        print(f"\n{datetime.datetime.now()}\n"
+                                  f"File = kafka_message.py -> \n"
+                                  f"Class = KafkaMessage -> \n"
+                                  f"Method = get_message_from_kafka_by_ocid_and_initiator -> \n"
+                                  f"Message: Could not get message: {kafka_message}.\n"
+                                  f"Check message into Kafka topic.\n"
+                                  f"Probably, there is an error.\n")
                         assert str(kafka_message) != str([])
 
                     for i in kafka_message:
@@ -121,6 +128,13 @@ class KafkaMessage:
                               f"Probably, there is an error.\n"
                 with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                     logfile.write(log_msg_one)
+                print(f"\n{datetime.datetime.now()}\n"
+                      f"File = kafka_message.py -> \n"
+                      f"Class = KafkaMessage -> \n"
+                      f"Method = get_message_from_kafka_by_ocid_and_initiator -> \n"
+                      f"Message: Could not get message: {kafka_message}.\n"
+                      f"Check message into Kafka topic.\n"
+                      f"Probably, there is an error.\n")
                 assert str(kafka_message) != str([])
 
         for i in kafka_message:

@@ -125,3 +125,210 @@ File = kafka_message.py ->
 Class = KafkaMessage -> 
 Method = tender_period_end_message_is_successful -> 
 KeyError: data.outcomes.links
+
+2021-11-29 11:37:47.231183
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 11:37:47.489968
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: Check EV release.
+Message: Impossible to prepare expected awards array.
+
+2021-11-29 11:52:25.058062
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 12:10:41.050622
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = get_message_from_kafka_by_ocid_and_initiator -> 
+Message: Could not get message: [].
+Check message into Kafka topic.
+Probably, there is an error.
+
+2021-11-29 13:12:27.094823
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 13:34:58.055750
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 14:12:49.039289
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-29 14:12:49.040328
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 15:04:43.387962
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-29 15:04:43.389454
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 15:33:55.633664
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-29 15:33:55.635581
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 15:33:59.983662
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_three -> 
+Step: Check message EV release.
+Message: Impossible to check how many requirementResponses object into expected_bids_array.
+2021-11-29 15:33:59.984046
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_three -> 
+Step: Check message EV release.
+Message: Impossible to set permanent id for 'details', 'evidences', 'requirementResponses' into expected_bids_array['details'].
+2021-11-29 15:33:59.984254
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_three -> 
+Step: Check message EV release.
+Message: Impossible to prepare expected bids object.
+2021-11-29 16:29:44.556383
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-29 16:29:44.557240
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 16:29:51.829496
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_three -> 
+Step: Check message EV release.
+Message: Impossible to check how many requirementResponses object into expected_bids_array.
+2021-11-29 16:29:51.830344
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_three -> 
+Step: Check message EV release.
+Message: Impossible to set permanent id for 'details', 'evidences', 'requirementResponses' into expected_bids_array['details'].
+2021-11-29 16:29:51.830729
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_three -> 
+Step: Check message EV release.
+Message: Impossible to prepare expected bids object.
+2021-11-29 16:53:47.931018
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-29 16:53:47.932289
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 17:24:12.260422
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-29 17:24:12.261685
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 17:50:50.346614
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-29 17:50:50.347792
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 18:40:52.769181
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-29 18:40:52.770153
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 18:58:53.937706
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-29 18:58:53.939288
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 19:39:38.891195
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-29 19:39:38.892222
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-11-29 19:56:56.351386
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.awards
+
+2021-11-29 19:56:56.352801
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links

@@ -36,7 +36,7 @@ class TenderPeriodExpectedChanges:
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
         GlobalClassMetadata.metadata_tender_url = self.metadata_tender_url
 
-    def prepare_unsuccessful_awards_array(self):
+    def prepare_unsuccessful_awards_array(self, feed_point_message):
         try:
             """
             Check how many quantity of object into payload['tender']['lots'].
@@ -149,8 +149,7 @@ class TenderPeriodExpectedChanges:
                 expected_award_object['description'] = "Other reasons (discontinuation of procedure)"
                 expected_award_object['status'] = "unsuccessful"
                 expected_award_object['statusDetails'] = "noOffersReceived"
-                expected_award_object['date'] = \
-                    GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
+                expected_award_object['date'] = feed_point_message['data']['operationDate']
                 expected_award_object['relatedLots'] = \
                     [GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['lots'][q]['id']]
 
