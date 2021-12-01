@@ -308,3 +308,56 @@ Class = TenderPeriodENdAuction ->
 Method = test_check_result_of_sending_the_request_six -> 
 Step: Check message EV release.
 Message: Impossible to prepare expected bids object.
+2021-12-01 12:59:28.365735
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-12-01 12:59:30.966629
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_six -> 
+Step: Check message EV release.
+Message: Impossible to prepare expected bids object.
+2021-12-01 13:29:29.482435
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-12-01 13:29:32.036244
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_six -> 
+Step: Check message EV release.
+Message: Impossible to prepare expected bids object.
+2021-12-01 13:46:37.394550
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
+
+2021-12-01 13:46:40.003376
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_six -> 
+Step: Check message EV release.
+Message: Impossible to calculate how many quantity of object into expected_bids_array['details']['requirementResponses']
+2021-12-01 13:46:40.004206
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_six -> 
+Step: Check message EV release.
+Message: Impossible to set permanent id for 'details', 'evidences', 'requirementResponses' into expected_bids_array['details'].
+2021-12-01 13:46:40.004627
+File = tender_period_end_auction_test.py -> 
+Class = TenderPeriodENdAuction -> 
+Method = test_check_result_of_sending_the_request_six -> 
+Step: Check message EV release.
+Message: Impossible to prepare expected bids object.
+2021-12-01 14:04:46.221041
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links

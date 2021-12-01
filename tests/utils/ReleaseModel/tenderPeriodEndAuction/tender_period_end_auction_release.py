@@ -882,38 +882,42 @@ class TenderPeriodExpectedChanges:
             expected_bid_object['details'][0]['tenderers'][q]['name'] = bid_payload['bid']['tenderers'][q]['name']
         expected_bid_object['details'][0]['value']['amount'] = bid_payload['bid']['value']['amount']
         expected_bid_object['details'][0]['value']['currency'] = bid_payload['bid']['value']['currency']
-        try:
-            """
-            Check how many quantity of object into payload['bid']['documents'].
-            """
-            list_of_payload_bid_documents_id = list()
-            for i in bid_payload['bid']['documents']:
-                for i_1 in i:
-                    if i_1 == "id":
-                        list_of_payload_bid_documents_id.append(i_1)
-            quantity_of_bid_documents_into_payload = len(list_of_payload_bid_documents_id)
-        except Exception:
-            raise Exception("Check payload['bid']['documents']['id']")
-        for q_one in range(quantity_of_bid_documents_into_payload):
-            if GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
-                'awardCriteriaDetails'] == "automated" and \
-                    bid_payload['bid']['documents'][q_one]['documentType'] == "submissionDocuments" or \
-                    GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
-                        'awardCriteriaDetails'] == "automated" and \
-                    bid_payload['bid']['documents'][q_one]['documentType'] == "x_eligibilityDocuments" or \
-                    GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
-                        'awardCriteriaDetails'] == "manual":
-                some_document = list()
-                some_document.append(self.constructor.ev_release_bid_details_document_object())
-                some_document[0]['id'] = bid_payload['bid']['documents'][q_one]['id']
-                some_document[0]['documentType'] = bid_payload['bid']['documents'][q_one]['documentType']
-                some_document[0]['title'] = bid_payload['bid']['documents'][q_one]['title']
-                some_document[0]['description'] = bid_payload['bid']['documents'][q_one]['description']
-                some_document[0]['url'] = f"{self.metadata_document_url}/" + bid_payload['bid'][
-                    'documents'][q_one]['id']
-                some_document[0]['datePublished'] = feed_point_message['data']['operationDate']
-                some_document[0]['relatedLots'] = bid_payload['bid']['documents'][q_one]['relatedLots']
-                expected_bid_object['details'][0]['documents'].append(some_document[0])
+
+        if "requirementResponses" in bid_payload['bid']:
+            try:
+                """
+                Check how many quantity of object into payload['bid']['documents'].
+                """
+                list_of_payload_bid_documents_id = list()
+                for i in bid_payload['bid']['documents']:
+                    for i_1 in i:
+                        if i_1 == "id":
+                            list_of_payload_bid_documents_id.append(i_1)
+                quantity_of_bid_documents_into_payload = len(list_of_payload_bid_documents_id)
+            except Exception:
+                raise Exception("Check payload['bid']['documents']['id']")
+            for q_one in range(quantity_of_bid_documents_into_payload):
+                if GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
+                    'awardCriteriaDetails'] == "automated" and \
+                        bid_payload['bid']['documents'][q_one]['documentType'] == "submissionDocuments" or \
+                        GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
+                            'awardCriteriaDetails'] == "automated" and \
+                        bid_payload['bid']['documents'][q_one]['documentType'] == "x_eligibilityDocuments" or \
+                        GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
+                            'awardCriteriaDetails'] == "manual":
+                    some_document = list()
+                    some_document.append(self.constructor.ev_release_bid_details_document_object())
+                    some_document[0]['id'] = bid_payload['bid']['documents'][q_one]['id']
+                    some_document[0]['documentType'] = bid_payload['bid']['documents'][q_one]['documentType']
+                    some_document[0]['title'] = bid_payload['bid']['documents'][q_one]['title']
+                    some_document[0]['description'] = bid_payload['bid']['documents'][q_one]['description']
+                    some_document[0]['url'] = f"{self.metadata_document_url}/" + bid_payload['bid'][
+                        'documents'][q_one]['id']
+                    some_document[0]['datePublished'] = feed_point_message['data']['operationDate']
+                    some_document[0]['relatedLots'] = bid_payload['bid']['documents'][q_one]['relatedLots']
+                    expected_bid_object['details'][0]['documents'].append(some_document[0])
+        else:
+            pass
 
         expected_bid_object['details'][0]['relatedLots'] = bid_payload['bid']['relatedLots']
 

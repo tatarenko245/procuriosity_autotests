@@ -18,6 +18,6 @@ class DeclarePreparePayload:
             self.constructor.business_functions_documents_object()
         )
 
-        payload['requirementResponses']['id'] = "daclare: requirementResponses.id"
+        payload['requirementResponses']['id'] = "declare: requirementResponses.id"
         payload['requirementResponses']['value'] = True
         payload['requirementResponses']['relatedTenderer']['id']
