@@ -3278,7 +3278,7 @@ class TestTenderPeriodEndAuction:
                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                   f"File = tender_period_end_auction_test.py -> \n" \
                                   f"Class = TenderPeriodENdAuction -> \n" \
-                                  f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                  f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                   f"Step: Check message EV release.\n" \
                                   f"Message: Prepare expected awardPeriod object.\n"
                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
@@ -3341,7 +3341,7 @@ class TestTenderPeriodEndAuction:
                             log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                           f"File = tender_period_end_auction_test.py -> \n" \
                                           f"Class = TenderPeriodENdAuction -> \n" \
-                                          f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                          f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                           f"Step: Check message EV release.\n" \
                                           f"Message: Impossible to check how many quantity of object " \
                                           f"into final_expected_parties_array['persones'].\n"
@@ -3367,7 +3367,7 @@ class TestTenderPeriodEndAuction:
                                 log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                               f"File = tender_period_end_auction_test.py -> \n" \
                                               f"Class = TenderPeriodENdAuction -> \n" \
-                                              f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                              f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                               f"Step: Check message EV release.\n" \
                                               f"Message: Impossible to check how many quantity of object " \
                                               f"into final_expected_parties_array['persones']['businessFunctions'].\n"
@@ -3394,7 +3394,7 @@ class TestTenderPeriodEndAuction:
                                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                                   f"File = tender_period_end_auction_test.py -> \n" \
                                                   f"Class = TenderPeriodENdAuction -> \n" \
-                                                  f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                                  f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                                   f"Step: Check message EV release.\n" \
                                                   f"Message: Check your businessFunctions array in release\n"
                                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
@@ -3404,7 +3404,7 @@ class TestTenderPeriodEndAuction:
                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                   f"File = tender_period_end_auction_test.py -> \n" \
                                   f"Class = TenderPeriodENdAuction -> \n" \
-                                  f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                  f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                   f"Step: Check message EV release.\n" \
                                   f"Message: Impossible to prepare expected parties array\n"
                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
@@ -3466,7 +3466,7 @@ class TestTenderPeriodEndAuction:
                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                       f"File = tender_period_end_auction_test.py -> \n" \
                                       f"Class = TenderPeriodENdAuction -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                      f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                       f"Step: Check message EV release.\n" \
                                       f"Message: Error: quantity_of_object_into_list_of_awards_id_from_release " \
                                       f"!=quantity_of_object_into_list_of_awards_suppliers_from_expected_awards_array."
@@ -3499,7 +3499,7 @@ class TestTenderPeriodEndAuction:
                                 log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                               f"File = tender_period_end_auction_test.py -> \n" \
                                               f"Class = TenderPeriodENdAuction -> \n" \
-                                              f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                              f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                               f"Step: Check message EV release.\n" \
                                               f"Message: {award_id} must be uuid version 4."
                                 with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
@@ -3540,7 +3540,7 @@ class TestTenderPeriodEndAuction:
                                 log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                               f"File = tender_period_end_auction_test.py -> \n" \
                                               f"Class = TenderPeriodENdAuction -> \n" \
-                                              f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                              f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                               f"Step: Check message EV release.\n" \
                                               f"Message: Impossible to check how many awards have " \
                                               f"statusDetails 'awaiting'."
@@ -3563,7 +3563,7 @@ class TestTenderPeriodEndAuction:
                                 log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                               f"File = tender_period_end_auction_test.py -> \n" \
                                               f"Class = TenderPeriodENdAuction -> \n" \
-                                              f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                              f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                               f"Step: Check message EV release.\n" \
                                               f"Message: Impossible to check 'statusDetails' into " \
                                               f"final_expected_awards_array."
@@ -3594,7 +3594,7 @@ class TestTenderPeriodEndAuction:
                                 log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                               f"File = tender_period_end_auction_test.py -> \n" \
                                               f"Class = TenderPeriodENdAuction -> \n" \
-                                              f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                              f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                               f"Step: Check message EV release.\n" \
                                               f"Message: Impossible to check how many awards have " \
                                               f"statusDetails 'awaiting'."
@@ -3617,7 +3617,7 @@ class TestTenderPeriodEndAuction:
                                 log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                               f"File = tender_period_end_auction_test.py -> \n" \
                                               f"Class = TenderPeriodENdAuction -> \n" \
-                                              f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                              f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                               f"Step: Check message EV release.\n" \
                                               f"Message: Impossible to check 'statusDetails' into " \
                                               f"final_expected_awards_array."
@@ -3629,7 +3629,7 @@ class TestTenderPeriodEndAuction:
                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                       f"File = tender_period_end_auction_test.py -> \n" \
                                       f"Class = TenderPeriodENdAuction -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                      f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                       f"Step: Check message EV release.\n" \
                                       f"Message: Impossible to set 'statusDetails' for award, " \
                                       f"according with rule FReq-1.4.1.8."
@@ -3641,7 +3641,7 @@ class TestTenderPeriodEndAuction:
                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                   f"File = tender_period_end_auction_test.py -> \n" \
                                   f"Class = TenderPeriodENdAuction -> \n" \
-                                  f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                  f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                   f"Step: Check message EV release.\n" \
                                   f"Message: Impossible to prepare expected awards array."
                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
@@ -3690,7 +3690,7 @@ class TestTenderPeriodEndAuction:
                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                       f"File = tender_period_end_auction_test.py -> \n" \
                                       f"Class = TenderPeriodENdAuction -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                      f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                       f"Step: Check message EV release.\n" \
                                       f"Message: Impossible to check how many quantity of object into " \
                                       f"expected_bids_array."
@@ -3714,7 +3714,7 @@ class TestTenderPeriodEndAuction:
                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                       f"File = tender_period_end_auction_test.py -> \n" \
                                       f"Class = TenderPeriodENdAuction -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                      f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                       f"Step: Check message EV release.\n" \
                                       f"Message: Impossible to calculate how many quantity of object into " \
                                       f"expected_bids_array['details']['tenderers']"
@@ -3734,7 +3734,7 @@ class TestTenderPeriodEndAuction:
                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                       f"File = tender_period_end_auction_test.py -> \n" \
                                       f"Class = TenderPeriodENdAuction -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                      f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                       f"Step: Check message EV release.\n" \
                                       f"Message: Error: quantity_of_details_id_into_expected_bids !=" \
                                       f"quantity_of_details_id_into_releases_bids."
@@ -3770,7 +3770,7 @@ class TestTenderPeriodEndAuction:
                                 log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                               f"File = tender_period_end_auction_test.py -> \n" \
                                               f"Class = TenderPeriodENdAuction -> \n" \
-                                              f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                              f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                               f"Step: Check message EV release.\n" \
                                               f"Message: Impossible to calculate how many quantity of object into " \
                                               f"expected_bids_array['details']['requirementResponses']"
@@ -3793,7 +3793,7 @@ class TestTenderPeriodEndAuction:
                                 log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                               f"File = tender_period_end_auction_test.py -> \n" \
                                               f"Class = TenderPeriodENdAuction -> \n" \
-                                              f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                              f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                               f"Step: Check message EV release.\n" \
                                               f"Message: Impossible to check how many requirementResponses " \
                                               f"object into expected_bids_array."
@@ -3827,7 +3827,7 @@ class TestTenderPeriodEndAuction:
                                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                                       f"File = tender_period_end_auction_test.py -> \n" \
                                                       f"Class = TenderPeriodENdAuction -> \n" \
-                                                      f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                                      f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                                       f"Step: Check message EV release.\n" \
                                                       f"Message: Impossible to calculate how many quantity of object " \
                                                       f"into expected_bids_array['details']['requirementResponses']" \
@@ -3853,7 +3853,7 @@ class TestTenderPeriodEndAuction:
                                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                                       f"File = tender_period_end_auction_test.py -> \n" \
                                                       f"Class = TenderPeriodENdAuction -> \n" \
-                                                      f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                                      f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                                       f"Step: Check message EV release.\n" \
                                                       f"Message: Impossible to check how many evidences " \
                                                       f"object into expected_bids_array."
@@ -3874,7 +3874,7 @@ class TestTenderPeriodEndAuction:
                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                       f"File = tender_period_end_auction_test.py -> \n" \
                                       f"Class = TenderPeriodENdAuction -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                      f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                       f"Step: Check message EV release.\n" \
                                       f"Message: Impossible to set permanent id for 'details', " \
                                       f"'evidences', 'requirementResponses' into expected_bids_array['details']."
@@ -3886,7 +3886,7 @@ class TestTenderPeriodEndAuction:
                     log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                   f"File = tender_period_end_auction_test.py -> \n" \
                                   f"Class = TenderPeriodENdAuction -> \n" \
-                                  f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                  f"Method = test_check_result_of_sending_the_request_four -> \n" \
                                   f"Step: Check message EV release.\n" \
                                   f"Message: Impossible to prepare expected bids object."
                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
@@ -6622,12 +6622,12 @@ class TestTenderPeriodEndAuction:
                             operation_id=GlobalClassCreateFirstBid.operation_id)
 
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message['X-OPERATION-ID'])
+                            operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[1]['X-OPERATION-ID'])
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             database = GlobalClassMetadata.database
                             steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[
+                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[1][
                                     'X-OPERATION-ID'])
                             allure.attach(steps, "Cassandra DataBase: steps of process")
 
