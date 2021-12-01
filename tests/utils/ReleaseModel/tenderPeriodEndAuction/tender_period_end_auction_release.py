@@ -87,7 +87,7 @@ class TenderPeriodExpectedChanges:
                     expected_award_object['status'] = "unsuccessful"
                     expected_award_object['statusDetails'] = "noOffersReceived"
                     expected_award_object['date'] = \
-                        GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
+                        GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data']['operationDate']
                     expected_award_object['relatedLots'] = \
                         [GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['lots'][q]['id']]
 
@@ -110,7 +110,7 @@ class TenderPeriodExpectedChanges:
                     expected_award_object['status'] = "unsuccessful"
                     expected_award_object['statusDetails'] = "noOffersReceived"
                     expected_award_object['date'] = \
-                        GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
+                        GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data']['operationDate']
                     expected_award_object['relatedLots'] = \
                         [GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['lots'][q]['id']]
 
@@ -131,7 +131,7 @@ class TenderPeriodExpectedChanges:
                     expected_award_object['status'] = "unsuccessful"
                     expected_award_object['statusDetails'] = "noOffersReceived"
                     expected_award_object['date'] = \
-                        GlobalClassTenderPeriodEndAuction.feed_point_message['data']['operationDate']
+                        GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data']['operationDate']
                     expected_award_object['relatedLots'] = \
                         [GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['lots'][q]['id']]
 
@@ -294,7 +294,7 @@ class TenderPeriodExpectedChanges:
         }
         return expected_criteria_array_source_procuring_entity, quantity_of_criteria_object_into_release
 
-    def prepare_array_of_parties_mapper_for_successful_tender(self, feed_point_message, bid_payload):
+    def prepare_array_of_parties_mapper_for_successful_tender_full_data_model(self, feed_point_message, bid_payload):
         expected_array_of_parties_mapper = []
         try:
             """
@@ -1082,3 +1082,130 @@ class TenderPeriodExpectedChanges:
             "value": expected_bid_object['details'][0]
         }
         return expected_bid_object_mapper
+
+    def prepare_array_of_parties_mapper_for_successful_tender_obligatory_data_model(
+            self, bid_payload):
+        expected_array_of_parties_mapper = []
+        try:
+            """
+            Check how many quantity of object into payload['bid']['tenderers'].
+            """
+            list_of_payload_tenderer_id = list()
+            for tenderer_object in bid_payload['bid']['tenderers']:
+                for i in tenderer_object['identifier']:
+                    if i == "id":
+                        list_of_payload_tenderer_id.append(i)
+            quantity_of_tender_object_into_payload = len(list_of_payload_tenderer_id)
+        except Exception:
+            raise Exception("Impossible to check how many quantity of object into payload['bid']['tenderers']")
+
+        for t in range(quantity_of_tender_object_into_payload):
+            try:
+                """
+                Prepare party object framework.
+                """
+                party_object = {}
+                party_object.update(self.constructor.ev_release_parties_object())
+                del party_object['address']['postalCode']
+                del party_object['additionalIdentifiers']
+                del party_object['details']['permits']
+                del party_object['details']['mainEconomicActivities']
+                del party_object['details']['typeOfSupplier']
+                del party_object['details']['bankAccounts']
+                del party_object['details']['legalForm']
+                del party_object['persones']
+            except Exception:
+                raise Exception("Impossible to build expected party object framework.")
+            try:
+                """
+                Enrich party object framework by value: 'id', 'name', 'identifier', 'address', 
+                'contactPoint' from payload' from payload and MDM.
+                """
+
+                party_object['id'] = f"{bid_payload['bid']['tenderers'][t]['identifier']['scheme']}-" \
+                                     f"{bid_payload['bid']['tenderers'][t]['identifier']['id']}"
+                party_object['name'] = bid_payload['bid']['tenderers'][t]['name']
+                party_object['identifier'] = bid_payload['bid']['tenderers'][t]['identifier']
+                party_object['address']['streetAddress'] = \
+                    bid_payload['bid']['tenderers'][t]['address']['streetAddress']
+                try:
+                    """
+                    Enrich party object framework by value: 'address.addressDetails.country', 
+                     'address.addressDetails.region', 'address.addressDetails.locality' from MDM.
+                    """
+                    tenderer_country_data = self.mdm.get_country(
+                        country=bid_payload['bid']['tenderers'][t]['address']['addressDetails']['country']['id'],
+                        language=self.language
+                    )
+                    tenderer_country_object = {
+                        "scheme": tenderer_country_data['data']['scheme'],
+                        "id": tenderer_country_data['data']['id'],
+                        "description": tenderer_country_data['data']['description'],
+                        "uri": tenderer_country_data['data']['uri']
+                    }
+                    tenderer_region_data = self.mdm.get_region(
+                        country=bid_payload['bid']['tenderers'][t]['address']['addressDetails']['country']['id'],
+                        region=bid_payload['bid']['tenderers'][t]['address']['addressDetails']['region']['id'],
+                        language=self.language
+                    )
+                    tenderer_region_object = {
+                        "scheme": tenderer_region_data['data']['scheme'],
+                        "id": tenderer_region_data['data']['id'],
+                        "description": tenderer_region_data['data']['description'],
+                        "uri": tenderer_region_data['data']['uri']
+                    }
+                    if bid_payload['bid']['tenderers'][t]['address']['addressDetails']['locality']['scheme'] == "CUATM":
+                        tenderer_locality_data = self.mdm.get_locality(
+                            country=bid_payload['bid']['tenderers'][t]['address']['addressDetails'][
+                                'country']['id'],
+                            region=bid_payload['bid']['tenderers'][t]['address']['addressDetails'][
+                                'region']['id'],
+                            locality=bid_payload['bid']['tenderers'][t]['address']['addressDetails'][
+                                'locality']['id'],
+                            language=self.language
+                        )
+                        tenderer_locality_object = {
+                            "scheme": tenderer_locality_data['data']['scheme'],
+                            "id": tenderer_locality_data['data']['id'],
+                            "description": tenderer_locality_data['data']['description'],
+                            "uri": tenderer_locality_data['data']['uri']
+                        }
+                    else:
+                        tenderer_locality_object = {
+                            "scheme":
+                                bid_payload['bid']['tenderers'][t]['address']['addressDetails'][
+                                    'locality']['scheme'],
+                            "id": bid_payload['bid']['tenderers'][t]['address']['addressDetails'][
+                                'locality']['id'],
+                            "description":
+                                bid_payload['bid']['tenderers'][t]['address']['addressDetails'][
+                                    'locality']['description']
+                        }
+                except Exception:
+                    raise Exception("Impossible to enrich party object framework by value: "
+                                    "'address.addressDetails.country', 'address.addressDetails.region', "
+                                    "'address.addressDetails.locality' from MDM.")
+                party_object['address']['addressDetails']['country'] = tenderer_country_object
+                party_object['address']['addressDetails']['region'] = tenderer_region_object
+                party_object['address']['addressDetails']['locality'] = tenderer_locality_object
+                party_object['contactPoint'] = bid_payload['bid']['tenderers'][t]['contactPoint']
+            except Exception:
+                raise Exception("Impossible to enrich party object framework by value: 'id', 'name', "
+                                "'identifier', 'address', 'additionalIdentifiers', "
+                                "'contactPoint', 'details.typeOfSupplier', 'details.mainEconomicActivities', "
+                                "'details.permits from payload and MDM'.")
+            try:
+                """
+                Enrich party object framework by value: 'details.scale' from payload.
+                """
+                party_object['details']['scale'] = bid_payload['bid']['tenderers'][t]['details']['scale']
+            except Exception:
+                raise Exception("Impossible to enrich party object framework by value: 'details.legalForm', "
+                                "'details.scale' from payload")
+            party_object['roles'] = ["tenderer", "supplier"]
+            mapper = {
+                "id": party_object['id'],
+                "value": party_object
+            }
+            expected_array_of_parties_mapper.append(mapper)
+        return expected_array_of_parties_mapper
