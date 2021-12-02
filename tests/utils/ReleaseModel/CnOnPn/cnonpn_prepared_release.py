@@ -1240,8 +1240,7 @@ class CnOnPnExpectedRelease:
 
         release['releases'][0]['tender']['hasEnquiries'] = False
         release['releases'][0]['tender']['awardCriteria'] = GlobalClassCreateCnOnPn.payload['tender']['awardCriteria']
-        release['releases'][0]['tender']['awardCriteriaDetails'] = \
-            GlobalClassCreateCnOnPn.payload['tender']['awardCriteriaDetails']
+        release['releases'][0]['tender']['awardCriteriaDetails'] = "automated"
         release['releases'][0]['tender']['submissionMethod'] = ["electronicSubmission"]
         release['releases'][0]['tender']['submissionMethodDetails'] = \
             "Lista platformelor: achizitii, ebs, licitatie, yptender"
