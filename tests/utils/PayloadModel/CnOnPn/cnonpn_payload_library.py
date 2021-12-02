@@ -141,7 +141,7 @@ class PayloadLibrary:
             "type": None,
             "jobTitle": None,
             "period": {
-                "startDate"
+                "startDate": None
             },
             "documents": []
         }
