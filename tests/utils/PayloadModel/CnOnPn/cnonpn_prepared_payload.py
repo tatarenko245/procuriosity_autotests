@@ -1,4 +1,5 @@
 import copy
+import dataclasses
 import random
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, GlobalClassMetadata
@@ -27,6 +28,7 @@ class CnOnPnPreparePayload:
             language=GlobalClassMetadata.language)
         self.contact_period = Date().contact_period()
         self.duration_period = Date().duration_period()
+        self.business_function_date = Date().old_period()[0]
 
     def create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
             self, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
@@ -78,6 +80,12 @@ class CnOnPnPreparePayload:
             """
             payload['planning'].update(self.constructor.planning_object())
             payload['tender'].update(self.constructor.tender_object())
+            payload['tender']['procuringEntity']['persones'].append(self.constructor.tender_procuring_entity_persones())
+            payload['tender']['procuringEntity']['persones'][0]['businessFunctions'].append(
+                self.constructor.tender_procuring_entity_persones_business_functions_object())
+            payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'].append(
+                self.constructor.tender_procuring_entity_persones_business_document_object()
+            )
             for ql in range(quantity_of_lots_object):
                 payload['tender']['lots'].append(self.constructor.tender_lots_object())
                 payload['tender']['lots'][ql]['options'] = [{}, {}]
@@ -173,8 +181,34 @@ class CnOnPnPreparePayload:
         payload['tender']['awardCriteriaDetails'] = "automated"
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
         payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
-        payload['tender']['procuringEntity'] = \
-            GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']
+        payload['tender']['procuringEntity']['id'] = \
+            GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']['id']
+        payload['tender']['procuringEntity']['persones'][0]['title'] =  \
+            "create cnonpn: tender.procuringEntity.persones.title"
+        payload['tender']['procuringEntity']['persones'][0]['name'] = \
+            "create cnonpn: tender.procuringEntity.persones.name"
+        payload['tender']['procuringEntity']['persones'][0]['identifier']['id'] = \
+            "create cnonpn: tender.procuringEntity.persones.identifier.id"
+        payload['tender']['procuringEntity']['persones'][0]['identifier']['scheme'] = "MD-IDNO"
+        payload['tender']['procuringEntity']['persones'][0]['identifier']['uri'] = \
+            "create cnonpn: tender.procuringEntity.persones.identifier.uri"
+        payload['tender']['procuringEntity']['persones'][0]['identifier']['scheme'] = \
+            "create cnonpn: tender.procuringEntity.persones.identifier.scheme"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['id'] = \
+            "create cnonpn: tender.procuringEntity.persones.businessFunctions.id"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['type'] = "chairman"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['jobTitle'] = \
+            "create cnonpn: tender.procuringEntity.persones.businessFunctions.jobTitle"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['period']['startDate'] = \
+            self.business_function_date
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['documentType'] = \
+            "regulatoryDocument"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['id'] = \
+            self.document_two_was_uploaded
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['title'] = \
+            "create cnonpn: tender.procuringEntity.persones.businessFunctions.documents.title"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['description'] = \
+            "create cnonpn: tender.procuringEntity.persones.businessFunctions.documents.description"
 
         payload['tender']['lots'] = generate_lots_array(
             quantity_of_object=quantity_of_lots_object,

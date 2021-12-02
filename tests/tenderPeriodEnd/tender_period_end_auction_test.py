@@ -869,7 +869,6 @@ class TestTenderPeriodEndAuction:
                     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                         logfile.write(log_msg_one)
                     raise ValueError("Can not return BPE operation step")
-
             with allure.step('# 11.2. Check EV release'):
                 """
                 Compare actual evaluation value release with expected evaluation value release model.

@@ -361,3 +361,9 @@ File = kafka_message.py ->
 Class = KafkaMessage -> 
 Method = tender_period_end_message_is_successful -> 
 KeyError: data.outcomes.links
+
+2021-12-02 10:16:03.037145
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_message_is_successful -> 
+KeyError: data.outcomes.links
