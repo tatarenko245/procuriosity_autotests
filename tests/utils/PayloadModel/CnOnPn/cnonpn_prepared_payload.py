@@ -1,5 +1,4 @@
 import copy
-import dataclasses
 import random
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, GlobalClassMetadata
@@ -118,8 +117,8 @@ class CnOnPnPreparePayload:
                 payload['tender']['lots'][ql]['placeOfPerformance']['address']['addressDetails']['locality'][
                     'description'] = \
                     "create cnonpn: tender.lots.placeOfPerformance.address.addressDetails.locality.description"
-                payload['tender']['lots'][ql]['placeOfPerformance']['address']['addressDetails']['locality']['scheme'] = \
-                    "CUATM"
+                payload['tender']['lots'][ql]['placeOfPerformance']['address']['addressDetails']['locality'][
+                    'scheme'] = "CUATM"
                 payload['tender']['lots'][ql]['placeOfPerformance']['description'] = \
                     "create cnonpn: tender.lots.placeOfPerformance.description"
                 payload['tender']['lots'][ql]['hasOptions'] = True
@@ -2428,5 +2427,4 @@ class CnOnPnPreparePayload:
                 pass
         except KeyError:
             raise KeyError("Could not to set permanent id for items array. Key 'documents' was not found.")
-
         return payload
