@@ -31,7 +31,7 @@ from tests.utils.my_requests import Requests
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/'
                      'edit#gid=532628427',
                  name='Google sheets: Create CnOnPn')
-class TestCreatePn:
+class TestCreateCnOnPn:
     def test_setup(self, environment, country, language, pmd, cassandra_username, cassandra_password):
         """
         Get 'country', 'language', 'cassandra_username', 'cassandra_password', 'environment' parameters
@@ -53,6 +53,11 @@ class TestCreatePn:
             cassandra_username=GlobalClassMetadata.cassandra_username,
             cassandra_password=GlobalClassMetadata.cassandra_password,
             cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+
+        if environment == "dev":
+            GlobalClassMetadata.document_url = "https://dev.bpe.eprocurement.systems/api/v1/storage/get"
+        elif environment == "sandbox":
+            GlobalClassMetadata.document_url = "http://storage.eprocurement.systems/get"
 
     @allure.title('Check status code and message from Kafka topic after CnOnPn creating')
     def test_check_result_of_sending_the_request(self):
@@ -551,9 +556,15 @@ class TestCreatePn:
                 allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
                               "Actual MS release after CnOnPn creating")
 
-                compare_releases = dict(DeepDiff(GlobalClassCreatePn.actual_ms_release,
-                                                 GlobalClassCreateCnOnPn.actual_ms_release))
+                compare_releases = DeepDiff(GlobalClassCreatePn.actual_ms_release,
+                                            GlobalClassCreateCnOnPn.actual_ms_release)
+                dictionary_item_added_was_cleaned = \
+                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+                compare_releases = dict(compare_releases)
+
                 expected_result = {
+                    "dictionary_item_added": "['releases'][0]['parties'][3]['persones']",
                     "values_changed": {
                         "root['releases'][0]['id']": {
                             "new_value": f"{GlobalClassCreatePn.pn_ocid}-"
@@ -631,9 +642,69 @@ class TestCreatePn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
+                try:
+                    """
+                    Prepare expected businessFunctions.persones array"""
+                    persones_scheme = GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                        'identifier']['scheme']
+                    persones_id = GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                        'identifier']['id']
+                    document_id = GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                        'businessFunctions'][0]['documents'][0]['id']
+                    final_expected_persones_array = [{
+                        "id": f"{persones_scheme}-{persones_id}",
+                        "title": GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0]['title'],
+                        "name": GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0]['name'],
+                        "identifier": {
+                            "scheme": persones_scheme,
+                            "id": persones_id,
+                            "uri": GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                                'identifier']['uri']
+                        },
+                        "businessFunctions": [
+                            {
+                                "id": GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                                    'businessFunctions'][0]['id'],
+                                "type": GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                                    'businessFunctions'][0]['type'],
+                                "jobTitle": GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                                    'businessFunctions'][0]['jobTitle'],
+                                "period": {
+                                    "startDate":
+                                        GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                                            'businessFunctions'][0]['period']['startDate']
+                                },
+                                "documents": [
+                                    {
+                                        "id":
+                                            GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                                                'businessFunctions'][0]['documents'][0]['id'],
+                                        "documentType":
+                                            GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                                                'businessFunctions'][0]['documents'][0]['documentType'],
+                                        "title":
+                                            GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                                                'businessFunctions'][0]['documents'][0]['title'],
+                                        "description":
+                                            GlobalClassCreateCnOnPn.payload['tender']['procuringEntity']['persones'][0][
+                                                'businessFunctions'][0]['documents'][0]['description'],
+                                        "url": f"{GlobalClassMetadata.document_url}/{document_id}",
+                                        "datePublished": GlobalClassCreateCnOnPn.feed_point_message[
+                                            'data']['operationDate']
+                                    }]
+                            }]
+                    }]
+                except Exception:
+                    raise Exception("Impossible to prepare expected businessFunctions.persones array")
+
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
                     actual_result=compare_releases
+                )) == str(True)
+
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=final_expected_persones_array,
+                    actual_result=GlobalClassCreateCnOnPn.actual_ms_release['releases'][0]['parties'][3]['persones']
                 )) == str(True)
 
     @allure.title('Check EV and MS releases data after CnONPn creating without optional fields')

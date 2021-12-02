@@ -225,10 +225,7 @@ class TestDeclareNonConflictInterest:
                 pn_token=GlobalClassCreatePn.pn_token,
                 payload=GlobalClassCreateCnOnPn.payload
             )
-            print("PN PAYLOAD")
-            print(json.dumps(GlobalClassCreatePn.payload))
-            print("CNONPN PAYLOAD")
-            print(json.dumps(GlobalClassCreateCnOnPn.payload))
+
             GlobalClassCreateCnOnPn.feed_point_message = \
                 KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
 

@@ -131,6 +131,7 @@ class GlobalClassMetadata:
     metadata_tender_url = None
     metadata_document_url = None
     database = None
+    document_url = None
 
 
 class GlobalClassUpdateFs:
