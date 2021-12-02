@@ -285,6 +285,16 @@ class PayloadLibrary:
         return document_object
 
     @staticmethod
+    def tender_procuring_entity_persones_business_document_object():
+        document_object = {
+            "documentType": None,
+            "id": None,
+            "title": None,
+            "description": None
+        }
+        return document_object
+
+    @staticmethod
     def planning_budget_budget_breakdown_object():
         budget_breakdown = {
             "id": None,
