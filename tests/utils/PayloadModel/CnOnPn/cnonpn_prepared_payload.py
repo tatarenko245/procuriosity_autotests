@@ -204,7 +204,7 @@ class CnOnPnPreparePayload:
         payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['documentType'] = \
             "regulatoryDocument"
         payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['id'] = \
-            self.document_two_was_uploaded
+            self.document_two_was_uploaded[0]["data"]["id"]
         payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['title'] = \
             "create cnonpn: tender.procuringEntity.persones.businessFunctions.documents.title"
         payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['description'] = \
