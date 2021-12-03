@@ -389,7 +389,7 @@ class TestDeclareNonConflictInterest:
         step_number = 0
         for x in range(len(requirements_list)):
             for y in range(len(tenderers_list)):
-                with allure.step(f'# 1{step_number}-{y}.Authorization platform one: create declare '
+                with allure.step(f'# 1{step_number}.Authorization platform one: create declare '
                                  f'non conflict interest'):
                     """
                     Tender platform authorization for create declare non conflict interest.
@@ -402,7 +402,7 @@ class TestDeclareNonConflictInterest:
                         GlobalClassMetadata.host_for_bpe).get_x_operation_id(
                         GlobalClassCreateDeclareNonConflict.access_token)
                     step_number += 1
-                with allure.step(f'# 1{step_number}-{y}. Send request for create declare non conflict interest'):
+                with allure.step(f'# 1{step_number}. Send request for create declare non conflict interest'):
                     """
                     Send api request to BPE host for declare non conflict interest creating.
                     Save asynchronous result of sending the request.
