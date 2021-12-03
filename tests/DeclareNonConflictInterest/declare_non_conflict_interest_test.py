@@ -70,7 +70,8 @@ class TestDeclareNonConflictInterest:
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   )
     def test_check_result_of_sending_the_request_one(self):
-        with allure.step('# 1. Authorization platform one: create EI'):
+        step_number = 1
+        with allure.step(f'# {step_number}. Authorization platform one: create EI'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -80,7 +81,8 @@ class TestDeclareNonConflictInterest:
 
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Send request for create EI'):
+            step_number += 1
+        with allure.step(f'# {step_number}. Send request for create EI'):
             """
             Send api request to BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -93,7 +95,8 @@ class TestDeclareNonConflictInterest:
                 x_operation_id=GlobalClassCreateEi.operation_id,
                 country=GlobalClassMetadata.country,
                 language=GlobalClassMetadata.language,
-                payload=GlobalClassCreateEi.payload
+                payload=GlobalClassCreateEi.payload,
+                test_mode=True
             )
             GlobalClassCreateEi.feed_point_message = \
                 KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
@@ -104,7 +107,8 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
-        with allure.step('# 3. Authorization platform one: create FS'):
+            step_number += 1
+        with allure.step(f'# {step_number}. Authorization platform one: create FS'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -114,7 +118,8 @@ class TestDeclareNonConflictInterest:
 
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
-        with allure.step('# 4. Send request for create FS'):
+            step_number += 1
+        with allure.step(f'# {step_number}. Send request for create FS'):
             """
             Send api request to BPE host for financial source creating.
             And save in variable fs_id.
@@ -127,7 +132,8 @@ class TestDeclareNonConflictInterest:
                 access_token=GlobalClassCreateFs.access_token,
                 x_operation_id=GlobalClassCreateFs.operation_id,
                 ei_ocid=GlobalClassCreateEi.ei_ocid,
-                payload=GlobalClassCreateFs.payload
+                payload=GlobalClassCreateFs.payload,
+                test_mode=True
             )
             GlobalClassCreateFs.feed_point_message = \
                 KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
@@ -148,8 +154,8 @@ class TestDeclareNonConflictInterest:
 
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
-
-        with allure.step('# 6. Send request for create PN'):
+            step_number += 1
+        with allure.step(f'# {step_number}. Send request for create PN'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.
@@ -169,7 +175,8 @@ class TestDeclareNonConflictInterest:
                 country=GlobalClassMetadata.country,
                 language=GlobalClassMetadata.language,
                 pmd=GlobalClassMetadata.pmd,
-                payload=GlobalClassCreatePn.payload
+                payload=GlobalClassCreatePn.payload,
+                test_mode=True
             )
             GlobalClassCreatePn.feed_point_message = \
                 KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
@@ -190,7 +197,8 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreatePn.actual_ms_release = requests.get(
                 url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreatePn.pn_ocid}").json()
-        with allure.step('# 7. Authorization platform one: create CnOnPn'):
+            step_number += 1
+        with allure.step(f'# {step_number}. Authorization platform one: create CnOnPn'):
             """
             Tender platform authorization for create contract notice process.
             As result get Tender platform's access token and process operation-id.
@@ -200,7 +208,8 @@ class TestDeclareNonConflictInterest:
 
             GlobalClassCreateCnOnPn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateCnOnPn.access_token)
-        with allure.step('# 8. Send request for create CnOnPn'):
+            step_number += 1
+        with allure.step(f'# {step_number}. Send request for create CnOnPn'):
             """
             Send api request to BPE host for contract notice creating.
             Save asynchronous result of sending the request.
@@ -226,7 +235,8 @@ class TestDeclareNonConflictInterest:
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
                 pn_id=GlobalClassCreatePn.pn_id,
                 pn_token=GlobalClassCreatePn.pn_token,
-                payload=GlobalClassCreateCnOnPn.payload
+                payload=GlobalClassCreateCnOnPn.payload,
+                test_mode=True
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
@@ -242,8 +252,8 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreateCnOnPn.actual_ms_release = requests.get(
                 url=f"{GlobalClassCreatePn.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreatePn.pn_ocid}").json()
-
-        with allure.step('# 9. Authorization platform one: create first Bid'):
+            step_number += 1
+        with allure.step(f'# {step_number}. Authorization platform one: create first Bid'):
             """
             Tender platform authorization for create first bid.
             As result get Tender platform's access token and process operation-id.
@@ -253,8 +263,8 @@ class TestDeclareNonConflictInterest:
 
             GlobalClassCreateFirstBid.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFirstBid.access_token)
-
-        with allure.step('# 10. Send request for create first Bid'):
+            step_number += 1
+        with allure.step(f'# {step_number}. Send request for create first Bid'):
             """
             Send api request to BPE host for first bid creating.
             Save asynchronous result of sending the request.
@@ -333,7 +343,8 @@ class TestDeclareNonConflictInterest:
                 x_operation_id=GlobalClassCreateFirstBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
                 ev_id=GlobalClassCreateCnOnPn.ev_id,
-                payload=GlobalClassCreateFirstBid.payload
+                payload=GlobalClassCreateFirstBid.payload,
+                test_mode=True
             )
             time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate'])
 
@@ -361,7 +372,7 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreateDeclareNonConflict.award_token = \
                 GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data']['outcomes']['awards'][0][
                     'X-TOKEN']
-
+        step_number += 1
         requirements_list = list()
         for c in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['criteria']:
             for c_1 in c:
@@ -386,10 +397,10 @@ class TestDeclareNonConflictInterest:
                         for s_1 in s:
                             if s_1 == "id":
                                 tenderers_list.append(s['id'])
-        step_number = 0
+
         for x in range(len(requirements_list)):
             for y in range(len(tenderers_list)):
-                with allure.step(f'# 1{step_number}.Authorization platform one: create declare '
+                with allure.step(f'# {step_number}.Authorization platform one: create declare '
                                  f'non conflict interest'):
                     """
                     Tender platform authorization for create declare non conflict interest.
@@ -402,7 +413,7 @@ class TestDeclareNonConflictInterest:
                         GlobalClassMetadata.host_for_bpe).get_x_operation_id(
                         GlobalClassCreateDeclareNonConflict.access_token)
                     step_number += 1
-                with allure.step(f'# 1{step_number}. Send request for create declare non conflict interest'):
+                with allure.step(f'# {step_number}. Send request for create declare non conflict interest'):
                     """
                     Send api request to BPE host for declare non conflict interest creating.
                     Save asynchronous result of sending the request.
@@ -422,55 +433,54 @@ class TestDeclareNonConflictInterest:
                         ev_id=GlobalClassCreateCnOnPn.ev_id,
                         payload=GlobalClassCreateDeclareNonConflict.payload,
                         award_id=GlobalClassCreateDeclareNonConflict.award_id,
-                        award_token=GlobalClassCreateDeclareNonConflict.award_token
+                        award_token=GlobalClassCreateDeclareNonConflict.award_token,
+                        test_mode=True
                     )
                     GlobalClassCreateDeclareNonConflict.feed_point_message = \
                         KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
                     step_number += 1
 
-        # with allure.step('# 11. See result'):
-        #     """
-        #     Check the results of test case running.
-        #     """
-        #     with allure.step('# 11.1. Check message in feed point'):
-        #         """
-        #         Check the asynchronous_result_of_sending_the_request.
-        #         """
-        #         time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate'])
-        #         time.sleep(1)
-        #         GlobalClassTenderPeriodEndAuction.feed_point_message = \
-        #             KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-        #                          initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
-        #         allure.attach(str(GlobalClassTenderPeriodEndAuction.feed_point_message[0]), 'Message in feed point')
-        #
-        #         asynchronous_result_of_expired_tender_period_end = \
-        #             KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-        #                          initiation="bpe").tender_period_end_auction_message_is_successful(
-        #                 environment=GlobalClassMetadata.environment,
-        #                 kafka_message=GlobalClassTenderPeriodEndAuction.feed_point_message[0],
-        #                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-        #                 ev_id=GlobalClassCreateCnOnPn.ev_id
-        #             )
-        #         try:
-        #             """
-        #             If asynchronous_result_of_sending_the_request was False, then return process steps by
-        #             operation-id.
-        #             """
-        #             if asynchronous_result_of_expired_tender_period_end is False:
-        #                 with allure.step('# Steps from Casandra DataBase'):
-        #                     steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-        #                         operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
-        #                     allure.attach(steps, "Cassandra DataBase: steps of process")
-        #         except ValueError:
-        #             log_msg_one = f"\n{datetime.datetime.now()}\n" \
-        #                           f"File = tender_period_end_auction_test.py -> \n" \
-        #                           f"Class = TenderPeriodENdAuction -> \n" \
-        #                           f"Method = test_check_result_of_sending_the_request_three -> \n" \
-        #                           f"Step: Check message in feed point.\n" \
-        #                           f"Message: Could not return BPE operation step.\n"
-        #             with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-        #                 logfile.write(log_msg_one)
-        #             raise ValueError("Could not return BPE operation step")
+                with allure.step(f'# {step_number}. See result'):
+                    """
+                    Check the results of test case running.
+                    """
+                    with allure.step(f'# {step_number}.1. Check message in feed point'):
+                        """
+                        Check the asynchronous_result_of_sending_the_request.
+                        """
+                        time.sleep(1)
+                        GlobalClassCreateDeclareNonConflict.feed_point_message = \
+                            KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                        allure.attach(str(GlobalClassCreateDeclareNonConflict.feed_point_message),
+                                      'Message in feed point')
+
+                        asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                            GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
+                            environment=GlobalClassMetadata.environment,
+                            kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
+                            pn_ocid=GlobalClassCreatePn.pn_ocid,
+                            ev_id=GlobalClassCreateCnOnPn.ev_id
+                        )
+                        try:
+                            """
+                            If asynchronous_result_of_sending_the_request was False, then return process steps by
+                            operation-id.
+                            """
+                            if asynchronous_result_of_sending_the_request_was_checked is False:
+                                with allure.step('# Steps from Casandra DataBase'):
+                                    steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                                        operation_id=GlobalClassCreateDeclareNonConflict.operation_id)
+                                    allure.attach(steps, "Cassandra DataBase: steps of process")
+                        except ValueError:
+                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                          f"File = tender_period_end_auction_test.py -> \n" \
+                                          f"Class = TestDeclareNonConflictInterest -> \n" \
+                                          f"Method = test_check_result_of_sending_the_request_one -> \n" \
+                                          f"Step: # {step_number}. Check message in feed point.\n" \
+                                          f"Message: Could not return BPE operation step.\n"
+                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                logfile.write(log_msg_one)
+                            raise ValueError("Could not return BPE operation step")
         #     with allure.step('# 11.2. Check EV release'):
         #         """
         #         Compare actual evaluation value release with expected evaluation value release model.

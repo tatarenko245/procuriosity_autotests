@@ -248,7 +248,7 @@ class Requests:
         return bid
 
     @staticmethod
-    @allure.step('Prepared request: create Bid')
+    @allure.step('Prepared request: create Declare non conflict interest')
     def create_declare_non_conflict_interest(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, award_id,
                                              award_token, payload, test_mode=False):
         declaration = requests.post(
