@@ -8,8 +8,11 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, \
-    GlobalClassCreateCnOnPn, GlobalClassCreateFirstBid, GlobalClassTenderPeriodEndAuction
+    GlobalClassCreateCnOnPn, GlobalClassCreateFirstBid, GlobalClassTenderPeriodEndAuction, \
+    GlobalClassCreateDeclareNonConflict
 from tests.utils.PayloadModel.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
+from tests.utils.PayloadModel.DeclareNonConflictInterest.declare_non_conflict_interest_prepared_payload import \
+    DeclarePreparePayload
 from tests.utils.PayloadModel.EI.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.FS.fs_prepared_payload import FsPreparePayload
 from tests.utils.PayloadModel.PN.pn_prepared_payload import PnPreparePayload
@@ -332,11 +335,98 @@ class TestDeclareNonConflictInterest:
                 ev_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateFirstBid.payload
             )
-            GlobalClassCreateFirstBid.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFirstBid.operation_id).get_message_from_kafka()
+            time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate'])
 
-            GlobalClassCreateFirstBid.bid_id = GlobalClassCreateFirstBid.feed_point_message['data']['outcomes'][
-                'bids'][0]['id']
+            GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
+                url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
+                    f"{GlobalClassCreateCnOnPn.ev_id}").json()
+            while "awardPeriod" not in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']:
+                GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
+                    url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreateCnOnPn.ev_id}").json()
+            time_bot(
+                expected_time=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0][
+                    'tender']['awardPeriod']['startDate'])
+
+            GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
+                url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
+                    f"{GlobalClassCreatePn.pn_ocid}").json()
+
+            GlobalClassTenderPeriodEndAuction.feed_point_message = \
+                KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
+                             initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+
+            GlobalClassCreateDeclareNonConflict.award_id = \
+                GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data']['outcomes']['awards'][0]['id']
+            GlobalClassCreateDeclareNonConflict.award_token = \
+                GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data']['outcomes']['awards'][0][
+                    'X-TOKEN']
+
+        requirements_list = list()
+        for c in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['criteria']:
+            for c_1 in c:
+                if c_1 == "source":
+                    if c['source'] == "procuringEntity":
+                        requirement_groups_list = list()
+                        for rg in c['requirementGroups']:
+                            for rg_1 in rg:
+                                if rg_1 == "id":
+                                    requirement_groups_list.append(rg['id'])
+
+                        for x in range(len(requirement_groups_list)):
+                            for rr in c['requirementGroups'][x]['requirements']:
+                                for rr_1 in rr:
+                                    if rr_1 == "id":
+                                        requirements_list.append(rr['id'])
+        tenderers_list = list()
+        for aw in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
+            if aw['status'] == "pending":
+                if aw['statusDetails'] == "awaiting":
+                    for s in aw['suppliers']:
+                        for s_1 in s:
+                            if s_1 == "id":
+                                tenderers_list.append(s['id'])
+        step_number = 0
+        for x in range(len(requirements_list)):
+            for y in range(len(tenderers_list)):
+                with allure.step(f'# 1{step_number}-{y}.Authorization platform one: create declare '
+                                 f'non conflict interest'):
+                    """
+                    Tender platform authorization for create declare non conflict interest.
+                    As result get Tender platform's access token and process operation-id.
+                    """
+                    GlobalClassCreateDeclareNonConflict.access_token = PlatformAuthorization(
+                        GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
+
+                    GlobalClassCreateDeclareNonConflict.operation_id = PlatformAuthorization(
+                        GlobalClassMetadata.host_for_bpe).get_x_operation_id(
+                        GlobalClassCreateDeclareNonConflict.access_token)
+                    step_number += 1
+                with allure.step(f'# 1{step_number}-{y}. Send request for create declare non conflict interest'):
+                    """
+                    Send api request to BPE host for declare non conflict interest creating.
+                    Save asynchronous result of sending the request.
+                    """
+                    time.sleep(1)
+                    declare_payload_class = copy.deepcopy(DeclarePreparePayload())
+                    GlobalClassCreateDeclareNonConflict.payload = \
+                        declare_payload_class.create_declare_old_person_full_data_model(
+                            requirement_id=requirements_list[x],
+                            tenderer_id=tenderers_list[y])
+
+                    Requests().create_declare_non_conflict_interest(
+                        host_of_request=GlobalClassMetadata.host_for_bpe,
+                        access_token=GlobalClassCreateDeclareNonConflict.access_token,
+                        x_operation_id=GlobalClassCreateDeclareNonConflict.operation_id,
+                        pn_ocid=GlobalClassCreatePn.pn_ocid,
+                        ev_id=GlobalClassCreateCnOnPn.ev_id,
+                        payload=GlobalClassCreateDeclareNonConflict.payload,
+                        award_id=GlobalClassCreateDeclareNonConflict.award_id,
+                        award_token=GlobalClassCreateDeclareNonConflict.award_token
+                    )
+                    GlobalClassCreateDeclareNonConflict.feed_point_message = \
+                        KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                    step_number += 1
 
         # with allure.step('# 11. See result'):
         #     """
@@ -403,4 +493,3 @@ class TestDeclareNonConflictInterest:
         #             str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
         #         compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
         #         compare_releases = dict(compare_releases)
-
