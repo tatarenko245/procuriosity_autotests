@@ -5,11 +5,16 @@ import uuid
 from tests.conftest import GlobalClassTenderPeriodEndAuction
 from tests.utils.PayloadModel.DeclareNonConflictInterest.declare_non_conflict_interest_library import PayloadLibrary
 from tests.utils.data_of_enum import person_title
+from tests.utils.date_class import Date
+from tests.utils.iStorage import Document
 
 
 class DeclarePreparePayload:
     def __init__(self):
         self.constructor = copy.deepcopy(PayloadLibrary())
+        self.old_date = Date().old_period()[0]
+        document_one = Document("API.pdf")
+        self.document_one_was_uploaded = document_one.uploading_document()
 
     def create_declare_old_person_full_data_model(self, tenderer_id, requirement_id):
         payload = {
@@ -85,6 +90,50 @@ class DeclarePreparePayload:
                                         payload['requirementResponse']['responder']['businessFunctions'][y][
                                             'documents'][z]['description'] = p['persones'][x]['businessFunctions'][y][
                                             'documents'][z]['description']
+
+        payload['requirementResponse']['requirement']['id'] = requirement_id
+        return payload
+
+    def create_declare_new_person_full_data_model(self, tenderer_id, requirement_id):
+        payload = {
+            "requirementResponse": {}
+        }
+        payload['requirementResponse'].update(self.constructor.requirement_response_object())
+
+        payload['requirementResponse']['id'] = str(uuid.uuid4())
+        payload['requirementResponse']['value'] = True
+
+        payload['requirementResponse']['relatedTenderer']['id'] = tenderer_id
+        payload['requirementResponse']['responder']['title'] = f"{random.choice(person_title)}"
+        payload['requirementResponse']['responder']['name'] = "declare new person name"
+        payload['requirementResponse']['responder']['identifier']['id'] = "declare new person responder id"
+        payload['requirementResponse']['responder']['identifier']['scheme'] = "MD-IDNO"
+        payload['requirementResponse']['responder']['identifier']['uri'] = "declare new person uri"
+
+        payload['requirementResponse']['responder']['businessFunctions'] = [{}]
+        payload['requirementResponse']['responder']['businessFunctions'][0].update(
+            self.constructor.requirement_response_business_functions_object())
+
+        payload['requirementResponse']['responder']['businessFunctions'][0]['id'] = "declare new person bf id"
+        payload['requirementResponse']['responder']['businessFunctions'][0]['type'] = "contactPoint"
+        payload['requirementResponse']['responder']['businessFunctions'][0]['jobTitle'] = \
+            "declare new person bf jobTitle"
+        payload['requirementResponse']['responder']['businessFunctions'][0]['period'][
+            'startDate'] = self.old_date
+
+        payload['requirementResponse']['responder']['businessFunctions'][0][
+            'documents'] = [{}]
+        payload['requirementResponse']['responder']['businessFunctions'][0][
+            'documents'][0].update(self.constructor.business_functions_documents_object())
+
+        payload['requirementResponse']['responder']['businessFunctions'][0]['documents'][0]['id'] = \
+            self.document_one_was_uploaded[0]["data"]["id"]
+        payload['requirementResponse']['responder']['businessFunctions'][0][
+            'documents'][0]['documentType'] = "regulatoryDocument"
+        payload['requirementResponse']['responder']['businessFunctions'][0][
+            'documents'][0]['title'] = "declare new person bf doc title"
+        payload['requirementResponse']['responder']['businessFunctions'][0][
+            'documents'][0]['description'] = "declare new person bf doc description"
 
         payload['requirementResponse']['requirement']['id'] = requirement_id
         return payload
