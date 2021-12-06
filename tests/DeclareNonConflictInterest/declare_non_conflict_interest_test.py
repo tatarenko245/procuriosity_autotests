@@ -1525,109 +1525,109 @@ class TestDeclareNonConflictInterest:
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                     assert expected_result == compare_releases
 
-                    # try:
-                    #     """
-                    #     Rollback specific value into submission.rules
-                    #     """
-                    #     GlobalClassMetadata.database.set_min_bids_from_submission_rules(
-                    #         value=min_bids_from_submission_rules,
-                    #         country=GlobalClassMetadata.country,
-                    #         pmd=GlobalClassMetadata.pmd,
-                    #         operation_type='all',
-                    #         parameter='minBids'
-                    #     )
-                    # except Exception:
-                    #     log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                    #                   f"File = declare_non_conflict_interest_test.py -> \n" \
-                    #                   f"Class = TestDeclareNonConflictInterest -> \n" \
-                    #                   f"Method = test_check_result_of_sending_the_request_two -> \n" \
-                    #                   f"Step: Rollback specific value into submission.rules.\n" \
-                    #                   f"Message: Impossible to rollback specific value into submission.rules.\n"
-                    #     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                    #         logfile.write(log_msg_one)
-                    #     raise Exception("Impossible to rollback specific value into submission.rules.")
-                    # try:
-                    #     """
-                    #     Rollback specific value into evaluation.rules
-                    #     """
-                    #     GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
-                    #         value=min_bids_from_evaluation_rules,
-                    #         country=GlobalClassMetadata.country,
-                    #         pmd=GlobalClassMetadata.pmd,
-                    #         operation_type='all',
-                    #         parameter='minBids'
-                    #     )
-                    # except Exception:
-                    #     log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                    #                   f"File = declare_non_conflict_interest_test.py -> \n" \
-                    #                   f"Class = TestDeclareNonConflictInterest -> \n" \
-                    #                   f"Method = test_check_result_of_sending_the_request_two -> \n" \
-                    #                   f"Step: Rollback specific value into evaluation.rules.\n" \
-                    #                   f"Message: Impossible to rollback specific value into evaluation.rules\n"
-                    #     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                    #         logfile.write(log_msg_one)
-                    #     raise Exception("Impossible to rollback specific value into evaluation.rules")
-                    #
-                    # try:
-                    #     """
-                    #     If TestCase was passed, then cLean up the database.
-                    #     If TestCase was failed, then return process steps by operation-id.
-                    #     """
-                    #     if compare_releases == expected_result:
-                    #         GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                    #             ei_id=GlobalClassCreateEi.ei_ocid)
-                    #
-                    #         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
-                    #             ei_id=GlobalClassCreateEi.ei_ocid)
-                    #
-                    #         GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
-                    #             pn_ocid=GlobalClassCreatePn.pn_ocid)
-                    #
-                    #         GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
-                    #             pn_ocid=GlobalClassCreatePn.pn_ocid)
-                    #
-                    #         GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
-                    #             pn_ocid=GlobalClassCreatePn.pn_ocid)
-                    #
-                    #         GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
-                    #             pn_ocid=GlobalClassCreatePn.pn_ocid)
-                    #
-                    #         GlobalClassMetadata.database.declaration_cleanup_table_of_services(
-                    #             pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    #             ev_id=GlobalClassCreateCnOnPn.ev_id)
-                    #
-                    #         GlobalClassMetadata.database.cleanup_steps_of_process(
-                    #             operation_id=GlobalClassCreateEi.operation_id)
-                    #
-                    #         GlobalClassMetadata.database.cleanup_steps_of_process(
-                    #             operation_id=GlobalClassCreateFs.operation_id)
-                    #
-                    #         GlobalClassMetadata.database.cleanup_steps_of_process(
-                    #             operation_id=GlobalClassCreatePn.operation_id)
-                    #
-                    #         GlobalClassMetadata.database.cleanup_steps_of_process(
-                    #             operation_id=GlobalClassCreateCnOnPn.operation_id)
-                    #
-                    #         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                    #             operation_id=GlobalClassCreateFirstBid.operation_id)
-                    #
-                    #         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                    #             operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[1][
-                    #                 'X-OPERATION-ID'])
-                    #     else:
-                    #         with allure.step('# Steps from Casandra DataBase'):
-                    #             database = GlobalClassMetadata.database
-                    #             steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                    #                 operation_id=GlobalClassCreateDeclareNonConflict.operation_id)
-                    #             allure.attach(steps, "Cassandra DataBase: steps of process")
-                    #
-                    # except ValueError:
-                    #     log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                    #                   f"File = declare_non_conflict_interest_test.py -> \n" \
-                    #                   f"Class = TestDeclareNonConflictInterest -> \n" \
-                    #                   f"Method = test_check_result_of_sending_the_request_two -> \n" \
-                    #                   f"Step:Clean up database.\n" \
-                    #                   f"Message: Impossible to cLean up the database.\n"
-                    #     with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                    #         logfile.write(log_msg_one)
-                    #     raise ValueError("Can not return BPE operation step.")
+        try:
+            """
+            Rollback specific value into submission.rules
+            """
+            GlobalClassMetadata.database.set_min_bids_from_submission_rules(
+                value=min_bids_from_submission_rules,
+                country=GlobalClassMetadata.country,
+                pmd=GlobalClassMetadata.pmd,
+                operation_type='all',
+                parameter='minBids'
+            )
+        except Exception:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                          f"Class = TestDeclareNonConflictInterest -> \n" \
+                          f"Method = test_check_result_of_sending_the_request_two -> \n" \
+                          f"Step: Rollback specific value into submission.rules.\n" \
+                          f"Message: Impossible to rollback specific value into submission.rules.\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise Exception("Impossible to rollback specific value into submission.rules.")
+        try:
+            """
+            Rollback specific value into evaluation.rules
+            """
+            GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
+                value=min_bids_from_evaluation_rules,
+                country=GlobalClassMetadata.country,
+                pmd=GlobalClassMetadata.pmd,
+                operation_type='all',
+                parameter='minBids'
+            )
+        except Exception:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                          f"Class = TestDeclareNonConflictInterest -> \n" \
+                          f"Method = test_check_result_of_sending_the_request_two -> \n" \
+                          f"Step: Rollback specific value into evaluation.rules.\n" \
+                          f"Message: Impossible to rollback specific value into evaluation.rules\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise Exception("Impossible to rollback specific value into evaluation.rules")
+
+        try:
+            """
+            If TestCase was passed, then cLean up the database.
+            If TestCase was failed, then return process steps by operation-id.
+            """
+            if compare_releases == expected_result:
+                GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                    ei_id=GlobalClassCreateEi.ei_ocid)
+
+                GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                    ei_id=GlobalClassCreateEi.ei_ocid)
+
+                GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid)
+
+                GlobalClassMetadata.database.declaration_cleanup_table_of_services(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid,
+                    ev_id=GlobalClassCreateCnOnPn.ev_id)
+
+                GlobalClassMetadata.database.cleanup_steps_of_process(
+                    operation_id=GlobalClassCreateEi.operation_id)
+
+                GlobalClassMetadata.database.cleanup_steps_of_process(
+                    operation_id=GlobalClassCreateFs.operation_id)
+
+                GlobalClassMetadata.database.cleanup_steps_of_process(
+                    operation_id=GlobalClassCreatePn.operation_id)
+
+                GlobalClassMetadata.database.cleanup_steps_of_process(
+                    operation_id=GlobalClassCreateCnOnPn.operation_id)
+
+                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                    operation_id=GlobalClassCreateFirstBid.operation_id)
+
+                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                    operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[1][
+                        'X-OPERATION-ID'])
+            else:
+                with allure.step('# Steps from Casandra DataBase'):
+                    database = GlobalClassMetadata.database
+                    steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
+                        operation_id=GlobalClassCreateDeclareNonConflict.operation_id)
+                    allure.attach(steps, "Cassandra DataBase: steps of process")
+
+        except ValueError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                          f"Class = TestDeclareNonConflictInterest -> \n" \
+                          f"Method = test_check_result_of_sending_the_request_two -> \n" \
+                          f"Step:Clean up database.\n" \
+                          f"Message: Impossible to cLean up the database.\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise ValueError("Can not return BPE operation step.")
