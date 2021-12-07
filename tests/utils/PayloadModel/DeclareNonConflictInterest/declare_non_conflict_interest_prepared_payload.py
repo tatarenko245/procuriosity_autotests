@@ -4,7 +4,7 @@ import uuid
 
 from tests.conftest import GlobalClassTenderPeriodEndAuction
 from tests.utils.PayloadModel.DeclareNonConflictInterest.declare_non_conflict_interest_library import PayloadLibrary
-from tests.utils.data_of_enum import person_title
+from tests.utils.data_of_enum import person_title, business_function_type_for_declare
 from tests.utils.date_class import Date
 from tests.utils.iStorage import Document
 
@@ -16,14 +16,14 @@ class DeclarePreparePayload:
         document_one = Document("API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
 
-    def create_declare_old_person_full_data_model(self, tenderer_id, requirement_id):
+    def create_declare_old_person_full_data_model(self, tenderer_id, requirement_id, value=True):
         payload = {
             "requirementResponse": {}
         }
         payload['requirementResponse'].update(self.constructor.requirement_response_object())
 
         payload['requirementResponse']['id'] = str(uuid.uuid4())
-        payload['requirementResponse']['value'] = True
+        payload['requirementResponse']['value'] = value
         for p in GlobalClassTenderPeriodEndAuction.actual_ms_release['releases'][0]['parties']:
             for p_1 in p:
                 if p_1 == "roles":
@@ -94,30 +94,34 @@ class DeclarePreparePayload:
         payload['requirementResponse']['requirement']['id'] = requirement_id
         return payload
 
-    def create_declare_new_person_full_data_model(self, tenderer_id, requirement_id):
+    def create_declare_new_person_full_data_model(self, tenderer_id, requirement_id, number_of_iteration, value=True):
         payload = {
             "requirementResponse": {}
         }
         payload['requirementResponse'].update(self.constructor.requirement_response_object())
 
         payload['requirementResponse']['id'] = str(uuid.uuid4())
-        payload['requirementResponse']['value'] = True
+        payload['requirementResponse']['value'] = value
 
         payload['requirementResponse']['relatedTenderer']['id'] = tenderer_id
         payload['requirementResponse']['responder']['title'] = f"{random.choice(person_title)}"
-        payload['requirementResponse']['responder']['name'] = "declare new person name"
-        payload['requirementResponse']['responder']['identifier']['id'] = "declare new person responder id"
+        payload['requirementResponse']['responder']['name'] = f"{number_of_iteration} declare new person name"
+        payload['requirementResponse']['responder']['identifier'][
+            'id'] = f"{number_of_iteration} declare new person responder id"
         payload['requirementResponse']['responder']['identifier']['scheme'] = "MD-IDNO"
-        payload['requirementResponse']['responder']['identifier']['uri'] = "declare new person uri"
+        payload['requirementResponse']['responder']['identifier'][
+            'uri'] = f"{number_of_iteration}declare new person uri"
 
         payload['requirementResponse']['responder']['businessFunctions'] = [{}]
         payload['requirementResponse']['responder']['businessFunctions'][0].update(
             self.constructor.requirement_response_business_functions_object())
 
-        payload['requirementResponse']['responder']['businessFunctions'][0]['id'] = "declare new person bf id"
-        payload['requirementResponse']['responder']['businessFunctions'][0]['type'] = "contactPoint"
+        payload['requirementResponse']['responder']['businessFunctions'][0][
+            'id'] = f"{number_of_iteration} declare new person bf id"
+        payload['requirementResponse']['responder']['businessFunctions'][0][
+            'type'] = f"{random.choice(business_function_type_for_declare)}"
         payload['requirementResponse']['responder']['businessFunctions'][0]['jobTitle'] = \
-            "declare new person bf jobTitle"
+            f"{number_of_iteration} declare new person bf jobTitle"
         payload['requirementResponse']['responder']['businessFunctions'][0]['period'][
             'startDate'] = self.old_date
 
@@ -131,21 +135,22 @@ class DeclarePreparePayload:
         payload['requirementResponse']['responder']['businessFunctions'][0][
             'documents'][0]['documentType'] = "regulatoryDocument"
         payload['requirementResponse']['responder']['businessFunctions'][0][
-            'documents'][0]['title'] = "declare new person bf doc title"
+            'documents'][0]['title'] = f"{number_of_iteration} declare new person bf doc title"
         payload['requirementResponse']['responder']['businessFunctions'][0][
-            'documents'][0]['description'] = "declare new person bf doc description"
+            'documents'][0]['description'] = f"{number_of_iteration} declare new person bf doc description"
 
         payload['requirementResponse']['requirement']['id'] = requirement_id
         return payload
 
-    def create_declare_old_person_but_new_bf_new_doc_full_data_model(self, tenderer_id, requirement_id):
+    def create_declare_old_person_but_new_bf_new_doc_full_data_model(self, tenderer_id, requirement_id,
+                                                                     number_of_iteration, value=True):
         payload = {
             "requirementResponse": {}
         }
         payload['requirementResponse'].update(self.constructor.requirement_response_object())
 
         payload['requirementResponse']['id'] = str(uuid.uuid4())
-        payload['requirementResponse']['value'] = True
+        payload['requirementResponse']['value'] = value
         for p in GlobalClassTenderPeriodEndAuction.actual_ms_release['releases'][0]['parties']:
             for p_1 in p:
                 if p_1 == "roles":
@@ -158,7 +163,7 @@ class DeclarePreparePayload:
                         if "persones" in p:
                             for x in range(len(list_of_persones)):
                                 payload['requirementResponse']['relatedTenderer']['id'] = tenderer_id
-                                payload['requirementResponse']['responder']['title'] = f"{random.choice(person_title)}"
+                                payload['requirementResponse']['responder']['title'] = p['persones'][x]['title']
                                 payload['requirementResponse']['responder']['name'] = p['persones'][x]['name']
                                 payload['requirementResponse']['responder']['identifier']['id'] = p['persones'][x][
                                     'identifier']['id']
@@ -171,10 +176,12 @@ class DeclarePreparePayload:
         payload['requirementResponse']['responder']['businessFunctions'][0].update(
             self.constructor.requirement_response_business_functions_object())
 
-        payload['requirementResponse']['responder']['businessFunctions'][0]['id'] = "declare new value bf id"
-        payload['requirementResponse']['responder']['businessFunctions'][0]['type'] = "contactPoint"
+        payload['requirementResponse']['responder']['businessFunctions'][0]['id'] = \
+            f"{number_of_iteration} declare new value bf id"
+        payload['requirementResponse']['responder']['businessFunctions'][0]['type'] = \
+            f"{random.choice(business_function_type_for_declare)}"
         payload['requirementResponse']['responder']['businessFunctions'][0]['jobTitle'] = \
-            "declare new value bf jobTitle"
+            f"{number_of_iteration} declare new value bf jobTitle"
         payload['requirementResponse']['responder']['businessFunctions'][0]['period'][
             'startDate'] = self.old_date
 
@@ -188,9 +195,9 @@ class DeclarePreparePayload:
         payload['requirementResponse']['responder']['businessFunctions'][0][
             'documents'][0]['documentType'] = "regulatoryDocument"
         payload['requirementResponse']['responder']['businessFunctions'][0][
-            'documents'][0]['title'] = "declare new value bf doc title"
+            'documents'][0]['title'] = f"{number_of_iteration} declare new value bf doc title"
         payload['requirementResponse']['responder']['businessFunctions'][0][
-            'documents'][0]['description'] = "declare new value bf doc description"
+            'documents'][0]['description'] = f"{number_of_iteration} declare new value bf doc description"
 
         payload['requirementResponse']['requirement']['id'] = requirement_id
         return payload

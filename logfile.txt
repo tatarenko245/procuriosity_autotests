@@ -215,3 +215,283 @@ Class = KafkaMessage ->
 Method = declare_non_conflict_interest_message_is_successful -> 
 Actual result: check_x_response_id = d1d40450-56f2-11ec-a815-4383ca4ec0e0 is not correct.
 Expected result: actual result must be UUID v.4
+
+2021-12-07 13:11:18.708884
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 71102fe0-574c-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 13:11:21.793352
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 71102fe0-574c-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 13:11:24.902110
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 71102fe0-574c-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 13:11:28.043493
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 71102fe0-574c-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 13:44:19.471134
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = f5a675d0-5750-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 13:44:25.071278
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = f5a675d0-5750-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 13:44:30.874527
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = f5a675d0-5750-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 13:44:36.492013
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = f5a675d0-5750-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 14:04:19.834226
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = d9559750-5753-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 14:04:25.712340
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = d9559750-5753-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 14:22:20.768662
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 544ed820-5756-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 14:22:28.571952
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 544ed820-5756-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 16:19:24.912050
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = ac2d8db0-5766-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 16:19:33.240787
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = ac2d8db0-5766-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 16:58:27.389766
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 298bb930-576c-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 16:58:35.341679
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 298bb930-576c-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 17:16:27.422860
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 972d7300-576e-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 17:16:36.288304
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 972d7300-576e-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 17:37:28.286406
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 942d7210-5771-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 17:37:37.073116
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 942d7210-5771-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 17:37:45.162894
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 942d7210-5771-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 18:00:29.074156
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = d7e49f30-5774-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 18:00:36.970382
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = d7e49f30-5774-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 18:20:31.002819
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 87d91b80-5777-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 18:20:38.808166
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 87d91b80-5777-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 19:13:12.153936
+File = declare_non_conflict_interest_test.py -> 
+Class = TestDeclareNonConflictInterest -> 
+Method = test_check_result_of_sending_the_request_two -> 
+Step: # 10. Send request for create second Bid.
+Message: Impossible to set specific value into submission.rules.
+
+2021-12-07 19:38:33.305263
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 83957d60-5782-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 19:38:41.127800
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 83957d60-5782-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 19:38:49.016543
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 83957d60-5782-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 19:38:57.036525
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 83957d60-5782-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 19:58:55.632845
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 9f85c120-5786-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 19:59:03.184834
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 9f85c120-5786-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 19:59:10.662092
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 9f85c120-5786-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 19:59:18.204623
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 9f85c120-5786-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 21:00:16.578866
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 3074bee0-578f-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 21:09:43.553979
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 826ad7b0-5790-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 21:17:58.501871
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = a972f300-5791-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 21:18:06.340966
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = a972f300-5791-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 21:18:14.905004
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = a972f300-5791-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
+
+2021-12-07 21:18:22.853682
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = a972f300-5791-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4

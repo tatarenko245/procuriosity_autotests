@@ -68,4 +68,13 @@ documentType_for_bid = (
 
 person_title = ("Mr.", "Ms.", "Mrs.",)
 business_function_type = ("authority", "contactPoint",)
+business_function_type_for_declare = (
+    "chairman",
+    "procurementOfficer",
+    "contactPoint",
+    "technicalEvaluator",
+    "technicalOpener",
+    "priceOpener",
+    "priceEvaluator",
+)
 type_of_supplier = ("company", "individual",)
