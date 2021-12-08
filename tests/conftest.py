@@ -272,3 +272,13 @@ class GlobalClassCreateDeclareNonConflict:
     feed_point_message = None
     actual_ms_release = None
     actual_ev_release = None
+
+
+class GlobalClassUpdateDeclareNonConflict:
+    access_token = None
+    operation_id = None
+    payload = None
+    feed_point_message = None
+    actual_ms_release = None
+    actual_ev_release = None
+    previous_value_of_iterable_item_object = None
