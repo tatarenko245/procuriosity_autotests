@@ -1,6 +1,5 @@
 import copy
 import datetime
-import json
 
 from tests.utils.ReleaseModel.DeclareNonConflictInterest.declare_non_conflict_release_library import ReleaseLibrary
 from tests.utils.functions import is_it_uuid, get_project_root
