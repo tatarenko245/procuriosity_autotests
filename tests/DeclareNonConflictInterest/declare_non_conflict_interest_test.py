@@ -511,6 +511,8 @@ class TestDeclareNonConflictInterest:
                             with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                                 logfile.write(log_msg_one)
                             raise ValueError("Could not return BPE operation step")
+                        with allure.step('Compare actual message from feed point and expected pattern'):
+                            assert asynchronous_result_of_sending_the_request_was_checked is True
                         step_number += 1
 
                     with allure.step(f'# {step_number}.2. Check EV release.'):
@@ -1355,6 +1357,8 @@ class TestDeclareNonConflictInterest:
                             with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                                 logfile.write(log_msg_one)
                             raise ValueError("Could not return BPE operation step")
+                        with allure.step('Compare actual message from feed point and expected pattern'):
+                            assert asynchronous_result_of_sending_the_request_was_checked is True
                         step_number += 1
 
                     with allure.step(f'# {step_number}.1. Check EV release.'):
@@ -3879,6 +3883,8 @@ class TestDeclareNonConflictInterest:
                             with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                                 logfile.write(log_msg_one)
                             raise ValueError("Could not return BPE operation step")
+                        with allure.step('Compare actual message from feed point and expected pattern'):
+                            assert asynchronous_result_of_sending_the_request_was_checked is True
                         step_number += 1
 
                     with allure.step(f'# {step_number}.2. Check EV release.'):
@@ -4289,6 +4295,8 @@ class TestDeclareNonConflictInterest:
                             with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                                 logfile.write(log_msg_one)
                             raise ValueError("Could not return BPE operation step")
+                        with allure.step('Compare actual message from feed point and expected pattern'):
+                            assert asynchronous_result_of_sending_the_request_was_checked is True
                         step_number += 1
 
                     with allure.step(f'# {step_number}.2. Check EV release.'):
