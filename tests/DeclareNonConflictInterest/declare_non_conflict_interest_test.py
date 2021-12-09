@@ -403,8 +403,32 @@ class TestDeclareNonConflictInterest:
 
         for x in range(len(requirements_list)):
             for y in range(len(tenderers_list)):
+                x_mapper = {
+                    0: "first",
+                    1: "second",
+                    2: "third",
+                    3: "foutrh",
+                    4: "fifth",
+                    5: "sixth",
+                    6: "seventh",
+                    7: "eighth",
+                    8: "ninth",
+                    9: "tenth"
+                }
+                y_mapper = {
+                    0: "first",
+                    1: "second",
+                    2: "third",
+                    3: "foutrh",
+                    4: "fifth",
+                    5: "sixth",
+                    6: "seventh",
+                    7: "eighth",
+                    8: "ninth",
+                    9: "tenth"
+                }
                 with allure.step(f'# {step_number}.Authorization platform one: create declare '
-                                 f'non conflict interest with {y} tenderer and {x} requirement.'):
+                                 f'non conflict interest with {y_mapper[y]} tenderer and {x_mapper[x]} requirement.'):
                     """
                     Tender platform authorization for create declare non conflict interest.
                     As result get Tender platform's access token and process operation-id.
@@ -417,7 +441,7 @@ class TestDeclareNonConflictInterest:
                         GlobalClassCreateDeclareNonConflict.access_token)
                     step_number += 1
                 with allure.step(f'# {step_number}. Send request for create declare non conflict interest '
-                                 f'with {y} tenderer and {x} requirement.'):
+                                 f'with {y_mapper[y]} tenderer and {x_mapper[x]} requirement.'):
                     """
                     Send api request to BPE host for declare non conflict interest creating.
                     Save asynchronous result of sending the request.
@@ -444,13 +468,13 @@ class TestDeclareNonConflictInterest:
                         KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
                     step_number += 1
 
-                with allure.step(f'# {step_number}. See result for the declaration with {y} tenderer '
-                                 f'and {x} requirement.'):
+                with allure.step(f'# {step_number}. See result for the declaration with {y_mapper[y]} tenderer '
+                                 f'and {x_mapper[x]} requirement.'):
                     """
                     Check the results of test case running.
                     """
                     with allure.step(f'# {step_number}.1. Check message in feed point for the declaration '
-                                     f'with {y} tenderer and {x} requirement.'):
+                                     f'with {y_mapper[y]} tenderer and {x_mapper[x]} requirement.'):
                         """
                         Check the asynchronous_result_of_sending_the_request.
                         """
@@ -491,7 +515,7 @@ class TestDeclareNonConflictInterest:
                         step_number += 1
 
                     with allure.step(f'# {step_number}.2. Check EV release for the declaration '
-                                     f'with {y} tenderer and {x} requirement.'):
+                                     f'with {y_mapper[y]} tenderer and {x_mapper[x]} requirement.'):
                         """
                         Compare actual evaluation value release with expected evaluation value release model.
                         """
@@ -631,7 +655,7 @@ class TestDeclareNonConflictInterest:
                                    expected_requirement_response_array
 
                     with allure.step(f'# {step_number}.3. Check MS release for the declaration '
-                                     f'with {y} tenderer and {x} requirement.'):
+                                     f'with {y_mapper[y]} tenderer and {x_mapper[x]} requirement.'):
                         """
                         Compare multistage release with expected multistage release model.
                         """
