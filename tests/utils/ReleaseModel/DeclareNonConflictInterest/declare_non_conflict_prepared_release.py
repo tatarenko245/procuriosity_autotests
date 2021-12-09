@@ -105,9 +105,11 @@ class DeclareExpectedRelease:
                                 for a_2 in a['requirementResponses']:
                                     if a_2['requirement']['id'] == \
                                             declare_payload['requirementResponse']['requirement']['id']:
-                                        if a_2['relatedTenderer']['id'] == \
-                                                declare_payload['requirementResponse']['relatedTenderer']['id']:
-                                            expected_requirement_responses_object['id'] = a_2['id']
+                                        if a_2['responder']['id'] == \
+                                                expected_requirement_responses_object['responder']['id']:
+                                            if a_2['relatedTenderer']['id'] == \
+                                                    declare_payload['requirementResponse']['relatedTenderer']['id']:
+                                                expected_requirement_responses_object['id'] = a_2['id']
         except Exception:
             log_msg_one = f"\n{datetime.datetime.now()}\n" \
                           f"File = declare_non_conflict_interest_prepared_release.py -> \n" \
