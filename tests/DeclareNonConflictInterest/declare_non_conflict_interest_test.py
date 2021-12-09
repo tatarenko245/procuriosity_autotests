@@ -486,10 +486,11 @@ class TestDeclareNonConflictInterest:
                         asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
-                            kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
+                            kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
                             ev_id=GlobalClassCreateCnOnPn.ev_id
                         )
+                        print(asynchronous_result_of_sending_the_request_was_checked)
                         try:
                             """
                             If asynchronous_result_of_sending_the_request was False, then return process steps by
@@ -1332,7 +1333,7 @@ class TestDeclareNonConflictInterest:
                         asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
-                            kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
+                            kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
                             ev_id=GlobalClassCreateCnOnPn.ev_id
                         )
@@ -2235,7 +2236,7 @@ class TestDeclareNonConflictInterest:
                         asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
-                            kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
+                            kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
                             ev_id=GlobalClassCreateCnOnPn.ev_id
                         )
@@ -3023,7 +3024,7 @@ class TestDeclareNonConflictInterest:
                         asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
-                            kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
+                            kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
                             ev_id=GlobalClassCreateCnOnPn.ev_id
                         )
@@ -3296,7 +3297,7 @@ class TestDeclareNonConflictInterest:
                         asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                             GlobalClassUpdateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
-                            kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
+                            kafka_message=GlobalClassUpdateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
                             ev_id=GlobalClassCreateCnOnPn.ev_id
                         )
@@ -3858,7 +3859,7 @@ class TestDeclareNonConflictInterest:
                         asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
-                            kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
+                            kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
                             ev_id=GlobalClassCreateCnOnPn.ev_id
                         )
@@ -4270,7 +4271,7 @@ class TestDeclareNonConflictInterest:
                         asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
-                            kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
+                            kafka_message=GlobalClassUpdateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
                             ev_id=GlobalClassCreateCnOnPn.ev_id
                         )

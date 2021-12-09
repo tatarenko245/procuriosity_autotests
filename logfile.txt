@@ -1587,3 +1587,10 @@ Class = KafkaMessage ->
 Method = declare_non_conflict_interest_message_is_successful -> 
 Actual result: check_x_response_id = bd0e2360-5932-11ec-a815-4383ca4ec0e0 is not correct.
 Expected result: actual result must be UUID v.4
+
+2021-12-10 01:04:15.486918
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 9c0f6be0-5943-11ec-a815-4383ca4ec0e0 is not correct.
+Expected result: actual result must be UUID v.4
