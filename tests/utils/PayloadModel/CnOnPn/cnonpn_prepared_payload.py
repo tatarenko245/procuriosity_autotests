@@ -7,7 +7,7 @@ from tests.utils.PayloadModel.CnOnPn.cnonpn_payload_library import PayloadLibrar
 from tests.utils.data_of_enum import cpv_goods_low_level_03, cpv_goods_low_level_1, cpv_goods_low_level_2, \
     cpv_goods_low_level_3, cpv_goods_low_level_44, cpv_goods_low_level_48, cpv_works_low_level_45, \
     cpv_services_low_level_5, cpv_services_low_level_6, cpv_services_low_level_7, cpv_services_low_level_8, \
-    cpv_services_low_level_92, cpv_services_low_level_98, documentType
+    cpv_services_low_level_92, cpv_services_low_level_98, documentType, person_title
 from tests.utils.date_class import Date
 from tests.utils.functions import generate_items_array, generate_lots_array, set_permanent_id, \
     generate_criteria_array, set_eligibility_evidences_unique_temporary_id, \
@@ -182,8 +182,7 @@ class CnOnPnPreparePayload:
         payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
         payload['tender']['procuringEntity']['id'] = \
             GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']['id']
-        payload['tender']['procuringEntity']['persones'][0]['title'] =  \
-            "create cnonpn: tender.procuringEntity.persones.title"
+        payload['tender']['procuringEntity']['persones'][0]['title'] = f"{random.choice(person_title)}"
         payload['tender']['procuringEntity']['persones'][0]['name'] = \
             "create cnonpn: tender.procuringEntity.persones.name"
         payload['tender']['procuringEntity']['persones'][0]['identifier']['id'] = \
@@ -753,6 +752,13 @@ class CnOnPnPreparePayload:
             payload['tender']['documents'] = [{}, {}]
             payload['tender']['documents'][0].update(self.constructor.tender_document_object())
             payload['tender']['documents'][1].update(self.constructor.tender_document_object())
+
+            payload['tender']['procuringEntity']['persones'].append(self.constructor.tender_procuring_entity_persones())
+            payload['tender']['procuringEntity']['persones'][0]['businessFunctions'].append(
+                self.constructor.tender_procuring_entity_persones_business_functions_object())
+            payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'].append(
+                self.constructor.tender_procuring_entity_persones_business_document_object()
+            )
         except KeyError:
             raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
 
@@ -801,8 +807,33 @@ class CnOnPnPreparePayload:
         payload['tender']['awardCriteriaDetails'] = "automated"
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
         payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
-        payload['tender']['procuringEntity'] = \
-            GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']
+        payload['tender']['procuringEntity']['id'] = \
+            GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']['id']
+        payload['tender']['procuringEntity']['persones'][0]['title'] = f"{random.choice(person_title)}"
+        payload['tender']['procuringEntity']['persones'][0]['name'] = \
+            "create cnonpn: tender.procuringEntity.persones.name"
+        payload['tender']['procuringEntity']['persones'][0]['identifier']['id'] = \
+            "create cnonpn: tender.procuringEntity.persones.identifier.id"
+        payload['tender']['procuringEntity']['persones'][0]['identifier']['scheme'] = "MD-IDNO"
+        payload['tender']['procuringEntity']['persones'][0]['identifier']['uri'] = \
+            "create cnonpn: tender.procuringEntity.persones.identifier.uri"
+        payload['tender']['procuringEntity']['persones'][0]['identifier']['scheme'] = \
+            "create cnonpn: tender.procuringEntity.persones.identifier.scheme"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['id'] = \
+            "create cnonpn: tender.procuringEntity.persones.businessFunctions.id"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['type'] = "chairman"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['jobTitle'] = \
+            "create cnonpn: tender.procuringEntity.persones.businessFunctions.jobTitle"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['period']['startDate'] = \
+            self.business_function_date
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['documentType'] = \
+            "regulatoryDocument"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['id'] = \
+            self.document_two_was_uploaded[0]["data"]["id"]
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['title'] = \
+            "create cnonpn: tender.procuringEntity.persones.businessFunctions.documents.title"
+        payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]['documents'][0]['description'] = \
+            "create cnonpn: tender.procuringEntity.persones.businessFunctions.documents.description"
 
         payload['tender']['lots'][0]['id'] = "create cnonpn: tender.lots.id"
         payload['tender']['lots'][0]['internalId'] = "create cnonpn: tender.lots.internalId"

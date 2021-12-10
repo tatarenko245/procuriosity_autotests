@@ -1508,7 +1508,7 @@ class TestTenderPeriodEndAuction:
                     allure.attach(str(json.dumps(final_expected_criteria_array[0])), "Expected criteria array")
                     assert final_expected_criteria_array[0] == \
                            GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
-                           'criteria'][final_expected_criteria_array[1]]
+                               'criteria'][final_expected_criteria_array[1]]
 
                 with allure.step('Compare actual awardPeriod object and expected awardPeriod object.'):
                     allure.attach(str(json.dumps(
@@ -2585,7 +2585,7 @@ class TestTenderPeriodEndAuction:
                     allure.attach(str(json.dumps(final_expected_criteria_array[0])), "Expected criteria array")
                     assert final_expected_criteria_array[0] == \
                            GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
-                           'criteria'][final_expected_criteria_array[1]]
+                               'criteria'][final_expected_criteria_array[1]]
 
                 with allure.step('Compare actual awardPeriod object and expected awardPeriod object.'):
                     allure.attach(str(json.dumps(
@@ -3841,8 +3841,9 @@ class TestTenderPeriodEndAuction:
                                         Check how many quantity of evidences object into expected_bids_array.
                                         """
                                         list_of_expected_bids_array_evidences = list()
-                                        for i in final_expected_bids_object['details'][d]['requirementResponses'][k][
-                                            'evidences']:
+                                        evidences = final_expected_bids_object['details'][d][
+                                            'requirementResponses'][k]['evidences']
+                                        for i in evidences:
                                             for i_1 in i:
                                                 if i_1 == "id":
                                                     list_of_expected_bids_array_evidences.append(i_1)
@@ -3956,7 +3957,7 @@ class TestTenderPeriodEndAuction:
                     allure.attach(str(json.dumps(final_expected_criteria_array[0])), "Expected criteria array")
                     assert final_expected_criteria_array[0] == \
                            GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender'][
-                           'criteria'][final_expected_criteria_array[1]]
+                               'criteria'][final_expected_criteria_array[1]]
 
                 with allure.step('Compare actual awardPeriod object and expected awardPeriod object.'):
                     allure.attach(str(json.dumps(
@@ -5239,8 +5240,9 @@ class TestTenderPeriodEndAuction:
                                         Check how many quantity of evidences object into expected_bids_array.
                                         """
                                         list_of_expected_bids_array_evidences = list()
-                                        for i in final_expected_bids_object['details'][d]['requirementResponses'][k][
-                                            'evidences']:
+                                        evidences = final_expected_bids_object['details'][d][
+                                            'requirementResponses'][k]['evidences']
+                                        for i in evidences:
                                             for i_1 in i:
                                                 if i_1 == "id":
                                                     list_of_expected_bids_array_evidences.append(i_1)

@@ -1050,3 +1050,34 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
         payload['bid']['requirementResponses'][i]['evidences'][0]['id'] = str(i)
         payload['bid']['requirementResponses'][i]['id'] = str(i)
     return payload['bid']['requirementResponses']
+
+
+def get_id_token_of_award_in_pending_awaiting_state(actual_awards_array, feed_point_message):
+    actual_award_id_list = list()
+    award_id = None
+    award_token = None
+    try:
+        """
+        Calculate how many quantity of object into actual_awards_requirement_responses_array
+        """
+        for a in actual_awards_array:
+            if a['status'] == "pending":
+                if a['statusDetails'] == "awaiting":
+                    actual_award_id_list.append(a['id'])
+    except Exception:
+        log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                      f"File = declare_non_conflict_interest_prepared_release.py -> \n" \
+                      f"Class = DeclareExpectedRelease -> \n" \
+                      f"Method = awards_requirement_responses_array -> \n" \
+                      f"Message: Impossible to calculate how many quantity of object into " \
+                      f"actual_awards_requirement_responses_array.\n"
+        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+            logfile.write(log_msg_one)
+        raise Exception("Impossible to calculate how many quantity of object into "
+                        f"actual_awards_requirement_responses_array.")
+
+    for f in feed_point_message['data']['outcomes']['awards']:
+        if f['id'] == actual_award_id_list[0]:
+            award_id = actual_award_id_list[0]
+            award_token = f['X-TOKEN']
+    return award_id, award_token

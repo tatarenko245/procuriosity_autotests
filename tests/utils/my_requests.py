@@ -246,3 +246,23 @@ class Requests:
             })
         allure.attach(host_of_request + f"/cancel/bid", 'URL')
         return bid
+
+    @staticmethod
+    @allure.step('Prepared request: create Declare non conflict interest')
+    def create_declare_non_conflict_interest(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, award_id,
+                                             award_token, payload, test_mode=False):
+        declaration = requests.post(
+            url=host_of_request + f"/do/declaration/{pn_ocid}/{ev_id}/{award_id}",
+            params={
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': award_token
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/declaration", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return declaration
