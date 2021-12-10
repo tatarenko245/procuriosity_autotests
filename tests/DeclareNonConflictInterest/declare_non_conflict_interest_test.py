@@ -1,7 +1,6 @@
 import copy
 import datetime
 import json
-import logging
 import time
 
 import allure
@@ -513,7 +512,10 @@ class TestDeclareNonConflictInterest:
                                 logfile.write(log_msg_one)
                             raise ValueError("Could not return BPE operation step")
                         with allure.step('Compare actual message from feed point and expected pattern'):
-                            assert asynchronous_result_of_sending_the_request_was_checked is True
+                            allure.attach(str(json.dumps(asynchronous_result_of_sending_the_request_was_checked)),
+                                          "Actual result of comparing the message from feed point.")
+                            allure.attach(str(True), "Expected result of comparing the message from feed point.")
+                            assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
                         step_number += 1
 
                     with allure.step(f'# {step_number}.2. Check EV release.'):
@@ -793,14 +795,12 @@ class TestDeclareNonConflictInterest:
                 GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
-
             else:
                 with allure.step('# Steps from Casandra DataBase'):
                     database = GlobalClassMetadata.database
                     steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
                         operation_id=GlobalClassCreateDeclareNonConflict.operation_id)
                     allure.attach(steps, "Cassandra DataBase: steps of process")
-
         except ValueError:
             log_msg_one = f"\n{datetime.datetime.now()}\n" \
                           f"File = declare_non_conflict_interest_test.py -> \n" \
@@ -1359,7 +1359,10 @@ class TestDeclareNonConflictInterest:
                                 logfile.write(log_msg_one)
                             raise ValueError("Could not return BPE operation step")
                         with allure.step('Compare actual message from feed point and expected pattern'):
-                            assert asynchronous_result_of_sending_the_request_was_checked is True
+                            allure.attach(str(json.dumps(asynchronous_result_of_sending_the_request_was_checked)),
+                                          "Actual result of comparing the message from feed point.")
+                            allure.attach(str(True), "Expected result of comparing the message from feed point.")
+                            assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
                         step_number += 1
 
                     with allure.step(f'# {step_number}.1. Check EV release.'):
@@ -1603,7 +1606,6 @@ class TestDeclareNonConflictInterest:
                             allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
                             allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                             assert expected_result == compare_releases
-
         try:
             """
             Rollback specific value into submission.rules
@@ -1645,7 +1647,7 @@ class TestDeclareNonConflictInterest:
                           f"Message: Impossible to rollback specific value into evaluation.rules\n"
             with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                 logfile.write(log_msg_one)
-                raise Exception("Impossible to rollback specific value into evaluation.rules")
+            raise Exception("Impossible to rollback specific value into evaluation.rules")
         try:
             """
             If TestCase was passed, then cLean up the database.
@@ -1696,7 +1698,6 @@ class TestDeclareNonConflictInterest:
                 GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
-
             else:
                 with allure.step('# Steps from Casandra DataBase'):
                     database = GlobalClassMetadata.database
@@ -2261,6 +2262,11 @@ class TestDeclareNonConflictInterest:
                             with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                                 logfile.write(log_msg_one)
                             raise ValueError("Could not return BPE operation step")
+                        with allure.step('Compare actual message from feed point and expected pattern'):
+                            allure.attach(str(json.dumps(asynchronous_result_of_sending_the_request_was_checked)),
+                                          "Actual result of comparing the message from feed point.")
+                            allure.attach(str(True), "Expected result of comparing the message from feed point.")
+                            assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
                         step_number += 1
 
                     with allure.step(f'# {step_number}.1. Check EV release'):
@@ -2282,126 +2288,126 @@ class TestDeclareNonConflictInterest:
                             GlobalClassTenderPeriodEndAuction.actual_ev_release,
                             GlobalClassCreateDeclareNonConflict.actual_ev_release)
 
-                    dictionary_item_added_was_cleaned = \
-                        str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                    compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
-                    compare_releases = dict(compare_releases)
+                        dictionary_item_added_was_cleaned = \
+                            str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                        compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+                        compare_releases = dict(compare_releases)
 
-                    new_value_for_release_id = GlobalClassCreateDeclareNonConflict.actual_ev_release[
-                                                   'releases'][0]['id'][46:59]
-                    old_value_for_release_id = GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                                                   'releases'][0]['id'][46:59]
-                    expected_result = {
-                        "dictionary_item_added": "['releases'][0]['awards'][0]['requirementResponses']",
-                        "values_changed": {
-                            "root['releases'][0]['id']": {
-                                "new_value":
-                                    f"{GlobalClassCreateCnOnPn.ev_id}-{new_value_for_release_id}",
-                                "old_value":
-                                    f"{GlobalClassCreateCnOnPn.ev_id}-{old_value_for_release_id}"
-                            },
-                            "root['releases'][0]['date']": {
-                                "new_value":
-                                    GlobalClassCreateDeclareNonConflict.feed_point_message['data'][
-                                        'operationDate'],
-                                "old_value":
-                                    GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['date']
+                        new_value_for_release_id = GlobalClassCreateDeclareNonConflict.actual_ev_release[
+                                                       'releases'][0]['id'][46:59]
+                        old_value_for_release_id = GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                                                       'releases'][0]['id'][46:59]
+                        expected_result = {
+                            "dictionary_item_added": "['releases'][0]['awards'][0]['requirementResponses']",
+                            "values_changed": {
+                                "root['releases'][0]['id']": {
+                                    "new_value":
+                                        f"{GlobalClassCreateCnOnPn.ev_id}-{new_value_for_release_id}",
+                                    "old_value":
+                                        f"{GlobalClassCreateCnOnPn.ev_id}-{old_value_for_release_id}"
+                                },
+                                "root['releases'][0]['date']": {
+                                    "new_value":
+                                        GlobalClassCreateDeclareNonConflict.feed_point_message['data'][
+                                            'operationDate'],
+                                    "old_value":
+                                        GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['date']
+                                }
                             }
                         }
-                    }
 
-                    actual_awards_array = GlobalClassCreateDeclareNonConflict.actual_ev_release['releases'][0][
-                        'awards']
-                    try:
-                        """
-                        Prepare actual awards.requirementResponses array.
-                        """
-                        actual_awards_requirement_responses_array = list()
-                        for a in actual_awards_array:
-                            if a['status'] == "pending":
-                                if a['statusDetails'] == "awaiting":
-                                    for a_1 in a:
-                                        if a_1 == "requirementResponses":
-                                            for a_2 in a['requirementResponses']:
-                                                if a_2['requirement']['id'] == \
-                                                        GlobalClassCreateDeclareNonConflict.payload[
-                                                            'requirementResponse']['requirement']['id']:
-                                                    if a_2['relatedTenderer']['id'] == \
-                                                            GlobalClassCreateDeclareNonConflict.payload[
-                                                                'requirementResponse'][
-                                                                'relatedTenderer']['id']:
-                                                        actual_awards_requirement_responses_array.append(a_2)
-                    except Exception:
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = declare_non_conflict_interest_test.py -> \n" \
-                                      f"Class = TestDeclareNonConflictInterest -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_three -> \n" \
-                                      f"Step: # {step_number}.2. Check EV release.\n" \
-                                      f"Message: Impossible to prepare actual awards.requirementResponses.\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise Exception("Impossible to prepare actual awards.requirementResponses.")
-
-                    try:
-                        """
-                        Prepare expected awards.requirementResponses array.
-                        """
-                        expected_requirement_response_array = list()
-                        expected_requirement_response_object = DeclareExpectedRelease(
-                            environment=GlobalClassMetadata.environment,
-                            language=GlobalClassMetadata.language
-                        ).awards_requirement_responses_array(
-                            actual_awards_array=actual_awards_array,
-                            declare_payload=GlobalClassCreateDeclareNonConflict.payload)
-                        expected_requirement_response_array.append(expected_requirement_response_object)
-                    except Exception:
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = declare_non_conflict_interest_test.py -> \n" \
-                                      f"Class = TestDeclareNonConflictInterest -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_three -> \n" \
-                                      f"Step: # {step_number}.2. Check EV release.\n" \
-                                      f"Message: Impossible to prepare expected awards.requirementResponses.\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise Exception("Impossible to prepare expected awards.requirementResponses.")
-
-                    try:
-                        """
-                            If compare_releases !=expected_result, then return process steps by operation-id.
+                        actual_awards_array = GlobalClassCreateDeclareNonConflict.actual_ev_release['releases'][0][
+                            'awards']
+                        try:
                             """
-                        if compare_releases == expected_result and \
-                                expected_requirement_response_array == actual_awards_requirement_responses_array:
-                            pass
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                database = GlobalClassMetadata.database
-                                steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                    operation_id=GlobalClassCreateDeclareNonConflict.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = declare_non_conflict_interest_test.py -> \n" \
-                                      f"Class = TTestDeclareNonConflictInterest -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_three -> \n" \
-                                      f"Step: # {step_number}.2. Check EV release.\n" \
-                                      f"Message: Can not return BPE operation step.\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise ValueError("Can not return BPE operation step.")
+                            Prepare actual awards.requirementResponses array.
+                            """
+                            actual_awards_requirement_responses_array = list()
+                            for a in actual_awards_array:
+                                if a['status'] == "pending":
+                                    if a['statusDetails'] == "awaiting":
+                                        for a_1 in a:
+                                            if a_1 == "requirementResponses":
+                                                for a_2 in a['requirementResponses']:
+                                                    if a_2['requirement']['id'] == \
+                                                            GlobalClassCreateDeclareNonConflict.payload[
+                                                                'requirementResponse']['requirement']['id']:
+                                                        if a_2['relatedTenderer']['id'] == \
+                                                                GlobalClassCreateDeclareNonConflict.payload[
+                                                                    'requirementResponse'][
+                                                                    'relatedTenderer']['id']:
+                                                            actual_awards_requirement_responses_array.append(a_2)
+                        except Exception:
+                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                                          f"Class = TestDeclareNonConflictInterest -> \n" \
+                                          f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                          f"Step: # {step_number}.2. Check EV release.\n" \
+                                          f"Message: Impossible to prepare actual awards.requirementResponses.\n"
+                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                logfile.write(log_msg_one)
+                            raise Exception("Impossible to prepare actual awards.requirementResponses.")
 
-                    with allure.step('Compare actual EV release and expected EV release'):
-                        allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                        allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                        assert expected_result == compare_releases
+                        try:
+                            """
+                            Prepare expected awards.requirementResponses array.
+                            """
+                            expected_requirement_response_array = list()
+                            expected_requirement_response_object = DeclareExpectedRelease(
+                                environment=GlobalClassMetadata.environment,
+                                language=GlobalClassMetadata.language
+                            ).awards_requirement_responses_array(
+                                actual_awards_array=actual_awards_array,
+                                declare_payload=GlobalClassCreateDeclareNonConflict.payload)
+                            expected_requirement_response_array.append(expected_requirement_response_object)
+                        except Exception:
+                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                                          f"Class = TestDeclareNonConflictInterest -> \n" \
+                                          f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                          f"Step: # {step_number}.2. Check EV release.\n" \
+                                          f"Message: Impossible to prepare expected awards.requirementResponses.\n"
+                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                logfile.write(log_msg_one)
+                            raise Exception("Impossible to prepare expected awards.requirementResponses.")
 
-                    with allure.step('Compare actual requirementResponse and '
-                                     'expected requirementResponse into awards array'):
-                        allure.attach(str(json.dumps(actual_awards_requirement_responses_array)),
-                                      "Actual requirementResponse")
-                        allure.attach(str(json.dumps(expected_requirement_response_array)),
-                                      "Expected requirementResponse")
-                        assert actual_awards_requirement_responses_array == \
-                               expected_requirement_response_array
+                        try:
+                            """
+                                If compare_releases !=expected_result, then return process steps by operation-id.
+                                """
+                            if compare_releases == expected_result and \
+                                    expected_requirement_response_array == actual_awards_requirement_responses_array:
+                                pass
+                            else:
+                                with allure.step('# Steps from Casandra DataBase'):
+                                    database = GlobalClassMetadata.database
+                                    steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
+                                        operation_id=GlobalClassCreateDeclareNonConflict.operation_id)
+                                    allure.attach(steps, "Cassandra DataBase: steps of process")
+                        except ValueError:
+                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                                          f"Class = TTestDeclareNonConflictInterest -> \n" \
+                                          f"Method = test_check_result_of_sending_the_request_three -> \n" \
+                                          f"Step: # {step_number}.2. Check EV release.\n" \
+                                          f"Message: Can not return BPE operation step.\n"
+                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                logfile.write(log_msg_one)
+                            raise ValueError("Can not return BPE operation step.")
+
+                        with allure.step('Compare actual EV release and expected EV release'):
+                            allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                            allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                            assert expected_result == compare_releases
+
+                        with allure.step('Compare actual requirementResponse and '
+                                         'expected requirementResponse into awards array'):
+                            allure.attach(str(json.dumps(actual_awards_requirement_responses_array)),
+                                          "Actual requirementResponse")
+                            allure.attach(str(json.dumps(expected_requirement_response_array)),
+                                          "Expected requirementResponse")
+                            assert actual_awards_requirement_responses_array == \
+                                   expected_requirement_response_array
 
                     with allure.step(f'# {step_number}.3. Check MS release'):
                         """
@@ -3049,6 +3055,11 @@ class TestDeclareNonConflictInterest:
                             with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                                 logfile.write(log_msg_one)
                             raise ValueError("Could not return BPE operation step")
+                        with allure.step('Compare actual message from feed point and expected pattern'):
+                            allure.attach(str(json.dumps(asynchronous_result_of_sending_the_request_was_checked)),
+                                          "Actual result of comparing the message from feed point.")
+                            allure.attach(str(True), "Expected result of comparing the message from feed point.")
+                            assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
                         step_number += 1
 
                     with allure.step(f'# {step_number}.2. Check EV release'):
@@ -3209,32 +3220,32 @@ class TestDeclareNonConflictInterest:
                             GlobalClassTenderPeriodEndAuction.actual_ms_release,
                             GlobalClassCreateDeclareNonConflict.actual_ms_release)
 
-                    new_value_for_release_id = GlobalClassCreateDeclareNonConflict.actual_ms_release[
-                                                   'releases'][0]['id'][29:42]
-                    old_value_for_release_id = GlobalClassTenderPeriodEndAuction.actual_ms_release[
-                                                   'releases'][0]['id'][29:42]
+                        new_value_for_release_id = GlobalClassCreateDeclareNonConflict.actual_ms_release[
+                                                       'releases'][0]['id'][29:42]
+                        old_value_for_release_id = GlobalClassTenderPeriodEndAuction.actual_ms_release[
+                                                       'releases'][0]['id'][29:42]
 
-                    expected_result = {
-                        "values_changed": {
-                            "root['releases'][0]['id']": {
-                                "new_value":
-                                    f"{GlobalClassCreatePn.pn_ocid}-{new_value_for_release_id}",
-                                "old_value":
-                                    f"{GlobalClassCreatePn.pn_ocid}-{old_value_for_release_id}"
-                            },
-                            "root['releases'][0]['date']": {
-                                "new_value":
-                                    GlobalClassCreateDeclareNonConflict.feed_point_message['data']['operationDate'],
-                                "old_value":
-                                    GlobalClassTenderPeriodEndAuction.actual_ms_release['releases'][0]['date']
+                        expected_result = {
+                            "values_changed": {
+                                "root['releases'][0]['id']": {
+                                    "new_value":
+                                        f"{GlobalClassCreatePn.pn_ocid}-{new_value_for_release_id}",
+                                    "old_value":
+                                        f"{GlobalClassCreatePn.pn_ocid}-{old_value_for_release_id}"
+                                },
+                                "root['releases'][0]['date']": {
+                                    "new_value":
+                                        GlobalClassCreateDeclareNonConflict.feed_point_message['data']['operationDate'],
+                                    "old_value":
+                                        GlobalClassTenderPeriodEndAuction.actual_ms_release['releases'][0]['date']
+                                }
                             }
                         }
-                    }
 
-                    with allure.step('Compare actual MS release and expected MS release'):
-                        allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                        allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                        assert expected_result == compare_releases
+                        with allure.step('Compare actual MS release and expected MS release'):
+                            allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                            allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                            assert expected_result == compare_releases
 
                 with allure.step(f'# {step_number}.Authorization platform one: update declaration '
                                  f'non conflict interest with {y_mapper[y]} tenderer and {x_mapper[x]} requirement.'):
@@ -3322,7 +3333,11 @@ class TestDeclareNonConflictInterest:
                             with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                                 logfile.write(log_msg_one)
                             raise ValueError("Could not return BPE operation step")
-
+                        with allure.step('Compare actual message from feed point and expected pattern'):
+                            allure.attach(str(json.dumps(asynchronous_result_of_sending_the_request_was_checked)),
+                                          "Actual result of comparing the message from feed point.")
+                            allure.attach(str(True), "Expected result of comparing the message from feed point.")
+                            assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
                         step_number += 1
         try:
             """
@@ -3885,7 +3900,10 @@ class TestDeclareNonConflictInterest:
                                 logfile.write(log_msg_one)
                             raise ValueError("Could not return BPE operation step")
                         with allure.step('Compare actual message from feed point and expected pattern'):
-                            assert asynchronous_result_of_sending_the_request_was_checked is True
+                            allure.attach(str(json.dumps(asynchronous_result_of_sending_the_request_was_checked)),
+                                          "Actual result of comparing the message from feed point.")
+                            allure.attach(str(True), "Expected result of comparing the message from feed point.")
+                            assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
                         step_number += 1
 
                     with allure.step(f'# {step_number}.2. Check EV release.'):
@@ -4210,49 +4228,49 @@ class TestDeclareNonConflictInterest:
                             allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                             assert expected_result == compare_releases
 
-                    with allure.step(f'# {step_number}. Authorization platform one: update declaration '
-                                     f'non conflict interest with {y_mapper[y]} tenderer and {x_mapper[x]} '
-                                     f'requirement.t'):
-                        """
-                        Tender platform authorization for update declare non conflict interest.
-                        As result get Tender platform's access token and process operation-id.
-                        """
-                        GlobalClassUpdateDeclareNonConflict.access_token = PlatformAuthorization(
-                            GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
+                with allure.step(f'# {step_number}. Authorization platform one: update declaration '
+                                 f'non conflict interest with {y_mapper[y]} tenderer and {x_mapper[x]} '
+                                 f'requirement.t'):
+                    """
+                    Tender platform authorization for update declare non conflict interest.
+                    As result get Tender platform's access token and process operation-id.
+                    """
+                    GlobalClassUpdateDeclareNonConflict.access_token = PlatformAuthorization(
+                        GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
 
-                        GlobalClassUpdateDeclareNonConflict.operation_id = PlatformAuthorization(
-                            GlobalClassMetadata.host_for_bpe).get_x_operation_id(
-                            GlobalClassUpdateDeclareNonConflict.access_token)
-                        step_number += 1
-                    with allure.step(f'# {step_number}. Send request: update declaration '
-                                     f'non conflict interest with {y_mapper[y]} tenderer and {x_mapper[x]} '
-                                     f'requirement.'):
-                        """
-                        Send api request to BPE host for declare non conflict interest updating.
-                        Save asynchronous result of sending the request.
-                        """
-                        time.sleep(1)
-                        declare_payload_class = copy.deepcopy(DeclarePreparePayload())
-                        GlobalClassUpdateDeclareNonConflict.payload = \
-                            declare_payload_class.create_declare_new_responder_identifier_but_old_other_value_full(
-                                requirement_id=requirements_list[x],
-                                tenderer_id=tenderers_list[y],
-                                number_of_iteration=step_number)
+                    GlobalClassUpdateDeclareNonConflict.operation_id = PlatformAuthorization(
+                        GlobalClassMetadata.host_for_bpe).get_x_operation_id(
+                        GlobalClassUpdateDeclareNonConflict.access_token)
+                    step_number += 1
+                with allure.step(f'# {step_number}. Send request: update declaration '
+                                 f'non conflict interest with {y_mapper[y]} tenderer and {x_mapper[x]} '
+                                 f'requirement.'):
+                    """
+                    Send api request to BPE host for declare non conflict interest updating.
+                    Save asynchronous result of sending the request.
+                    """
+                    time.sleep(1)
+                    declare_payload_class = copy.deepcopy(DeclarePreparePayload())
+                    GlobalClassUpdateDeclareNonConflict.payload = \
+                        declare_payload_class.create_declare_new_responder_identifier_but_old_other_value_full(
+                            requirement_id=requirements_list[x],
+                            tenderer_id=tenderers_list[y],
+                            number_of_iteration=step_number)
 
-                        Requests().create_declare_non_conflict_interest(
-                            host_of_request=GlobalClassMetadata.host_for_bpe,
-                            access_token=GlobalClassUpdateDeclareNonConflict.access_token,
-                            x_operation_id=GlobalClassUpdateDeclareNonConflict.operation_id,
-                            pn_ocid=GlobalClassCreatePn.pn_ocid,
-                            ev_id=GlobalClassCreateCnOnPn.ev_id,
-                            payload=GlobalClassUpdateDeclareNonConflict.payload,
-                            award_id=GlobalClassCreateDeclareNonConflict.award_id,
-                            award_token=GlobalClassCreateDeclareNonConflict.award_token,
-                            test_mode=True
-                        )
-                        GlobalClassUpdateDeclareNonConflict.feed_point_message = \
-                            KafkaMessage(GlobalClassUpdateDeclareNonConflict.operation_id).get_message_from_kafka()
-                        step_number += 1
+                    Requests().create_declare_non_conflict_interest(
+                        host_of_request=GlobalClassMetadata.host_for_bpe,
+                        access_token=GlobalClassUpdateDeclareNonConflict.access_token,
+                        x_operation_id=GlobalClassUpdateDeclareNonConflict.operation_id,
+                        pn_ocid=GlobalClassCreatePn.pn_ocid,
+                        ev_id=GlobalClassCreateCnOnPn.ev_id,
+                        payload=GlobalClassUpdateDeclareNonConflict.payload,
+                        award_id=GlobalClassCreateDeclareNonConflict.award_id,
+                        award_token=GlobalClassCreateDeclareNonConflict.award_token,
+                        test_mode=True
+                    )
+                    GlobalClassUpdateDeclareNonConflict.feed_point_message = \
+                        KafkaMessage(GlobalClassUpdateDeclareNonConflict.operation_id).get_message_from_kafka()
+                    step_number += 1
                 with allure.step(f'# {step_number}. See result: update declaration with '
                                  f'{y_mapper[y]} tenderer and {x_mapper[x]} requirement.'):
                     """
@@ -4297,7 +4315,10 @@ class TestDeclareNonConflictInterest:
                                 logfile.write(log_msg_one)
                             raise ValueError("Could not return BPE operation step")
                         with allure.step('Compare actual message from feed point and expected pattern'):
-                            assert asynchronous_result_of_sending_the_request_was_checked is True
+                            allure.attach(str(json.dumps(asynchronous_result_of_sending_the_request_was_checked)),
+                                          "Actual result of comparing the message from feed point.")
+                            allure.attach(str(True), "Expected result of comparing the message from feed point.")
+                            assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
                         step_number += 1
 
                     with allure.step(f'# {step_number}.2. Check EV release.'):
@@ -4612,117 +4633,117 @@ class TestDeclareNonConflictInterest:
                             allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                             assert expected_result == compare_releases
                         n += 1
-                    try:
-                        """
-                        Rollback specific value into submission.rules
-                        """
-                        GlobalClassMetadata.database.set_min_bids_from_submission_rules(
-                            value=min_bids_from_submission_rules,
-                            country=GlobalClassMetadata.country,
-                            pmd=GlobalClassMetadata.pmd,
-                            operation_type='all',
-                            parameter='minBids'
-                        )
-                    except Exception:
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = declare_non_conflict_interest_test.py -> \n" \
-                                      f"Class = TestDeclareNonConflictInterest -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_five -> \n" \
-                                      f"Step: Rollback specific value into submission.rules.\n" \
-                                      f"Message: Impossible to rollback specific value into submission.rules.\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise Exception("Impossible to rollback specific value into submission.rules.")
-                    try:
-                        """
-                        Rollback specific value into evaluation.rules
-                        """
-                        GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
-                            value=min_bids_from_evaluation_rules,
-                            country=GlobalClassMetadata.country,
-                            pmd=GlobalClassMetadata.pmd,
-                            operation_type='all',
-                            parameter='minBids'
-                        )
-                    except Exception:
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = declare_non_conflict_interest_test.py -> \n" \
-                                      f"Class = TestDeclareNonConflictInterest -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_five -> \n" \
-                                      f"Step: Rollback specific value into evaluation.rules.\n" \
-                                      f"Message: Impossible to rollback specific value into evaluation.rules\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise Exception("Impossible to rollback specific value into evaluation.rules")
+        try:
+            """
+            Rollback specific value into submission.rules
+            """
+            GlobalClassMetadata.database.set_min_bids_from_submission_rules(
+                value=min_bids_from_submission_rules,
+                country=GlobalClassMetadata.country,
+                pmd=GlobalClassMetadata.pmd,
+                operation_type='all',
+                parameter='minBids'
+            )
+        except Exception:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                          f"Class = TestDeclareNonConflictInterest -> \n" \
+                          f"Method = test_check_result_of_sending_the_request_five -> \n" \
+                          f"Step: Rollback specific value into submission.rules.\n" \
+                          f"Message: Impossible to rollback specific value into submission.rules.\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise Exception("Impossible to rollback specific value into submission.rules.")
+        try:
+            """
+            Rollback specific value into evaluation.rules
+            """
+            GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
+                value=min_bids_from_evaluation_rules,
+                country=GlobalClassMetadata.country,
+                pmd=GlobalClassMetadata.pmd,
+                operation_type='all',
+                parameter='minBids'
+            )
+        except Exception:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                          f"Class = TestDeclareNonConflictInterest -> \n" \
+                          f"Method = test_check_result_of_sending_the_request_five -> \n" \
+                          f"Step: Rollback specific value into evaluation.rules.\n" \
+                          f"Message: Impossible to rollback specific value into evaluation.rules\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise Exception("Impossible to rollback specific value into evaluation.rules")
 
-                    try:
-                        """
-                        If TestCase was passed, then cLean up the database.
-                        If TestCase was failed, then return process steps by operation-id.
-                        """
-                        if compare_releases == expected_result:
-                            GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                                ei_id=GlobalClassCreateEi.ei_ocid)
+        try:
+            """
+            If TestCase was passed, then cLean up the database.
+            If TestCase was failed, then return process steps by operation-id.
+            """
+            if compare_releases == expected_result:
+                GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                    ei_id=GlobalClassCreateEi.ei_ocid)
 
-                            GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
-                                ei_id=GlobalClassCreateEi.ei_ocid)
+                GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                    ei_id=GlobalClassCreateEi.ei_ocid)
 
-                            GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
+                GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                            GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
+                GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                            GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
+                GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                            GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid)
+                GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                            GlobalClassMetadata.database.declaration_cleanup_table_of_services(
-                                pn_ocid=GlobalClassCreatePn.pn_ocid,
-                                ev_id=GlobalClassCreateCnOnPn.ev_id)
+                GlobalClassMetadata.database.declaration_cleanup_table_of_services(
+                    pn_ocid=GlobalClassCreatePn.pn_ocid,
+                    ev_id=GlobalClassCreateCnOnPn.ev_id)
 
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreateEi.operation_id)
+                GlobalClassMetadata.database.cleanup_steps_of_process(
+                    operation_id=GlobalClassCreateEi.operation_id)
 
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreateFs.operation_id)
+                GlobalClassMetadata.database.cleanup_steps_of_process(
+                    operation_id=GlobalClassCreateFs.operation_id)
 
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreatePn.operation_id)
+                GlobalClassMetadata.database.cleanup_steps_of_process(
+                    operation_id=GlobalClassCreatePn.operation_id)
 
-                            GlobalClassMetadata.database.cleanup_steps_of_process(
-                                operation_id=GlobalClassCreateCnOnPn.operation_id)
+                GlobalClassMetadata.database.cleanup_steps_of_process(
+                    operation_id=GlobalClassCreateCnOnPn.operation_id)
 
-                            GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                                operation_id=GlobalClassCreateFirstBid.operation_id)
+                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                    operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                            GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                                operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
-                                    'X-OPERATION-ID'])
+                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                    operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
+                        'X-OPERATION-ID'])
 
-                            GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                                operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
-                                    'X-OPERATION-ID'])
+                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                    operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
+                        'X-OPERATION-ID'])
 
-                            GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                                operation_id=GlobalClassUpdateDeclareNonConflict.feed_point_message[
-                                    'X-OPERATION-ID'])
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                database = GlobalClassMetadata.database
-                                steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                    operation_id=GlobalClassCreateDeclareNonConflict.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
+                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                    operation_id=GlobalClassUpdateDeclareNonConflict.feed_point_message[
+                        'X-OPERATION-ID'])
+            else:
+                with allure.step('# Steps from Casandra DataBase'):
+                    database = GlobalClassMetadata.database
+                    steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
+                        operation_id=GlobalClassCreateDeclareNonConflict.operation_id)
+                    allure.attach(steps, "Cassandra DataBase: steps of process")
 
-                    except ValueError:
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = declare_non_conflict_interest_test.py -> \n" \
-                                      f"Class = TestDeclareNonConflictInterest -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_five -> \n" \
-                                      f"Step:Clean up database.\n" \
-                                      f"Message: Impossible to cLean up the database.\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise ValueError("Can not return BPE operation step.")
+        except ValueError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                          f"Class = TestDeclareNonConflictInterest -> \n" \
+                          f"Method = test_check_result_of_sending_the_request_five -> \n" \
+                          f"Step:Clean up database.\n" \
+                          f"Message: Impossible to cLean up the database.\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise ValueError("Can not return BPE operation step.")
