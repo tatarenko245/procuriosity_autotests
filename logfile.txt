@@ -1594,3 +1594,73 @@ Class = KafkaMessage ->
 Method = declare_non_conflict_interest_message_is_successful -> 
 Actual result: check_x_response_id = 9c0f6be0-5943-11ec-a815-4383ca4ec0e0 is not correct.
 Expected result: actual result must be UUID v.4
+
+2021-12-10 23:40:08.427366
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
+
+2021-12-10 23:46:07.779749
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
+
+2021-12-11 00:32:06.322762
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
+
+2021-12-11 00:38:17.254175
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
+
+2021-12-11 01:25:37.584560
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
+
+2021-12-11 01:37:29.566991
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
+
+2021-12-11 01:44:19.782383
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
+
+2021-12-11 01:51:12.683540
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
+
+2021-12-11 02:35:59.606607
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
+
+2021-12-11 02:43:56.866644
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
