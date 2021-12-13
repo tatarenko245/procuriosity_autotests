@@ -1664,3 +1664,24 @@ Class = TestAwardConsideration ->
 Method = test_check_result_of_sending_the_request_one -> 
 Step: # 21.2. Check EV release.
 Message: Impossible to prepare the expected_result.
+
+2021-12-13 13:56:29.463136
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
+
+2021-12-13 14:36:11.612889
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.
+
+2021-12-13 19:27:11.202708
+File = award_consideration_test.py -> 
+Class = TestAwardConsideration -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 21.2. Check EV release.
+Message: Impossible to prepare the expected_result.

@@ -32,11 +32,11 @@ class AwardConsiderationRelease:
             bid_documents_list_with = list()
             if "documents" in bid_payload['bid']:
                 for d in bid_payload['bid']['documents']:
-                    if d['documentType'] != "x_qualificationDocuments" and \
+                    if d['documentType'] != "x_eligibilityDocuments" and \
                             d['documentType'] != "submissionDocuments":
                         bid_documents_list_with.append(d)
 
-                    elif d['documentType'] == "x_qualificationDocuments" or \
+                    elif d['documentType'] == "x_eligibilityDocuments" or \
                             d['documentType'] == "submissionDocuments":
                         bid_documents_list_without.append(d)
         except Exception:
@@ -75,4 +75,10 @@ class AwardConsiderationRelease:
 
         except Exception:
             raise Exception("Impossible to prepare iterable_item_added object")
-        return iterable_item_added
+
+        # FReq-1.4.1.12:
+        if str(bid_documents_list_without) == str([]):
+            is_some_bid_document_was_opened_into_tender_period_end = False
+        else:
+            is_some_bid_document_was_opened_into_tender_period_end = True
+        return iterable_item_added, is_some_bid_document_was_opened_into_tender_period_end
