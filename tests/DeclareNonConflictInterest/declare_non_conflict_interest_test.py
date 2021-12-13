@@ -489,7 +489,7 @@ class TestDeclareNonConflictInterest:
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
                             ev_id=GlobalClassCreateCnOnPn.ev_id
                         )
-                        print(asynchronous_result_of_sending_the_request_was_checked)
+
                         try:
                             """
                             If asynchronous_result_of_sending_the_request was False, then return process steps by

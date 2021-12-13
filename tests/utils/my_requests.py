@@ -266,3 +266,21 @@ class Requests:
         allure.attach(host_of_request + f"/do/declaration", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return declaration
+
+    @staticmethod
+    @allure.step('Prepared request: award consideration')
+    def create_award_consideration(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, award_id,
+                                   award_token, test_mode=False):
+        consideration = requests.post(
+            url=host_of_request + f"/do/consideration/{pn_ocid}/{ev_id}/{award_id}",
+            params={
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': award_token
+            })
+        allure.attach(host_of_request + f"/do/consideration", 'URL')
+        return consideration
