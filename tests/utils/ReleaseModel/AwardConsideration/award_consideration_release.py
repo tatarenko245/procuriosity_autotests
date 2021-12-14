@@ -82,3 +82,4 @@ class AwardConsiderationRelease:
         else:
             is_some_bid_document_was_opened_into_tender_period_end = True
         return iterable_item_added, is_some_bid_document_was_opened_into_tender_period_end
+

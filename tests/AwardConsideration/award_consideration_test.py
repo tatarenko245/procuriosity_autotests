@@ -27,7 +27,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 @allure.parent_suite('Awarding')
-@allure.suite('Declare non conflict interest')
+@allure.suite('Award Consideration')
 @allure.sub_suite('BPE: ')
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1Q9MdmSbP88PQ18Jx28qXT_'
@@ -70,6 +70,7 @@ class TestAwardConsideration:
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions, "
                   "awardCriteriaDetails = automated;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
+                  "Declaration non conflict interest: full data model.\n"
                   )
     def test_check_result_of_sending_the_request_one(self):
         step_number = 1
@@ -219,7 +220,7 @@ class TestAwardConsideration:
             time.sleep(1)
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
-                cnonpn_payload_class.create_cnonpn_obligatory_data_model_with_lots_items_documents(
+                cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv(
                     enquiry_interval=121,
                     tender_interval=300,
                     quantity_of_lots_object=1,
@@ -901,11 +902,12 @@ class TestAwardConsideration:
                   "EI: full data model with items array;\n"
                   "FS: full data model, own money;\n"
                   "PN: full data model, 1 lots, 1 items;\n"
-                  "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions, "
-                  "awardCriteriaDetails = automated;\n"
+                  "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions, "
+                  "awardCriteriaDetails = manual;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
+                  "Declaration non conflict interest: full data model.\n"
                   )
-    def test_check_result_of_sending_the_request_one(self):
+    def test_check_result_of_sending_the_request_two(self):
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: create EI'):
             """
@@ -1061,7 +1063,8 @@ class TestAwardConsideration:
                     need_to_set_permanent_id_for_lots_array=True,
                     need_to_set_permanent_id_for_items_array=True,
                     need_to_set_permanent_id_for_documents_array=True,
-                    based_stage_release=GlobalClassCreatePn.actual_pn_release
+                    based_stage_release=GlobalClassCreatePn.actual_pn_release,
+                    award_criteria_details="manual"
                 )
 
             Requests().create_cnonpn(
