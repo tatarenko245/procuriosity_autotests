@@ -869,7 +869,7 @@ class TestAwardConsideration:
                             operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
                                 'X-OPERATION-ID'])
 
-                        GlobalClassMetadata.database.ccleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                                 'X-OPERATION-ID'])
                         GlobalClassMetadata.database.cleanup_steps_of_process(

@@ -16,8 +16,8 @@ class DeclarePreparePayload:
         document_one = Document("API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
 
-    def create_declare_old_person_full_data_model(self, tenderer_id, requirement_id, req_resp_id=str(uuid.uuid4()),
-                                                  value=True):
+    def create_declare_old_person_full_data_model(self, tenderer_id, requirement_id, actual_ms_release,
+                                                  req_resp_id=str(uuid.uuid4()), value=True):
         payload = {
             "requirementResponse": {}
         }
@@ -25,7 +25,7 @@ class DeclarePreparePayload:
 
         payload['requirementResponse']['id'] = req_resp_id
         payload['requirementResponse']['value'] = value
-        for p in GlobalClassTenderPeriodEndAuction.actual_ms_release['releases'][0]['parties']:
+        for p in actual_ms_release['releases'][0]['parties']:
             for p_1 in p:
                 if p_1 == "roles":
                     if p['roles'] == ['procuringEntity']:
@@ -145,7 +145,8 @@ class DeclarePreparePayload:
         return payload
 
     def create_declare_old_person_but_new_bf_new_doc_full_data_model(self, tenderer_id, requirement_id,
-                                                                     number_of_iteration, req_resp_id=str(uuid.uuid4()),
+                                                                     number_of_iteration, actual_ms_release,
+                                                                     req_resp_id=str(uuid.uuid4()),
                                                                      value=True):
         payload = {
             "requirementResponse": {}
@@ -154,7 +155,7 @@ class DeclarePreparePayload:
 
         payload['requirementResponse']['id'] = req_resp_id
         payload['requirementResponse']['value'] = value
-        for p in GlobalClassTenderPeriodEndAuction.actual_ms_release['releases'][0]['parties']:
+        for p in actual_ms_release['releases'][0]['parties']:
             for p_1 in p:
                 if p_1 == "roles":
                     if p['roles'] == ['procuringEntity']:
@@ -206,7 +207,7 @@ class DeclarePreparePayload:
         return payload
 
     def create_declare_new_responder_identifier_but_old_other_value_full(self, tenderer_id, requirement_id,
-                                                                         number_of_iteration,
+                                                                         number_of_iteration, actual_ms_release,
                                                                          req_resp_id=str(uuid.uuid4()),
                                                                          value=True):
         payload = {
@@ -221,7 +222,7 @@ class DeclarePreparePayload:
         payload['requirementResponse']['responder']['identifier']['scheme'] = "MD-IDNO"
         payload['requirementResponse']['responder']['identifier'][
             'uri'] = f"{number_of_iteration}declare new person uri"
-        for p in GlobalClassTenderPeriodEndAuction.actual_ms_release['releases'][0]['parties']:
+        for p in actual_ms_release['releases'][0]['parties']:
             for p_1 in p:
                 if p_1 == "roles":
                     if p['roles'] == ['procuringEntity']:
