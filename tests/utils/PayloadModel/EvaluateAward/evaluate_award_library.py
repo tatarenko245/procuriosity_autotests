@@ -12,6 +12,7 @@ class PayloadLibrary:
     def award_document_object():
         document = {
             "id": None,
+            "documentType": None,
             "title": None,
             "description": None,
             "relatedLots": []

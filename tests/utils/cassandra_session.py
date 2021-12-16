@@ -158,3 +158,11 @@ class CassandraSession:
         self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+
+    def award_evaluation_cleanup_table_of_services(self, pn_ocid, ev_id):
+        self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ev_id}';").one()
+        self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
+        self.evaluation_keyspace.execute(f"DELETE FROM awards WHERE cpid='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")

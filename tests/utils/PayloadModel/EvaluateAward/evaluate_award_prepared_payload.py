@@ -37,8 +37,10 @@ class EvaluateAwardPreparePayload:
         payload = {
             "award": {}
         }
-        payload.update(self.constructor.award_object())
+        payload['award'].update(self.constructor.award_object())
         payload['award']['documents'].append(self.constructor.award_document_object())
+        del payload['award']['documents'][0]['description']
+        del payload['award']['documents'][0]['relatedLots']
 
         payload['award']['statusDetails'] = award_status_details
         payload['award']['documents'][0]['documentType'] = f"{random.choice(documentType_for_evaluate_award)}"

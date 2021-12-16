@@ -1576,7 +1576,7 @@ class TestTenderPeriodEndAuction:
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -2652,7 +2652,7 @@ class TestTenderPeriodEndAuction:
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0]['X-OPERATION-ID'])
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -4024,7 +4024,7 @@ class TestTenderPeriodEndAuction:
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[1]['X-OPERATION-ID'])
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -5425,7 +5425,7 @@ class TestTenderPeriodEndAuction:
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[1]['X-OPERATION-ID'])
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -6622,7 +6622,7 @@ class TestTenderPeriodEndAuction:
                         GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[1]['X-OPERATION-ID'])
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
