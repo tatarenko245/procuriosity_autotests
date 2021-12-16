@@ -1535,156 +1535,156 @@ class TestAwardEvaluation:
                 assert GlobalClassCreateEvaluateAward.actual_ev_release[
                            'releases'][0]['awards'][0]['documents'] == expected_award_documents_array
 
-        with allure.step(f'# {step_number}.3. Check MS release.'):
-            """
-            Compare multistage release with expected multistage release model.
-            """
-            time.sleep(2)
-            allure.attach(str(json.dumps(GlobalClassAwardConsideration.actual_ms_release)),
-                          "Actual MS release award consideration.")
-
-            GlobalClassCreateEvaluateAward.actual_ms_release = requests.get(
-                url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
-                    f"{GlobalClassCreatePn.pn_ocid}").json()
-
-            allure.attach(str(json.dumps(GlobalClassCreateDeclareNonConflict.actual_ms_release)),
-                          "Actual MS release award evaluation.")
-
-            compare_releases = DeepDiff(
-                GlobalClassAwardConsideration.actual_ms_release,
-                GlobalClassCreateEvaluateAward.actual_ms_release)
-
-            expected_result = {}
-
-            try:
+            with allure.step(f'# {step_number}.3. Check MS release.'):
                 """
-                Rollback specific value into submission.rules
+                Compare multistage release with expected multistage release model.
                 """
-                GlobalClassMetadata.database.set_min_bids_from_submission_rules(
-                    value=min_bids_from_submission_rules,
-                    country=GlobalClassMetadata.country,
-                    pmd=GlobalClassMetadata.pmd,
-                    operation_type='all',
-                    parameter='minBids'
-                )
-            except Exception:
-                log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                              f"File = evaluate_ward_test.py -> \n" \
-                              f"Class = TestAwardEvaluation -> \n" \
-                              f"Method = test_check_result_of_sending_the_request_two -> \n" \
-                              f"Step: Rollback specific value into submission.rules.\n" \
-                              f"Message: Impossible to rollback specific value into submission.rules.\n"
-                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                    logfile.write(log_msg_one)
-                raise Exception("Impossible to rollback specific value into submission.rules.")
-            try:
-                """
-                Rollback specific value into evaluation.rules
-                """
-                GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
-                    value=min_bids_from_evaluation_rules,
-                    country=GlobalClassMetadata.country,
-                    pmd=GlobalClassMetadata.pmd,
-                    operation_type='all',
-                    parameter='minBids'
-                )
-            except Exception:
-                log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                              f"File = evaluate_award_test.py-> \n" \
-                              f"Class = TestAwardEvaluation -> \n" \
-                              f"Method = test_check_result_of_sending_the_request_two -> \n" \
-                              f"Step: Rollback specific value into evaluation.rules.\n" \
-                              f"Message: Impossible to rollback specific value into evaluation.rules\n"
-                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                    logfile.write(log_msg_one)
-                raise Exception("Impossible to rollback specific value into evaluation.rules")
+                time.sleep(2)
+                allure.attach(str(json.dumps(GlobalClassAwardConsideration.actual_ms_release)),
+                              "Actual MS release award consideration.")
 
-            try:
-                """
-                If TestCase was passed, then cLean up the database.
-                If TestCase was failed, then return process steps by operation-id.
-                """
-                if compare_releases == expected_result:
-                    GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                        ei_id=GlobalClassCreateEi.ei_ocid)
+                GlobalClassCreateEvaluateAward.actual_ms_release = requests.get(
+                    url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
+                        f"{GlobalClassCreatePn.pn_ocid}").json()
 
-                    GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
-                        ei_id=GlobalClassCreateEi.ei_ocid)
+                allure.attach(str(json.dumps(GlobalClassCreateDeclareNonConflict.actual_ms_release)),
+                              "Actual MS release award evaluation.")
 
-                    GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
-                        pn_ocid=GlobalClassCreatePn.pn_ocid)
+                compare_releases = DeepDiff(
+                    GlobalClassAwardConsideration.actual_ms_release,
+                    GlobalClassCreateEvaluateAward.actual_ms_release)
 
-                    GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
-                        pn_ocid=GlobalClassCreatePn.pn_ocid)
+                expected_result = {}
 
-                    GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
-                        pn_ocid=GlobalClassCreatePn.pn_ocid)
+                try:
+                    """
+                    Rollback specific value into submission.rules
+                    """
+                    GlobalClassMetadata.database.set_min_bids_from_submission_rules(
+                        value=min_bids_from_submission_rules,
+                        country=GlobalClassMetadata.country,
+                        pmd=GlobalClassMetadata.pmd,
+                        operation_type='all',
+                        parameter='minBids'
+                    )
+                except Exception:
+                    log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                  f"File = evaluate_ward_test.py -> \n" \
+                                  f"Class = TestAwardEvaluation -> \n" \
+                                  f"Method = test_check_result_of_sending_the_request_two -> \n" \
+                                  f"Step: Rollback specific value into submission.rules.\n" \
+                                  f"Message: Impossible to rollback specific value into submission.rules.\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+                    raise Exception("Impossible to rollback specific value into submission.rules.")
+                try:
+                    """
+                    Rollback specific value into evaluation.rules
+                    """
+                    GlobalClassMetadata.database.set_min_bids_from_evaluation_rules(
+                        value=min_bids_from_evaluation_rules,
+                        country=GlobalClassMetadata.country,
+                        pmd=GlobalClassMetadata.pmd,
+                        operation_type='all',
+                        parameter='minBids'
+                    )
+                except Exception:
+                    log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                  f"File = evaluate_award_test.py-> \n" \
+                                  f"Class = TestAwardEvaluation -> \n" \
+                                  f"Method = test_check_result_of_sending_the_request_two -> \n" \
+                                  f"Step: Rollback specific value into evaluation.rules.\n" \
+                                  f"Message: Impossible to rollback specific value into evaluation.rules\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+                    raise Exception("Impossible to rollback specific value into evaluation.rules")
 
-                    GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
-                        pn_ocid=GlobalClassCreatePn.pn_ocid)
+                try:
+                    """
+                    If TestCase was passed, then cLean up the database.
+                    If TestCase was failed, then return process steps by operation-id.
+                    """
+                    if compare_releases == expected_result:
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
 
-                    GlobalClassMetadata.database.declaration_cleanup_table_of_services(
-                        pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id)
+                        GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
 
-                    GlobalClassMetadata.database.award_consideration_cleanup_table_of_services(
-                        pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id)
+                        GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                    GlobalClassMetadata.database.award_evaluation_cleanup_table_of_services(
-                        pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id)
+                        GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreateEi.operation_id)
+                        GlobalClassMetadata.database.bid_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreateFs.operation_id)
+                        GlobalClassMetadata.database.tender_period_end_process_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreatePn.operation_id)
+                        GlobalClassMetadata.database.declaration_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid,
+                            ev_id=GlobalClassCreateCnOnPn.ev_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreateCnOnPn.operation_id)
+                        GlobalClassMetadata.database.award_consideration_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid,
+                            ev_id=GlobalClassCreateCnOnPn.ev_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
-                        operation_id=GlobalClassCreateFirstBid.operation_id)
+                        GlobalClassMetadata.database.award_evaluation_cleanup_table_of_services(
+                            pn_ocid=GlobalClassCreatePn.pn_ocid,
+                            ev_id=GlobalClassCreateCnOnPn.ev_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message[0][
-                            'X-OPERATION-ID'])
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
-                            'X-OPERATION-ID'])
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassAwardConsideration.feed_point_message[
-                            'X-OPERATION-ID'])
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateFs.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreateEvaluateAward.feed_point_message[
-                            'X-OPERATION-ID'])
-                else:
-                    with allure.step('# Steps from Casandra DataBase'):
-                        database = GlobalClassMetadata.database
-                        steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                            operation_id=GlobalClassAwardConsideration.operation_id)
-                        allure.attach(steps, "Cassandra DataBase: steps of process")
-            except ValueError:
-                log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                              f"File = evaluate_award_test.py -> \n" \
-                              f"Class = TestAwardEvaluation -> \n" \
-                              f"Method = test_check_result_of_sending_the_request_two -> \n" \
-                              f"Step:Clean up database.\n" \
-                              f"Message: Impossible to cLean up the database.\n"
-                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                    logfile.write(log_msg_one)
-                raise ValueError("Can not return BPE operation step.")
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreatePn.operation_id)
 
-            with allure.step('Compare actual MS release and expected MS release'):
-                allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                assert expected_result == compare_releases
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateCnOnPn.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                            operation_id=GlobalClassCreateFirstBid.operation_id)
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message[0][
+                                'X-OPERATION-ID'])
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
+                                'X-OPERATION-ID'])
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassAwardConsideration.feed_point_message[
+                                'X-OPERATION-ID'])
+
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEvaluateAward.feed_point_message[
+                                'X-OPERATION-ID'])
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            database = GlobalClassMetadata.database
+                            steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
+                                operation_id=GlobalClassAwardConsideration.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                  f"File = evaluate_award_test.py -> \n" \
+                                  f"Class = TestAwardEvaluation -> \n" \
+                                  f"Method = test_check_result_of_sending_the_request_two -> \n" \
+                                  f"Step:Clean up database.\n" \
+                                  f"Message: Impossible to cLean up the database.\n"
+                    with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                        logfile.write(log_msg_one)
+                    raise ValueError("Can not return BPE operation step.")
+
+                with allure.step('Compare actual MS release and expected MS release'):
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    assert expected_result == compare_releases
 
     @allure.title("create evaluation (statusDetails=unsuccessful) to first award and check state of second award\n"
                   "------------------------------------------------\n"
