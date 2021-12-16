@@ -9,7 +9,7 @@ from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, \
     GlobalClassCreateCnOnPn, GlobalClassCreateFirstBid, GlobalClassTenderPeriodEndAuction, \
-    GlobalClassCreateDeclareNonConflict, GlobalClassAwardConsideration
+    GlobalClassCreateDeclareNonConflict, GlobalClassAwardConsideration, GlobalClassTenderPeriodEndNoAuction
 from tests.utils.PayloadModel.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.DeclareNonConflictInterest.declare_non_conflict_interest_prepared_payload import \
     DeclarePreparePayload
@@ -351,33 +351,33 @@ class TestAwardConsideration:
             )
             time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate'])
 
-            GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
+            GlobalClassTenderPeriodEndNoAuction.actual_ev_release = requests.get(
                 url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateCnOnPn.ev_id}").json()
-            while "awardPeriod" not in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']:
-                GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
+            while "awardPeriod" not in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']:
+                GlobalClassTenderPeriodEndNoAuction.actual_ev_release = requests.get(
                     url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
                         f"{GlobalClassCreateCnOnPn.ev_id}").json()
             time_bot(
-                expected_time=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0][
+                expected_time=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0][
                     'tender']['awardPeriod']['startDate'])
 
-            GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
+            GlobalClassTenderPeriodEndNoAuction.actual_ms_release = requests.get(
                 url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreatePn.pn_ocid}").json()
 
-            GlobalClassTenderPeriodEndAuction.feed_point_message = \
+            GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
                 KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
                              initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
 
             GlobalClassCreateDeclareNonConflict.award_id = \
-                GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data']['outcomes']['awards'][0]['id']
+                GlobalClassTenderPeriodEndNoAuction.feed_point_message[0]['data']['outcomes']['awards'][0]['id']
             GlobalClassCreateDeclareNonConflict.award_token = \
-                GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data']['outcomes']['awards'][0][
+                GlobalClassTenderPeriodEndNoAuction.feed_point_message[0]['data']['outcomes']['awards'][0][
                     'X-TOKEN']
         step_number += 1
         requirements_list = list()
-        for c in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']['criteria']:
+        for c in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['criteria']:
             for c_1 in c:
                 if c_1 == "source":
                     if c['source'] == "procuringEntity":
@@ -393,7 +393,7 @@ class TestAwardConsideration:
                                     if rr_1 == "id":
                                         requirements_list.append(rr['id'])
         tenderers_list = list()
-        for aw in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
+        for aw in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']:
             if aw['status'] == "pending":
                 if aw['statusDetails'] == "awaiting":
                     for s in aw['suppliers']:
@@ -451,7 +451,8 @@ class TestAwardConsideration:
                     GlobalClassCreateDeclareNonConflict.payload = \
                         declare_payload_class.create_declare_old_person_full_data_model(
                             requirement_id=requirements_list[x],
-                            tenderer_id=tenderers_list[y])
+                            tenderer_id=tenderers_list[y],
+                            actual_ms_release=GlobalClassTenderPeriodEndNoAuction.actual_ms_release)
 
                     Requests().create_declare_non_conflict_interest(
                         host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -866,7 +867,7 @@ class TestAwardConsideration:
                             operation_id=GlobalClassCreateFirstBid.operation_id)
 
                         GlobalClassMetadata.database.cleanup_steps_of_process(
-                            operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
+                            operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message[0][
                                 'X-OPERATION-ID'])
 
                         GlobalClassMetadata.database.cleanup_steps_of_process(
@@ -1287,7 +1288,8 @@ class TestAwardConsideration:
                     GlobalClassCreateDeclareNonConflict.payload = \
                         declare_payload_class.create_declare_old_person_full_data_model(
                             requirement_id=requirements_list[x],
-                            tenderer_id=tenderers_list[y])
+                            tenderer_id=tenderers_list[y],
+                            actual_ms_release=GlobalClassTenderPeriodEndAuction.actual_ms_release)
 
                     Requests().create_declare_non_conflict_interest(
                         host_of_request=GlobalClassMetadata.host_for_bpe,
