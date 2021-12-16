@@ -455,7 +455,7 @@ class TestAwardEvaluation:
                         declare_payload_class.create_declare_old_person_full_data_model(
                             requirement_id=requirements_list[x],
                             tenderer_id=tenderers_list[y],
-                            actual_ms_release=GlobalClassCreateDeclareNonConflict.actual_ms_release)
+                            actual_ms_release=GlobalClassTenderPeriodEndNoAuction.actual_ms_release)
 
                     Requests().create_declare_non_conflict_interest(
                         host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -1272,7 +1272,7 @@ class TestAwardEvaluation:
                         declare_payload_class.create_declare_old_person_full_data_model(
                             requirement_id=requirements_list[x],
                             tenderer_id=tenderers_list[y],
-                            actual_ms_release=GlobalClassCreateDeclareNonConflict.actual_ms_release)
+                            actual_ms_release=GlobalClassTenderPeriodEndNoAuction.actual_ms_release)
 
                     Requests().create_declare_non_conflict_interest(
                         host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -2173,7 +2173,7 @@ class TestAwardEvaluation:
                         declare_payload_class.create_declare_old_person_full_data_model(
                             requirement_id=requirements_list[x],
                             tenderer_id=tenderers_list[y],
-                            actual_ms_release=GlobalClassCreateDeclareNonConflict.actual_ms_release)
+                            actual_ms_release=GlobalClassTenderPeriodEndNoAuction.actual_ms_release)
 
                     Requests().create_declare_non_conflict_interest(
                         host_of_request=GlobalClassMetadata.host_for_bpe,
