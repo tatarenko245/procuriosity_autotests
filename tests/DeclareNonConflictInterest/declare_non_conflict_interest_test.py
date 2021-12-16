@@ -70,6 +70,7 @@ class TestDeclareNonConflictInterest:
                   "PN: full data model, 1 lots, 1 items;\n"
                   "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
+                  "Declaration non conflict interest: full data model with old person.\n"
                   )
     def test_check_result_of_sending_the_request_one(self):
         step_number = 1
@@ -788,11 +789,11 @@ class TestDeclareNonConflictInterest:
                 GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                     operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                GlobalClassMetadata.database.cleanup_steps_of_process(
                     operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                GlobalClassMetadata.database.cleanup_steps_of_process(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
             else:
@@ -820,6 +821,7 @@ class TestDeclareNonConflictInterest:
                   "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
+                  "Declaration non conflict interest: full data model with old person.\n"
                   )
     def test_check_result_of_sending_the_request_two(self):
         step_number = 1
@@ -1691,11 +1693,11 @@ class TestDeclareNonConflictInterest:
                 GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                     operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                GlobalClassMetadata.database.cleanup_steps_of_process(
                     operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[1][
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                GlobalClassMetadata.database.cleanup_steps_of_process(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
             else:
@@ -1724,6 +1726,8 @@ class TestDeclareNonConflictInterest:
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
+                  "Declaration non conflict interest: full data model with old person but new businessFunctions and "
+                  "new businessFunctions.documents.\n"
                   )
     def test_check_result_of_sending_the_request_three(self):
         step_number = 1
@@ -2580,11 +2584,11 @@ class TestDeclareNonConflictInterest:
                 GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                     operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                GlobalClassMetadata.database.cleanup_steps_of_process(
                     operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                GlobalClassMetadata.database.cleanup_steps_of_process(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
             else:
@@ -2615,6 +2619,7 @@ class TestDeclareNonConflictInterest:
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
+                  "Declaration non conflict interest: full data model with old person.\n"
                   )
     def test_check_result_of_sending_the_request_four(self):
         step_number = 1
@@ -3425,11 +3430,11 @@ class TestDeclareNonConflictInterest:
                 GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                     operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                GlobalClassMetadata.database.cleanup_steps_of_process(
                     operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                GlobalClassMetadata.database.cleanup_steps_of_process(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
 
@@ -3459,6 +3464,7 @@ class TestDeclareNonConflictInterest:
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
+                  "Declaration non conflict interest: full data model with old person.\n"
                   )
     def test_check_result_of_sending_the_request_five(self):
         step_number = 1
@@ -4719,15 +4725,15 @@ class TestDeclareNonConflictInterest:
                 GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
                     operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                GlobalClassMetadata.database.cleanup_steps_of_process(
                     operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                GlobalClassMetadata.database.cleanup_steps_of_process(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_steps_of_process_from_orchestrator(
+                GlobalClassMetadata.database.cleanup_steps_of_process(
                     operation_id=GlobalClassUpdateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
             else:

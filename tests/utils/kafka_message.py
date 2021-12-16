@@ -1955,6 +1955,188 @@ class KafkaMessage:
         return True
 
     @staticmethod
+    def award_evaluating_message_is_successful(environment, kafka_message, pn_ocid, ev_id):
+        tender_url = None
+
+        if environment == "dev":
+            tender_url = "http://dev.public.eprocurement.systems/tenders"
+        if environment == "sandbox":
+            tender_url = "http://public.eprocurement.systems/tenders"
+
+        try:
+            """
+            Check X-OPERATION-ID into message from feed point.
+            """
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            if check_x_operation_id is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                              f"Actual result: check_x_operation_id = {kafka_message['X-OPERATION-ID']} " \
+                              f"is not correct.\n" \
+                              f"Expected result: actual result must be UUID v.4\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "check_x_operation_id is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                          f"KeyError: X-OPERATION-ID\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: X-OPERATION-ID')
+
+        try:
+            """
+            Check X-RESPONSE-ID into message from feed point.
+            """
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            if check_x_response_id is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                              f"Actual result: check_x_response_id = {kafka_message['X-RESPONSE-ID']} " \
+                              f"is not correct.\n" \
+                              f"Expected result: actual result must be UUID v.4\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "check_x_response_id is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                          f"KeyError: X-RESPONSE-ID\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: X-RESPONSE-ID')
+
+        try:
+            """
+            Check initiator into message from feed point.
+            """
+            check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "platform")
+            if check_initiator is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                              f"Actual result: initiator = {kafka_message['initiator']} is not correct.\n" \
+                              f"Expected result: platform\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "initiator is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                          f"KeyError: initiator\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: initiator')
+
+        try:
+            """
+            Check data.ocid into message from feed point.
+            """
+            check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{ev_id}")
+            if check_oc_id is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                              f"Actual result: data.ocid = {kafka_message['data']['ocid']} is not correct.\n" \
+                              f"Expected result: {ev_id}\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "check_oc_id is False"
+        except KeyError:
+            log_msg_one = f"{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                          f"KeyError: data.ocid\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: data.ocid')
+
+        try:
+            """
+            Check data.url into message from feed point.
+            """
+            check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
+                                        f"{tender_url}/{pn_ocid}/{ev_id}")
+            if check_url is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                              f"Actual result: data.url = {kafka_message['data']['url']} is not correct.\n" \
+                              f"Expected result: {tender_url}/{pn_ocid}/{ev_id}\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "check_url is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                          f"KeyError: data.url\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: data.url')
+
+        try:
+            """
+            Check data.operationDate into message from feed point.
+            """
+            check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
+            if check_operation_date is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                              f"Actual result: data.operationDate = {kafka_message['data']['operationDate']} " \
+                              f"is not correct.\n" \
+                              f"Expected result: actual  result must be compared with 202*-*-*T*:*:*\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "check_operation_date is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
+                          f"KeyError: data.operationDate\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: data.operationDate')
+
+        if check_x_operation_id is True and check_x_response_id is True and check_initiator is True and \
+                check_oc_id is True and check_url is True and check_operation_date is True:
+            pass
+        else:
+            return False
+        return True
+
+    @staticmethod
     def award_consideration_message_is_successful(environment, kafka_message, pn_ocid, ev_id):
         tender_url = None
 

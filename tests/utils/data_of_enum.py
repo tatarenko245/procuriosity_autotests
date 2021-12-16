@@ -66,6 +66,20 @@ documentType_for_bid = (
     "x_eligibilityDocuments",
     "x_technicalDocuments",)
 
+documentType_for_evaluate_award = (
+    "awardNotice",
+    "evaluationReports",
+    "contractDraft",
+    "winningBid",
+    "complaints",
+    "bidders",
+    "conflictOfInterest",
+    "cancellationDetails",
+    "submissionDocuments",
+    "contractArrangements",
+    "contractSchedule",
+    "shortlistedFirms",)
+
 person_title = ("Mr.", "Ms.", "Mrs.",)
 business_function_type = ("authority", "contactPoint",)
 business_function_type_for_declare = (

@@ -32,7 +32,8 @@ class CnOnPnPreparePayload:
     def create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
             self, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
             based_stage_release, need_to_set_permanent_id_for_lots_array=False,
-            need_to_set_permanent_id_for_items_array=False, need_to_set_permanent_id_for_documents_array=False):
+            need_to_set_permanent_id_for_items_array=False, need_to_set_permanent_id_for_documents_array=False,
+            award_criteria_details="automated"):
 
         try:
             item_classification_id = None
@@ -177,7 +178,7 @@ class CnOnPnPreparePayload:
         payload['tender']['procurementMethodRationale'] = "create cnonpn: tender.procurementMethodRationale"
         payload['tender']['procurementMethodAdditionalInfo'] = "create cnonpn: tender.procurementMethodAdditionalInfo"
         payload['tender']['awardCriteria'] = "ratedCriteria"
-        payload['tender']['awardCriteriaDetails'] = "automated"
+        payload['tender']['awardCriteriaDetails'] = award_criteria_details
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
         payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
         payload['tender']['procuringEntity']['id'] = \
