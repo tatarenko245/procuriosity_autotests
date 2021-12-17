@@ -300,3 +300,11 @@ class GlobalClassCreateEvaluateAward:
     actual_ms_release = None
     actual_ev_release = None
 
+
+class GlobalClassProtocol:
+    access_token = None
+    operation_id = None
+    feed_point_message = None
+    actual_ms_release = None
+    actual_ev_release = None
+
