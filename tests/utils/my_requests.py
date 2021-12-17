@@ -304,3 +304,21 @@ class Requests:
         allure.attach(host_of_request + f"/do/award", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return consideration
+
+    @staticmethod
+    @allure.step('Prepared request: award consideration')
+    def create_protocol(host_of_request, access_token, x_operation_id, pn_ocid, pn_token, ev_id, lot_id,
+                        test_mode=False):
+        protocol = requests.post(
+            url=host_of_request + f"/do/protocol/{pn_ocid}/{ev_id}/{lot_id}",
+            params={
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': pn_token
+            })
+        allure.attach(host_of_request + f"/do/protocol", 'URL')
+        return protocol
