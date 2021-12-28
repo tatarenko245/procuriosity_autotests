@@ -16,8 +16,18 @@ class EiExpectedRelease:
         try:
             if environment == "dev":
                 self.metadata_budget_url = "http://dev.public.eprocurement.systems/budgets"
+                self.publisher_name = "M-Tender"
+                self.publisher_uri = "https://www.mtender.gov.md"
+                self.extensions = [
+                    "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json",
+                    "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"]
             elif environment == "sandbox":
                 self.metadata_budget_url = "http://public.eprocurement.systems/budgets"
+                self.publisher_name = "Viešųjų pirkimų tarnyba"
+                self.publisher_uri = "https://vpt.lrv.lt"
+                self.extensions = [
+                    "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json",
+                    "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.json"]
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
@@ -327,13 +337,10 @@ class EiExpectedRelease:
 
         release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateEi.ei_ocid}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.json"
+        release['extensions'] = self.extensions
 
-        release['publisher']['name'] = "Viešųjų pirkimų tarnyba"
-        release['publisher']['uri'] = "https://vpt.lrv.lt"
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreateEi.feed_point_message['data']['operationDate']
@@ -526,13 +533,10 @@ class EiExpectedRelease:
 
         release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateEi.ei_ocid}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.json"
+        release['extensions'] = self.extensions
 
-        release['publisher']['name'] = 'Viešųjų pirkimų tarnyba'
-        release['publisher']['uri'] = "https://vpt.lrv.lt"
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreateEi.feed_point_message['data']['operationDate']
