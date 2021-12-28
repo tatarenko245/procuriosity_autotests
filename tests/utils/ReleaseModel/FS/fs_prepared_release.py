@@ -15,8 +15,18 @@ class FsExpectedRelease:
         try:
             if environment == "dev":
                 self.metadata_budget_url = "http://dev.public.eprocurement.systems/budgets"
+                self.publisher_name = "M-Tender"
+                self.publisher_uri = "https://www.mtender.gov.md"
+                self.extensions = [
+                    "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json",
+                    "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"]
             elif environment == "sandbox":
                 self.metadata_budget_url = "http://public.eprocurement.systems/budgets"
+                self.publisher_name = "Viešųjų pirkimų tarnyba"
+                self.publisher_uri = "https://vpt.lrv.lt"
+                self.extensions = [
+                    "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json",
+                    "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.json"]
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
@@ -120,9 +130,8 @@ class FsExpectedRelease:
 
         try:
             payer_country_data = get_value_from_country_csv(
-                country=
-                GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
+                    'country']['id'],
                 language=self.language
             )
 
@@ -137,9 +146,8 @@ class FsExpectedRelease:
             payer_region_data = get_value_from_region_csv(
                 region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
                     'id'],
-                country=
-                GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
+                    'country']['id'],
                 language=self.language
             )
 
@@ -151,18 +159,16 @@ class FsExpectedRelease:
                 "uri": payer_region_data[3]
             }
 
-            if GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                'scheme'] == "CUATM":
-                payer_locality_data = get_value_from_locality_csv(
-                    locality=
+            if \
                     GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                        'id'],
-                    region=
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                        'id'],
-                    country=
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                        'id'],
+                        'scheme'] == "CUATM":
+                payer_locality_data = get_value_from_locality_csv(
+                    locality=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['locality']['id'],
+                    region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['region']['id'],
+                    country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['country']['id'],
                     language=self.language
                 )
                 payer_locality_object = {
@@ -190,6 +196,10 @@ class FsExpectedRelease:
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
 
+        # uncomment thic code:
+        # release['releases'][0]['language'] = self.language
+        # ==========================
+
         release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
         release['version'] = "1.1"
         release['extensions'][
@@ -205,7 +215,6 @@ class FsExpectedRelease:
         release['releases'][0]['id'] = f"{GlobalClassCreateFs.fs_id}-{release_id[46:59]}"
         release['releases'][0]['date'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
         release['releases'][0]['tag'][0] = "planning"
-        release['releases'][0]['language'] = self.language
         release['releases'][0]['initiationType'] = "tender"
         release['releases'][0]['tender']['id'] = tender_id
         release['releases'][0]['tender']['status'] = "active"
@@ -362,9 +371,8 @@ class FsExpectedRelease:
 
         try:
             payer_country_data = get_value_from_country_csv(
-                country=
-                GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['country']['id'],
                 language=self.language
             )
 
@@ -379,9 +387,8 @@ class FsExpectedRelease:
             payer_region_data = get_value_from_region_csv(
                 region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
                     'id'],
-                country=
-                GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
+                    'country']['id'],
                 language=self.language
             )
 
@@ -393,18 +400,16 @@ class FsExpectedRelease:
                 "uri": payer_region_data[3]
             }
 
-            if GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                'scheme'] == "CUATM":
-                payer_locality_data = get_value_from_locality_csv(
-                    locality=
+            if \
                     GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                        'id'],
-                    region=
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                        'id'],
-                    country=
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                        'id'],
+                        'scheme'] == "CUATM":
+                payer_locality_data = get_value_from_locality_csv(
+                    locality=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['locality']['id'],
+                    region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['region']['id'],
+                    country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['country']['id'],
                     language=self.language
                 )
                 payer_locality_object = {
@@ -432,6 +437,10 @@ class FsExpectedRelease:
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
 
+        # uncomment thic code:
+        # release['releases'][0]['language'] = self.language
+        # ==========================
+
         release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
         release['version'] = "1.1"
         release['extensions'][
@@ -447,7 +456,6 @@ class FsExpectedRelease:
         release['releases'][0]['id'] = f"{GlobalClassCreateFs.fs_id}-{release_id[46:59]}"
         release['releases'][0]['date'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
         release['releases'][0]['tag'][0] = "planning"
-        release['releases'][0]['language'] = self.language
         release['releases'][0]['initiationType'] = "tender"
         release['releases'][0]['tender']['id'] = tender_id
         release['releases'][0]['tender']['status'] = "planning"
@@ -641,9 +649,8 @@ class FsExpectedRelease:
 
         try:
             payer_country_data = get_value_from_country_csv(
-                country=
-                GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['country']['id'],
                 language=self.language
             )
 
@@ -658,9 +665,8 @@ class FsExpectedRelease:
             payer_region_data = get_value_from_region_csv(
                 region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
                     'id'],
-                country=
-                GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['country']['id'],
                 language=self.language
             )
 
@@ -672,18 +678,16 @@ class FsExpectedRelease:
                 "uri": payer_region_data[3]
             }
 
-            if GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                'scheme'] == "CUATM":
-                payer_locality_data = get_value_from_locality_csv(
-                    locality=
+            if \
                     GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                        'id'],
-                    region=
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                        'id'],
-                    country=
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                        'id'],
+                        'scheme'] == "CUATM":
+                payer_locality_data = get_value_from_locality_csv(
+                    locality=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['locality']['id'],
+                    region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['region']['id'],
+                    country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['country']['id'],
                     language=self.language
                 )
                 payer_locality_object = {
@@ -711,6 +715,10 @@ class FsExpectedRelease:
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
 
+        # uncomment thic code:
+        # release['releases'][0]['language'] = self.language
+        # ==========================
+
         release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
         release['version'] = "1.1"
         release['extensions'][
@@ -726,7 +734,6 @@ class FsExpectedRelease:
         release['releases'][0]['id'] = f"{GlobalClassCreateFs.fs_id}-{release_id[46:59]}"
         release['releases'][0]['date'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
         release['releases'][0]['tag'][0] = "planning"
-        release['releases'][0]['language'] = self.language
         release['releases'][0]['initiationType'] = "tender"
         release['releases'][0]['tender']['id'] = tender_id
         release['releases'][0]['tender']['status'] = "active"
@@ -861,9 +868,8 @@ class FsExpectedRelease:
 
         try:
             payer_country_data = get_value_from_country_csv(
-                country=
-                GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['country']['id'],
                 language=self.language
             )
 
@@ -876,11 +882,10 @@ class FsExpectedRelease:
             }
 
             payer_region_data = get_value_from_region_csv(
-                region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                    'id'],
-                country=
-                GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['region']['id'],
+                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['country']['id'],
                 language=self.language
             )
 
@@ -892,18 +897,16 @@ class FsExpectedRelease:
                 "uri": payer_region_data[3]
             }
 
-            if GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                'scheme'] == "CUATM":
-                payer_locality_data = get_value_from_locality_csv(
-                    locality=
+            if \
                     GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                        'id'],
-                    region=
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                        'id'],
-                    country=
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                        'id'],
+                        'scheme'] == "CUATM":
+                payer_locality_data = get_value_from_locality_csv(
+                    locality=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['locality']['id'],
+                    region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['region']['id'],
+                    country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['country']['id'],
                     language=self.language
                 )
                 payer_locality_object = {
@@ -931,6 +934,10 @@ class FsExpectedRelease:
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
 
+        # uncomment thic code:
+        # release['releases'][0]['language'] = self.language
+        # ==========================
+
         release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
         release['version'] = "1.1"
         release['extensions'][
@@ -946,7 +953,6 @@ class FsExpectedRelease:
         release['releases'][0]['id'] = f"{GlobalClassCreateFs.fs_id}-{release_id[46:59]}"
         release['releases'][0]['date'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
         release['releases'][0]['tag'][0] = "planning"
-        release['releases'][0]['language'] = self.language
         release['releases'][0]['initiationType'] = "tender"
         release['releases'][0]['tender']['id'] = tender_id
         release['releases'][0]['tender']['status'] = "planning"
