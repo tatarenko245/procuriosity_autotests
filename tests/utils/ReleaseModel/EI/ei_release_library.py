@@ -37,7 +37,7 @@ class ReleaseLibrary:
             "description": None,
             "status": None,
             "statusDetails": None,
-            "items": None,
+            "items": [],
             "mainProcurementCategory": None,
             "classification": {
                 "scheme": None,
@@ -57,7 +57,7 @@ class ReleaseLibrary:
                 "scheme": None,
                 "description": None
             },
-            "additionalClassifications": None,
+            "additionalClassifications": [],
             "quantity": None,
             "unit": {
                 "id": None,

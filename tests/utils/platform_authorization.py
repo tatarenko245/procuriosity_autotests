@@ -44,6 +44,7 @@ class PlatformAuthorization:
             headers={
                 'Authorization': 'Bearer ' + access_token
             }).json()
+        print(x_operation_id)
         x_operation_id = x_operation_id['data']['operationId']
         allure.attach(self.host + '/operations', 'HOST')
         allure.attach(access_token, 'Platform access token')
