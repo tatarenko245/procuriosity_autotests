@@ -1,6 +1,7 @@
 import copy
 import random
 
+from tests.conftest import GlobalClassCreateEi
 from tests.utils.PayloadModel.EI.ei_payload_library import PayloadLibrary
 from tests.utils.data_of_enum import cpv_category, cpv_goods_high_level, cpv_works_high_level, \
     cpv_services_high_level, typeOfBuyer, mainGeneralActivity, mainSectoralActivity, currency
@@ -161,8 +162,15 @@ class EiPreparePayload:
             self.constructor.tender_item_additional_classifications())
         payload['planning'].update(self.constructor.planning_object())
 
-        del payload['tender']['classification']
+        # This code must be uncommented:
+        # del payload['tender']['classification']
+        # ======================================
         del payload['planning']['budget']
+
+        # This code must be deleted:
+        payload['tender']['classification']['id'] = tender_classification_id
+        payload['buyer'] = GlobalClassCreateEi.payload['buyer']
+        # =============================
 
         payload['tender']['title'] = "update ei: tender.title"
         payload['tender']['description'] = "update ei: tender.description"
@@ -197,10 +205,18 @@ class EiPreparePayload:
         payload['tender'].update(self.constructor.tender_object())
         payload['planning'].update(self.constructor.planning_object())
 
+        # This code must be uncommented:
+        # del payload['tender']['classification']
+        # ======================================
+
+        # This code must be deleted:
+        payload['tender']['classification']['id'] = GlobalClassCreateEi.payload['tender']['classification']['id']
+        payload['buyer'] = GlobalClassCreateEi.payload['buyer']
+        # =============================
+
         del payload['tender']['description']
         del payload['tender']['items']
         del payload['planning']['rationale']
-        del payload['tender']['classification']
         del payload['planning']['budget']
 
         payload['tender']['title'] = "update ei: tender.title"

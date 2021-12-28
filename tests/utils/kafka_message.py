@@ -64,7 +64,6 @@ class KafkaMessage:
                 with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                     logfile.write(log_msg_one)
                 assert str(kafka_message) != str([])
-
         del kafka_message['_id']
         return kafka_message
 
