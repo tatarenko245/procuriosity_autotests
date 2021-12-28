@@ -47,7 +47,10 @@ class TestUpdateEi:
             cassandra_password=GlobalClassMetadata.cassandra_password,
             cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
 
-    @allure.title('Check status code and message from Kafka topic after EI updating')
+    @allure.title('Warning - payload of updating EI contains THE CRUTCH '
+                  '(the payload contains tender.classificaion.id and buyer): navigate to ei_prepared_payload.py ->'
+                  'def update_ei_full_data_model -> look at comments\n'
+                  'Check status code and message from Kafka topic after EI updating')
     def test_check_result_of_sending_the_request(self):
 
         with allure.step('# 1. Authorization platform one: create EI'):
@@ -77,6 +80,10 @@ class TestUpdateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
+
+            GlobalClassCreateEi.feed_point_message = \
+                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+
             GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
                 "ei"][0]['id']
 
@@ -162,7 +169,10 @@ class TestUpdateEi:
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
 
-    @allure.title('Check EI release data after Ei updating with full data model')
+    @allure.title('Warning - payload of updating EI contains THE CRUTCH '
+                  '(the payload contains tender.classificaion.id and buyer): navigate to ei_prepared_payload.py ->'
+                  'def update_ei_obligatory_data_model -> look at comments\n'
+                  'Check EI release data after Ei updating with full data model')
     def test_check_ei_release_one(self):
 
         with allure.step('# 1. Authorization platform one: create EI'):
@@ -191,6 +201,9 @@ class TestUpdateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
+
+            GlobalClassCreateEi.feed_point_message = \
+                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
 
             GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
                 "ei"][0]['id']
@@ -374,7 +387,10 @@ class TestUpdateEi:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check EI release after Ei updating on model without optional fields')
+    @allure.title('Warning - payload of updating EI contains THE CRUTCH '
+                  '(the payload contains tender.classificaion.id and buyer): navigate to ei_prepared_payload.py ->'
+                  'def update_ei_full_data_model -> look at comments\n'
+                  'Check EI release after Ei updating on model without optional fields')
     def test_check_ei_release_two(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
@@ -402,6 +418,10 @@ class TestUpdateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
+
+            GlobalClassCreateEi.feed_point_message = \
+                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+
             GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
                 "ei"][0]['id']
 
@@ -602,7 +622,10 @@ class TestUpdateEi:
                     actual_result=actual_ei_release_after_updating['releases'][0]['planning']['rationale']
                 )) == str(True)
 
-    @allure.title('Check EI release data after Ei updating based on full data model with 3 items objects')
+    @allure.title('Warning - payload of updating EI contains THE CRUTCH '
+                  '(the payload contains tender.classificaion.id and buyer): navigate to ei_prepared_payload.py ->'
+                  'def update_ei_full_data_model -> look at comments\n'
+                  'Check EI release data after Ei updating based on full data model with 3 items objects')
     def test_check_ei_release_three(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
@@ -630,6 +653,10 @@ class TestUpdateEi:
                 language=GlobalClassMetadata.language,
                 payload=GlobalClassCreateEi.payload
             )
+
+            GlobalClassCreateEi.feed_point_message = \
+                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+
             GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"][
                 "ei"][0]['id']
 
