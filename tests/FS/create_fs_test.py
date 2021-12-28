@@ -50,7 +50,10 @@ class TestCreateFs:
             cassandra_password=GlobalClassMetadata.cassandra_password,
             cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
 
-    @allure.title('Check status code and message from Kafka topic after FS creating')
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check status code and message from Kafka topic after FS creating')
     def test_check_result_of_sending_the_request(self):
 
         with allure.step('# 1. Authorization platform one: create EI'):
@@ -172,7 +175,10 @@ class TestCreateFs:
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
 
-    @allure.title('Check FS release data after FS creation:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS creation:'
                   'ei -> model without optional fields '
                   'and fs -> full data model own money')
     def test_check_fs_release_one(self):
@@ -432,7 +438,10 @@ class TestCreateFs:
                     actual_result=actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses']
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS creation:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS creation:'
                   'ei -> full data model and '
                   'fs -> full data model treasury money')
     def test_check_fs_release_two(self):
@@ -691,7 +700,10 @@ class TestCreateFs:
                     actual_result=actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses']
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS creation:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS creation:'
                   'ei -> full data model and '
                   'fs -> model without optional fields own money')
     def test_check_fs_release_three(self):
@@ -950,7 +962,10 @@ class TestCreateFs:
                     actual_result=actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses']
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS creation:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS creation:'
                   'ei -> model without optional fields and '
                   'fs -> model without optional fields treasury money')
     def test_check_fs_release_four(self):

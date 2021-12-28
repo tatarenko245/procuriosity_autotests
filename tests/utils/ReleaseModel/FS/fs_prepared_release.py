@@ -196,18 +196,19 @@ class FsExpectedRelease:
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
 
-        # uncomment thic code:
+        # uncomment this code:
         # release['releases'][0]['language'] = self.language
         # ==========================
 
+        # del thi code:
+        del release['releases'][0]['language']
+        # ============================
+
         release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
@@ -437,18 +438,19 @@ class FsExpectedRelease:
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
 
-        # uncomment thic code:
+        # uncomment this code:
         # release['releases'][0]['language'] = self.language
         # ==========================
 
+        # del thi code:
+        del release['releases'][0]['language']
+        # ============================
+
         release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
@@ -715,18 +717,19 @@ class FsExpectedRelease:
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
 
-        # uncomment thic code:
+        # uncomment this code:
         # release['releases'][0]['language'] = self.language
         # ==========================
 
+        # del thi code:
+        del release['releases'][0]['language']
+        # ============================
+
         release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
@@ -934,18 +937,19 @@ class FsExpectedRelease:
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
 
-        # uncomment thic code:
+        # uncomment this code:
         # release['releases'][0]['language'] = self.language
         # ==========================
 
+        # del thi code:
+        del release['releases'][0]['language']
+        # ============================
+
         release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
