@@ -474,8 +474,7 @@ class TestUpdateFs:
                         "root['releases'][0]['date']": {
                             'new_value':
                                 GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
-                            'old_value':
-                                GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            'old_value': actual_ei_release_after_fs_creating['releases'][0]['date']
                         },
                         "root['releases'][0]['planning']['budget']['amount']['amount']": {
                             'new_value':
@@ -663,7 +662,7 @@ class TestUpdateFs:
 
                 try:
                     """
-                        If asynchronous_result_of_sending_the_request was False, 
+                        If asynchronous_result_of_sending_the_request was False,
                         then return process steps by operation-id.
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
@@ -839,9 +838,9 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
                               "Actual Ei release after fs updating")
 
-                compare_releases = DeepDiff(
+                compare_releases = dict(DeepDiff(
                     actual_ei_release_after_fs_creating,
-                    actual_ei_release_after_fs_updating)
+                    actual_ei_release_after_fs_updating))
 
                 expected_result = {
                     'values_changed': {
@@ -854,8 +853,7 @@ class TestUpdateFs:
                         "root['releases'][0]['date']": {
                             'new_value':
                                 GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
-                            'old_value':
-                                GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            'old_value': actual_ei_release_after_fs_creating['releases'][0]['date']
                         },
                         "root['releases'][0]['planning']['budget']['amount']['amount']": {
                             'new_value':
@@ -1103,7 +1101,7 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release before updating")
                 allure.attach(str(json.dumps(actual_fs_release_after_updating)), "Actual FS release after updating")
 
-                compare_releases = DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating)
+                compare_releases = dict(DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating))
                 dictionary_item_added_was_cleaned = \
                     str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
@@ -1215,8 +1213,8 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
                               "Actual Ei release after fs updating")
 
-                compare_releases = DeepDiff(
-                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating)
+                compare_releases = dict(DeepDiff(
+                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating))
 
                 expected_result = {
                     'values_changed': {
@@ -1229,8 +1227,7 @@ class TestUpdateFs:
                         "root['releases'][0]['date']": {
                             'new_value':
                                 GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
-                            'old_value':
-                                GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            'old_value': actual_ei_release_after_fs_creating['releases'][0]['date']
                         },
                         "root['releases'][0]['planning']['budget']['amount']['amount']": {
                             'new_value':
@@ -1424,7 +1421,7 @@ class TestUpdateFs:
 
                 try:
                     """
-                            If asynchronous_result_of_sending_the_request was False, 
+                            If asynchronous_result_of_sending_the_request was False,
                             then return process steps by operation-id.
                             """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
@@ -1485,7 +1482,7 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release before updating")
                 allure.attach(str(json.dumps(actual_fs_release_after_updating)), "Actual FS release after updating")
 
-                compare_releases = DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating)
+                compare_releases = dict(DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating))
                 dictionary_item_removed_was_cleaned = \
                     str(compare_releases['dictionary_item_removed']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_removed'] = dictionary_item_removed_was_cleaned
@@ -1566,8 +1563,8 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
                               "Actual Ei release after fs updating")
 
-                compare_releases = DeepDiff(
-                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating)
+                compare_releases = dict(DeepDiff(
+                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating))
 
                 expected_result = {
                     'values_changed': {
@@ -1580,8 +1577,7 @@ class TestUpdateFs:
                         "root['releases'][0]['date']": {
                             'new_value':
                                 GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
-                            'old_value':
-                                GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            'old_value': actual_ei_release_after_fs_creating['releases'][0]['date']
                         },
                         "root['releases'][0]['planning']['budget']['amount']['amount']": {
                             'new_value':
@@ -1897,8 +1893,8 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
                               "Actual Ei release after fs updating")
 
-                compare_releases = DeepDiff(
-                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating)
+                compare_releases = dict(DeepDiff(
+                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating))
 
                 expected_result = {
                     'values_changed': {
@@ -1911,8 +1907,7 @@ class TestUpdateFs:
                         "root['releases'][0]['date']": {
                             'new_value':
                                 GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
-                            'old_value':
-                                GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            'old_value': actual_ei_release_after_fs_creating['releases'][0]['date']
                         },
                         "root['releases'][0]['planning']['budget']['amount']['amount']": {
                             'new_value':
@@ -2270,8 +2265,8 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
                               "Actual Ei release after fs updating")
 
-                compare_releases = DeepDiff(
-                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating)
+                compare_releases = dict(DeepDiff(
+                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating))
 
                 expected_result = {
                     'values_changed': {
@@ -2284,8 +2279,7 @@ class TestUpdateFs:
                         "root['releases'][0]['date']": {
                             'new_value':
                                 GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
-                            'old_value':
-                                GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            'old_value': actual_ei_release_after_fs_creating['releases'][0]['date']
                         },
                         "root['releases'][0]['planning']['budget']['amount']['amount']": {
                             'new_value':
@@ -2535,7 +2529,7 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release before updating")
                 allure.attach(str(json.dumps(actual_fs_release_after_updating)), "Actual FS release after updating")
 
-                compare_releases = DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating)
+                compare_releases = dict(DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating))
                 dictionary_item_added_was_cleaned = \
                     str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
@@ -2641,8 +2635,8 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
                               "Actual Ei release after fs updating")
 
-                compare_releases = DeepDiff(
-                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating)
+                compare_releases = dict(DeepDiff(
+                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating))
 
                 expected_result = {
                     'values_changed': {
@@ -2655,8 +2649,7 @@ class TestUpdateFs:
                         "root['releases'][0]['date']": {
                             'new_value':
                                 GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
-                            'old_value':
-                                GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            'old_value': actual_ei_release_after_fs_creating['releases'][0]['date']
                         },
                         "root['releases'][0]['planning']['budget']['amount']['amount']": {
                             'new_value':
@@ -2906,7 +2899,7 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release before updating")
                 allure.attach(str(json.dumps(actual_fs_release_after_updating)), "Actual FS release after updating")
 
-                compare_releases = DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating)
+                compare_releases = dict(DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating))
                 dictionary_item_removed_was_cleaned = \
                     str(compare_releases['dictionary_item_removed']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_removed'] = dictionary_item_removed_was_cleaned
@@ -2986,30 +2979,29 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
                               "Actual Ei release after fs updating")
 
-                compare_releases = DeepDiff(
-                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating)
+                compare_releases = dict(DeepDiff(
+                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating))
 
                 expected_result = {
-                        'values_changed': {
-                            "root['releases'][0]['id']": {
-                                "new_value": f"{GlobalClassCreateEi.ei_ocid}-"
-                                             f"{actual_ei_release_after_fs_updating['releases'][0]['id'][29:42]}",
-                                "old_value": f"{GlobalClassCreateEi.ei_ocid}-"
-                                             f"{actual_ei_release_after_fs_creating['releases'][0]['id'][29:42]}"
-                            },
-                            "root['releases'][0]['date']": {
-                                'new_value':
-                                    GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
-                                'old_value':
-                                    GlobalClassCreateFs.feed_point_message['data']['operationDate']
-                            },
-                            "root['releases'][0]['planning']['budget']['amount']['amount']": {
-                                'new_value':
-                                    GlobalClassUpdateFs.payload['planning']['budget']['amount']['amount'],
-                                'old_value':
-                                    GlobalClassCreateFs.payload['planning']['budget']['amount']['amount']
-                            }
+                    'values_changed': {
+                        "root['releases'][0]['id']": {
+                            "new_value": f"{GlobalClassCreateEi.ei_ocid}-"
+                                         f"{actual_ei_release_after_fs_updating['releases'][0]['id'][29:42]}",
+                            "old_value": f"{GlobalClassCreateEi.ei_ocid}-"
+                                         f"{actual_ei_release_after_fs_creating['releases'][0]['id'][29:42]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            'new_value':
+                                GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
+                            'old_value': actual_ei_release_after_fs_creating['releases'][0]['date']
+                        },
+                        "root['releases'][0]['planning']['budget']['amount']['amount']": {
+                            'new_value':
+                                GlobalClassUpdateFs.payload['planning']['budget']['amount']['amount'],
+                            'old_value':
+                                GlobalClassCreateFs.payload['planning']['budget']['amount']['amount']
                         }
+                    }
                 }
 
                 try:
@@ -3251,7 +3243,7 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release before updating")
                 allure.attach(str(json.dumps(actual_fs_release_after_updating)), "Actual FS release after updating")
 
-                compare_releases = DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating)
+                compare_releases = dict(DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating))
                 dictionary_item_added_was_cleaned = \
                     str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
@@ -3362,8 +3354,8 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
                               "Actual Ei release after fs updating")
 
-                compare_releases = DeepDiff(
-                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating)
+                compare_releases = dict(DeepDiff(
+                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating))
 
                 expected_result = {
                     'values_changed': {
@@ -3376,8 +3368,7 @@ class TestUpdateFs:
                         "root['releases'][0]['date']": {
                             'new_value':
                                 GlobalClassUpdateFs.feed_point_message['data']['operationDate'],
-                            'old_value':
-                                GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            'old_value': actual_ei_release_after_fs_creating['releases'][0]['date']
                         },
                         "root['releases'][0]['planning']['budget']['amount']['amount']": {
                             'new_value':
@@ -3627,7 +3618,7 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release before updating")
                 allure.attach(str(json.dumps(actual_fs_release_after_updating)), "Actual FS release after updating")
 
-                compare_releases = DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating)
+                compare_releases = dict(DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating))
                 dictionary_item_added_was_cleaned = \
                     str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
@@ -3733,8 +3724,8 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
                               "Actual Ei release after fs updating")
 
-                compare_releases = DeepDiff(
-                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating)
+                compare_releases = dict(DeepDiff(
+                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating))
 
                 expected_result = {
                     'values_changed': {
@@ -3810,7 +3801,7 @@ class TestUpdateFs:
 
         with allure.step('# 2. Send request to create EI'):
             """
-            Send api request on BPE host for expenditure item creation. 
+            Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
@@ -3842,7 +3833,7 @@ class TestUpdateFs:
 
         with allure.step('# 4. Send request to create FS'):
             """
-            Send api request on BPE host for financial source creating. 
+            Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
@@ -3886,7 +3877,7 @@ class TestUpdateFs:
 
         with allure.step('# 6. Send request to update FS'):
             """
-            Send api request on BPE host for financial source updating. 
+            Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
             time.sleep(1)
@@ -3998,7 +3989,7 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_fs_release_before_updating)), "Actual FS release before updating")
                 allure.attach(str(json.dumps(actual_fs_release_after_updating)), "Actual FS release after updating")
 
-                compare_releases = DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating)
+                compare_releases = dict(DeepDiff(actual_fs_release_before_updating, actual_fs_release_after_updating))
                 dictionary_item_removed_was_cleaned = \
                     str(compare_releases['dictionary_item_removed']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_removed'] = dictionary_item_removed_was_cleaned
@@ -4079,11 +4070,11 @@ class TestUpdateFs:
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
                               "Actual Ei release after fs updating")
 
-                compare_releases = DeepDiff(
-                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating)
+                compare_releases = dict(DeepDiff(
+                    actual_ei_release_after_fs_creating, actual_ei_release_after_fs_updating))
 
                 expected_result = {
-                    'values_changed': {
+                    "values_changed": {
                         "root['releases'][0]['id']": {
                             "new_value": f"{GlobalClassCreateEi.ei_ocid}-"
                                          f"{actual_ei_release_after_fs_updating['releases'][0]['id'][29:42]}",
