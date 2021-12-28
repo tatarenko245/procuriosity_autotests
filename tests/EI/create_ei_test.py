@@ -57,7 +57,6 @@ class TestCreateEi:
             """
             GlobalClassCreateEi.access_token = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
-
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
 

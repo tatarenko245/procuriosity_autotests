@@ -45,7 +45,6 @@ class EiExpectedRelease:
             list_of_release_item_id = list()
             for item_object in release_items_array:
                 for i in item_object:
-                    print(item_object)
                     if i == "id":
                         list_of_release_item_id.append(i)
                         try:
@@ -136,8 +135,8 @@ class EiExpectedRelease:
                         "uri": item_region_data[3]
                     }
 
-                    if payload_items_array[quantity_two]['deliveryAddress']['addressDetails']['locality'][
-                        'scheme'] == "CUATM":
+                    if payload_items_array[quantity_two]['deliveryAddress']['addressDetails']['locality']['scheme'] \
+                            == "CUATM":
                         item_locality_data = get_value_from_locality_csv(
                             locality=payload_items_array[quantity_two]['deliveryAddress']['addressDetails'][
                                 'locality']['id'],
@@ -226,10 +225,10 @@ class EiExpectedRelease:
         release.update(self.constructor.metadata_release())
         release['releases'][0].update(self.constructor.release_general_attributes())
         release['releases'][0]['tender'].update(self.constructor.release_tender_section())
-        release['releases'][0]['tender']['items'] = [{}]
-        release['releases'][0]['tender']['items'][0].update(self.constructor.release_tender_item_object())
-        release['releases'][0]['tender']['items'][0]['additionalClassifications'] = [{}]
-        release['releases'][0]['tender']['items'][0]['additionalClassifications'][0].update(
+
+        release['releases'][0]['tender']['items'].append(self.constructor.release_tender_item_object())
+
+        release['releases'][0]['tender']['items'][0]['additionalClassifications'].append(
             self.constructor.release_tender_items_additional_classifications())
         release['releases'][0]['buyer'].update(self.constructor.release_buyer_section())
         release['releases'][0]['parties'][0].update(self.constructor.release_parties_section())
@@ -331,10 +330,10 @@ class EiExpectedRelease:
         release['extensions'][
             0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
         release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
+            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.json"
 
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['publisher']['name'] = "Viešųjų pirkimų tarnyba"
+        release['publisher']['uri'] = "https://vpt.lrv.lt"
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreateEi.feed_point_message['data']['operationDate']
@@ -530,10 +529,10 @@ class EiExpectedRelease:
         release['extensions'][
             0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
         release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
+            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.json"
 
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['publisher']['name'] = 'Viešųjų pirkimų tarnyba'
+        release['publisher']['uri'] = "https://vpt.lrv.lt"
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreateEi.feed_point_message['data']['operationDate']
