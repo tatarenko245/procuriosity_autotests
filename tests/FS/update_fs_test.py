@@ -48,7 +48,10 @@ class TestUpdateFs:
             cassandra_password=GlobalClassMetadata.cassandra_password,
             cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
 
-    @allure.title('Check status code and message from Kafka topic after FS updating')
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check status code and message from Kafka topic after FS updating')
     def test_check_result_of_sending_the_request(self):
         with allure.step('# 1. Authorization platform one: create EI'):
             """
@@ -198,7 +201,10 @@ class TestUpdateFs:
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
 
-    @allure.title('Check FS release data after FS updating:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS updating:'
                   'create fs: payload without optional fields treasury money,'
                   'update fs: payload without optional fields treasury money ')
     def test_check_fs_release_one(self):
@@ -517,7 +523,10 @@ class TestUpdateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS updating:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS updating:'
                   'create fs: payload full data model treasury money, '
                   'update fs: payload full data model treasury money ')
     def test_check_fs_release_two(self):
@@ -896,7 +905,10 @@ class TestUpdateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS updating:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS updating:'
                   'create fs: payload without optional fields treasury money, '
                   'update fs: payload full data model treasury money ')
     def test_check_fs_release_three(self):
@@ -1275,7 +1287,10 @@ class TestUpdateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS updating:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS updating:'
                   'create fs: payload full data model treasury money, '
                   'update fs: payload without optional fields treasury money')
     def test_check_fs_release_four(self):
@@ -1621,7 +1636,10 @@ class TestUpdateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS updating:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS updating:'
                   'create fs: payload without optional fields own money,'
                   'update fs: payload without optional fields own money ')
     def test_check_fs_release_five(self):
@@ -1951,7 +1969,10 @@ class TestUpdateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS updating:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS updating:'
                   'create fs: payload full data model own money, '
                   'update fs: payload full data model own money ')
     def test_check_fs_release_six(self):
@@ -2323,7 +2344,10 @@ class TestUpdateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS updating:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS updating:'
                   'create fs: payload without optional fields own money, '
                   'update fs: payload full data model own money ')
     def test_check_fs_release_seven(self):
@@ -2693,7 +2717,10 @@ class TestUpdateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS updating:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS updating:'
                   'create fs: payload full data model own money, '
                   'update fs: payload without optional fields own money')
     def test_check_fs_release_eight(self):
@@ -3037,7 +3064,10 @@ class TestUpdateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS updating:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS updating:'
                   'create fs: payload without optional fields treasury money, '
                   'update fs: payload full data model own money ')
     def test_check_fs_release_nine(self):
@@ -3412,7 +3442,10 @@ class TestUpdateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS updating:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS updating:'
                   'create fs: payload without optional fields own money, '
                   'update fs: payload full data modeltreasury money ')
     def test_check_fs_release_ten(self):
@@ -3783,7 +3816,10 @@ class TestUpdateFs:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check FS release data after FS updating:'
+    @allure.title('Warning - release of creating FS contains THE CRUTCH '
+                  '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
+                  ' look at comments\n'
+                  'Check FS release data after FS updating:'
                   ' create fs: payload full data model treasury money, '
                   'update fs: payload without optional fields own money')
     def test_check_fs_release_twelve(self):
