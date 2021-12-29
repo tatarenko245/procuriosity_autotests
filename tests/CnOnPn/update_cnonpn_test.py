@@ -895,6 +895,10 @@ class TestCreateCnOnPn:
                             "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['description'],
                             "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][1]['description']
                         },
+                        "root['releases'][0]['tender']['documents'][1]['relatedLots'][0]": {
+                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['relatedLots'][0],
+                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][1]['relatedLots'][0]
+                        },
                         "root['releases'][0]['tender']['electronicAuctions']['details'][0]"
                         "['electronicAuctionModalities'][0]['eligibleMinimumDifference']['amount']": {
                             "new_value": GlobalClassUpdateCnOnPn.payload['tender']['electronicAuctions'][
@@ -2717,6 +2721,11 @@ class TestCreateCnOnPn:
                             "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['description'],
                             "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['description']
                         },
+                        "root['releases'][0]['tender']['documents'][1]['relatedLots'][0]": {
+                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['relatedLots'][0],
+                            "old_value": GlobalClassCreateCnOnPn.actual_ev_release['releases'][0][
+                                'tender']['documents'][1]['relatedLots'][0]
+                        },
                         "root['releases'][0]['tender']['electronicAuctions']['details'][0]"
                         "['electronicAuctionModalities'][0]['eligibleMinimumDifference']['amount']": {
                             "new_value": GlobalClassUpdateCnOnPn.payload['tender']['electronicAuctions'][
@@ -2746,7 +2755,10 @@ class TestCreateCnOnPn:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
-
+                print("Compare")
+                print(json.dumps(compare_releases))
+                print("Expected")
+                print(json.dumps(expected_result))
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
                     actual_result=compare_releases
