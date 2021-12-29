@@ -55,9 +55,9 @@ class ReleaseLibrary:
             "description": None,
             "status": None,
             "statusDetails": None,
-            "items": None,
-            "lots": None,
-            "lotGroups": None,
+            "items": [],
+            "lots": [],
+            "lotGroups": [],
             "tenderPeriod": {
                 "startDate": None
             },
