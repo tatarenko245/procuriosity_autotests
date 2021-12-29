@@ -302,7 +302,7 @@ class TestCreateEnquiry:
                 asynchronous_result_of_sending_the_request_was_checked_platform_initiator = KafkaMessage(
                     GlobalClassCreateEnquiry.operation_id).create_enquiry_message_initiator_platform_is_successful(
                     environment=GlobalClassMetadata.environment,
-                    kafka_message=GlobalClassCreateEnquiry.feed_point_message_platform,
+                    kafka_message=GlobalClassCreateEnquiry.feed_point_message_platform[0],
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
                     ev_id=GlobalClassCreateCnOnPn.ev_id
                 )
@@ -594,7 +594,7 @@ class TestCreateEnquiry:
                 asynchronous_result_of_sending_the_request_was_checked_platform_initiator = KafkaMessage(
                     GlobalClassCreateEnquiry.operation_id).create_enquiry_message_initiator_platform_is_successful(
                     environment=GlobalClassMetadata.environment,
-                    kafka_message=GlobalClassCreateEnquiry.feed_point_message_platform,
+                    kafka_message=GlobalClassCreateEnquiry.feed_point_message_platform[0],
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
                     ev_id=GlobalClassCreateCnOnPn.ev_id
                 )
@@ -1027,7 +1027,7 @@ class TestCreateEnquiry:
                 asynchronous_result_of_sending_the_request_was_checked_platform_initiator = KafkaMessage(
                     GlobalClassCreateEnquiry.operation_id).create_enquiry_message_initiator_platform_is_successful(
                     environment=GlobalClassMetadata.environment,
-                    kafka_message=GlobalClassCreateEnquiry.feed_point_message_platform,
+                    kafka_message=GlobalClassCreateEnquiry.feed_point_message_platform[0],
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
                     ev_id=GlobalClassCreateCnOnPn.ev_id
                 )
