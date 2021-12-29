@@ -948,10 +948,6 @@ class TestCreatePn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                print("Compare")
-                print(json.dumps(compare_releases))
-                print("Expected")
-                print(json.dumps(expected_result))
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
                     actual_result=compare_releases

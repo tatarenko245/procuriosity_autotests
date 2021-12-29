@@ -180,8 +180,9 @@ class PnExpectedRelease:
                     "uri": lot_region_data[3]
                 }
 
-                if payload_lots_array[quantity_two]['placeOfPerformance']['address']['addressDetails'][
-                    'locality']['scheme'] == "CUATM":
+                if \
+                        payload_lots_array[quantity_two]['placeOfPerformance']['address']['addressDetails'][
+                            'locality']['scheme'] == "CUATM":
                     lot_locality_data = get_value_from_locality_csv(
                         locality=payload_lots_array[quantity_two]['placeOfPerformance']['address']['addressDetails'][
                             'locality']['id'],
@@ -568,13 +569,11 @@ class PnExpectedRelease:
         release.update(self.constructor.metadata_release())
         release['releases'][0].update(self.constructor.ms_release_general_attributes())
         release['releases'][0]['planning'].update(self.constructor.ms_release_planning_section())
-        release['releases'][0]['planning']['budget']['budgetBreakdown'] = [{}]
-        release['releases'][0]['planning']['budget']['budgetBreakdown'][0].update(
+        release['releases'][0]['planning']['budget']['budgetBreakdown'].append(
             self.constructor.ms_release_planning_budget_budget_breakdown_obj())
         release['releases'][0]['tender'].update(self.constructor.ms_release_tender_section())
         release['releases'][0]['parties'][3].update(self.constructor.release_parties_section())
-        release['releases'][0]['parties'][3]['additionalIdentifiers'] = [{}]
-        release['releases'][0]['parties'][3]['additionalIdentifiers'][0].update(
+        release['releases'][0]['parties'][3]['additionalIdentifiers'].append(
             self.constructor.release_parties_additional_identifiers())
         release['releases'][0]['relatedProcesses'][0].update(self.constructor.release_related_processes_section())
         release['releases'][0]['relatedProcesses'][1].update(self.constructor.release_related_processes_section())
@@ -624,9 +623,8 @@ class PnExpectedRelease:
 
         try:
             procuring_entity_country_data = get_value_from_country_csv(
-                country=
-                GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['country']['id'],
                 language=self.language
             )
             procuring_entity_country_object = {
@@ -640,9 +638,8 @@ class PnExpectedRelease:
             procuring_entity_region_data = get_value_from_region_csv(
                 region=GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
                     'id'],
-                country=
-                GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['country']['id'],
                 language=self.language
             )
 
@@ -654,18 +651,16 @@ class PnExpectedRelease:
                 "uri": procuring_entity_region_data[3]
             }
 
-            if GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                'scheme'] == "CUATM":
-                procuring_entity_locality_data = get_value_from_locality_csv(
-                    locality=
+            if \
                     GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                        'id'],
-                    region=
-                    GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                        'id'],
-                    country=
-                    GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                        'id'],
+                        'scheme'] == "CUATM":
+                procuring_entity_locality_data = get_value_from_locality_csv(
+                    locality=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['locality']['id'],
+                    region=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['region']['id'],
+                    country=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['country']['id'],
                     language=self.language
                 )
                 procuring_entity_locality_object = {
@@ -846,8 +841,7 @@ class PnExpectedRelease:
         release.update(self.constructor.metadata_release())
         release['releases'][0].update(self.constructor.pn_release_general_attributes())
         release['releases'][0]['tender'].update(self.constructor.pn_release_tender_section())
-        release['releases'][0]['tender']['lotGroups'] = [{}]
-        release['releases'][0]['tender']['lotGroups'][0].update(
+        release['releases'][0]['tender']['lotGroups'].append(
             self.constructor.pn_release_tender_lot_group_option_to_combine())
         release['releases'][0]['relatedProcesses'][0].update(self.constructor.release_related_processes_section())
 
@@ -944,13 +938,11 @@ class PnExpectedRelease:
         release.update(self.constructor.metadata_release())
         release['releases'][0].update(self.constructor.ms_release_general_attributes())
         release['releases'][0]['planning'].update(self.constructor.ms_release_planning_section())
-        release['releases'][0]['planning']['budget']['budgetBreakdown'] = [{}]
-        release['releases'][0]['planning']['budget']['budgetBreakdown'][0].update(
+        release['releases'][0]['planning']['budget']['budgetBreakdown'].append(
             self.constructor.ms_release_planning_budget_budget_breakdown_obj())
         release['releases'][0]['tender'].update(self.constructor.ms_release_tender_section())
         release['releases'][0]['parties'][3].update(self.constructor.release_parties_section())
-        release['releases'][0]['parties'][3]['additionalIdentifiers'] = [{}]
-        release['releases'][0]['parties'][3]['additionalIdentifiers'][0].update(
+        release['releases'][0]['parties'][3]['additionalIdentifiers'].append(
             self.constructor.release_parties_additional_identifiers())
         release['releases'][0]['relatedProcesses'][0].update(self.constructor.release_related_processes_section())
         release['releases'][0]['relatedProcesses'][1].update(self.constructor.release_related_processes_section())
@@ -1006,9 +998,8 @@ class PnExpectedRelease:
 
         try:
             procuring_entity_country_data = get_value_from_country_csv(
-                country=
-                GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['country']['id'],
                 language=self.language
             )
             procuring_entity_country_object = {
@@ -1022,9 +1013,8 @@ class PnExpectedRelease:
             procuring_entity_region_data = get_value_from_region_csv(
                 region=GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
                     'id'],
-                country=
-                GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['country']['id'],
                 language=self.language
             )
 
@@ -1036,18 +1026,16 @@ class PnExpectedRelease:
                 "uri": procuring_entity_region_data[3]
             }
 
-            if GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                'scheme'] == "CUATM":
-                procuring_entity_locality_data = get_value_from_locality_csv(
-                    locality=
+            if \
                     GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                        'id'],
-                    region=
-                    GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                        'id'],
-                    country=
-                    GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                        'id'],
+                        'scheme'] == "CUATM":
+                procuring_entity_locality_data = get_value_from_locality_csv(
+                    locality=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['locality']['id'],
+                    region=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['region']['id'],
+                    country=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['country']['id'],
                     language=self.language
                 )
                 procuring_entity_locality_object = {
@@ -1218,8 +1206,7 @@ class PnExpectedRelease:
         release.update(self.constructor.metadata_release())
         release['releases'][0].update(self.constructor.pn_release_general_attributes())
         release['releases'][0]['tender'].update(self.constructor.pn_release_tender_section())
-        release['releases'][0]['tender']['lotGroups'] = [{}]
-        release['releases'][0]['tender']['lotGroups'][0].update(
+        release['releases'][0]['tender']['lotGroups'].append(
             self.constructor.pn_release_tender_lot_group_option_to_combine())
         release['releases'][0]['relatedProcesses'][0].update(self.constructor.release_related_processes_section())
 
@@ -1309,13 +1296,11 @@ class PnExpectedRelease:
         release.update(self.constructor.metadata_release())
         release['releases'][0].update(self.constructor.ms_release_general_attributes())
         release['releases'][0]['planning'].update(self.constructor.ms_release_planning_section())
-        release['releases'][0]['planning']['budget']['budgetBreakdown'] = [{}]
-        release['releases'][0]['planning']['budget']['budgetBreakdown'][0].update(
+        release['releases'][0]['planning']['budget']['budgetBreakdown'].append(
             self.constructor.ms_release_planning_budget_budget_breakdown_obj())
         release['releases'][0]['tender'].update(self.constructor.ms_release_tender_section())
         release['releases'][0]['parties'][2].update(self.constructor.release_parties_section())
-        release['releases'][0]['parties'][2]['additionalIdentifiers'] = [{}]
-        release['releases'][0]['parties'][2]['additionalIdentifiers'][0].update(
+        release['releases'][0]['parties'][2]['additionalIdentifiers'].append(
             self.constructor.release_parties_additional_identifiers())
         release['releases'][0]['relatedProcesses'][0].update(self.constructor.release_related_processes_section())
         release['releases'][0]['relatedProcesses'][1].update(self.constructor.release_related_processes_section())
@@ -1374,9 +1359,8 @@ class PnExpectedRelease:
 
         try:
             procuring_entity_country_data = get_value_from_country_csv(
-                country=
-                GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['country']['id'],
                 language=self.language
             )
             procuring_entity_country_object = {
@@ -1390,9 +1374,8 @@ class PnExpectedRelease:
             procuring_entity_region_data = get_value_from_region_csv(
                 region=GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
                     'id'],
-                country=
-                GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                country=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                    'addressDetails']['country']['id'],
                 language=self.language
             )
 
@@ -1404,18 +1387,16 @@ class PnExpectedRelease:
                 "uri": procuring_entity_region_data[3]
             }
 
-            if GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                'scheme'] == "CUATM":
-                procuring_entity_locality_data = get_value_from_locality_csv(
-                    locality=
+            if \
                     GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
-                        'id'],
-                    region=
-                    GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                        'id'],
-                    country=
-                    GlobalClassCreatePn.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                        'id'],
+                        'scheme'] == "CUATM":
+                procuring_entity_locality_data = get_value_from_locality_csv(
+                    locality=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['locality']['id'],
+                    region=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['region']['id'],
+                    country=GlobalClassCreatePn.payload['tender']['procuringEntity']['address'][
+                        'addressDetails']['country']['id'],
                     language=self.language
                 )
                 procuring_entity_locality_object = {
