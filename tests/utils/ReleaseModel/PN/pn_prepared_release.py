@@ -22,10 +22,20 @@ class PnExpectedRelease:
                 self.metadata_budget_url = "http://dev.public.eprocurement.systems/budgets"
                 self.metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
                 self.metadata_document_url = "https://dev.bpe.eprocurement.systems/api/v1/storage/get"
+                self.publisher_name = "M-Tender"
+                self.publisher_uri = "https://www.mtender.gov.md"
+                self.extensions = [
+                    "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json",
+                    "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"]
             elif environment == "sandbox":
                 self.metadata_budget_url = "http://public.eprocurement.systems/budgets"
                 self.metadata_tender_url = "http://public.eprocurement.systems/tenders"
                 self.metadata_document_url = "http://storage.eprocurement.systems/get"
+                self.publisher_name = "Viešųjų pirkimų tarnyba"
+                self.publisher_uri = "https://vpt.lrv.lt"
+                self.extensions = [
+                    "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json",
+                    "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.json"]
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
@@ -459,8 +469,7 @@ class PnExpectedRelease:
         release.update(self.constructor.metadata_release())
         release['releases'][0].update(self.constructor.pn_release_general_attributes())
         release['releases'][0]['tender'].update(self.constructor.pn_release_tender_section())
-        release['releases'][0]['tender']['lotGroups'] = [{}]
-        release['releases'][0]['tender']['lotGroups'][0].update(
+        release['releases'][0]['tender']['lotGroups'].append(
             self.constructor.pn_release_tender_lot_group_option_to_combine())
         release['releases'][0]['relatedProcesses'][0].update(self.constructor.release_related_processes_section())
 
@@ -491,12 +500,9 @@ class PnExpectedRelease:
 
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_id}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreatePn.feed_point_message['data']['operationDate']
@@ -707,12 +713,9 @@ class PnExpectedRelease:
 
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_ocid}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreatePn.feed_point_message['data']['operationDate']
@@ -877,12 +880,9 @@ class PnExpectedRelease:
 
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_id}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreatePn.feed_point_message['data']['operationDate']
@@ -1095,12 +1095,9 @@ class PnExpectedRelease:
 
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_ocid}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreatePn.feed_point_message['data']['operationDate']
@@ -1256,12 +1253,9 @@ class PnExpectedRelease:
 
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_id}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreatePn.feed_point_message['data']['operationDate']
@@ -1464,12 +1458,9 @@ class PnExpectedRelease:
 
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_ocid}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreatePn.feed_point_message['data']['operationDate']
