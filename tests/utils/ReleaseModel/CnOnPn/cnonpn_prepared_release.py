@@ -24,12 +24,22 @@ class CnOnPnExpectedRelease:
                 self.metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
                 self.metadata_document_url = "https://dev.bpe.eprocurement.systems/api/v1/storage/get"
                 self.metadata_auction_url = "http://auction.eprocurement.systems/auctions/"
+                self.publisher_name = "M-Tender"
+                self.publisher_uri = "https://www.mtender.gov.md"
+                self.extensions = [
+                    "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json",
+                    "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"]
 
             elif environment == "sandbox":
                 self.metadata_budget_url = "http://public.eprocurement.systems/budgets"
                 self.metadata_tender_url = "http://public.eprocurement.systems/tenders"
                 self.metadata_document_url = "http://storage.eprocurement.systems/get"
                 self.metadata_auction_url = "https://eauction.eprocurement.systems/auctions/"
+                self.publisher_name = "Viešųjų pirkimų tarnyba"
+                self.publisher_uri = "https://vpt.lrv.lt"
+                self.extensions = [
+                    "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json",
+                    "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.json"]
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
@@ -174,8 +184,9 @@ class CnOnPnExpectedRelease:
                     "uri": lot_region_data[3]
                 }
 
-                if payload_lots_array[quantity_two]['placeOfPerformance']['address']['addressDetails'][
-                    'locality']['scheme'] == "CUATM":
+                if \
+                        payload_lots_array[quantity_two]['placeOfPerformance']['address']['addressDetails'][
+                            'locality']['scheme'] == "CUATM":
                     lot_locality_data = get_value_from_locality_csv(
                         locality=payload_lots_array[quantity_two]['placeOfPerformance']['address']['addressDetails'][
                             'locality']['id'],
@@ -621,7 +632,7 @@ class CnOnPnExpectedRelease:
                         """
                         list_of_payload_criteria_requirement_groups_requirements_id = list()
                         for requirement_object in payload_criteria_array[quantity_two][
-                            'requirementGroups'][quantity_three]['requirements']:
+                                'requirementGroups'][quantity_three]['requirements']:
                             for i in requirement_object:
                                 if i == "id":
                                     list_of_payload_criteria_requirement_groups_requirements_id.append(i)
@@ -638,7 +649,7 @@ class CnOnPnExpectedRelease:
                         """
                         list_of_release_criteria_requirement_groups_requirements_id = list()
                         for requirement_object in release_criteria_array[quantity_two][
-                            'requirementGroups'][quantity_three]['requirements']:
+                                'requirementGroups'][quantity_three]['requirements']:
                             for i in requirement_object:
                                 if i == "id":
                                     list_of_release_criteria_requirement_groups_requirements_id.append(i)
@@ -1039,12 +1050,9 @@ class CnOnPnExpectedRelease:
 
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreateCnOnPn.ev_id}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
@@ -1195,12 +1203,9 @@ class CnOnPnExpectedRelease:
 
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreateCnOnPn.ev_id}"
         release['version'] = "1.1"
-        release['extensions'][
-            0] = "https://raw.githubusercontent.com/open-contracting/ocds_bid_extension/v1.1.1/extension.json"
-        release['extensions'][
-            1] = "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.js"
-        release['publisher']['name'] = "M-Tender"
-        release['publisher']['uri'] = "https://www.mtender.gov.md"
+        release['extensions'] = self.extensions
+        release['publisher']['name'] = self.publisher_name
+        release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
         release['publishedDate'] = GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']

@@ -171,7 +171,7 @@ class ReleaseLibrary:
                     }
                 }
             },
-            "additionalIdentifiers": None,
+            "additionalIdentifiers": [],
             "contactPoint": {
                 "name": None,
                 "email": None,
@@ -203,7 +203,7 @@ class ReleaseLibrary:
                     "currency": None
                 },
                 "isEuropeanUnionFunded": None,
-                "budgetBreakdown": None
+                "budgetBreakdown": []
             },
             "rationale": None
         }
