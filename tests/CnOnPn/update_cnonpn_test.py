@@ -250,7 +250,7 @@ class TestCreateCnOnPn:
             Send api request on BPE host for contract notice updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
-            time.sleep(1)
+            time.sleep(3)
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_full_data_model_with_lots_items_documents_auction(
@@ -536,7 +536,7 @@ class TestCreateCnOnPn:
             Send api request on BPE host for contract notice updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
-            time.sleep(1)
+            time.sleep(3)
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_full_data_model_with_lots_items_documents_auction(
@@ -1235,7 +1235,7 @@ class TestCreateCnOnPn:
             Send api request on BPE host for contract notice updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
-            time.sleep(1)
+            time.sleep(3)
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_obligatory_data_model_with_lots_items_documents_without_auction(
@@ -1743,7 +1743,7 @@ class TestCreateCnOnPn:
             Send api request on BPE host for contract notice updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
-            time.sleep(1)
+            time.sleep(3)
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_full_data_model_with_lots_items_documents_without_auction(
@@ -2398,7 +2398,7 @@ class TestCreateCnOnPn:
             Send api request on BPE host for contract notice updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
-            time.sleep(1)
+            time.sleep(3)
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_obligatory_data_model_with_lots_items_documents_with_auction(
