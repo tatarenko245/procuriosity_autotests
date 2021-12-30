@@ -2721,7 +2721,9 @@ class TestTenderPeriodEndAuction:
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                     assert expected_result == compare_releases
 
-    @allure.title("Check message from Kafka topic, EV, MS releases, on the flow:\n"
+    @allure.title("Баг https://ustudio.atlassian.net/browse/ES-7059\n"
+                  "------------------------------------------------\n"
+                  "Check message from Kafka topic, EV, MS releases, on the flow:\n"
                   "´Is tenderPeriodExpired -> True ->\n"
                   "Are there bids for opening? -> True ->\n"
                   "Are there unsuccessful lots? -> False ->\n"
@@ -4085,7 +4087,9 @@ class TestTenderPeriodEndAuction:
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                     assert expected_result == compare_releases
 
-    @allure.title("Check message from Kafka topic, EV, MS releases, on the flow:\n"
+    @allure.title("Баг https://ustudio.atlassian.net/browse/ES-7059\n"
+                  "------------------------------------------------\n"
+                  "Check message from Kafka topic, EV, MS releases, on the flow:\n"
                   "´Is tenderPeriodExpired -> True ->\n"
                   "Are there bids for opening? -> True ->\n"
                   "Are there unsuccessful lots? -> True ->\n"
