@@ -1,5 +1,6 @@
 import datetime
 import fnmatch
+import json
 import time
 import allure
 import requests
@@ -87,7 +88,8 @@ class KafkaMessage:
                     kafka_message = requests.get(
                         url=url
                     ).json()
-
+                    print("1")
+                    print(kafka_message)
                     if str(kafka_message) == str([]):
                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                       f"File = kafka_message.py -> \n" \
@@ -116,7 +118,8 @@ class KafkaMessage:
             kafka_message = requests.get(
                 url=url
             ).json()
-
+            print("2")
+            print(kafka_message)
             if str(kafka_message) == str([]):
                 log_msg_one = f"\n{datetime.datetime.now()}\n" \
                               f"File = kafka_message.py -> \n" \
@@ -135,7 +138,6 @@ class KafkaMessage:
                       f"Check message into Kafka topic.\n"
                       f"Probably, there is an error.\n")
                 assert str(kafka_message) != str([])
-
         for i in kafka_message:
             del i['_id']
         return kafka_message
