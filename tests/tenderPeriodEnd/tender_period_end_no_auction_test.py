@@ -389,7 +389,7 @@ class TestCreateBid:
                     raise ValueError("Can not return BPE operation step")
 
                 if expected_result == compare_releases and \
-                    GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] != \
+                    GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] == \
                         expected_awards_array:
                     pass
                 else:
@@ -1333,8 +1333,8 @@ class TestCreateBid:
                         final_expected_awards_array and \
                         GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'] == \
                         final_expected_bids_object and \
-                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod'] != \
-                        final_expected_award_period_object:
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
+                            'awardPeriod'] == final_expected_award_period_object:
                     pass
                 else:
                     with allure.step('# Steps from Casandra DataBase'):
