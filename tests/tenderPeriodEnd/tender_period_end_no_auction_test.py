@@ -388,17 +388,15 @@ class TestCreateBid:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                if expected_result != compare_releases:
-                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                    raise Exception("Error into comparing releases")
-
-                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] != \
+                if expected_result == compare_releases and \
+                    GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] != \
                         expected_awards_array:
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                     'releases'][0]['awards'])), "Actual awards array")
-                    allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
-                    raise Exception("Error into comparing awards")
+                    pass
+                else:
+                    with allure.step('# Steps from Casandra DataBase'):
+                        steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                            operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message['X-OPERATION-ID'])
+                        allure.attach(steps, "Cassandra DataBase: steps of process")
 
                 with allure.step('Compare actual EV release and expected EV release'):
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
@@ -501,11 +499,6 @@ class TestCreateBid:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
-
-                if expected_result != compare_releases:
-                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                    raise Exception("Error into comparing releases")
 
                 with allure.step('Compare actual EV release and expected EV release'):
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
@@ -1333,35 +1326,21 @@ class TestCreateBid:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                if expected_result != compare_releases:
-                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                    raise Exception("Error into comparing releases")
-                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'] != \
-                        final_expected_parties_array:
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                     'releases'][0]['parties'])), "Actual parties array")
-                    allure.attach(str(json.dumps(final_expected_parties_array)), "Expected parties array")
-                    raise Exception("Error into comparing parties")
-                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] != \
-                        final_expected_awards_array:
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                     'releases'][0]['awards'])), "Actual awards array")
-                    allure.attach(str(json.dumps(final_expected_awards_array)), "Expected awards array")
-                    raise Exception("Error into comparing awards")
-                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'] != \
-                        final_expected_bids_object:
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                     'releases'][0]['bids'])), "Actual bids array")
-                    allure.attach(str(json.dumps(final_expected_bids_object)), "Expected bids array")
-                    raise Exception("Error into comparing bids")
-                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod'] != \
+                if expected_result == compare_releases and \
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'] == \
+                        final_expected_parties_array and \
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] == \
+                        final_expected_awards_array and \
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'] == \
+                        final_expected_bids_object and \
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod'] != \
                         final_expected_award_period_object:
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                     'releases'][0]['tender']['awardPeriod']['startDate'])),
-                                  "Actual awardPeriod object")
-                    allure.attach(str(json.dumps(final_expected_award_period_object)), "Expected awardPeriod object")
-                    raise Exception("Error into comparing awardPeriod")
+                    pass
+                else:
+                    with allure.step('# Steps from Casandra DataBase'):
+                        steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                            operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message['X-OPERATION-ID'])
+                        allure.attach(steps, "Cassandra DataBase: steps of process")
 
                 with allure.step('Compare actual EV release and expected EV release'):
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
@@ -1495,11 +1474,6 @@ class TestCreateBid:
                         raise Exception("Impossible to rollback specific value into evaluation.rules")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
-
-                if expected_result != compare_releases:
-                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                    raise Exception("Error into comparing releases")
 
                 with allure.step('Compare actual EV release and expected EV release'):
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
@@ -2290,42 +2264,23 @@ class TestCreateBid:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                if expected_result != compare_releases:
-                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                    raise Exception("Error into comparing releases")
-                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'] != \
-                        final_expected_parties_array:
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                     'releases'][0]['parties'])), "Actual parties array")
-                    allure.attach(str(json.dumps(final_expected_parties_array)), "Expected parties array")
-                    raise Exception("Error into comparing parties")
-                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] != \
-                        final_expected_awards_array:
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                     'releases'][0]['awards'])), "Actual awards array")
-                    allure.attach(str(json.dumps(final_expected_awards_array)), "Expected awards array")
-                    raise Exception("Error into comparing awards")
-                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'] != \
-                        final_expected_bids_object:
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                     'releases'][0]['bids'])), "Actual bids array")
-                    allure.attach(str(json.dumps(final_expected_bids_object)), "Expected bids array")
-                    raise Exception("Error into comparing bids")
-                elif GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['criteria'] != \
-                        final_expected_criteria_array:
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                     'releases'][0]['tender']['criteria'])), "Actual criteria array")
-                    allure.attach(str(json.dumps(final_expected_criteria_array)), "Expected criteria array")
-                    raise Exception("Error into comparing criteria")
-                elif \
+                if expected_result == compare_releases and \
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'] == \
+                        final_expected_parties_array and \
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'] == \
+                        final_expected_awards_array and \
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'] == \
+                        final_expected_bids_object and \
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['criteria'] == \
+                        final_expected_criteria_array and \
                         GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod'] \
-                        != final_expected_award_period_object:
-                    allure.attach(str(json.dumps(GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
-                                                     'releases'][0]['tender']['awardPeriod']['startDate'])),
-                                  "Actual awardPeriod object")
-                    allure.attach(str(json.dumps(final_expected_award_period_object)), "Expected awardPeriod object")
-                    raise Exception("Error into comparing awardPeriod")
+                        == final_expected_award_period_object:
+                    pass
+                else:
+                    with allure.step('# Steps from Casandra DataBase'):
+                        steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                            operation_id=GlobalClassTenderPeriodEndNoAuction.feed_point_message['X-OPERATION-ID'])
+                        allure.attach(steps, "Cassandra DataBase: steps of process")
 
                 with allure.step('Compare actual EV release and expected EV release'):
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
@@ -2466,11 +2421,6 @@ class TestCreateBid:
                         raise Exception("Impossible to rollback specific value into evaluation.rules")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
-
-                if expected_result != compare_releases:
-                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                    raise Exception("Error into comparing releases")
 
                 with allure.step('Compare actual EV release and expected EV release'):
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
