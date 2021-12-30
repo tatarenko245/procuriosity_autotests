@@ -245,7 +245,7 @@ class TestCreateBid:
                 time.sleep(1)
                 GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+                                 initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()[0]
                 allure.attach(str(GlobalClassTenderPeriodEndNoAuction.feed_point_message), 'Message in feed point')
 
                 asynchronous_result_of_expired_tender_period_end = \
@@ -840,7 +840,7 @@ class TestCreateBid:
                 time.sleep(1)
                 GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+                                 initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()[0]
 
                 allure.attach(str(GlobalClassTenderPeriodEndNoAuction.feed_point_message), 'Message in feed point')
 
@@ -1826,7 +1826,7 @@ class TestCreateBid:
                 time.sleep(1)
                 GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
                     KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+                                 initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()[0]
 
                 allure.attach(str(GlobalClassTenderPeriodEndNoAuction.feed_point_message), 'Message in feed point')
 
