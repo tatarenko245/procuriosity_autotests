@@ -88,8 +88,6 @@ class KafkaMessage:
                     kafka_message = requests.get(
                         url=url
                     ).json()
-                    print("1")
-                    print(kafka_message)
                     if str(kafka_message) == str([]):
                         log_msg_one = f"\n{datetime.datetime.now()}\n" \
                                       f"File = kafka_message.py -> \n" \
@@ -118,8 +116,6 @@ class KafkaMessage:
             kafka_message = requests.get(
                 url=url
             ).json()
-            print("2")
-            print(kafka_message)
             if str(kafka_message) == str([]):
                 log_msg_one = f"\n{datetime.datetime.now()}\n" \
                               f"File = kafka_message.py -> \n" \
