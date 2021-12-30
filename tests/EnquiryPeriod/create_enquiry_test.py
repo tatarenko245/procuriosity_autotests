@@ -674,8 +674,8 @@ class TestCreateEnquiry:
 
                 try:
                     is_it_uuid(
-                        uuid_to_test=
-                        GlobalClassCreateEnquiry.actual_ev_release['releases'][0]['tender']['enquiries'][0]['id'],
+                        uuid_to_test=GlobalClassCreateEnquiry.actual_ev_release['releases'][0]['tender'][
+                            'enquiries'][0]['id'],
                         version=4
                     )
 
@@ -1107,8 +1107,8 @@ class TestCreateEnquiry:
 
                 try:
                     is_it_uuid(
-                        uuid_to_test=
-                        GlobalClassCreateEnquiry.actual_ev_release['releases'][0]['tender']['enquiries'][0]['id'],
+                        uuid_to_test=GlobalClassCreateEnquiry.actual_ev_release['releases'][0]['tender'][
+                            'enquiries'][0]['id'],
                         version=4
                     )
                 except ValueError:
