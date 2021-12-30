@@ -16,7 +16,7 @@ from tests.utils.ReleaseModel.tenderPeriodEndNoAuction.tender_period_end_no_auct
     TenderPeriodExpectedChanges
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.functions import compare_actual_result_and_expected_result, time_bot, is_it_uuid
+from tests.utils.functions import time_bot, is_it_uuid
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.my_requests import Requests
@@ -400,14 +400,17 @@ class TestCreateBid:
                     allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
                     raise Exception("Error into comparing awards")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_awards_array,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']
-                )) == str(True)
+                with allure.step('Compare actual EV release and expected EV release'):
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    assert expected_result == compare_releases
+                with allure.step('Compare actual awards array and expected awards array.'):
+                    allure.attach(str(json.dumps(
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'])),
+                        "Actual awards array")
+                    allure.attach(str(json.dumps(expected_awards_array)), "Expected awards array")
+                    assert expected_awards_array == \
+                           GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']
 
             with allure.step('# 9.3. Check MS release'):
                 """
@@ -504,10 +507,10 @@ class TestCreateBid:
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                     raise Exception("Error into comparing releases")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                with allure.step('Compare actual EV release and expected EV release'):
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    assert expected_result == compare_releases
 
     @allure.title('Баг https://ustudio.atlassian.net/browse/ES-7059'
                   'Check message from Kafka topic, EV, MS releases if '
@@ -1360,27 +1363,38 @@ class TestCreateBid:
                     allure.attach(str(json.dumps(final_expected_award_period_object)), "Expected awardPeriod object")
                     raise Exception("Error into comparing awardPeriod")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=final_expected_parties_array,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties']
-                )) == str(True)
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=final_expected_awards_array,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']
-                )) == str(True)
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=final_expected_bids_object,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']
-                )) == str(True)
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=final_expected_award_period_object,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
-                        'awardPeriod']
-                )) == str(True)
+                with allure.step('Compare actual EV release and expected EV release'):
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    assert expected_result == compare_releases
+                with allure.step('Compare actual parties array and expected parties array.'):
+                    allure.attach(str(json.dumps(
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'])),
+                        "Actual parties array")
+                    allure.attach(str(json.dumps(final_expected_parties_array)), "Expected parties array")
+                    assert final_expected_parties_array == \
+                           GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties']
+                with allure.step('Compare actual awards array and expected awards array.'):
+                    allure.attach(str(json.dumps(
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'])),
+                        "Actual awards array")
+                    allure.attach(str(json.dumps(final_expected_awards_array)), "Expected awards array")
+                    assert final_expected_awards_array == \
+                           GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']
+                with allure.step('Compare actual bids array and expected bids array.'):
+                    allure.attach(str(json.dumps(
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'])),
+                        "Actual bids object")
+                    allure.attach(str(json.dumps(final_expected_bids_object)), "Expected bids object")
+                    assert final_expected_bids_object == \
+                           GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']
+                with allure.step('Compare actual awardPeriod and expected awardPeriod.'):
+                    allure.attach(str(json.dumps(
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod'])),
+                        "Actual awardPeriod object")
+                    allure.attach(str(json.dumps(final_expected_award_period_object)), "Expected awardPeriod object")
+                    assert final_expected_award_period_object == \
+                           GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod']
 
             with allure.step('# 11.3. Check MS release'):
                 """
@@ -1487,10 +1501,10 @@ class TestCreateBid:
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                     raise Exception("Error into comparing releases")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                with allure.step('Compare actual EV release and expected EV release'):
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    assert expected_result == compare_releases
 
     @allure.title('Баг https://ustudio.atlassian.net/browse/ES-6888'
                   'Check message from Kafka topic, EV, MS releases if '
@@ -2313,32 +2327,45 @@ class TestCreateBid:
                     allure.attach(str(json.dumps(final_expected_award_period_object)), "Expected awardPeriod object")
                     raise Exception("Error into comparing awardPeriod")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=final_expected_parties_array,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties']
-                )) == str(True)
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=final_expected_awards_array,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']
-                )) == str(True)
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=final_expected_bids_object,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']
-                )) == str(True)
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=final_expected_criteria_array,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
-                        'criteria']
-                )) == str(True)
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=final_expected_award_period_object,
-                    actual_result=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
-                        'awardPeriod']
-                )) == str(True)
+                with allure.step('Compare actual EV release and expected EV release'):
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    assert expected_result == compare_releases
+                with allure.step('Compare actual parties array and expected parties array.'):
+                    allure.attach(str(json.dumps(
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'])),
+                        "Actual parties array")
+                    allure.attach(str(json.dumps(final_expected_parties_array)), "Expected parties array")
+                    assert final_expected_parties_array == \
+                           GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties']
+                with allure.step('Compare actual awards array and expected awards array.'):
+                    allure.attach(str(json.dumps(
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'])),
+                        "Actual awards array")
+                    allure.attach(str(json.dumps(final_expected_awards_array)), "Expected awards array")
+                    assert final_expected_awards_array == \
+                           GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']
+                with allure.step('Compare actual bids array and expected bids array.'):
+                    allure.attach(str(json.dumps(
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'])),
+                        "Actual bids object")
+                    allure.attach(str(json.dumps(final_expected_bids_object)), "Expected bids object")
+                    assert final_expected_bids_object == \
+                           GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']
+                with allure.step('Compare actual criteria array and expected criteria array.'):
+                    allure.attach(str(json.dumps(
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['criteria'])),
+                        "Actual criteria array")
+                    allure.attach(str(json.dumps(final_expected_criteria_array)), "Expected criteria array")
+                    assert final_expected_criteria_array == \
+                           GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['criteria']
+                with allure.step('Compare actual awardPeriod and expected awardPeriod.'):
+                    allure.attach(str(json.dumps(
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod'])),
+                        "Actual awardPeriod object")
+                    allure.attach(str(json.dumps(final_expected_award_period_object)), "Expected awardPeriod object")
+                    assert final_expected_award_period_object == \
+                           GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardPeriod']
 
             with allure.step('# 11.3. Check MS release'):
                 """
@@ -2445,7 +2472,7 @@ class TestCreateBid:
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                     raise Exception("Error into comparing releases")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                with allure.step('Compare actual EV release and expected EV release'):
+                    allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                    allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                    assert expected_result == compare_releases
