@@ -1913,3 +1913,8 @@ Method = get_message_from_kafka_by_ocid_and_initiator ->
 Message: Could not get message: [].
 Check message into Kafka topic.
 Probably, there is an error.
+2021-12-31 13:52:59.447484
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+KeyError: data.ocid

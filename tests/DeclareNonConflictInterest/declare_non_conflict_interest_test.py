@@ -354,6 +354,9 @@ class TestDeclareNonConflictInterest:
             GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
                 url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateCnOnPn.ev_id}").json()
+            GlobalClassTenderPeriodEndAuction.actual_ms_release = requests.get(
+                url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
+                    f"{GlobalClassCreatePn.pn_ocid}").json()
             while "awardPeriod" not in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['tender']:
                 GlobalClassTenderPeriodEndAuction.actual_ev_release = requests.get(
                     url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
@@ -451,7 +454,8 @@ class TestDeclareNonConflictInterest:
                     GlobalClassCreateDeclareNonConflict.payload = \
                         declare_payload_class.create_declare_old_person_full_data_model(
                             requirement_id=requirements_list[x],
-                            tenderer_id=tenderers_list[y])
+                            tenderer_id=tenderers_list[y],
+                            actual_ms_release=GlobalClassTenderPeriodEndAuction.actual_ms_release)
 
                     Requests().create_declare_non_conflict_interest(
                         host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -2206,7 +2210,8 @@ class TestDeclareNonConflictInterest:
                         declare_payload_class.create_declare_old_person_but_new_bf_new_doc_full_data_model(
                             requirement_id=requirements_list[x],
                             tenderer_id=tenderers_list[y],
-                            number_of_iteration=step_number)
+                            number_of_iteration=step_number,
+                            actual_ms_release=GlobalClassTenderPeriodEndAuction.actual_ms_release)
 
                     Requests().create_declare_non_conflict_interest(
                         host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -3000,7 +3005,8 @@ class TestDeclareNonConflictInterest:
                     GlobalClassCreateDeclareNonConflict.payload = \
                         declare_payload_class.create_declare_old_person_full_data_model(
                             requirement_id=requirements_list[x],
-                            tenderer_id=tenderers_list[y])
+                            tenderer_id=tenderers_list[y],
+                            actual_ms_release=GlobalClassTenderPeriodEndAuction.actual_ms_release)
 
                     Requests().create_declare_non_conflict_interest(
                         host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -3278,7 +3284,8 @@ class TestDeclareNonConflictInterest:
                             requirement_id=requirements_list[x],
                             tenderer_id=tenderers_list[y],
                             req_resp_id=actual_awards_requirement_responses_array[0]['id'],
-                            value=False)
+                            value=False,
+                            actual_ms_release=GlobalClassCreateDeclareNonConflict.actual_ms_release)
 
                     Requests().create_declare_non_conflict_interest(
                         host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -3845,7 +3852,8 @@ class TestDeclareNonConflictInterest:
                     GlobalClassCreateDeclareNonConflict.payload = \
                         declare_payload_class.create_declare_old_person_full_data_model(
                             requirement_id=requirements_list[x],
-                            tenderer_id=tenderers_list[y])
+                            tenderer_id=tenderers_list[y],
+                            actual_ms_release=GlobalClassTenderPeriodEndAuction.actual_ms_release)
 
                     Requests().create_declare_non_conflict_interest(
                         host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -4261,7 +4269,8 @@ class TestDeclareNonConflictInterest:
                         declare_payload_class.create_declare_new_responder_identifier_but_old_other_value_full(
                             requirement_id=requirements_list[x],
                             tenderer_id=tenderers_list[y],
-                            number_of_iteration=step_number)
+                            number_of_iteration=step_number,
+                            actual_ms_release=GlobalClassCreateDeclareNonConflict.actual_ms_release)
 
                     Requests().create_declare_non_conflict_interest(
                         host_of_request=GlobalClassMetadata.host_for_bpe,
