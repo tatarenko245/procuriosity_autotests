@@ -1,16 +1,31 @@
 from tests.utils.functions import is_it_uuid, get_value_from_classification_cpv_dictionary_xls, \
-    generate_tender_classification_id, get_value_from_country_csv, get_value_from_region_csv, \
+    get_value_from_country_csv, get_value_from_region_csv, \
     get_value_from_locality_csv
 
 
 class PnExpectedRelease:
-    def __init__(self, environment, language, pn_feed_point_message, pn_payload):
+    def __init__(self, environment, language, pmd, pn_feed_point_message, pn_payload):
         self.language = language
         self.pn_ocid = pn_feed_point_message['data']['ocid']
         self.pn_id = pn_feed_point_message['data']['outcomes']['pn'][0]['id']
         self.pn_feed_point_message = pn_feed_point_message
         self.pn_payload = pn_payload
         self.metadata_tender_url = None
+        self.procurement_method_details = None
+
+        try:
+            if pmd == "TEST_RT":
+                self.procurement_method_details = "restrictedTender"
+            elif pmd == "TEST_GPA":
+                self.procurement_method_details = "testGpaProcedure"
+            elif pmd == "RT":
+                self.procurement_method_details = "restrictedTender"
+            elif pmd == "GPA":
+                self.procurement_method_details = "gpaProcedure"
+            else:
+                raise ValueError("Check your pmd: You must use 'TEST_RT', 'RT', 'TEST_GPA', 'GPA' in pytest command")
+        except Exception:
+            raise Exception("Check your pmd!")
 
         try:
             if environment == "dev":
@@ -186,7 +201,8 @@ class PnExpectedRelease:
                     self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
                         'scheme'] == "CUATM":
                 procuring_entity_locality_data = get_value_from_locality_csv(
-                    locality=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
+                    locality=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
+                        'id'],
                     region=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
                     country=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'],
                     language=self.language
@@ -203,7 +219,8 @@ class PnExpectedRelease:
                         self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['scheme'],
                     "id": self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
                     "description":
-                        self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['description']
+                        self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
+                            'description']
                 }
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
@@ -276,7 +293,7 @@ class PnExpectedRelease:
                                 'currency']
                         },
                         "procurementMethod": "selective",
-                        "procurementMethodDetails": "restrictedTender",
+                        "procurementMethodDetails": self.procurement_method_details,
                         "mainProcurementCategory": actual_ei_release['releases'][0]['tender'][
                             'mainProcurementCategory'],
                         "hasEnquiries": False,
@@ -329,7 +346,8 @@ class PnExpectedRelease:
                                 "legalName": self.pn_payload['tender']['procuringEntity']['identifier']['legalName']
                             },
                             "address": {
-                                "streetAddress": self.pn_payload['tender']['procuringEntity']['address']['streetAddress'],
+                                "streetAddress": self.pn_payload['tender']['procuringEntity']['address'][
+                                    'streetAddress'],
                                 "addressDetails": {
                                     "country": procuring_entity_country_object,
                                     "region": procuring_entity_region_object,
