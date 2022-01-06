@@ -5565,7 +5565,9 @@ class TestTenderPeriodEndAuction:
             """
             time.sleep(1)
             fs_payload = copy.deepcopy(FsPreparePayload())
-            GlobalClassCreateFs.payload = fs_payload.create_fs_obligatory_data_model_treasury_money()
+            GlobalClassCreateFs.payload = fs_payload.create_fs_obligatory_data_model_treasury_money(
+                ei_payload=GlobalClassCreateEi.payload
+            )
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFs.access_token,

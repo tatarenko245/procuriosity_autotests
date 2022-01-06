@@ -1,6 +1,5 @@
 import datetime
 import fnmatch
-import json
 import time
 import allure
 import requests
@@ -99,12 +98,12 @@ class KafkaMessage:
                         with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                             logfile.write(log_msg_one)
                         print(f"\n{datetime.datetime.now()}\n"
-                                  f"File = kafka_message.py -> \n"
-                                  f"Class = KafkaMessage -> \n"
-                                  f"Method = get_message_from_kafka_by_ocid_and_initiator -> \n"
-                                  f"Message: Could not get message: {kafka_message}.\n"
-                                  f"Check message into Kafka topic.\n"
-                                  f"Probably, there is an error.\n")
+                              f"File = kafka_message.py -> \n"
+                              f"Class = KafkaMessage -> \n"
+                              f"Method = get_message_from_kafka_by_ocid_and_initiator -> \n"
+                              f"Message: Could not get message: {kafka_message}.\n"
+                              f"Check message into Kafka topic.\n"
+                              f"Probably, there is an error.\n")
                         assert str(kafka_message) != str([])
 
                     for i in kafka_message:
@@ -382,72 +381,108 @@ class KafkaMessage:
             return False
 
     @staticmethod
-    def create_pn_message_is_successful(environment, kafka_message):
+    def create_pn_message_is_successful(environment, kafka_message, test_mode=False):
         tender_url = None
+        check_pn_id = None
+        check_pn_token = None
         if environment == "dev":
             tender_url = "http://dev.public.eprocurement.systems/tenders"
         if environment == "sandbox":
             tender_url = "http://public.eprocurement.systems/tenders"
-
-        check_x_operation_id = None
-        check_x_response_id = None
-        check_initiator = None
-        check_oc_id = None
-        check_url = None
-        check_operation_date = None
-        check_pn_id = None
-        check_pn_token = None
-
         try:
-            if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            """
+            Check X-OPERATION-ID into message from feed point.
+            """
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            if check_x_operation_id is True:
+                pass
+            else:
+                raise Exception("check_x_operation_id is False")
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
-
         try:
-            if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+            """
+            Check X-RESPONSE-ID into message from feed point.
+            """
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+            if check_x_response_id is True:
+                pass
+            else:
+                raise Exception("check_x_response_id is False")
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
-            if "initiator" in kafka_message:
-                check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "platform")
+            """
+            Check initiator into message from feed point.
+            """
+            check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "platform")
+            if check_initiator is True:
+                pass
+            else:
+                raise Exception("initiator is False")
         except KeyError:
             raise KeyError('KeyError: initiator')
         try:
-            if "ocid" in kafka_message["data"]:
+            """
+            Check data.ocid into message from feed point.
+            """
+            if test_mode is False:
                 check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], "ocds-t1s2t3-MD-*")
+            else:
+                check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], "test-t1s2t3-MD-*")
+            if check_oc_id is True:
+                pass
+            else:
+                raise Exception("check_oc_id is False")
         except KeyError:
-            raise KeyError('KeyError: ocid')
+            raise KeyError('KeyError: data.ocid')
         try:
-            if "url" in kafka_message["data"]:
-                check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
-                                            f"{tender_url}/{kafka_message['data']['ocid']}")
+            """
+            Check data.url into message from feed point.
+            """
+            check_url = fnmatch.fnmatch(kafka_message["data"]["url"], f"{tender_url}/{kafka_message['data']['ocid']}")
+            if check_url is True:
+                pass
+            else:
+                raise Exception("check_url is False")
         except KeyError:
-            raise KeyError('KeyError: url')
+            raise KeyError('KeyError: data.url')
         try:
-            if "operationDate" in kafka_message["data"]:
-                check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
+            """
+            Check data.operationDate into message from feed point.
+            """
+            check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
+            if check_operation_date is True:
+                pass
+            else:
+                raise Exception("check_operation_date is False")
         except KeyError:
-            raise KeyError('KeyError: operationDate')
-        try:
-            if "id" in kafka_message["data"]["outcomes"]["pn"][0]:
-                check_pn_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["pn"][0]["id"],
-                                              f"{kafka_message['data']['ocid']}-PN-*")
-        except KeyError:
-            raise KeyError('KeyError: id')
-        try:
-            if "X-TOKEN" in kafka_message["data"]["outcomes"]["pn"][0]:
-                check_pn_token = is_it_uuid(kafka_message["data"]["outcomes"]["pn"][0]["X-TOKEN"], 4)
-        except KeyError:
-            raise KeyError('KeyError: X-TOKEN')
+            raise KeyError('KeyError: data.operationDate')
+
+        if "pn" in kafka_message['data']['outcomes']:
+            for i in kafka_message['data']['outcomes']['pn']:
+                for i_1 in i:
+                    if i_1 == "id":
+                        check_pn_id = fnmatch.fnmatch(i['id'], f"{kafka_message['data']['ocid']}-PN-*")
+                        if check_pn_id is True:
+                            pass
+                        else:
+                            raise Exception("check_pn_id is False")
+
+                    if i_1 == "X-TOKEN":
+                        check_pn_token = is_it_uuid(i["X-TOKEN"], 4)
+                        if check_pn_token is True:
+                            pass
+                        else:
+                            raise Exception("check_pn_token is False")
 
         if check_x_operation_id is True and check_x_response_id is True and check_initiator is True and \
-                check_oc_id is True and check_url is True and check_operation_date is True and \
-                check_pn_id is True and check_pn_token is True:
-            return True
+                check_oc_id is True and check_url is True and check_operation_date is True and check_pn_id is True \
+                and check_pn_token is True:
+            pass
         else:
             return False
+        return True
 
     @staticmethod
     def update_pn_message_is_successful(environment, kafka_message, pn_ocid, pn_id):

@@ -180,7 +180,7 @@ class FsPreparePayload:
         payload['planning']['budget']['isEuropeanUnionFunded'] = False
         return payload
 
-    def create_fs_obligatory_data_model_treasury_money(self):
+    def create_fs_obligatory_data_model_treasury_money(self, ei_payload):
         payload = {
             "tender": {},
             "planning": {}
@@ -221,10 +221,8 @@ class FsPreparePayload:
             "create fs: tender.procuringEntity.contactPoint.email"
         payload['tender']['procuringEntity']['contactPoint']['telephone'] = \
             "create fs: tender.procuringEntity.contactPoint.telephone"
-        payload['planning']['budget']['period']['startDate'] = \
-            GlobalClassCreateEi.payload['planning']['budget']['period']['startDate']
-        payload['planning']['budget']['period']['endDate'] = \
-            GlobalClassCreateEi.payload['planning']['budget']['period']['endDate']
+        payload['planning']['budget']['period']['startDate'] = ei_payload['planning']['budget']['period']['startDate']
+        payload['planning']['budget']['period']['endDate'] = ei_payload['planning']['budget']['period']['endDate']
         payload['planning']['budget']['amount']['amount'] = 88889.89
         payload['planning']['budget']['amount']['currency'] = self.currency
         payload['planning']['budget']['isEuropeanUnionFunded'] = False

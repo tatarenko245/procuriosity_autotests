@@ -2,6 +2,9 @@
 import allure
 import pytest
 
+from tests.utils.cassandra_session import CassandraSession
+from tests.utils.environment import Environment
+
 
 def pytest_addoption(parser):
     parser.addoption("--pmd", action="store", type=str)
@@ -77,6 +80,24 @@ def tag(request):
     """Handler for --additional_value parameter"""
     allure.attach(request.config.getoption("--tag"), "tag")
     return request.config.getoption("--tag")
+
+
+@pytest.fixture(scope="class")
+def get_hosts(environment):
+    hosts = Environment().choose_environment(environment)
+    database_host = hosts[0]
+    bpe_host = hosts[1]
+    service_host = hosts[2]
+    return database_host, bpe_host, service_host
+
+
+@pytest.fixture(scope="class")
+def connection_to_database(get_hosts, cassandra_username, cassandra_password):
+    connection = CassandraSession(
+        cassandra_username=cassandra_username,
+        cassandra_password=cassandra_password,
+        cassandra_cluster=get_hosts[0])
+    return connection
 
 
 class GlobalClassCreateEi:
