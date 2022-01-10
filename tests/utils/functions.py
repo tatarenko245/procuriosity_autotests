@@ -11,7 +11,7 @@ import pytz
 import xlrd
 import allure
 from tests.conftest import GlobalClassMetadata
-from tests.utils.PayloadModel.SubmitBid.bid_payload_library import PayloadLibrary
+from tests.utils.PayloadModel.OpenProcedure.SubmitBid.bid_payload_library import PayloadLibrary
 from tests.utils.data_of_enum import cpv_goods_low_level_03, cpv_goods_low_level_1, cpv_goods_low_level_2, \
     cpv_goods_low_level_3, cpv_goods_low_level_44, cpv_goods_low_level_48, cpv_works_low_level_45, \
     cpv_services_low_level_5, cpv_services_low_level_6, cpv_services_low_level_7, cpv_services_low_level_8, \

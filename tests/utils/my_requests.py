@@ -5,7 +5,7 @@ import requests
 
 class Requests:
     @staticmethod
-    @allure.step('# Prepared request: create EI')
+    @allure.step('# Prepared request: create Ei')
     def create_ei(host_of_request, access_token, x_operation_id, country, language, payload, test_mode=False):
         ei = requests.post(
             url=host_of_request + "/do/ei",
@@ -24,7 +24,7 @@ class Requests:
         return ei
 
     @staticmethod
-    @allure.step('Prepared request: update EI')
+    @allure.step('Prepared request: update Ei')
     def update_ei(host_of_request, ei_ocid, ei_token, access_token, x_operation_id, payload, test_mode=False):
         ei = requests.post(
             url=host_of_request + f"/do/ei/{ei_ocid}",
@@ -42,7 +42,7 @@ class Requests:
         return ei
 
     @staticmethod
-    @allure.step('Prepared request: create FS')
+    @allure.step('Prepared request: create Fs')
     def create_fs(host_of_request, ei_ocid, access_token, x_operation_id, payload, test_mode=False):
         fs = requests.post(
             url=host_of_request + f"/do/fs/{ei_ocid}",
@@ -59,7 +59,7 @@ class Requests:
         return fs
 
     @staticmethod
-    @allure.step('Prepared request: update FS')
+    @allure.step('Prepared request: update Fs')
     def update_fs(host_of_request, ei_ocid, fs_id, fs_token, access_token, x_operation_id, payload, test_mode=False):
         fs = requests.post(
             url=host_of_request + f"/do/fs/{ei_ocid}/{fs_id}",
@@ -77,7 +77,7 @@ class Requests:
         return fs
 
     @staticmethod
-    @allure.step('Prepared request: create PN')
+    @allure.step('Prepared request: create Pn')
     def create_pn(host_of_request, access_token, x_operation_id, country,
                   language, pmd, payload, test_mode=False):
         pn = requests.post(
@@ -99,7 +99,7 @@ class Requests:
         return pn
 
     @staticmethod
-    @allure.step('Prepared request: update PN')
+    @allure.step('Prepared request: update Pn')
     def update_pn(host_of_request, access_token, x_operation_id, pn_ocid, pn_id, pn_token, payload, test_mode=False):
         pn = requests.post(
             url=host_of_request + f"/do/pn/{pn_ocid}/{pn_id}",
@@ -118,7 +118,7 @@ class Requests:
         return pn
 
     @staticmethod
-    @allure.step('Prepared request: cancel PN')
+    @allure.step('Prepared request: cancel Pn')
     def cancel_pn(host_of_request, access_token, x_operation_id, pn_ocid, pn_id, pn_token, test_mode=False):
         pn = requests.post(
             url=host_of_request + f"/cancel/pn/{pn_ocid}/{pn_id}",
