@@ -25,7 +25,6 @@ class TestCreatePn:
                   "create Pn: obligatory data model, without lots and items;\n")
     def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
-
         metadata_tender_url = None
         try:
             if environment == "dev":
@@ -34,7 +33,6 @@ class TestCreatePn:
                 metadata_tender_url = "http://public.eprocurement.systems/tenders"
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
-
         step_number = 1
 
         with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
@@ -61,8 +59,8 @@ class TestCreatePn:
                 country=country,
                 language=language,
                 payload=ei_payload,
-                test_mode=True
-            )
+                test_mode=True)
+
             ei_feed_point_message = KafkaMessage(ei_operation_id).get_message_from_kafka()
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             actual_ei_release_before_fs_creation = requests.get(
@@ -86,8 +84,7 @@ class TestCreatePn:
             time.sleep(1)
             fs_payload_class = copy.deepcopy(FsPreparePayload())
             fs_payload = fs_payload_class.create_fs_obligatory_data_model_treasury_money(
-                ei_payload=ei_payload
-            )
+                ei_payload=ei_payload)
 
             Requests().create_fs(
                 host_of_request=get_hosts[1],
@@ -95,8 +92,8 @@ class TestCreatePn:
                 x_operation_id=fs_operation_id,
                 ei_ocid=ei_ocid,
                 payload=fs_payload,
-                test_mode=True
-            )
+                test_mode=True)
+
             fs_feed_point_message = KafkaMessage(fs_operation_id).get_message_from_kafka()
             fs_id = fs_feed_point_message['data']['outcomes']['fs'][0]['id']
             actual_fs_release_before_pn_creation = requests.get(
@@ -134,8 +131,8 @@ class TestCreatePn:
                 language=language,
                 pmd=pmd,
                 payload=pn_payload,
-                test_mode=True
-            )
+                test_mode=True)
+
             pn_feed_point_message = KafkaMessage(pn_operation_id).get_message_from_kafka()
             pn_ocid = pn_feed_point_message['data']['ocid']
             pn_id = pn_feed_point_message['data']['outcomes']['pn'][0]['id']
@@ -151,6 +148,7 @@ class TestCreatePn:
             """
             Check the results of TestCase.
             """
+
             with allure.step(f'# {step_number}.1. Check status code'):
                 """
                 Check the synchronous_result_of_sending_the_request.
@@ -172,6 +170,7 @@ class TestCreatePn:
                     environment=environment,
                     kafka_message=pn_feed_point_message,
                     test_mode=True)
+
                 try:
                     """
                     If asynchronous_result_of_sending_the_request was False, then return process steps by
@@ -281,7 +280,7 @@ class TestCreatePn:
                 Compare expenditure item release before pn creating and expenditure item after pn creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_creation)),
-                              "Actual Ei release after fs creating")
+                              "Actual Ei release before pn creating")
 
                 allure.attach(str(json.dumps(actual_ei_release_after_pn_creation)),
                               "Actual Ei release after pn creating")
@@ -314,6 +313,7 @@ class TestCreatePn:
                         }
                     }
                 }
+
                 try:
                     is_it_uuid(
                         uuid_to_test=actual_ei_release_after_pn_creation['releases'][0][
@@ -324,6 +324,7 @@ class TestCreatePn:
                     raise ValueError(
                         "Check your ['releases'][0]['relatedProcesses'][1]['id'] in Ei release: "
                         "id must be uuid version 4")
+
                 try:
                     """
                     If compare_releases !=expected_result, then return process steps by operation-id.
@@ -351,7 +352,7 @@ class TestCreatePn:
                 Compare financial source before pn creating release and financial source after pn creating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_pn_creation)),
-                              "Actual Fs release after fs creating")
+                              "Actual Fs release before pn creating")
 
                 allure.attach(str(json.dumps(actual_fs_release_after_pn_creation)),
                               "Actual Fs release after pn creating")
@@ -399,6 +400,7 @@ class TestCreatePn:
                     raise ValueError(
                         "Check your ['releases'][0]['relatedProcesses'][1]['id'] in Fs release: "
                         "id must be uuid version 4")
+
                 try:
                     """
                     If compare_releases !=expected_result, then return process steps by operation-id.
@@ -413,35 +415,35 @@ class TestCreatePn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-            try:
-                """
-                    If TestCase was passed, then cLean up the database.
-                    If TestCase was failed, then return process steps by operation-id.
+                try:
                     """
-                if compare_releases == expected_result:
-                    connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        If TestCase was passed, then cLean up the database.
+                        If TestCase was failed, then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result:
+                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                    connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                    connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                        connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                    connection_to_database.cleanup_steps_of_process(operation_id=ei_operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=ei_operation_id)
 
-                    connection_to_database.cleanup_steps_of_process(operation_id=fs_operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=fs_operation_id)
 
-                    connection_to_database.cleanup_steps_of_process(operation_id=pn_operation_id)
-                else:
-                    with allure.step('# Steps from Casandra DataBase'):
-                        steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                            operation_id=pn_operation_id)
-                        allure.attach(steps, "Cassandra DataBase: steps of process")
-            except ValueError:
-                raise ValueError("Can not return BPE operation step")
+                        connection_to_database.cleanup_steps_of_process(operation_id=pn_operation_id)
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=pn_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
-            with allure.step('Compare result of comparing financial source release before pn creating and '
-                             'financial source after pn creating.'):
-                allure.attach(str(compare_releases),
-                              "Actual result of comparing Fs release and expected Fs release.")
-                allure.attach(str(expected_result),
-                              "Expected result of comparing Fs release and expected Fs release.")
-                assert str(compare_releases) == str(expected_result)
+                with allure.step('Compare result of comparing financial source release before pn creating and '
+                                 'financial source after pn creating.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing Fs release and expected Fs release.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing Fs release and expected Fs release.")
+                    assert str(compare_releases) == str(expected_result)

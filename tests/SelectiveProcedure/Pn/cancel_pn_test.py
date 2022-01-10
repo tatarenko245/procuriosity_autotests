@@ -15,13 +15,13 @@ from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
 
-class TestUpdatePn:
-    @allure.title("Check Pn and MS releases data after Pn updating without optional fields. \n"
+class TestCancelPn:
+    @allure.title("Check Pn and MS releases data after Pn cancelling without optional fields. \n"
                   "------------------------------------------------\n"
                   "create Ei: obligatory data model without items array;\n"
                   "create Fs: obligatory data model, treasury money;\n"
                   "create Pn: obligatory data model, without lots and items;\n"
-                  "update Pn: obligatory data model, without lots and items;\n")
+                  "Cancel Pn: payload absences;\n")
     def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
@@ -50,8 +50,8 @@ class TestUpdatePn:
                 country=country,
                 language=language,
                 payload=ei_payload,
-                test_mode=True
-            )
+                test_mode=True)
+
             ei_feed_point_message = KafkaMessage(ei_operation_id).get_message_from_kafka()
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
@@ -73,8 +73,7 @@ class TestUpdatePn:
             time.sleep(1)
             fs_payload_class = copy.deepcopy(FsPreparePayload())
             fs_payload = fs_payload_class.create_fs_obligatory_data_model_treasury_money(
-                ei_payload=ei_payload
-            )
+                ei_payload=ei_payload)
 
             Requests().create_fs(
                 host_of_request=get_hosts[1],
@@ -82,8 +81,8 @@ class TestUpdatePn:
                 x_operation_id=fs_operation_id,
                 ei_ocid=ei_ocid,
                 payload=fs_payload,
-                test_mode=True
-            )
+                test_mode=True)
+
             fs_feed_point_message = KafkaMessage(fs_operation_id).get_message_from_kafka()
             fs_id = fs_feed_point_message['data']['outcomes']['fs'][0]['id']
             step_number += 1
@@ -118,16 +117,16 @@ class TestUpdatePn:
                 language=language,
                 pmd=pmd,
                 payload=create_pn_payload,
-                test_mode=True
-            )
+                test_mode=True)
+
             create_pn_feed_point_message = KafkaMessage(create_pn_operation_id).get_message_from_kafka()
             pn_ocid = create_pn_feed_point_message['data']['ocid']
             pn_url = create_pn_feed_point_message['data']['url']
             pn_id = create_pn_feed_point_message['data']['outcomes']['pn'][0]['id']
             pn_token = create_pn_feed_point_message['data']['outcomes']['pn'][0]['X-TOKEN']
-            actual_pn_release_before_pn_updating = requests.get(
+            actual_pn_release_before_pn_canceling = requests.get(
                 url=f"{create_pn_feed_point_message['data']['url']}/{pn_id}").json()
-            actual_ms_release_before_pn_updating = requests.get(
+            actual_ms_release_before_pn_canceling = requests.get(
                 url=f"{create_pn_feed_point_message['data']['url']}/{pn_ocid}").json()
             actual_fs_release_after_pn_creation = requests.get(
                 url=f"{fs_feed_point_message['data']['url']}/{fs_id}").json()
@@ -135,45 +134,36 @@ class TestUpdatePn:
                 url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Pn'):
+        with allure.step(f'# {step_number}. Authorization platform one: cancel Pn'):
             """
-            Tender platform authorization for update planning notice process.
+            Tender platform authorization for cancel planning notice process.
             As result get Tender platform's access token and process operation-id.
             """
             pn_access_token = authorization.get_access_token_for_platform_one()
-            update_pn_operation_id = authorization.get_x_operation_id(pn_access_token)
+            cancel_pn_operation_id = authorization.get_x_operation_id(pn_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Pn'):
+        with allure.step(f'# {step_number}. Send request to cancel Pn'):
             """
-            Send api request on BPE host for planning notice updating.
+            Send api request on BPE host for planning notice canceling.
             Save synchronous result of sending the request and asynchronous result of sending the request.
-            And save in variable pn_ocid, pn_id.
             """
             time.sleep(1)
-            pn_payload_class = copy.deepcopy(PnPreparePayload(
-                fs_payload=fs_payload,
-                fs_feed_point_message=fs_feed_point_message))
-            update_pn_payload = \
-                pn_payload_class.update_pn_obligatory_data_model_without_lots_and_items_based_on_one_fs()
-
-            synchronous_result_of_sending_the_request = Requests().update_pn(
+            synchronous_result_of_sending_the_request = Requests().cancel_pn(
                 host_of_request=get_hosts[1],
                 access_token=pn_access_token,
                 pn_ocid=pn_ocid,
                 pn_id=pn_id,
                 pn_token=pn_token,
-                x_operation_id=update_pn_operation_id,
-                payload=update_pn_payload,
-                test_mode=True
-            )
-            update_pn_feed_point_message = KafkaMessage(update_pn_operation_id).get_message_from_kafka()
+                x_operation_id=cancel_pn_operation_id,
+                test_mode=True)
 
-            actual_pn_release_after_pn_updating = requests.get(url=f"{pn_url}/{pn_id}").json()
-            actual_ms_release_after_pn_updating = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-            actual_fs_release_after_pn_updatting = requests.get(
+            cancel_pn_feed_point_message = KafkaMessage(cancel_pn_operation_id).get_message_from_kafka()
+            actual_pn_release_after_pn_canceling = requests.get(url=f"{pn_url}/{pn_id}").json()
+            actual_ms_release_after_pn_canceling = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+            actual_fs_release_after_pn_canceling = requests.get(
                 url=f"{fs_feed_point_message['data']['url']}/{fs_id}").json()
-            actual_ei_release_after_pn_updateing = requests.get(
+            actual_ei_release_after_pn_canceling = requests.get(
                 url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
@@ -181,6 +171,7 @@ class TestUpdatePn:
             """
             Check the results of TestCase.
             """
+
             with allure.step(f'# {step_number}.1. Check status code'):
                 """
                 Check the synchronous_result_of_sending_the_request.
@@ -196,13 +187,13 @@ class TestUpdatePn:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                allure.attach(str(update_pn_feed_point_message), 'Message in feed point')
+                allure.attach(str(cancel_pn_feed_point_message), 'Message in feed point')
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    update_pn_operation_id).update_pn_message_is_successful(
+                    cancel_pn_operation_id).cancel_pn_message_is_successful(
                     environment=environment,
-                    kafka_message=update_pn_feed_point_message,
-                    pn_ocid=pn_ocid,
-                    pn_id=pn_id)
+                    kafka_message=cancel_pn_feed_point_message,
+                    pn_ocid=pn_ocid)
+
                 try:
                     """
                     If asynchronous_result_of_sending_the_request was False, then return process steps by
@@ -211,7 +202,7 @@ class TestUpdatePn:
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=update_pn_operation_id)
+                                operation_id=cancel_pn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
@@ -225,33 +216,39 @@ class TestUpdatePn:
 
             with allure.step(f'# {step_number}.3. Check Pn release'):
                 """
-                Compare actual planning notice release before updating and actual planning release after updating.
+                Compare actual planning notice release before cancellation and 
+                actual planning release after cancellation.
                 """
-                allure.attach(str(json.dumps(actual_pn_release_before_pn_updating)),
-                              "Actual Pn release before updating")
+                allure.attach(str(json.dumps(actual_pn_release_before_pn_canceling)),
+                              "Actual Pn release before canceling")
 
-                allure.attach(str(json.dumps(actual_pn_release_after_pn_updating)), "Actual Pn release before updating")
+                allure.attach(str(json.dumps(actual_pn_release_after_pn_canceling)),
+                              "Actual Pn release after canceling")
 
-                compare_releases = dict(DeepDiff(actual_pn_release_before_pn_updating,
-                                                 actual_pn_release_after_pn_updating))
+                compare_releases = dict(DeepDiff(actual_pn_release_before_pn_canceling,
+                                                 actual_pn_release_after_pn_canceling))
 
                 expected_result = {
                     'values_changed': {
                         "root['releases'][0]['id']": {
-                            "new_value": f"{pn_id}-{actual_pn_release_after_pn_updating['releases'][0]['id'][46:59]}",
-                            "old_value": f"{pn_id}-{actual_pn_release_before_pn_updating['releases'][0]['id'][46:59]}",
+                            "new_value": f"{pn_id}-{actual_pn_release_after_pn_canceling['releases'][0]['id'][46:59]}",
+                            "old_value": f"{pn_id}-{actual_pn_release_before_pn_canceling['releases'][0]['id'][46:59]}",
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": update_pn_feed_point_message['data']['operationDate'],
+                            "new_value": cancel_pn_feed_point_message['data']['operationDate'],
                             "old_value": create_pn_feed_point_message['data']['operationDate']
                         },
                         "root['releases'][0]['tag'][0]": {
-                            'new_value': 'planningUpdate',
+                            'new_value': 'tenderCancellation',
                             'old_value': 'planning'
                         },
-                        "root['releases'][0]['tender']['tenderPeriod']['startDate']": {
-                            "new_value": update_pn_payload['tender']['tenderPeriod']['startDate'],
-                            "old_value": create_pn_payload['tender']['tenderPeriod']['startDate']
+                        "root['releases'][0]['tender']['status']": {
+                            "new_value": "cancelled",
+                            "old_value": "planning"
+                        },
+                        "root['releases'][0]['tender']['statusDetails']": {
+                            "new_value": "empty",
+                            "old_value": "planning"
                         }
                     }
                 }
@@ -265,40 +262,55 @@ class TestUpdatePn:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=update_pn_operation_id)
+                                operation_id=cancel_pn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Pn release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing Pn release before cancellation '
+                                 'and after cancellation.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Pn release before updating and after updating.")
+                                  "Actual result of comparing Pn release before cancellation and after cancellation.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Pn release before updating and after updating.")
+                                  "Expected result of comparing Pn release before cancellation and after cancellation.")
                     assert str(compare_releases) == str(expected_result)
 
             with allure.step(f'# {step_number}.4. Check MS release'):
                 """
-                Compare actual multistage release before updating and actual multistage release after updating.
+                Compare actual multistage release before cancellation and actual multistage release after cancellation.
                 """
-                allure.attach(str(json.dumps(actual_ms_release_before_pn_updating)),
-                              "Actual Ms release before updating")
+                allure.attach(str(json.dumps(actual_ms_release_before_pn_canceling)),
+                              "Actual Ms release before cancellation")
 
-                allure.attach(str(json.dumps(actual_ms_release_after_pn_updating)),
-                              "Actual Ms release after updating")
+                allure.attach(str(json.dumps(actual_ms_release_after_pn_canceling)),
+                              "Actual Ms release after cancellation")
 
-                compare_releases = dict(DeepDiff(actual_ms_release_before_pn_updating,
-                                                 actual_ms_release_after_pn_updating))
+                compare_releases = dict(DeepDiff(actual_ms_release_before_pn_canceling,
+                                                 actual_ms_release_after_pn_canceling))
 
                 expected_result = {
                     "values_changed": {
                         "root['releases'][0]['id']": {
-                            "new_value": f"{pn_ocid}-{actual_ms_release_after_pn_updating['releases'][0]['id'][29:42]}",
-                            "old_value": f"{pn_ocid}-{actual_ms_release_before_pn_updating['releases'][0]['id'][29:42]}"
+                            "new_value": f"{pn_ocid}-"
+                                         f"{actual_ms_release_after_pn_canceling['releases'][0]['id'][29:42]}",
+                            "old_value": f"{pn_ocid}-"
+                                         f"{actual_ms_release_before_pn_canceling['releases'][0]['id'][29:42]}"
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": update_pn_feed_point_message['data']['operationDate'],
+                            "new_value": cancel_pn_feed_point_message['data']['operationDate'],
                             "old_value": create_pn_feed_point_message['data']['operationDate']
+                        },
+                        "root['releases'][0]['tag'][0]": {
+                            "new_value": "tenderCancellation",
+                            "old_value": "compiled"
+                        },
+                        "root['releases'][0]['tender']['status']": {
+                            "new_value": "cancelled",
+                            "old_value": "planning"
+                        },
+                        "root['releases'][0]['tender']['statusDetails']": {
+                            "new_value": "empty",
+                            "old_value": "planning notice"
                         }
                     }
                 }
@@ -312,30 +324,31 @@ class TestUpdatePn:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=update_pn_operation_id)
+                                operation_id=cancel_pn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing MS release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing Ms release before cancellation '
+                                 'and after cancellation.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ms release before updating and after updating.")
+                                  "Actual result of comparing Ms release before cancellation and after cancellation.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ms release before updating and after updating.")
+                                  "Expected result of comparing Ms release before cancellation and after cancellation.")
                     assert str(compare_releases) == str(expected_result)
 
             with allure.step(f'# {step_number}.5. Check Ei release'):
                 """
-                Compare expenditure item release before pn updating and expenditure item after pn updating.
+                Compare expenditure item release before pn cancellation and expenditure item after pn cancellation.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_after_pn_creation)),
-                              "Actual Ei release before pn updating")
+                              "Actual Ei release before pn cancellation")
 
-                allure.attach(str(json.dumps(actual_ei_release_after_pn_updateing)),
-                              "Actual Ei release after pn updating")
+                allure.attach(str(json.dumps(actual_ei_release_after_pn_canceling)),
+                              "Actual Ei release after pn cancellation")
 
                 compare_releases = dict(
-                    DeepDiff(actual_ei_release_after_pn_creation, actual_ei_release_after_pn_updateing))
+                    DeepDiff(actual_ei_release_after_pn_creation, actual_ei_release_after_pn_canceling))
 
                 expected_result = {}
 
@@ -348,13 +361,13 @@ class TestUpdatePn:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=update_pn_operation_id)
+                                operation_id=cancel_pn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare result of comparing expenditure item release before pn creating and '
-                                 'expenditure item after pn creating.'):
+                with allure.step('Compare result of comparing expenditure item release before pn cancellation and '
+                                 'expenditure item after pn cancellation.'):
                     allure.attach(str(compare_releases),
                                   "Actual result of comparing Ei release and expected Ei release.")
                     allure.attach(str(expected_result),
@@ -363,16 +376,16 @@ class TestUpdatePn:
 
             with allure.step(f'# {step_number}.6. Check Fs release'):
                 """
-                Compare financial source release before pn updating and financial source after pn updating.
+                Compare financial source release before pn cancellation and financial source after pn cancellation.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_after_pn_creation)),
-                              "Actual Fs release before pn updating")
+                              "Actual Fs release before pn cancellation")
 
-                allure.attach(str(json.dumps(actual_fs_release_after_pn_updatting)),
-                              "Actual Fs release after pn updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_pn_canceling)),
+                              "Actual Fs release after pn cancellation")
 
                 compare_releases = dict(
-                    DeepDiff(actual_fs_release_after_pn_creation, actual_fs_release_after_pn_updatting))
+                    DeepDiff(actual_fs_release_after_pn_creation, actual_fs_release_after_pn_creation))
 
                 expected_result = {}
 
@@ -385,42 +398,42 @@ class TestUpdatePn:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=update_pn_operation_id)
+                                operation_id=cancel_pn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-            try:
-                """
-                    If TestCase was passed, then cLean up the database.
-                    If TestCase was failed, then return process steps by operation-id.
+                try:
                     """
-                if compare_releases == expected_result:
-                    connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        If TestCase was passed, then cLean up the database.
+                        If TestCase was failed, then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result:
+                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                    connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                    connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                        connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                    connection_to_database.cleanup_steps_of_process(operation_id=ei_operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=ei_operation_id)
 
-                    connection_to_database.cleanup_steps_of_process(operation_id=fs_operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=fs_operation_id)
 
-                    connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
 
-                    connection_to_database.cleanup_steps_of_process(operation_id=update_pn_operation_id)
-                else:
-                    with allure.step('# Steps from Casandra DataBase'):
-                        steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                            operation_id=update_pn_operation_id)
-                        allure.attach(steps, "Cassandra DataBase: steps of process")
-            except ValueError:
-                raise ValueError("Can not return BPE operation step")
+                        connection_to_database.cleanup_steps_of_process(operation_id=cancel_pn_operation_id)
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=cancel_pn_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
-            with allure.step('Compare result of comparing financial source release before pn creating and '
-                             'financial source after pn creating.'):
-                allure.attach(str(compare_releases),
-                              "Actual result of comparing Fs release and expected Fs release.")
-                allure.attach(str(expected_result),
-                              "Expected result of comparing Fs release and expected Fs release.")
-                assert str(compare_releases) == str(expected_result)
+                with allure.step('Compare result of comparing financial source release before pn cancellation and '
+                                 'financial source after pn cancellation.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing Fs release and expected Fs release.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing Fs release and expected Fs release.")
+                    assert str(compare_releases) == str(expected_result)
