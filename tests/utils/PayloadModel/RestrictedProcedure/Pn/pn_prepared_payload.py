@@ -64,3 +64,17 @@ class PnPreparePayload:
             }
         }
         return payload
+
+    def update_pn_obligatory_data_model_without_lots_and_items_based_on_one_fs(self):
+        payload = {
+            "planning": {
+                "budget": {
+                }
+            },
+            "tender": {
+                "tenderPeriod": {
+                    "startDate": self.pn_period
+                }
+            }
+        }
+        return payload

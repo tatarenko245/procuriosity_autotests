@@ -70,8 +70,8 @@ class PnExpectedRelease:
             "version": "1.1",
             "extensions": self.extensions,
             "publisher": {
-                "name": "M-Tender",
-                "uri": "https://www.mtender.gov.md"
+                "name": self.publisher_name,
+                "uri": self.publisher_uri
             },
             "license": "http://opendefinition.org/licenses/",
             "publicationPolicy": "http://opendefinition.org/licenses/",
@@ -230,8 +230,8 @@ class PnExpectedRelease:
             "version": "1.1",
             "extensions": self.extensions,
             "publisher": {
-                "name": "M-Tender",
-                "uri": "https://www.mtender.gov.md"
+                "name": self.publisher_name,
+                "uri": self.publisher_uri
             },
             "license": "http://opendefinition.org/licenses/",
             "publicationPolicy": "http://opendefinition.org/licenses/",
