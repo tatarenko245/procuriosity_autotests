@@ -245,7 +245,8 @@ class TestCreateCnOnPn:
                     GlobalClassCreateCnOnPn.operation_id).create_cnonpn_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
-                    pn_ocid=GlobalClassCreatePn.pn_ocid
+                    pn_ocid=GlobalClassCreatePn.pn_ocid,
+                    pmd=GlobalClassMetadata.pmd
                 )
                 try:
                     """
@@ -473,7 +474,8 @@ class TestCreateCnOnPn:
                     GlobalClassCreateCnOnPn.operation_id).create_cnonpn_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
-                    pn_ocid=GlobalClassCreatePn.pn_ocid
+                    pn_ocid=GlobalClassCreatePn.pn_ocid,
+                    pmd=GlobalClassMetadata.pmd
                 )
                 try:
                     """
@@ -895,7 +897,8 @@ class TestCreateCnOnPn:
                     GlobalClassCreateCnOnPn.operation_id).create_cnonpn_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateCnOnPn.feed_point_message,
-                    pn_ocid=GlobalClassCreatePn.pn_ocid
+                    pn_ocid=GlobalClassCreatePn.pn_ocid,
+                    pmd=GlobalClassMetadata.pmd
                 )
                 try:
                     """

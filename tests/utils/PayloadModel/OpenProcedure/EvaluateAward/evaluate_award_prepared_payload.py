@@ -1,6 +1,7 @@
 import copy
 import random
 
+from tests.conftest import GlobalClassMetadata
 from tests.utils.PayloadModel.OpenProcedure.EvaluateAward.evaluate_award_library import PayloadLibrary
 from tests.utils.data_of_enum import documentType_for_evaluate_award
 from tests.utils.date_class import Date
@@ -11,7 +12,7 @@ class EvaluateAwardPreparePayload:
     def __init__(self):
         self.constructor = copy.deepcopy(PayloadLibrary())
         self.old_date = Date().old_period()[0]
-        document_one = Document("API.pdf")
+        document_one = Document(host_for_services=GlobalClassMetadata.host_for_services, file_name="API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
 
     def create_evaluate_award_full_data_model(self, award_status_details, based_stage_release):

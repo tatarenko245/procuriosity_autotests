@@ -20,6 +20,7 @@ class CassandraSession:
         self.auctions_keyspace = self.cluster.connect('auctions')
         self.submission_keyspace = self.cluster.connect('submission')
         self.evaluation_keyspace = self.cluster.connect('evaluation')
+        self.dossier_keyspace = self.cluster.connect('dossier')
 
     def ei_process_cleanup_table_of_services(self, ei_id):
         self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one()
@@ -166,3 +167,15 @@ class CassandraSession:
         self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+
+    def get_min_submission_period_duration_rules(self, country, pmd, operation_type, parameter):
+        value = self.dossier_keyspace.execute(
+            f"""SELECT "value" FROM rules WHERE "country"='{country}' AND "pmd" = '{pmd}' AND 
+            "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
+        return value.value
+
+    def get_period_shift_rules(self, country, pmd, operation_type, parameter):
+        value = self.clarification_keyspace.execute(
+            f"""SELECT "value" FROM rules WHERE "country"='{country}' AND "pmd" = '{pmd}' AND 
+            "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
+        return value.value

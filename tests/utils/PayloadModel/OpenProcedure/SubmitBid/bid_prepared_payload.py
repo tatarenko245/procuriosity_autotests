@@ -1,5 +1,7 @@
 import copy
 import random
+
+from tests.conftest import GlobalClassMetadata
 from tests.utils.PayloadModel.OpenProcedure.SubmitBid.bid_payload_library import PayloadLibrary
 from tests.utils.data_of_enum import scale, documentType_for_bid, person_title, type_of_supplier
 from tests.utils.date_class import Date
@@ -10,7 +12,7 @@ from tests.utils.iStorage import Document
 class BidPreparePayload:
     def __init__(self):
         self.constructor = copy.deepcopy(PayloadLibrary())
-        document_one = Document("API.pdf")
+        document_one = Document(host_for_services=GlobalClassMetadata.host_for_services, file_name="API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
         self.document_two_was_uploaded = document_one.uploading_document()
         self.document_three_was_uploaded = document_one.uploading_document()
@@ -954,8 +956,6 @@ class BidPreparePayload:
             ev_release_criteria_array=based_stage_release['releases'][0]['tender']['criteria'],
             payload=payload
         )
-        # Поки не пофіксисли баг https://ustudio.atlassian.net/browse/ES-6923, то треба видалити об'єкти 2 та 3
-        del payload['bid']['requirementResponses'][2], payload['bid']['requirementResponses'][2]
         return payload
 
     def create_first_bid_full_data_model_without_requirement_responses(
@@ -2806,8 +2806,6 @@ class BidPreparePayload:
             ev_release_criteria_array=based_stage_release['releases'][0]['tender']['criteria'],
             payload=payload
         )
-        # Поки не пофіксисли баг https://ustudio.atlassian.net/browse/ES-6923, то треба видалити об'єкти 2 та 3
-        del payload['bid']['requirementResponses'][2], payload['bid']['requirementResponses'][2]
         return payload
 
     def create_second_bid_full_data_model_without_requirement_responses(

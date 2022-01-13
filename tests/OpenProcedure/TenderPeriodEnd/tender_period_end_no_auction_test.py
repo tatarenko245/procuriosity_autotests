@@ -1346,6 +1346,7 @@ class TestCreateBid:
                     allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
                     allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
                     assert expected_result == compare_releases
+
                 with allure.step('Compare actual parties array and expected parties array.'):
                     allure.attach(str(json.dumps(
                         GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['parties'])),

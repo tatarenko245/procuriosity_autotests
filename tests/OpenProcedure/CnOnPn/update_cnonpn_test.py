@@ -270,7 +270,7 @@ class TestCreateCnOnPn:
                 access_token=GlobalClassUpdateCnOnPn.access_token,
                 x_operation_id=GlobalClassUpdateCnOnPn.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 pn_token=GlobalClassCreatePn.pn_token,
                 payload=GlobalClassUpdateCnOnPn.payload
             )
@@ -300,7 +300,7 @@ class TestCreateCnOnPn:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateCnOnPn.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
                 try:
                     """
@@ -556,7 +556,7 @@ class TestCreateCnOnPn:
                 access_token=GlobalClassUpdateCnOnPn.access_token,
                 x_operation_id=GlobalClassUpdateCnOnPn.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 pn_token=GlobalClassCreatePn.pn_token,
                 payload=GlobalClassUpdateCnOnPn.payload
             )
@@ -585,7 +585,7 @@ class TestCreateCnOnPn:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateCnOnPn.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
                 try:
                     """
@@ -1256,7 +1256,7 @@ class TestCreateCnOnPn:
                 access_token=GlobalClassUpdateCnOnPn.access_token,
                 x_operation_id=GlobalClassUpdateCnOnPn.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 pn_token=GlobalClassCreatePn.pn_token,
                 payload=GlobalClassUpdateCnOnPn.payload
             )
@@ -1286,7 +1286,7 @@ class TestCreateCnOnPn:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateCnOnPn.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
                 try:
                     """
@@ -1766,7 +1766,7 @@ class TestCreateCnOnPn:
                 access_token=GlobalClassUpdateCnOnPn.access_token,
                 x_operation_id=GlobalClassUpdateCnOnPn.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 pn_token=GlobalClassCreatePn.pn_token,
                 payload=GlobalClassUpdateCnOnPn.payload
             )
@@ -1796,7 +1796,7 @@ class TestCreateCnOnPn:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateCnOnPn.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
                 try:
                     """
@@ -2424,7 +2424,7 @@ class TestCreateCnOnPn:
                 access_token=GlobalClassUpdateCnOnPn.access_token,
                 x_operation_id=GlobalClassUpdateCnOnPn.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 pn_token=GlobalClassCreatePn.pn_token,
                 payload=GlobalClassUpdateCnOnPn.payload
             )
@@ -2454,7 +2454,7 @@ class TestCreateCnOnPn:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateCnOnPn.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
                 try:
                     """
@@ -2761,10 +2761,7 @@ class TestCreateCnOnPn:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
-                print("Compare")
-                print(json.dumps(compare_releases))
-                print("Expected")
-                print(json.dumps(expected_result))
+
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
                     actual_result=compare_releases

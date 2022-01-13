@@ -156,10 +156,10 @@ class Requests:
 
     @staticmethod
     @allure.step('Prepared request: update CnOnPn')
-    def update_cnonpn(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, pn_token, payload,
+    def update_cnonpn(host_of_request, access_token, x_operation_id, pn_ocid, tender_id, pn_token, payload,
                       test_mode=False):
         cn = requests.post(
-            url=host_of_request + f"/do/cn/{pn_ocid}/{ev_id}",
+            url=host_of_request + f"/do/cn/{pn_ocid}/{tender_id}",
             params={
                 'testMode': test_mode
             },

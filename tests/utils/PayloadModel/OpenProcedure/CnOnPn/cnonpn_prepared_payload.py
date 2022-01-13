@@ -19,7 +19,7 @@ from tests.utils.services.e_mdm_service import MdmService
 class CnOnPnPreparePayload:
     def __init__(self):
         self.constructor = copy.deepcopy(PayloadLibrary())
-        document_one = Document("API.pdf")
+        document_one = Document(host_for_services=GlobalClassMetadata.host_for_services, file_name="API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
         self.document_two_was_uploaded = document_one.uploading_document()
         self.standard_criteria = MdmService(host=GlobalClassMetadata.host_for_services).get_standard_criteria(

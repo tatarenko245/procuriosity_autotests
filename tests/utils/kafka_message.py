@@ -593,7 +593,7 @@ class KafkaMessage:
             return False
 
     @staticmethod
-    def create_cnonpn_message_is_successful(environment, kafka_message, pn_ocid):
+    def create_cnonpn_message_is_successful(environment, kafka_message, pn_ocid, pmd):
         tender_url = None
         if environment == "dev":
             tender_url = "http://dev.public.eprocurement.systems/tenders"
@@ -641,9 +641,16 @@ class KafkaMessage:
         except KeyError:
             raise KeyError('KeyError: operationDate')
         try:
-            if "id" in kafka_message["data"]["outcomes"]["ev"][0]:
-                check_ev_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["ev"][0]["id"],
-                                              f"{kafka_message['data']['ocid']}-EV-*")
+            if pmd == "TEST_OT" or pmd == "TEST_SV" or pmd == "TEST_MV" or pmd == "OT" or pmd == "SV" or pmd == "MV":
+                if "id" in kafka_message["data"]["outcomes"]["ev"][0]:
+                    check_ev_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["ev"][0]["id"],
+                                                  f"{kafka_message['data']['ocid']}-EV-*")
+            elif pmd == "TEST_RT" or pmd == "TEST_GPA" or pmd == "RT" or pmd == "GPA":
+                if "id" in kafka_message["data"]["outcomes"]["tp"][0]:
+                    check_ev_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["tp"][0]["id"],
+                                                  f"{kafka_message['data']['ocid']}-TP-*")
+            else:
+                raise ValueError(f"Unknown pmd:{pmd}")
         except KeyError:
             raise KeyError('KeyError: id')
 
@@ -654,7 +661,7 @@ class KafkaMessage:
             return False
 
     @staticmethod
-    def update_cnonpn_message_is_successful(environment, kafka_message, pn_ocid, ev_id):
+    def update_cnonpn_message_is_successful(environment, kafka_message, pn_ocid, tender_id):
         tender_url = None
         if environment == "dev":
             tender_url = "http://dev.public.eprocurement.systems/tenders"
@@ -687,13 +694,13 @@ class KafkaMessage:
             raise KeyError('KeyError: initiator')
         try:
             if "ocid" in kafka_message["data"]:
-                check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{ev_id}")
+                check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{tender_id}")
         except KeyError:
             raise KeyError('KeyError: ocid')
         try:
             if "url" in kafka_message["data"]:
                 check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
-                                            f"{tender_url}/{pn_ocid}/{ev_id}")
+                                            f"{tender_url}/{pn_ocid}/{tender_id}")
         except KeyError:
             raise KeyError('KeyError: url')
         try:

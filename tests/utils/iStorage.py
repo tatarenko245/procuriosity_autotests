@@ -7,13 +7,14 @@ from tests.utils.functions import get_project_root
 
 
 class Document:
-    def __init__(self, file_name="API.pdf"):
+    def __init__(self, host_for_services, file_name="API.pdf"):
         # The 'get_project_root()' get root dir
         self.path = get_project_root() / file_name
         self.filename = file_name
         self.m = None
         self.weight = None
         self.doc_id = None
+        self.host_for_services = host_for_services
 
     def uploading_document(self):
         with open(self.path, 'rb') as f:
@@ -32,12 +33,12 @@ class Document:
             "weight": self.weight
         }
         self.doc_id = requests.post(
-            url=f"{GlobalClassMetadata.host_for_services}:9131/storage/registration/",
+            url=f"{self.host_for_services}:9131/storage/registration/",
             headers={'Content-Type': 'application/json'},
             json=payload).json()['data']['id']
         file = {'file': open(self.path, 'rb')}
         uploading = requests.post(
-            url=f"{GlobalClassMetadata.host_for_services}:9131/storage/upload/{self.doc_id}",
+            url=f"{self.host_for_services}:9131/storage/upload/{self.doc_id}",
             files=file).json()
 
         return uploading, self.filename, self.m.hexdigest(), self.weight
