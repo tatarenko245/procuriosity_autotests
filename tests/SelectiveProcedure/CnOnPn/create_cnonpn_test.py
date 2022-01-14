@@ -238,8 +238,8 @@ class TestCreateCn:
                 with allure.step('Compare actual asynchronous result of sending the request and '
                                  'expected asynchronous result of sending request.'):
                     allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
-                                  "Actual status code of sending the request.")
-                    allure.attach(str(True), "Expected status code of sending request.")
+                                  "Actual asynchronous result of sending the request.")
+                    allure.attach(str(True), "Expected asynchronous result of sending the request.")
                     assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
 
             with allure.step(f'# {step_number}.3. Check TP release'):
@@ -295,73 +295,11 @@ class TestCreateCn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Tp release and expected Tp release and '
-                                 'expected result of comparing Tp release and expected Tp release.'):
+                with allure.step('Check a difference of comparing actual Tp release and expected Tp release.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Tp release and expected Tp release.")
+                                  "Actual result of comparing Tp releases.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Tp release and expected Tp release.")
-                    assert str(compare_releases) == str(expected_result)
-
-            with allure.step(f'# {step_number}.3. Check TP release'):
-                """
-                Compare actual TP release with expected TP release model.
-                """
-                allure.attach(str(json.dumps(actual_tp_release_after_cn_creating)), "Actual TP release")
-
-                try:
-                    """
-                    Get period_shift value from clarification.rules for this testcase
-                    """
-                    period_shift = int(connection_to_database.get_period_shift_rules(
-                        country=country,
-                        pmd=pmd,
-                        operation_type='all',
-                        parameter='period_shift'
-                    ))
-                except Exception:
-                    raise Exception("Impossible to get period_shift value from clarification.rules for this testcase")
-
-                expected_release_class = copy.deepcopy(CnOnPnExpectedRelease(
-                    environment=environment,
-                    period_shift=period_shift,
-                    language=language,
-                    pmd=pmd,
-                    pn_ocid=pn_ocid,
-                    pn_id=pn_id,
-                    tender_id=tp_id,
-                    cn_feed_point_message=cn_feed_point_message,
-                    cn_payload=cn_payload,
-                    actual_tp_release=actual_tp_release_after_cn_creating))
-
-                expected_cn_release_model = \
-                    expected_release_class.cn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs()
-
-                allure.attach(str(json.dumps(expected_cn_release_model)), "Expected TP release")
-
-                compare_releases = dict(DeepDiff(actual_tp_release_after_cn_creating, expected_cn_release_model))
-                expected_result = {}
-
-                try:
-                    """
-                        If compare_releases !=expected_result, then return process steps by operation-id.
-                        """
-                    if compare_releases == expected_result:
-                        pass
-                    else:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=cn_operation_id)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-                except ValueError:
-                    raise ValueError("Can not return BPE operation step")
-
-                with allure.step('Compare actual result of comparing Tp release and expected Tp release and '
-                                 'expected result of comparing Tp release and expected Tp release.'):
-                    allure.attach(str(compare_releases),
-                                  "Actual result of comparing Tp release and expected Tp release.")
-                    allure.attach(str(expected_result),
-                                  "Expected result of comparing Tp release and expected Tp release.")
+                                  "Expected result of comparing Tp releases.")
                     assert str(compare_releases) == str(expected_result)
 
             with allure.step(f'# {step_number}.4. Check MS release'):
@@ -465,18 +403,19 @@ class TestCreateCn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing MS release before cn creating and '
-                                 'after cn creating.'):
+                with allure.step('Check a difference of comparing Ms release before cn creating and '
+                                 'Ms release after cn creating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ms release before cn creating and after cn creating.")
+                                  "Actual result of comparing MS releases.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ms release before updating and after updating.")
+                                  "Expected result of comparing Ms releases.")
                     assert str(compare_releases) == str(expected_result)
 
-                with allure.step('Compare actual contract period object and expected contract period object.'):
+                with allure.step('Check a difference of comparing contract period object before cn creating'
+                                 ' and contract period object after cn creating.'):
                     allure.attach(str(actual_ms_release_after_cn_creating['releases'][0]['tender']['contractPeriod']),
-                                  "Actual result of comparing Ms release before cn creating and after cn creating.")
+                                  "Actual result of comparing contract period object.")
                     allure.attach(str(expected_contract_period_object),
-                                  "Expected result of comparing Ms release before updating and after updating.")
+                                  "Expected result of comparing contract period object.")
                     assert str(actual_ms_release_after_cn_creating['releases'][0]['tender']['contractPeriod']) == \
                            str(expected_contract_period_object)
