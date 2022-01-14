@@ -545,10 +545,13 @@ class TestCreateCnOnPn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                with allure.step('Check a difference of comparing actual Tp release and expected Tp release.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing Tp releases.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing Tp releases.")
+                    assert str(compare_releases) == str(expected_result)
+
             with allure.step('# 9.4. Check MS release'):
                 """
                 Compare multistage release with expected multistage release model.
@@ -699,15 +702,22 @@ class TestCreateCnOnPn:
                 except Exception:
                     raise Exception("Impossible to prepare expected businessFunctions.persones array")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                with allure.step('Check a difference of comparing Ms release before cn creating and '
+                                 'Ms release after cn creating.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing MS releases.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing Ms releases.")
+                    assert str(compare_releases) == str(expected_result)
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=final_expected_persones_array,
-                    actual_result=GlobalClassCreateCnOnPn.actual_ms_release['releases'][0]['parties'][3]['persones']
-                )) == str(True)
+                with allure.step('Check a difference of comparing persones array before cn creating'
+                                 ' and persones araray after cn creating.'):
+                    allure.attach(str(GlobalClassCreateCnOnPn.actual_ms_release['releases'][0]['parties'][3]['persones']),
+                                  "Actual result of comparing contract period object.")
+                    allure.attach(str(final_expected_persones_array),
+                                  "Expected result of comparing contract period object.")
+                    assert str(GlobalClassCreateCnOnPn.actual_ms_release[
+                                   'releases'][0]['parties'][3]['persones']) == str(final_expected_persones_array)
 
     @allure.title('Check EV and MS releases data after CnONPn creating without optional fields')
     def test_check_ev_ms_releases_two(self):
@@ -968,10 +978,13 @@ class TestCreateCnOnPn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                with allure.step('Check a difference of comparing Ms release before cn creating and '
+                                 'Ms release after cn creating.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing MS releases.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing Ms releases.")
+                    assert str(compare_releases) == str(expected_result)
 
             with allure.step('# 9.4. Check MS release'):
                 """
@@ -1088,12 +1101,20 @@ class TestCreateCnOnPn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                with allure.step('Check a difference of comparing Ms release before cn creating and '
+                                 'Ms release after cn creating.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing MS releases.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing Ms releases.")
+                    assert str(compare_releases) == str(expected_result)
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_contract_period_object,
-                    actual_result=GlobalClassCreateCnOnPn.actual_ms_release['releases'][0]['tender']['contractPeriod']
-                )) == str(True)
+                with allure.step('Check a difference of comparing contract period object before cn creating'
+                                 ' and contract period object after cn creating.'):
+                    allure.attach(str(GlobalClassCreateCnOnPn.actual_ms_release[
+                                          'releases'][0]['tender']['contractPeriod']),
+                                  "Actual result of comparing contract period object.")
+                    allure.attach(str(expected_contract_period_object),
+                                  "Expected result of comparing contract period object.")
+                    assert str(GlobalClassCreateCnOnPn.actual_ms_release[
+                                   'releases'][0]['tender']['contractPeriod']) == str(expected_contract_period_object)
