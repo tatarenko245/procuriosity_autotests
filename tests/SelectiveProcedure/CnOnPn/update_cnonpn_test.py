@@ -281,8 +281,8 @@ class TestUpdateCn:
                 with allure.step('Compare actual asynchronous result of sending the request and '
                                  'expected asynchronous result of sending request.'):
                     allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
-                                  "Actual status code of sending the request.")
-                    allure.attach(str(True), "Expected status code of sending request.")
+                                  "Actual asynchronous result of sending the request.")
+                    allure.attach(str(True), "Expected asynchronous result of sending the request.")
                     assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
 
             with allure.step(f'# {step_number}.3. Check TP release'):
@@ -476,19 +476,20 @@ class TestUpdateCn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Tp release and expected Tp release and '
-                                 'expected result of comparing Tp release and expected Tp release.'):
+                with allure.step('Check a difference of comparing Tp release before cn updating and '
+                                 'Tp release after cn updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Tp release and expected Tp release.")
+                                  "Actual result of comparing Tp releases.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Tp release and expected Tp release.")
+                                  "Expected result of comparing Tp releases.")
                     assert str(compare_releases) == str(expected_result)
 
-                with allure.step('Compare actual amendments array and expected amendments array.'):
+                with allure.step('Check a difference of comparing actual amendments array and '
+                                 'expected amendments array.'):
                     allure.attach(str(actual_tp_release_after_cn_updating['releases'][0]['tender']['amendments']),
-                                  "Actual amendments array.")
+                                  "Actual result of comparing amendments array.")
                     allure.attach(str(expected_release_class.update_cn_amendments_array()),
-                                  "Expected result of comparing Tp release and expected Tp release.")
+                                  "Expected result of comparing amendments array.")
                     assert str(actual_tp_release_after_cn_updating['releases'][0]['tender']['amendments']) == str(
                         expected_release_class.update_cn_amendments_array())
 
@@ -559,10 +560,10 @@ class TestUpdateCn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing MS release before cn updating and '
-                                 'after cn updating.'):
+                with allure.step('Check a difference of comparing Ms release before cn updating and '
+                                 'Ms release after cn updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ms release before cn updating and after cn updating.")
+                                  "Actual result of comparing MS releases.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ms release before cn updating and after cn updating.")
+                                  "Expected result of comparing Ms releases.")
                     assert str(compare_releases) == str(expected_result)
