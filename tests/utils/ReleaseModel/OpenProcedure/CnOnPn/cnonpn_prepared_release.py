@@ -1066,8 +1066,6 @@ class CnOnPnExpectedRelease:
         release['releases'][0]['purposeOfNotice']['isACallForCompetition'] = True
 
         release['releases'][0]['tender']['id'] = tender_id
-        release['releases'][0]['tender']['title'] = "Evaluation"
-        release['releases'][0]['tender']['description'] = "Evaluation stage of contracting process"
         release['releases'][0]['tender']['status'] = "active"
         release['releases'][0]['tender']['statusDetails'] = "clarification"
         release['releases'][0]['tender']['lots'] = self.prepare_expected_lots_array(
@@ -1219,8 +1217,6 @@ class CnOnPnExpectedRelease:
         release['releases'][0]['purposeOfNotice']['isACallForCompetition'] = True
 
         release['releases'][0]['tender']['id'] = tender_id
-        release['releases'][0]['tender']['title'] = "Evaluation"
-        release['releases'][0]['tender']['description'] = "Evaluation stage of contracting process"
         release['releases'][0]['tender']['status'] = "active"
         release['releases'][0]['tender']['statusDetails'] = "clarification"
 

@@ -37,8 +37,6 @@ class ReleaseLibrary:
     def ev_release_tender_section():
         tender_section = {
             "id": None,
-            "title": None,
-            "description": None,
             "status": None,
             "statusDetails": None,
             "criteria": [None],
