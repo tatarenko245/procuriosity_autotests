@@ -46,6 +46,15 @@ def environment(request):
     return environment
 
 
+@pytest.fixture(scope="session")
+def metadata_budget_url(environment):
+    metadata_budget_url = None
+    if environment == "dev":
+        metadata_budget_url = "http://dev.public.eprocurement.systems/budgets"
+    elif environment == "sandbox":
+        metadata_budget_url = "http://public.eprocurement.systems/budgets"
+    return metadata_budget_url
+
 @allure.step('Set up: Cassandra username')
 @pytest.fixture(scope="session")
 # @pytest.fixture(autouse=True)

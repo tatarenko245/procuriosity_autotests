@@ -1,15 +1,19 @@
 import copy
-
-from tests.conftest import GlobalClassMetadata, GlobalClassCreateFs, GlobalClassCreateEi
 from tests.utils.ReleaseModel.Budget.Fs.fs_release_library import ReleaseLibrary
 from tests.utils.functions import is_it_uuid, get_value_from_country_csv, get_value_from_region_csv, \
     get_value_from_locality_csv
 
 
 class FsExpectedRelease:
-    def __init__(self, environment, language):
+    def __init__(self, environment, language, ei_ocid, fs_payload, fs_feed_point_message, actual_fs_release):
         self.constructor = copy.deepcopy(ReleaseLibrary())
         self.language = language
+        self.ei_ocid = ei_ocid
+        self.fs_id = fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
+        self.fs_payload = fs_payload
+        self.fs_feed_point_message = fs_feed_point_message
+        self.actual_fs_release = actual_fs_release
+
         self.metadata_budget_url = None
         self.main_procurement_category = None
         try:
@@ -29,13 +33,12 @@ class FsExpectedRelease:
                     "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.json"]
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
-        GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
 
     def fs_release_full_data_model_own_money_payer_id_is_not_equal_funder_id(self):
 
-        release_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['id']
-        tender_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['tender']['id']
-        related_processes_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['relatedProcesses'][0]['id']
+        release_id = self.actual_fs_release['releases'][0]['id']
+        tender_id = self.actual_fs_release['releases'][0]['tender']['id']
+        related_processes_id = self.actual_fs_release['releases'][0]['relatedProcesses'][0]['id']
 
         release = {
             "releases": [{
@@ -80,49 +83,49 @@ class FsExpectedRelease:
 
         try:
             funder_country_data = get_value_from_country_csv(
-                country=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['country']['id'],
+                country=self.fs_payload['buyer']['address']['addressDetails']['country']['id'],
                 language=self.language
             )
 
             funder_country_object = {
                 "scheme": funder_country_data[2],
-                "id": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['country']['id'],
+                "id": self.fs_payload['buyer']['address']['addressDetails']['country']['id'],
                 "description": funder_country_data[1],
                 "uri": funder_country_data[3]
             }
 
             funder_region_data = get_value_from_region_csv(
-                region=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['region']['id'],
-                country=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['country']['id'],
+                region=self.fs_payload['buyer']['address']['addressDetails']['region']['id'],
+                country=self.fs_payload['buyer']['address']['addressDetails']['country']['id'],
                 language=self.language
             )
 
             funder_region_object = {
                 "scheme": funder_region_data[2],
-                "id": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['region']['id'],
+                "id": self.fs_payload['buyer']['address']['addressDetails']['region']['id'],
                 "description": funder_region_data[1],
                 "uri": funder_region_data[3]
             }
 
-            if GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality']['scheme'] == "CUATM":
+            if self.fs_payload['buyer']['address']['addressDetails']['locality']['scheme'] == "CUATM":
                 funder_locality_data = get_value_from_locality_csv(
-                    locality=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality']['id'],
-                    region=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['region']['id'],
-                    country=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['country']['id'],
+                    locality=self.fs_payload['buyer']['address']['addressDetails']['locality']['id'],
+                    region=self.fs_payload['buyer']['address']['addressDetails']['region']['id'],
+                    country=self.fs_payload['buyer']['address']['addressDetails']['country']['id'],
                     language=self.language
                 )
 
                 funder_locality_object = {
                     "scheme": funder_locality_data[2],
-                    "id": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality']['id'],
+                    "id": self.fs_payload['buyer']['address']['addressDetails']['locality']['id'],
                     "description": funder_locality_data[1],
                     "uri": funder_locality_data[3]
                 }
             else:
                 funder_locality_object = {
-                    "scheme": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality']['scheme'],
-                    "id": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality']['id'],
-                    "description": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality'][
+                    "scheme": self.fs_payload['buyer']['address']['addressDetails']['locality']['scheme'],
+                    "id": self.fs_payload['buyer']['address']['addressDetails']['locality']['id'],
+                    "description": self.fs_payload['buyer']['address']['addressDetails']['locality'][
                         'description']
                 }
         except ValueError:
@@ -130,68 +133,56 @@ class FsExpectedRelease:
 
         try:
             payer_country_data = get_value_from_country_csv(
-                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                    'country']['id'],
+                country=self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'],
                 language=self.language
             )
 
             payer_country_object = {
                 "scheme": payer_country_data[2],
-                "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'],
                 "description": payer_country_data[1],
                 "uri": payer_country_data[3]
             }
 
             payer_region_data = get_value_from_region_csv(
-                region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                    'id'],
-                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                    'country']['id'],
+                region=self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
+                country=self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'],
                 language=self.language
             )
 
             payer_region_object = {
                 "scheme": payer_region_data[2],
-                "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                    'id'],
+                "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
                 "description": payer_region_data[1],
                 "uri": payer_region_data[3]
             }
 
             if \
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
+                    self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
                         'scheme'] == "CUATM":
                 payer_locality_data = get_value_from_locality_csv(
-                    locality=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    locality=self.fs_payload['tender']['procuringEntity']['address'][
                         'addressDetails']['locality']['id'],
-                    region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    region=self.fs_payload['tender']['procuringEntity']['address'][
                         'addressDetails']['region']['id'],
-                    country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    country=self.fs_payload['tender']['procuringEntity']['address'][
                         'addressDetails']['country']['id'],
                     language=self.language
                 )
                 payer_locality_object = {
                     "scheme": payer_locality_data[2],
-                    "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                        'locality'][
-                        'id'],
+                    "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
                     "description": payer_locality_data[1],
                     "uri": payer_locality_data[3]
                 }
             else:
                 payer_locality_object = {
                     "scheme":
-                        GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                            'locality'][
-                            'scheme'],
-                    "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                        'locality'][
-                        'id'],
+                        self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['scheme'],
+                    "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
                     "description":
-                        GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                            'locality'][
-                            'description']
+                        self.fs_payload['tender']['procuringEntity']['address']['addressDetails'][
+                            'locality']['description']
                 }
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
@@ -204,132 +195,128 @@ class FsExpectedRelease:
         del release['releases'][0]['language']
         # ============================
 
-        release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
+        release['uri'] = f"{self.metadata_budget_url}/{self.ei_ocid}/{self.fs_id}"
         release['version'] = "1.1"
         release['extensions'] = self.extensions
         release['publisher']['name'] = self.publisher_name
         release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
-        release['publishedDate'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
-        release['releases'][0]['ocid'] = GlobalClassCreateFs.fs_id
-        release['releases'][0]['id'] = f"{GlobalClassCreateFs.fs_id}-{release_id[46:59]}"
-        release['releases'][0]['date'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
+        release['publishedDate'] = self.fs_feed_point_message['data']['operationDate']
+        release['releases'][0]['ocid'] = self.fs_id
+        release['releases'][0]['id'] = f"{self.fs_id}-{release_id[46:59]}"
+        release['releases'][0]['date'] = self.fs_feed_point_message['data']['operationDate']
         release['releases'][0]['tag'][0] = "planning"
         release['releases'][0]['initiationType'] = "tender"
         release['releases'][0]['tender']['id'] = tender_id
         release['releases'][0]['tender']['status'] = "active"
         release['releases'][0]['tender']['statusDetails'] = "empty"
-        release['releases'][0]['parties'][0]['id'] = \
-            f"{GlobalClassCreateFs.payload['buyer']['identifier']['scheme']}-" \
-            f"{GlobalClassCreateFs.payload['buyer']['identifier']['id']}"
-        release['releases'][0]['parties'][0]['name'] = GlobalClassCreateFs.payload['buyer']['name']
-        release['releases'][0]['parties'][0]['identifier']['scheme'] = \
-            GlobalClassCreateFs.payload['buyer']['identifier']['scheme']
-        release['releases'][0]['parties'][0]['identifier']['id'] = \
-            GlobalClassCreateFs.payload['buyer']['identifier']['id']
+        release['releases'][0]['parties'][0]['id'] = f"{self.fs_payload['buyer']['identifier']['scheme']}-" \
+                                                     f"{self.fs_payload['buyer']['identifier']['id']}"
+        release['releases'][0]['parties'][0]['name'] = self.fs_payload['buyer']['name']
+        release['releases'][0]['parties'][0]['identifier']['scheme'] = self.fs_payload['buyer']['identifier']['scheme']
+        release['releases'][0]['parties'][0]['identifier']['id'] = self.fs_payload['buyer']['identifier']['id']
         release['releases'][0]['parties'][0]['identifier']['legalName'] = \
-            GlobalClassCreateFs.payload['buyer']['identifier']['legalName']
-        release['releases'][0]['parties'][0]['identifier']['uri'] = \
-            GlobalClassCreateFs.payload['buyer']['identifier']['uri']
+            self.fs_payload['buyer']['identifier']['legalName']
+        release['releases'][0]['parties'][0]['identifier']['uri'] = self.fs_payload['buyer']['identifier']['uri']
         release['releases'][0]['parties'][0]['address']['streetAddress'] = \
-            GlobalClassCreateFs.payload['buyer']['address']['streetAddress']
+            self.fs_payload['buyer']['address']['streetAddress']
         release['releases'][0]['parties'][0]['address']['postalCode'] = \
-            GlobalClassCreateFs.payload['buyer']['address']['postalCode']
+            self.fs_payload['buyer']['address']['postalCode']
         release['releases'][0]['parties'][0]['address']['addressDetails']['country'] = funder_country_object
         release['releases'][0]['parties'][0]['address']['addressDetails']['region'] = funder_region_object
         release['releases'][0]['parties'][0]['address']['addressDetails']['locality'] = funder_locality_object
         release['releases'][0]['parties'][0]['additionalIdentifiers'] = \
-            GlobalClassCreateFs.payload['buyer']['additionalIdentifiers']
+            self.fs_payload['buyer']['additionalIdentifiers']
         release['releases'][0]['parties'][0]['contactPoint']['name'] = \
-            GlobalClassCreateFs.payload['buyer']['contactPoint']['name']
+            self.fs_payload['buyer']['contactPoint']['name']
         release['releases'][0]['parties'][0]['contactPoint']['telephone'] = \
-            GlobalClassCreateFs.payload['buyer']['contactPoint']['telephone']
+            self.fs_payload['buyer']['contactPoint']['telephone']
         release['releases'][0]['parties'][0]['contactPoint']['email'] = \
-            GlobalClassCreateFs.payload['buyer']['contactPoint']['email']
+            self.fs_payload['buyer']['contactPoint']['email']
         release['releases'][0]['parties'][0]['contactPoint']['faxNumber'] = \
-            GlobalClassCreateFs.payload['buyer']['contactPoint']['faxNumber']
+            self.fs_payload['buyer']['contactPoint']['faxNumber']
         release['releases'][0]['parties'][0]['contactPoint']['url'] = \
-            GlobalClassCreateFs.payload['buyer']['contactPoint']['url']
+            self.fs_payload['buyer']['contactPoint']['url']
         release['releases'][0]['parties'][0]['roles'][0] = "funder"
 
         release['releases'][0]['parties'][1]['id'] = \
-            f"{GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['scheme']}-" \
-            f"{GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['id']}"
-        release['releases'][0]['parties'][1]['name'] = GlobalClassCreateFs.payload['tender']['procuringEntity']['name']
+            f"{self.fs_payload['tender']['procuringEntity']['identifier']['scheme']}-" \
+            f"{self.fs_payload['tender']['procuringEntity']['identifier']['id']}"
+        release['releases'][0]['parties'][1]['name'] = self.fs_payload['tender']['procuringEntity']['name']
         release['releases'][0]['parties'][1]['identifier']['scheme'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['scheme']
+            self.fs_payload['tender']['procuringEntity']['identifier']['scheme']
         release['releases'][0]['parties'][1]['identifier']['id'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['id']
+            self.fs_payload['tender']['procuringEntity']['identifier']['id']
         release['releases'][0]['parties'][1]['identifier']['legalName'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['legalName']
+            self.fs_payload['tender']['procuringEntity']['identifier']['legalName']
         release['releases'][0]['parties'][1]['identifier']['uri'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['uri']
+            self.fs_payload['tender']['procuringEntity']['identifier']['uri']
         release['releases'][0]['parties'][1]['address']['streetAddress'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['streetAddress']
+            self.fs_payload['tender']['procuringEntity']['address']['streetAddress']
         release['releases'][0]['parties'][1]['address']['postalCode'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['postalCode']
+            self.fs_payload['tender']['procuringEntity']['address']['postalCode']
         release['releases'][0]['parties'][1]['address']['addressDetails']['country'] = payer_country_object
         release['releases'][0]['parties'][1]['address']['addressDetails']['region'] = payer_region_object
         release['releases'][0]['parties'][1]['address']['addressDetails']['locality'] = payer_locality_object
         release['releases'][0]['parties'][1]['additionalIdentifiers'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['additionalIdentifiers']
+            self.fs_payload['tender']['procuringEntity']['additionalIdentifiers']
         release['releases'][0]['parties'][1]['contactPoint']['name'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['name']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['name']
         release['releases'][0]['parties'][1]['contactPoint']['telephone'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['telephone']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['telephone']
         release['releases'][0]['parties'][1]['contactPoint']['email'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['email']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['email']
         release['releases'][0]['parties'][1]['contactPoint']['faxNumber'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['faxNumber']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['faxNumber']
         release['releases'][0]['parties'][1]['contactPoint']['url'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['url']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['url']
         release['releases'][0]['parties'][1]['roles'][0] = "payer"
 
-        release['releases'][0]['planning']['budget']['id'] = GlobalClassCreateFs.payload['planning']['budget']['id']
-        release['releases'][0]['planning']['budget']['description'] = GlobalClassCreateFs.payload['planning']['budget'][
-            'description']
+        release['releases'][0]['planning']['budget']['id'] = self.fs_payload['planning']['budget']['id']
+        release['releases'][0]['planning']['budget']['description'] = \
+            self.fs_payload['planning']['budget']['description']
         release['releases'][0]['planning']['budget']['period']['startDate'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['period']['startDate']
+            self.fs_payload['planning']['budget']['period']['startDate']
         release['releases'][0]['planning']['budget']['period']['endDate'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['period']['endDate']
+            self.fs_payload['planning']['budget']['period']['endDate']
         release['releases'][0]['planning']['budget']['amount']['amount'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['amount']
+            self.fs_payload['planning']['budget']['amount']['amount']
         release['releases'][0]['planning']['budget']['amount']['currency'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+            self.fs_payload['planning']['budget']['amount']['currency']
         release['releases'][0]['planning']['budget']['europeanUnionFunding']['projectIdentifier'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['europeanUnionFunding']['projectIdentifier']
+            self.fs_payload['planning']['budget']['europeanUnionFunding']['projectIdentifier']
         release['releases'][0]['planning']['budget']['europeanUnionFunding']['projectName'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['europeanUnionFunding']['projectName']
+            self.fs_payload['planning']['budget']['europeanUnionFunding']['projectName']
         release['releases'][0]['planning']['budget']['europeanUnionFunding']['uri'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['europeanUnionFunding']['uri']
+            self.fs_payload['planning']['budget']['europeanUnionFunding']['uri']
         release['releases'][0]['planning']['budget']['isEuropeanUnionFunded'] = True
         release['releases'][0]['planning']['budget']['verified'] = True
         release['releases'][0]['planning']['budget']['sourceEntity']['id'] = \
-            f"{GlobalClassCreateFs.payload['buyer']['identifier']['scheme']}" \
-            f"-{GlobalClassCreateFs.payload['buyer']['identifier']['id']}"
-        release['releases'][0]['planning']['budget']['sourceEntity']['name'] = GlobalClassCreateFs.payload['buyer'][
+            f"{self.fs_payload['buyer']['identifier']['scheme']}" \
+            f"-{self.fs_payload['buyer']['identifier']['id']}"
+        release['releases'][0]['planning']['budget']['sourceEntity']['name'] = self.fs_payload['buyer'][
             'name']
-        release['releases'][0]['planning']['budget']['project'] = GlobalClassCreateFs.payload['planning']['budget'][
+        release['releases'][0]['planning']['budget']['project'] = self.fs_payload['planning']['budget'][
             'project']
         release['releases'][0]['planning']['budget']['projectID'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['projectID']
-        release['releases'][0]['planning']['budget']['uri'] = GlobalClassCreateFs.payload['planning']['budget']['uri']
-        release['releases'][0]['planning']['rationale'] = GlobalClassCreateFs.payload['planning']['rationale']
+            self.fs_payload['planning']['budget']['projectID']
+        release['releases'][0]['planning']['budget']['uri'] = self.fs_payload['planning']['budget']['uri']
+        release['releases'][0]['planning']['rationale'] = self.fs_payload['planning']['rationale']
 
         release['releases'][0]['relatedProcesses'][0]['id'] = related_processes_id
         release['releases'][0]['relatedProcesses'][0]['relationship'][0] = "parent"
         release['releases'][0]['relatedProcesses'][0]['scheme'] = "ocid"
-        release['releases'][0]['relatedProcesses'][0]['identifier'] = GlobalClassCreateEi.ei_ocid
+        release['releases'][0]['relatedProcesses'][0]['identifier'] = self.ei_ocid
         release['releases'][0]['relatedProcesses'][0]['uri'] = \
-            f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateEi.ei_ocid}"
+            f"{self.metadata_budget_url}/{self.ei_ocid}/{self.ei_ocid}"
         return release
 
-    def fs_release_full_data_model_treasury_money(self):
+    def fs_release_full_data_model_treasury_money(self, ei_payload):
 
-        release_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['id']
-        tender_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['tender']['id']
-        related_processes_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['relatedProcesses'][0]['id']
+        release_id = self.actual_fs_release['releases'][0]['id']
+        tender_id = self.actual_fs_release['releases'][0]['tender']['id']
+        related_processes_id = self.actual_fs_release['releases'][0]['relatedProcesses'][0]['id']
         release = {
             "releases": [{
                 "tender": {},
@@ -372,68 +359,62 @@ class FsExpectedRelease:
 
         try:
             payer_country_data = get_value_from_country_csv(
-                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                country=self.fs_payload['tender']['procuringEntity']['address'][
                     'addressDetails']['country']['id'],
                 language=self.language
             )
 
             payer_country_object = {
                 "scheme": payer_country_data[2],
-                "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
+                "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['country'][
                     'id'],
                 "description": payer_country_data[1],
                 "uri": payer_country_data[3]
             }
 
             payer_region_data = get_value_from_region_csv(
-                region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
+                region=self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['region'][
                     'id'],
-                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
+                country=self.fs_payload['tender']['procuringEntity']['address']['addressDetails'][
                     'country']['id'],
                 language=self.language
             )
 
             payer_region_object = {
                 "scheme": payer_region_data[2],
-                "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
+                "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['region'][
                     'id'],
                 "description": payer_region_data[1],
                 "uri": payer_region_data[3]
             }
 
             if \
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
+                    self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
                         'scheme'] == "CUATM":
                 payer_locality_data = get_value_from_locality_csv(
-                    locality=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    locality=self.fs_payload['tender']['procuringEntity']['address'][
                         'addressDetails']['locality']['id'],
-                    region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    region=self.fs_payload['tender']['procuringEntity']['address'][
                         'addressDetails']['region']['id'],
-                    country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    country=self.fs_payload['tender']['procuringEntity']['address'][
                         'addressDetails']['country']['id'],
-                    language=self.language
-                )
+                    language=self.language)
+
                 payer_locality_object = {
                     "scheme": payer_locality_data[2],
-                    "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                        'locality'][
-                        'id'],
+                    "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
                     "description": payer_locality_data[1],
-                    "uri": payer_locality_data[3]
-                }
+                    "uri": payer_locality_data[3]}
             else:
                 payer_locality_object = {
                     "scheme":
-                        GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                            'locality'][
-                            'scheme'],
-                    "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                        'locality'][
-                        'id'],
+                        self.fs_payload['tender']['procuringEntity']['address']['addressDetails'][
+                            'locality']['scheme'],
+                    "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails'][
+                        'locality']['id'],
                     "description":
-                        GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                            'locality'][
-                            'description']
+                        self.fs_payload['tender']['procuringEntity']['address']['addressDetails'][
+                            'locality']['description']
                 }
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
@@ -446,17 +427,17 @@ class FsExpectedRelease:
         del release['releases'][0]['language']
         # ============================
 
-        release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
+        release['uri'] = f"{self.metadata_budget_url}/{self.ei_ocid}/{self.fs_id}"
         release['version'] = "1.1"
         release['extensions'] = self.extensions
         release['publisher']['name'] = self.publisher_name
         release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
-        release['publishedDate'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
-        release['releases'][0]['ocid'] = GlobalClassCreateFs.fs_id
-        release['releases'][0]['id'] = f"{GlobalClassCreateFs.fs_id}-{release_id[46:59]}"
-        release['releases'][0]['date'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
+        release['publishedDate'] = self.fs_feed_point_message['data']['operationDate']
+        release['releases'][0]['ocid'] = self.fs_id
+        release['releases'][0]['id'] = f"{self.fs_id}-{release_id[46:59]}"
+        release['releases'][0]['date'] = self.fs_feed_point_message['data']['operationDate']
         release['releases'][0]['tag'][0] = "planning"
         release['releases'][0]['initiationType'] = "tender"
         release['releases'][0]['tender']['id'] = tender_id
@@ -464,81 +445,80 @@ class FsExpectedRelease:
         release['releases'][0]['tender']['statusDetails'] = "empty"
 
         release['releases'][0]['parties'][0]['id'] = \
-            f"{GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['scheme']}-" \
-            f"{GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['id']}"
-        release['releases'][0]['parties'][0]['name'] = GlobalClassCreateFs.payload['tender']['procuringEntity']['name']
+            f"{self.fs_payload['tender']['procuringEntity']['identifier']['scheme']}-" \
+            f"{self.fs_payload['tender']['procuringEntity']['identifier']['id']}"
+        release['releases'][0]['parties'][0]['name'] = self.fs_payload['tender']['procuringEntity']['name']
         release['releases'][0]['parties'][0]['identifier']['scheme'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['scheme']
+            self.fs_payload['tender']['procuringEntity']['identifier']['scheme']
         release['releases'][0]['parties'][0]['identifier']['id'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['id']
+            self.fs_payload['tender']['procuringEntity']['identifier']['id']
         release['releases'][0]['parties'][0]['identifier']['legalName'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['legalName']
+            self.fs_payload['tender']['procuringEntity']['identifier']['legalName']
         release['releases'][0]['parties'][0]['identifier']['uri'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['uri']
+            self.fs_payload['tender']['procuringEntity']['identifier']['uri']
         release['releases'][0]['parties'][0]['address']['streetAddress'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['streetAddress']
+            self.fs_payload['tender']['procuringEntity']['address']['streetAddress']
         release['releases'][0]['parties'][0]['address']['postalCode'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['postalCode']
+            self.fs_payload['tender']['procuringEntity']['address']['postalCode']
         release['releases'][0]['parties'][0]['address']['addressDetails']['country'] = payer_country_object
         release['releases'][0]['parties'][0]['address']['addressDetails']['region'] = payer_region_object
         release['releases'][0]['parties'][0]['address']['addressDetails']['locality'] = payer_locality_object
         release['releases'][0]['parties'][0]['additionalIdentifiers'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['additionalIdentifiers']
+            self.fs_payload['tender']['procuringEntity']['additionalIdentifiers']
         release['releases'][0]['parties'][0]['contactPoint']['name'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['name']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['name']
         release['releases'][0]['parties'][0]['contactPoint']['telephone'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['telephone']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['telephone']
         release['releases'][0]['parties'][0]['contactPoint']['email'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['email']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['email']
         release['releases'][0]['parties'][0]['contactPoint']['faxNumber'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['faxNumber']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['faxNumber']
         release['releases'][0]['parties'][0]['contactPoint']['url'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['url']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['url']
         release['releases'][0]['parties'][0]['roles'][0] = "payer"
 
-        release['releases'][0]['planning']['budget']['id'] = GlobalClassCreateFs.payload['planning']['budget']['id']
-        release['releases'][0]['planning']['budget']['description'] = GlobalClassCreateFs.payload['planning']['budget'][
+        release['releases'][0]['planning']['budget']['id'] = self.fs_payload['planning']['budget']['id']
+        release['releases'][0]['planning']['budget']['description'] = self.fs_payload['planning']['budget'][
             'description']
         release['releases'][0]['planning']['budget']['period']['startDate'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['period']['startDate']
+            self.fs_payload['planning']['budget']['period']['startDate']
         release['releases'][0]['planning']['budget']['period']['endDate'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['period']['endDate']
+            self.fs_payload['planning']['budget']['period']['endDate']
         release['releases'][0]['planning']['budget']['amount']['amount'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['amount']
+            self.fs_payload['planning']['budget']['amount']['amount']
         release['releases'][0]['planning']['budget']['amount']['currency'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+            self.fs_payload['planning']['budget']['amount']['currency']
         release['releases'][0]['planning']['budget']['europeanUnionFunding']['projectIdentifier'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['europeanUnionFunding']['projectIdentifier']
+            self.fs_payload['planning']['budget']['europeanUnionFunding']['projectIdentifier']
         release['releases'][0]['planning']['budget']['europeanUnionFunding']['projectName'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['europeanUnionFunding']['projectName']
+            self.fs_payload['planning']['budget']['europeanUnionFunding']['projectName']
         release['releases'][0]['planning']['budget']['europeanUnionFunding']['uri'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['europeanUnionFunding']['uri']
+            self.fs_payload['planning']['budget']['europeanUnionFunding']['uri']
         release['releases'][0]['planning']['budget']['isEuropeanUnionFunded'] = True
         release['releases'][0]['planning']['budget']['verified'] = False
         release['releases'][0]['planning']['budget']['sourceEntity']['id'] = \
-            f"{GlobalClassCreateEi.payload['buyer']['identifier']['scheme']}" \
-            f"-{GlobalClassCreateEi.payload['buyer']['identifier']['id']}"
-        release['releases'][0]['planning']['budget']['sourceEntity']['name'] = \
-            f"{GlobalClassCreateEi.payload['buyer']['name']}"
-        release['releases'][0]['planning']['budget']['project'] = GlobalClassCreateFs.payload['planning']['budget'][
+            f"{ei_payload['buyer']['identifier']['scheme']}" \
+            f"-{ei_payload['buyer']['identifier']['id']}"
+        release['releases'][0]['planning']['budget']['sourceEntity']['name'] = f"{ei_payload['buyer']['name']}"
+        release['releases'][0]['planning']['budget']['project'] = self.fs_payload['planning']['budget'][
             'project']
         release['releases'][0]['planning']['budget']['projectID'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['projectID']
-        release['releases'][0]['planning']['budget']['uri'] = GlobalClassCreateFs.payload['planning']['budget']['uri']
-        release['releases'][0]['planning']['rationale'] = GlobalClassCreateFs.payload['planning']['rationale']
+            self.fs_payload['planning']['budget']['projectID']
+        release['releases'][0]['planning']['budget']['uri'] = self.fs_payload['planning']['budget']['uri']
+        release['releases'][0]['planning']['rationale'] = self.fs_payload['planning']['rationale']
 
         release['releases'][0]['relatedProcesses'][0]['id'] = related_processes_id
         release['releases'][0]['relatedProcesses'][0]['relationship'][0] = "parent"
         release['releases'][0]['relatedProcesses'][0]['scheme'] = "ocid"
-        release['releases'][0]['relatedProcesses'][0]['identifier'] = GlobalClassCreateEi.ei_ocid
+        release['releases'][0]['relatedProcesses'][0]['identifier'] = self.ei_ocid
         release['releases'][0]['relatedProcesses'][0]['uri'] = \
-            f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateEi.ei_ocid}"
+            f"{self.metadata_budget_url}/{self.ei_ocid}/{self.ei_ocid}"
         return release
 
     def fs_release_obligatory_data_model_own_money_payer_id_is_not_equal_funder_id(self):
-        release_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['id']
-        tender_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['tender']['id']
-        related_processes_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['relatedProcesses'][0]['id']
+        release_id = self.actual_fs_release['releases'][0]['id']
+        tender_id = self.actual_fs_release['releases'][0]['tender']['id']
+        related_processes_id = self.actual_fs_release['releases'][0]['relatedProcesses'][0]['id']
 
         release = {
             "releases": [{
@@ -601,118 +581,104 @@ class FsExpectedRelease:
 
         try:
             funder_country_data = get_value_from_country_csv(
-                country=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['country']['id'],
+                country=self.fs_payload['buyer']['address']['addressDetails']['country']['id'],
                 language=self.language
             )
 
             funder_country_object = {
                 "scheme": funder_country_data[2],
-                "id": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['country']['id'],
+                "id": self.fs_payload['buyer']['address']['addressDetails']['country']['id'],
                 "description": funder_country_data[1],
                 "uri": funder_country_data[3]
             }
 
             funder_region_data = get_value_from_region_csv(
-                region=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['region']['id'],
-                country=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['country']['id'],
+                region=self.fs_payload['buyer']['address']['addressDetails']['region']['id'],
+                country=self.fs_payload['buyer']['address']['addressDetails']['country']['id'],
                 language=self.language
             )
 
             funder_region_object = {
                 "scheme": funder_region_data[2],
-                "id": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['region']['id'],
+                "id": self.fs_payload['buyer']['address']['addressDetails']['region']['id'],
                 "description": funder_region_data[1],
                 "uri": funder_region_data[3]
             }
 
-            if GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality']['scheme'] == "CUATM":
+            if self.fs_payload['buyer']['address']['addressDetails']['locality']['scheme'] == "CUATM":
                 funder_locality_data = get_value_from_locality_csv(
-                    locality=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality']['id'],
-                    region=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['region']['id'],
-                    country=GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['country']['id'],
+                    locality=self.fs_payload['buyer']['address']['addressDetails']['locality']['id'],
+                    region=self.fs_payload['buyer']['address']['addressDetails']['region']['id'],
+                    country=self.fs_payload['buyer']['address']['addressDetails']['country']['id'],
                     language=self.language
                 )
 
                 funder_locality_object = {
                     "scheme": funder_locality_data[2],
-                    "id": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality']['id'],
+                    "id": self.fs_payload['buyer']['address']['addressDetails']['locality']['id'],
                     "description": funder_locality_data[1],
                     "uri": funder_locality_data[3]
                 }
             else:
                 funder_locality_object = {
-                    "scheme": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality']['scheme'],
-                    "id": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality']['id'],
-                    "description": GlobalClassCreateFs.payload['buyer']['address']['addressDetails']['locality'][
-                        'description']
+                    "scheme": self.fs_payload['buyer']['address']['addressDetails']['locality']['scheme'],
+                    "id": self.fs_payload['buyer']['address']['addressDetails']['locality']['id'],
+                    "description": self.fs_payload['buyer']['address']['addressDetails']['locality']['description']
                 }
         except ValueError:
             raise ValueError("Check 'buyer.address.addressDetails' object")
 
         try:
             payer_country_data = get_value_from_country_csv(
-                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
-                    'addressDetails']['country']['id'],
+                country=self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'],
                 language=self.language
             )
 
             payer_country_object = {
                 "scheme": payer_country_data[2],
-                "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
-                    'id'],
+                "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'],
                 "description": payer_country_data[1],
                 "uri": payer_country_data[3]
             }
 
             payer_region_data = get_value_from_region_csv(
-                region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                    'id'],
-                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
-                    'addressDetails']['country']['id'],
+                region=self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
+                country=self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'],
                 language=self.language
             )
 
             payer_region_object = {
                 "scheme": payer_region_data[2],
-                "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
-                    'id'],
+                "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
                 "description": payer_region_data[1],
                 "uri": payer_region_data[3]
             }
 
             if \
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
+                    self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
                         'scheme'] == "CUATM":
                 payer_locality_data = get_value_from_locality_csv(
-                    locality=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    locality=self.fs_payload['tender']['procuringEntity']['address'][
                         'addressDetails']['locality']['id'],
-                    region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    region=self.fs_payload['tender']['procuringEntity']['address'][
                         'addressDetails']['region']['id'],
-                    country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    country=self.fs_payload['tender']['procuringEntity']['address'][
                         'addressDetails']['country']['id'],
                     language=self.language
                 )
                 payer_locality_object = {
                     "scheme": payer_locality_data[2],
-                    "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                        'locality'][
-                        'id'],
+                    "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
                     "description": payer_locality_data[1],
                     "uri": payer_locality_data[3]
                 }
             else:
                 payer_locality_object = {
-                    "scheme":
-                        GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                            'locality'][
-                            'scheme'],
-                    "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                        'locality'][
-                        'id'],
-                    "description":
-                        GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                            'locality'][
-                            'description']
+                    "scheme": self.fs_payload['tender']['procuringEntity']['address']['addressDetails'][
+                            'locality']['scheme'],
+                    "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
+                    "description": self.fs_payload['tender']['procuringEntity']['address']['addressDetails'][
+                            'locality']['description']
                 }
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
@@ -725,96 +691,95 @@ class FsExpectedRelease:
         del release['releases'][0]['language']
         # ============================
 
-        release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
+        release['uri'] = f"{self.metadata_budget_url}/{self.ei_ocid}/{self.fs_id}"
         release['version'] = "1.1"
         release['extensions'] = self.extensions
         release['publisher']['name'] = self.publisher_name
         release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
-        release['publishedDate'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
-        release['releases'][0]['ocid'] = GlobalClassCreateFs.fs_id
-        release['releases'][0]['id'] = f"{GlobalClassCreateFs.fs_id}-{release_id[46:59]}"
-        release['releases'][0]['date'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
+        release['publishedDate'] = self.fs_feed_point_message['data']['operationDate']
+        release['releases'][0]['ocid'] = self.fs_id
+        release['releases'][0]['id'] = f"{self.fs_id}-{release_id[46:59]}"
+        release['releases'][0]['date'] = self.fs_feed_point_message['data']['operationDate']
         release['releases'][0]['tag'][0] = "planning"
         release['releases'][0]['initiationType'] = "tender"
         release['releases'][0]['tender']['id'] = tender_id
         release['releases'][0]['tender']['status'] = "active"
         release['releases'][0]['tender']['statusDetails'] = "empty"
         release['releases'][0]['parties'][0]['id'] = \
-            f"{GlobalClassCreateFs.payload['buyer']['identifier']['scheme']}-" \
-            f"{GlobalClassCreateFs.payload['buyer']['identifier']['id']}"
-        release['releases'][0]['parties'][0]['name'] = GlobalClassCreateFs.payload['buyer']['name']
+            f"{self.fs_payload['buyer']['identifier']['scheme']}-" \
+            f"{self.fs_payload['buyer']['identifier']['id']}"
+        release['releases'][0]['parties'][0]['name'] = self.fs_payload['buyer']['name']
         release['releases'][0]['parties'][0]['identifier']['scheme'] = \
-            GlobalClassCreateFs.payload['buyer']['identifier']['scheme']
+            self.fs_payload['buyer']['identifier']['scheme']
         release['releases'][0]['parties'][0]['identifier']['id'] = \
-            GlobalClassCreateFs.payload['buyer']['identifier']['id']
+            self.fs_payload['buyer']['identifier']['id']
         release['releases'][0]['parties'][0]['identifier']['legalName'] = \
-            GlobalClassCreateFs.payload['buyer']['identifier']['legalName']
+            self.fs_payload['buyer']['identifier']['legalName']
         release['releases'][0]['parties'][0]['address']['streetAddress'] = \
-            GlobalClassCreateFs.payload['buyer']['address']['streetAddress']
+            self.fs_payload['buyer']['address']['streetAddress']
         release['releases'][0]['parties'][0]['address']['addressDetails']['country'] = funder_country_object
         release['releases'][0]['parties'][0]['address']['addressDetails']['region'] = funder_region_object
         release['releases'][0]['parties'][0]['address']['addressDetails']['locality'] = funder_locality_object
         release['releases'][0]['parties'][0]['contactPoint']['name'] = \
-            GlobalClassCreateFs.payload['buyer']['contactPoint']['name']
+            self.fs_payload['buyer']['contactPoint']['name']
         release['releases'][0]['parties'][0]['contactPoint']['telephone'] = \
-            GlobalClassCreateFs.payload['buyer']['contactPoint']['telephone']
+            self.fs_payload['buyer']['contactPoint']['telephone']
         release['releases'][0]['parties'][0]['contactPoint']['email'] = \
-            GlobalClassCreateFs.payload['buyer']['contactPoint']['email']
+            self.fs_payload['buyer']['contactPoint']['email']
         release['releases'][0]['parties'][0]['roles'][0] = "funder"
 
         release['releases'][0]['parties'][1]['id'] = \
-            f"{GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['scheme']}-" \
-            f"{GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['id']}"
-        release['releases'][0]['parties'][1]['name'] = GlobalClassCreateFs.payload['tender']['procuringEntity']['name']
+            f"{self.fs_payload['tender']['procuringEntity']['identifier']['scheme']}-" \
+            f"{self.fs_payload['tender']['procuringEntity']['identifier']['id']}"
+        release['releases'][0]['parties'][1]['name'] = self.fs_payload['tender']['procuringEntity']['name']
         release['releases'][0]['parties'][1]['identifier']['scheme'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['scheme']
+            self.fs_payload['tender']['procuringEntity']['identifier']['scheme']
         release['releases'][0]['parties'][1]['identifier']['id'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['id']
+            self.fs_payload['tender']['procuringEntity']['identifier']['id']
         release['releases'][0]['parties'][1]['identifier']['legalName'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['legalName']
+            self.fs_payload['tender']['procuringEntity']['identifier']['legalName']
         release['releases'][0]['parties'][1]['address']['streetAddress'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['streetAddress']
+            self.fs_payload['tender']['procuringEntity']['address']['streetAddress']
         release['releases'][0]['parties'][1]['address']['addressDetails']['country'] = payer_country_object
         release['releases'][0]['parties'][1]['address']['addressDetails']['region'] = payer_region_object
         release['releases'][0]['parties'][1]['address']['addressDetails']['locality'] = payer_locality_object
         release['releases'][0]['parties'][1]['contactPoint']['name'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['name']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['name']
         release['releases'][0]['parties'][1]['contactPoint']['telephone'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['telephone']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['telephone']
         release['releases'][0]['parties'][1]['contactPoint']['email'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['email']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['email']
         release['releases'][0]['parties'][1]['roles'][0] = "payer"
 
         release['releases'][0]['planning']['budget']['period']['startDate'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['period']['startDate']
+            self.fs_payload['planning']['budget']['period']['startDate']
         release['releases'][0]['planning']['budget']['period']['endDate'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['period']['endDate']
+            self.fs_payload['planning']['budget']['period']['endDate']
         release['releases'][0]['planning']['budget']['amount']['amount'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['amount']
+            self.fs_payload['planning']['budget']['amount']['amount']
         release['releases'][0]['planning']['budget']['amount']['currency'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+            self.fs_payload['planning']['budget']['amount']['currency']
         release['releases'][0]['planning']['budget']['isEuropeanUnionFunded'] = False
         release['releases'][0]['planning']['budget']['verified'] = True
         release['releases'][0]['planning']['budget']['sourceEntity']['id'] = \
-            f"{GlobalClassCreateFs.payload['buyer']['identifier']['scheme']}" \
-            f"-{GlobalClassCreateFs.payload['buyer']['identifier']['id']}"
-        release['releases'][0]['planning']['budget']['sourceEntity']['name'] = \
-            GlobalClassCreateFs.payload['buyer']['name']
+            f"{self.fs_payload['buyer']['identifier']['scheme']}" \
+            f"-{self.fs_payload['buyer']['identifier']['id']}"
+        release['releases'][0]['planning']['budget']['sourceEntity']['name'] = self.fs_payload['buyer']['name']
         release['releases'][0]['relatedProcesses'][0]['id'] = related_processes_id
         release['releases'][0]['relatedProcesses'][0]['relationship'][0] = "parent"
         release['releases'][0]['relatedProcesses'][0]['scheme'] = "ocid"
-        release['releases'][0]['relatedProcesses'][0]['identifier'] = GlobalClassCreateEi.ei_ocid
+        release['releases'][0]['relatedProcesses'][0]['identifier'] = self.ei_ocid
         release['releases'][0]['relatedProcesses'][0]['uri'] = \
-            f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateEi.ei_ocid}"
+            f"{self.metadata_budget_url}/{self.ei_ocid}/{self.ei_ocid}"
         return release
 
-    def fs_release_obligatory_data_model_treasury_money(self):
+    def fs_release_obligatory_data_model_treasury_money(self, ei_payload):
 
-        release_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['id']
-        tender_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['tender']['id']
-        related_processes_id = GlobalClassCreateFs.actual_fs_release['releases'][0]['relatedProcesses'][0]['id']
+        release_id = self.actual_fs_release['releases'][0]['id']
+        tender_id = self.actual_fs_release['releases'][0]['tender']['id']
+        related_processes_id = self.actual_fs_release['releases'][0]['relatedProcesses'][0]['id']
 
         release = {
             "releases": [{
@@ -871,68 +836,58 @@ class FsExpectedRelease:
 
         try:
             payer_country_data = get_value_from_country_csv(
-                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                country=self.fs_payload['tender']['procuringEntity']['address'][
                     'addressDetails']['country']['id'],
                 language=self.language
             )
 
             payer_country_object = {
                 "scheme": payer_country_data[2],
-                "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['country'][
+                "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['country'][
                     'id'],
                 "description": payer_country_data[1],
                 "uri": payer_country_data[3]
             }
 
             payer_region_data = get_value_from_region_csv(
-                region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                region=self.fs_payload['tender']['procuringEntity']['address'][
                     'addressDetails']['region']['id'],
-                country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                country=self.fs_payload['tender']['procuringEntity']['address'][
                     'addressDetails']['country']['id'],
                 language=self.language
             )
 
             payer_region_object = {
                 "scheme": payer_region_data[2],
-                "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['region'][
+                "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['region'][
                     'id'],
                 "description": payer_region_data[1],
                 "uri": payer_region_data[3]
             }
 
             if \
-                    GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
+                    self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
                         'scheme'] == "CUATM":
                 payer_locality_data = get_value_from_locality_csv(
-                    locality=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
+                    locality=self.fs_payload['tender']['procuringEntity']['address'][
                         'addressDetails']['locality']['id'],
-                    region=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
-                        'addressDetails']['region']['id'],
-                    country=GlobalClassCreateFs.payload['tender']['procuringEntity']['address'][
-                        'addressDetails']['country']['id'],
+                    region=self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
+                    country=self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'],
                     language=self.language
                 )
                 payer_locality_object = {
                     "scheme": payer_locality_data[2],
-                    "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                        'locality'][
-                        'id'],
+                    "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
                     "description": payer_locality_data[1],
                     "uri": payer_locality_data[3]
                 }
             else:
                 payer_locality_object = {
-                    "scheme":
-                        GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                            'locality'][
-                            'scheme'],
-                    "id": GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                        'locality'][
-                        'id'],
-                    "description":
-                        GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['addressDetails'][
-                            'locality'][
-                            'description']
+                    "scheme": self.fs_payload['tender']['procuringEntity']['address']['addressDetails'][
+                            'locality']['scheme'],
+                    "id": self.fs_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
+                    "description": self.fs_payload['tender']['procuringEntity']['address']['addressDetails'][
+                            'locality']['description']
                 }
         except ValueError:
             raise ValueError("Check 'tender.procuringEntity.address.addressDetails' object")
@@ -945,17 +900,17 @@ class FsExpectedRelease:
         del release['releases'][0]['language']
         # ============================
 
-        release['uri'] = f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateFs.fs_id}"
+        release['uri'] = f"{self.metadata_budget_url}/{self.ei_ocid}/{self.fs_id}"
         release['version'] = "1.1"
         release['extensions'] = self.extensions
         release['publisher']['name'] = self.publisher_name
         release['publisher']['uri'] = self.publisher_uri
         release['license'] = "http://opendefinition.org/licenses/"
         release['publicationPolicy'] = "http://opendefinition.org/licenses/"
-        release['publishedDate'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
-        release['releases'][0]['ocid'] = GlobalClassCreateFs.fs_id
-        release['releases'][0]['id'] = f"{GlobalClassCreateFs.fs_id}-{release_id[46:59]}"
-        release['releases'][0]['date'] = GlobalClassCreateFs.feed_point_message['data']['operationDate']
+        release['publishedDate'] = self.fs_feed_point_message['data']['operationDate']
+        release['releases'][0]['ocid'] = self.fs_id
+        release['releases'][0]['id'] = f"{self.fs_id}-{release_id[46:59]}"
+        release['releases'][0]['date'] = self.fs_feed_point_message['data']['operationDate']
         release['releases'][0]['tag'][0] = "planning"
         release['releases'][0]['initiationType'] = "tender"
         release['releases'][0]['tender']['id'] = tender_id
@@ -963,48 +918,46 @@ class FsExpectedRelease:
         release['releases'][0]['tender']['statusDetails'] = "empty"
 
         release['releases'][0]['parties'][0]['id'] = \
-            f"{GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['scheme']}-" \
-            f"{GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['id']}"
-        release['releases'][0]['parties'][0]['name'] = GlobalClassCreateFs.payload['tender']['procuringEntity']['name']
+            f"{self.fs_payload['tender']['procuringEntity']['identifier']['scheme']}-" \
+            f"{self.fs_payload['tender']['procuringEntity']['identifier']['id']}"
+        release['releases'][0]['parties'][0]['name'] = self.fs_payload['tender']['procuringEntity']['name']
         release['releases'][0]['parties'][0]['identifier']['scheme'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['scheme']
+            self.fs_payload['tender']['procuringEntity']['identifier']['scheme']
         release['releases'][0]['parties'][0]['identifier']['id'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['id']
+            self.fs_payload['tender']['procuringEntity']['identifier']['id']
         release['releases'][0]['parties'][0]['identifier']['legalName'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['identifier']['legalName']
+            self.fs_payload['tender']['procuringEntity']['identifier']['legalName']
         release['releases'][0]['parties'][0]['address']['streetAddress'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['address']['streetAddress']
+            self.fs_payload['tender']['procuringEntity']['address']['streetAddress']
         release['releases'][0]['parties'][0]['address']['addressDetails']['country'] = payer_country_object
         release['releases'][0]['parties'][0]['address']['addressDetails']['region'] = payer_region_object
         release['releases'][0]['parties'][0]['address']['addressDetails']['locality'] = payer_locality_object
         release['releases'][0]['parties'][0]['contactPoint']['name'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['name']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['name']
         release['releases'][0]['parties'][0]['contactPoint']['telephone'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['telephone']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['telephone']
         release['releases'][0]['parties'][0]['contactPoint']['email'] = \
-            GlobalClassCreateFs.payload['tender']['procuringEntity']['contactPoint']['email']
+            self.fs_payload['tender']['procuringEntity']['contactPoint']['email']
         release['releases'][0]['parties'][0]['roles'][0] = "payer"
 
         release['releases'][0]['planning']['budget']['period']['startDate'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['period']['startDate']
+            self.fs_payload['planning']['budget']['period']['startDate']
         release['releases'][0]['planning']['budget']['period']['endDate'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['period']['endDate']
+            self.fs_payload['planning']['budget']['period']['endDate']
         release['releases'][0]['planning']['budget']['amount']['amount'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['amount']
+            self.fs_payload['planning']['budget']['amount']['amount']
         release['releases'][0]['planning']['budget']['amount']['currency'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+            self.fs_payload['planning']['budget']['amount']['currency']
         release['releases'][0]['planning']['budget']['isEuropeanUnionFunded'] = False
         release['releases'][0]['planning']['budget']['verified'] = False
         release['releases'][0]['planning']['budget']['sourceEntity']['id'] = \
-            f"{GlobalClassCreateEi.payload['buyer']['identifier']['scheme']}" \
-            f"-{GlobalClassCreateEi.payload['buyer']['identifier']['id']}"
-        release['releases'][0]['planning']['budget']['sourceEntity']['name'] = \
-            GlobalClassCreateEi.payload['buyer']['name']
+            f"{ei_payload['buyer']['identifier']['scheme']}-{ei_payload['buyer']['identifier']['id']}"
+        release['releases'][0]['planning']['budget']['sourceEntity']['name'] = ei_payload['buyer']['name']
 
         release['releases'][0]['relatedProcesses'][0]['id'] = related_processes_id
         release['releases'][0]['relatedProcesses'][0]['relationship'][0] = "parent"
         release['releases'][0]['relatedProcesses'][0]['scheme'] = "ocid"
-        release['releases'][0]['relatedProcesses'][0]['identifier'] = GlobalClassCreateEi.ei_ocid
+        release['releases'][0]['relatedProcesses'][0]['identifier'] = self.ei_ocid
         release['releases'][0]['relatedProcesses'][0]['uri'] = \
-            f"{self.metadata_budget_url}/{GlobalClassCreateEi.ei_ocid}/{GlobalClassCreateEi.ei_ocid}"
+            f"{self.metadata_budget_url}/{self.ei_ocid}/{self.ei_ocid}"
         return release

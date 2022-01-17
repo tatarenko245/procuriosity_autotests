@@ -1,14 +1,13 @@
 import copy
 import random
-
-from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs
 from tests.utils.PayloadModel.Budget.Fs.fs_payload_library import PayloadLibrary
 from tests.utils.data_of_enum import currency
 from tests.utils.date_class import Date
 
 
 class FsPreparePayload:
-    def __init__(self):
+    def __init__(self, ei_payload):
+        self.ei_payload = ei_payload
         self.constructor = copy.deepcopy(PayloadLibrary())
         self.currency = f"{random.choice(currency)}"
 
@@ -88,9 +87,9 @@ class FsPreparePayload:
         payload['planning']['budget']['id'] = "create fs: planning.budget.id"
         payload['planning']['budget']['description'] = "create fs: planning.budget.description"
         payload['planning']['budget']['period']['startDate'] = \
-            GlobalClassCreateEi.payload['planning']['budget']['period']['startDate']
+            self.ei_payload['planning']['budget']['period']['startDate']
         payload['planning']['budget']['period']['endDate'] = \
-            GlobalClassCreateEi.payload['planning']['budget']['period']['endDate']
+            self.ei_payload['planning']['budget']['period']['endDate']
         payload['planning']['budget']['amount']['amount'] = 88889.89
         payload['planning']['budget']['amount']['currency'] = self.currency
         payload['planning']['budget']['isEuropeanUnionFunded'] = True
@@ -172,9 +171,9 @@ class FsPreparePayload:
             "create fs: tender.procuringEntity.contactPoint.telephone"
 
         payload['planning']['budget']['period']['startDate'] = \
-            GlobalClassCreateEi.payload['planning']['budget']['period']['startDate']
+            self.ei_payload['planning']['budget']['period']['startDate']
         payload['planning']['budget']['period']['endDate'] = \
-            GlobalClassCreateEi.payload['planning']['budget']['period']['endDate']
+            self.ei_payload['planning']['budget']['period']['endDate']
         payload['planning']['budget']['amount']['amount'] = 88889.89
         payload['planning']['budget']['amount']['currency'] = self.currency
         payload['planning']['budget']['isEuropeanUnionFunded'] = False
@@ -277,9 +276,9 @@ class FsPreparePayload:
         payload['planning']['budget']['id'] = "create fs: planning.budget.id"
         payload['planning']['budget']['description'] = "create fs: planning.budget.description"
         payload['planning']['budget']['period']['startDate'] = \
-            GlobalClassCreateEi.payload['planning']['budget']['period']['startDate']
+            self.ei_payload['planning']['budget']['period']['startDate']
         payload['planning']['budget']['period']['endDate'] = \
-            GlobalClassCreateEi.payload['planning']['budget']['period']['endDate']
+            self.ei_payload['planning']['budget']['period']['endDate']
         payload['planning']['budget']['amount']['amount'] = 88889.89
         payload['planning']['budget']['amount']['currency'] = self.currency
         payload['planning']['budget']['isEuropeanUnionFunded'] = True
@@ -295,7 +294,7 @@ class FsPreparePayload:
         payload['planning']['rationale'] = "create fs: planning.rationale"
         return payload
 
-    def update_fs_obligatory_data_model_treasury_money(self):
+    def update_fs_obligatory_data_model_treasury_money(self, create_ei_payload):
         payload = {
             "tender": {},
             "planning": {}
@@ -317,11 +316,11 @@ class FsPreparePayload:
         payload['planning']['budget']['period']['endDate'] = new_period[1]
         payload['planning']['budget']['amount']['amount'] = 11119.89
         payload['planning']['budget']['amount']['currency'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+            create_ei_payload['planning']['budget']['amount']['currency']
         payload['planning']['budget']['isEuropeanUnionFunded'] = False
         return payload
 
-    def update_fs_full_data_model_treasury_money(self):
+    def update_fs_full_data_model_treasury_money(self, create_ei_payload):
         payload = {
             "tender": {},
             "planning": {}
@@ -374,7 +373,7 @@ class FsPreparePayload:
         payload['planning']['budget']['period']['endDate'] = new_period[1]
         payload['planning']['budget']['amount']['amount'] = 11119.89
         payload['planning']['budget']['amount']['currency'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+            create_ei_payload['planning']['budget']['amount']['currency']
         payload['planning']['budget']['isEuropeanUnionFunded'] = True
         payload['planning']['budget']['europeanUnionFunding']['projectName'] = \
             "update fs: planning.budget.europeanUnionFunding.projectName"
@@ -388,7 +387,7 @@ class FsPreparePayload:
         payload['planning']['rationale'] = "update fs: planning.rationale"
         return payload
 
-    def update_fs_obligatory_data_model_own_money(self):
+    def update_fs_obligatory_data_model_own_money(self, create_ei_payload):
         payload = {
             "planning": {},
             "buyer": {}
@@ -431,11 +430,11 @@ class FsPreparePayload:
         payload['planning']['budget']['period']['endDate'] = new_period[1]
         payload['planning']['budget']['amount']['amount'] = 11119.89
         payload['planning']['budget']['amount']['currency'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+            create_ei_payload['planning']['budget']['amount']['currency']
         payload['planning']['budget']['isEuropeanUnionFunded'] = False
         return payload
 
-    def update_fs_full_data_model_own_money(self):
+    def update_fs_full_data_model_own_money(self, create_ei_payload):
         payload = {
             "tender": {},
             "planning": {},
@@ -517,7 +516,7 @@ class FsPreparePayload:
         payload['planning']['budget']['period']['endDate'] = new_period[1]
         payload['planning']['budget']['amount']['amount'] = 11119.89
         payload['planning']['budget']['amount']['currency'] = \
-            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+            create_ei_payload['planning']['budget']['amount']['currency']
         payload['planning']['budget']['isEuropeanUnionFunded'] = True
         payload['planning']['budget']['europeanUnionFunding']['projectName'] = \
             "update fs: planning.budget.europeanUnionFunding.projectName"
