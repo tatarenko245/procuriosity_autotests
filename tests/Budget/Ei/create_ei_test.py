@@ -8,14 +8,8 @@ from deepdiff import DeepDiff
 from tests.conftest import GlobalClassCreateEi, GlobalClassMetadata
 from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
 from tests.utils.ReleaseModel.Budget.Ei.ei_prepared_release import EiExpectedRelease
-from tests.utils.cassandra_session import CassandraSession
-from tests.utils.environment import Environment
-
-
-from tests.utils.functions import compare_actual_result_and_expected_result
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-
 
 from tests.utils.my_requests import Requests
 
@@ -27,81 +21,68 @@ from tests.utils.my_requests import Requests
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/edit#gid=0',
                  name='Google sheets: Create Ei')
 class TestCreateEi:
-    def test_setup(self, environment, country, language, cassandra_username, cassandra_password):
-        """
-        Get 'country', 'language', 'cassandra_username', 'cassandra_password', 'environment' parameters
-        from test run command.
-        Then choose BPE host.
-        Then choose host for Database connection.
-        """
-        GlobalClassMetadata.country = country
-        GlobalClassMetadata.language = language
-        GlobalClassMetadata.cassandra_username = cassandra_username
-        GlobalClassMetadata.cassandra_password = cassandra_password
-        GlobalClassMetadata.environment = environment
-        GlobalClassMetadata.hosts = Environment().choose_environment(GlobalClassMetadata.environment)
-        GlobalClassMetadata.host_for_bpe = GlobalClassMetadata.hosts[1]
-        GlobalClassMetadata.cassandra_cluster = GlobalClassMetadata.hosts[0]
-        GlobalClassMetadata.database = CassandraSession(
-            cassandra_username=GlobalClassMetadata.cassandra_username,
-            cassandra_password=GlobalClassMetadata.cassandra_password,
-            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
-
     @allure.title('Check status code and message from Kafka topic after Ei creation')
-    def test_check_result_of_sending_the_request(self):
+    def test_check_result_of_sending_the_request(self, get_hosts, country, language, pmd, environment,
+                                                 connection_to_database):
+        authorization = PlatformAuthorization(get_hosts[1])
+        step_number = 1
 
-        with allure.step('# 1. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
-            GlobalClassCreateEi.access_token = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
-            GlobalClassCreateEi.operation_id = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
+            create_ei_access_token = authorization.get_access_token_for_platform_one()
+            create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
+            step_number += 1
 
-        with allure.step('# 2. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create Ei'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            ei_payload = copy.deepcopy(EiPreparePayload())
-            GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
-            synchronous_result_of_sending_the_request = Requests().create_ei(
-                host_of_request=GlobalClassMetadata.host_for_bpe,
-                access_token=GlobalClassCreateEi.access_token,
-                x_operation_id=GlobalClassCreateEi.operation_id,
-                country=GlobalClassMetadata.country,
-                language=GlobalClassMetadata.language,
-                payload=GlobalClassCreateEi.payload
-            )
+            ei_payload_class = copy.deepcopy(EiPreparePayload())
+            create_ei_payload = ei_payload_class.create_ei_full_data_model()
 
-        with allure.step('# 3. See result'):
+            synchronous_result_of_sending_the_request = Requests().create_ei(
+                host_of_request=get_hosts[1],
+                access_token=create_ei_access_token,
+                x_operation_id=create_ei_operation_id,
+                country=country,
+                language=language,
+                payload=create_ei_payload)
+
+            step_number += 1
+
+        with allure.step(f'# {step_number}. See result'):
             """
             Check the results of TestCase.
             """
-            with allure.step('# 3.1. Check status code'):
+
+            with allure.step(f'# {step_number}.1. Check status code'):
                 """
                 Check the synchronous_result_of_sending_the_request.
                 """
-                assert compare_actual_result_and_expected_result(
-                    expected_result=202,
-                    actual_result=synchronous_result_of_sending_the_request.status_code
-                )
-            with allure.step('# 3.2. Check message in feed point'):
+                with allure.step('Compare actual status code of sending the request and '
+                                 'expected status code of sending request.'):
+                    allure.attach(str(synchronous_result_of_sending_the_request.status_code),
+                                  "Actual status code of sending the request.")
+                    allure.attach(str(202), "Expected status code of sending request.")
+                    assert synchronous_result_of_sending_the_request.status_code == 202
+
+            with allure.step(f'# {step_number}.2. Check message in feed point'):
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                GlobalClassCreateEi.feed_point_message = \
-                    KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-                allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
-                GlobalClassCreateEi.ei_ocid = GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
+                ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+                allure.attach(str(ei_feed_point_message), 'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                    environment=GlobalClassMetadata.environment,
-                    kafka_message=GlobalClassCreateEi.feed_point_message
-                )
+                    create_ei_operation_id).create_ei_message_is_successful(
+                    environment=environment,
+                    kafka_message=ei_feed_point_message)
+
+                ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
                 try:
                     """
@@ -109,86 +90,86 @@ class TestCreateEi:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if asynchronous_result_of_sending_the_request_was_checked is True:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
-                            operation_id=GlobalClassCreateEi.operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassCreateEi.operation_id)
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=create_ei_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                assert compare_actual_result_and_expected_result(
-                    expected_result=True,
-                    actual_result=asynchronous_result_of_sending_the_request_was_checked
-                )
+                with allure.step('Compare actual result of comparing asynchronous result and expected result and '
+                                 'expected result of comparing asynchronous result and expected result'):
+                    allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
+                                  "Actual status code of sending the request.")
+                    allure.attach(str(True), "Expected status code of sending request.")
+                    assert asynchronous_result_of_sending_the_request_was_checked == True
 
     @allure.title('Check Ei release data after Ei creation based on full data model')
-    def test_check_ei_release_one(self):
+    def test_check_ei_release_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
+        authorization = PlatformAuthorization(get_hosts[1])
+        step_number = 1
 
-        with allure.step('# 1. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
-            GlobalClassCreateEi.access_token = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
-
-            GlobalClassCreateEi.operation_id = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
+            create_ei_access_token = authorization.get_access_token_for_platform_one()
+            create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
+            step_number += 1
 
         with allure.step('# 2. Send request to create Ei'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            ei_payload = copy.deepcopy(EiPreparePayload())
-            GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model()
-            synchronous_result_of_sending_the_request = Requests().create_ei(
-                host_of_request=GlobalClassMetadata.host_for_bpe,
-                access_token=GlobalClassCreateEi.access_token,
-                x_operation_id=GlobalClassCreateEi.operation_id,
-                country=GlobalClassMetadata.country,
-                language=GlobalClassMetadata.language,
-                payload=GlobalClassCreateEi.payload
-            )
+            ei_payload_class = copy.deepcopy(EiPreparePayload())
+            ei_payload = ei_payload_class.create_ei_full_data_model()
 
-        with allure.step('# 3. See result'):
+            synchronous_result_of_sending_the_request = Requests().create_ei(
+                host_of_request=get_hosts[1],
+                access_token=create_ei_access_token,
+                x_operation_id=create_ei_operation_id,
+                country=country,
+                language=language,
+                payload=ei_payload)
+
+            step_number += 1
+
+        with allure.step(f'# {step_number}. See result'):
             """
             Check the results of TestCase.
             """
-            with allure.step('# 3.1. Check status code'):
+
+            with allure.step(f'# {step_number}.1. Check status code'):
                 """
                 Check the synchronous_result_of_sending_the_request.
                 """
-                assert compare_actual_result_and_expected_result(
-                    expected_result=202,
-                    actual_result=synchronous_result_of_sending_the_request.status_code
-                )
-            with allure.step('# 3.2. Check message in feed point'):
+                with allure.step('Compare actual status code of sending the request and '
+                                 'expected status code of sending request.'):
+                    allure.attach(str(synchronous_result_of_sending_the_request.status_code),
+                                  "Actual status code of sending the request.")
+                    allure.attach(str(202), "Expected status code of sending request.")
+                    assert synchronous_result_of_sending_the_request.status_code == 202
+
+            with allure.step(f'# {step_number}.2. Check message in feed point'):
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                GlobalClassCreateEi.feed_point_message = \
-                    KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-                allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
-
-                GlobalClassCreateEi.ei_ocid = \
-                    GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
-
-                GlobalClassCreateEi.actual_ei_release = requests.get(
-                    url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                        f"{GlobalClassCreateEi.ei_ocid}").json()
+                ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+                allure.attach(str(ei_feed_point_message), 'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                    environment=GlobalClassMetadata.environment,
-                    kafka_message=GlobalClassCreateEi.feed_point_message
-                )
+                    create_ei_operation_id).create_ei_message_is_successful(
+                    environment=environment,
+                    kafka_message=ei_feed_point_message)
+
+                ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
+                actual_ei_release = requests.get(url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
 
                 try:
                     """
@@ -197,33 +178,38 @@ class TestCreateEi:
                     """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassCreateEi.operation_id)
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=create_ei_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                assert compare_actual_result_and_expected_result(
-                    expected_result=True,
-                    actual_result=asynchronous_result_of_sending_the_request_was_checked
-                )
+                with allure.step('Compare actual result of comparing asynchronous result and expected result and '
+                                 'expected result of comparing asynchronous result and expected result'):
+                    allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
+                                  "Actual status code of sending the request.")
+                    allure.attach(str(True), "Expected status code of sending request.")
+                    assert asynchronous_result_of_sending_the_request_was_checked == True
 
-            with allure.step('# 3.3. Check Ei release'):
+            with allure.step(f'# {step_number}.3. Check Ei release'):
                 """
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(GlobalClassCreateEi.actual_ei_release)), "Actual Ei release")
+                allure.attach(str(json.dumps(actual_ei_release)), "Actual Ei release")
 
                 expected_release_class = copy.deepcopy(EiExpectedRelease(
-                    environment=GlobalClassMetadata.environment,
-                    language=GlobalClassMetadata.language))
-                expected_ei_release_model = copy.deepcopy(
-                    expected_release_class.ei_release_full_data_model())
+                    environment=environment,
+                    language=language,
+                    ei_payload=ei_payload,
+                    ei_feed_point_message=ei_feed_point_message,
+                    actual_ei_release=actual_ei_release))
+
+                expected_ei_release_model = copy.deepcopy(expected_release_class.ei_release_full_data_model())
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
 
-                compare_releases = dict(DeepDiff(GlobalClassCreateEi.actual_ei_release, expected_ei_release_model))
+                compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
                 expected_result = {}
 
                 try:
@@ -232,85 +218,87 @@ class TestCreateEi:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
-                            operation_id=GlobalClassCreateEi.operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassCreateEi.operation_id)
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=create_ei_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                with allure.step('Compare actual result of comparing Ei release and expected EI release and '
+                                 'expected result of comparing EI release and expected EI release.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing EI release and expected EI release.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing EI release and expected Ei release.")
+                    assert compare_releases == expected_result
 
     @allure.title('Check Ei release after Ei creation on model without optional fields')
-    def test_check_ei_release_two(self):
-        with allure.step('# 1. Authorization platform one: create Ei'):
+    def test_check_ei_release_two(self, get_hosts, country, language, pmd, environment, connection_to_database):
+        authorization = PlatformAuthorization(get_hosts[1])
+        step_number = 1
+
+        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
-            GlobalClassCreateEi.access_token = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
+            create_ei_access_token = authorization.get_access_token_for_platform_one()
+            create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
+            step_number += 1
 
-            GlobalClassCreateEi.operation_id = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-
-        with allure.step('# 2. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create Ei'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            ei_payload = copy.deepcopy(EiPreparePayload())
-            GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
-            synchronous_result_of_sending_the_request = Requests().create_ei(
-                host_of_request=GlobalClassMetadata.host_for_bpe,
-                access_token=GlobalClassCreateEi.access_token,
-                x_operation_id=GlobalClassCreateEi.operation_id,
-                country=GlobalClassMetadata.country,
-                language=GlobalClassMetadata.language,
-                payload=GlobalClassCreateEi.payload
-            )
+            ei_payload_class = copy.deepcopy(EiPreparePayload())
+            create_ei_payload = ei_payload_class.create_ei_obligatory_data_model()
 
-        with allure.step('# 3. See result'):
+            synchronous_result_of_sending_the_request = Requests().create_ei(
+                host_of_request=get_hosts[1],
+                access_token=create_ei_access_token,
+                x_operation_id=create_ei_operation_id,
+                country=country,
+                language=language,
+                payload=create_ei_payload)
+
+            step_number += 1
+
+        with allure.step(f'# {step_number}. See result'):
             """
             Check the results of TestCase.
             """
-            with allure.step('# 3.1. Check status code'):
+
+            with allure.step(f'# {step_number}.1. Check status code'):
                 """
                 Check the synchronous_result_of_sending_the_request.
                 """
-                assert compare_actual_result_and_expected_result(
-                    expected_result=202,
-                    actual_result=synchronous_result_of_sending_the_request.status_code
-                )
-            with allure.step('# 3.2. Check message in feed point'):
+                with allure.step('Compare actual status code of sending the request and '
+                                 'expected status code of sending request.'):
+                    allure.attach(str(synchronous_result_of_sending_the_request.status_code),
+                                  "Actual status code of sending the request.")
+                    allure.attach(str(202), "Expected status code of sending request.")
+                    assert synchronous_result_of_sending_the_request.status_code == 202
+
+            with allure.step(f'# {step_number}.2. Check message in feed point'):
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                GlobalClassCreateEi.feed_point_message = \
-                    KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-                allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
-
-                GlobalClassCreateEi.ei_ocid = \
-                    GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
-
-                GlobalClassCreateEi.actual_ei_release = requests.get(
-                    url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                        f"{GlobalClassCreateEi.ei_ocid}").json()
+                ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+                allure.attach(str(ei_feed_point_message), 'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                    environment=GlobalClassMetadata.environment,
-                    kafka_message=GlobalClassCreateEi.feed_point_message
-                )
+                    create_ei_operation_id).create_ei_message_is_successful(
+                    environment=environment,
+                    kafka_message=ei_feed_point_message)
+
+                ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
+                actual_ei_release = requests.get(url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
 
                 try:
                     """
@@ -325,27 +313,33 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                assert compare_actual_result_and_expected_result(
-                    expected_result=True,
-                    actual_result=asynchronous_result_of_sending_the_request_was_checked
-                )
+                with allure.step('Compare actual result of comparing asynchronous result and expected result and '
+                                 'expected result of comparing asynchronous result and expected result'):
+                    allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
+                                  "Actual status code of sending the request.")
+                    allure.attach(str(True), "Expected status code of sending request.")
+                    assert asynchronous_result_of_sending_the_request_was_checked == True
 
-            with allure.step('# 3.3. Check Ei release'):
+            with allure.step(f'# {step_number}.3. Check Ei release'):
                 """
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(GlobalClassCreateEi.actual_ei_release)), "Actual Ei release")
+                allure.attach(str(json.dumps(actual_ei_release)), "Actual Ei release")
 
                 expected_release_class = copy.deepcopy(EiExpectedRelease(
-                    environment=GlobalClassMetadata.environment,
-                    language=GlobalClassMetadata.language))
+                    environment=environment,
+                    language=language,
+                    ei_payload=create_ei_payload,
+                    ei_feed_point_message=ei_feed_point_message,
+                    actual_ei_release=actual_ei_release))
+
                 expected_ei_release_model = copy.deepcopy(
                     expected_release_class.ei_release_obligatory_data_model())
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
 
-                compare_releases = dict(DeepDiff(GlobalClassCreateEi.actual_ei_release, expected_ei_release_model))
+                compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
                 expected_result = {}
 
                 try:
@@ -354,85 +348,87 @@ class TestCreateEi:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
-                            operation_id=GlobalClassCreateEi.operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassCreateEi.operation_id)
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=create_ei_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                with allure.step('Compare actual result of comparing Ei release and expected EI release and '
+                                 'expected result of comparing EI release and expected EI release.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing EI release and expected EI release.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing EI release and expected Ei release.")
+                    assert compare_releases == expected_result
 
     @allure.title('Check Ei release data after Ei creation based on full data model with 3 items objects')
-    def test_check_ei_release_three(self):
-        with allure.step('# 1. Authorization platform one: create Ei'):
+    def test_check_ei_release_three(self, get_hosts, country, language, pmd, environment, connection_to_database):
+        authorization = PlatformAuthorization(get_hosts[1])
+        step_number = 1
+
+        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
-            GlobalClassCreateEi.access_token = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_access_token_for_platform_one()
+            ei_access_token = authorization.get_access_token_for_platform_one()
+            ei_operation_id = authorization.get_x_operation_id(ei_access_token)
+            step_number += 1
 
-            GlobalClassCreateEi.operation_id = PlatformAuthorization(
-                GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-
-        with allure.step('# 2. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create Ei'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
             """
-            ei_payload = copy.deepcopy(EiPreparePayload())
-            GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model(quantity_of_tender_item_object=3)
-            synchronous_result_of_sending_the_request = Requests().create_ei(
-                host_of_request=GlobalClassMetadata.host_for_bpe,
-                access_token=GlobalClassCreateEi.access_token,
-                x_operation_id=GlobalClassCreateEi.operation_id,
-                country=GlobalClassMetadata.country,
-                language=GlobalClassMetadata.language,
-                payload=GlobalClassCreateEi.payload
-            )
+            ei_payload_class = copy.deepcopy(EiPreparePayload())
+            ei_payload = ei_payload_class.create_ei_full_data_model(quantity_of_tender_item_object=3)
 
-        with allure.step('# 3. See result'):
+            synchronous_result_of_sending_the_request = Requests().create_ei(
+                host_of_request=get_hosts[1],
+                access_token=ei_access_token,
+                x_operation_id=ei_operation_id,
+                country=country,
+                language=language,
+                payload=ei_payload)
+
+            step_number += 1
+
+        with allure.step(f'# {step_number}. See result'):
             """
             Check the results of TestCase.
             """
-            with allure.step('# 3.1. Check status code'):
+
+            with allure.step(f'# {step_number}.1. Check status code'):
                 """
                 Check the synchronous_result_of_sending_the_request.
                 """
-                assert compare_actual_result_and_expected_result(
-                    expected_result=202,
-                    actual_result=synchronous_result_of_sending_the_request.status_code
-                )
-            with allure.step('# 3.2. Check message in feed point'):
+                with allure.step('Compare actual status code of sending the request and '
+                                 'expected status code of sending request.'):
+                    allure.attach(str(synchronous_result_of_sending_the_request.status_code),
+                                  "Actual status code of sending the request.")
+                    allure.attach(str(202), "Expected status code of sending request.")
+                    assert synchronous_result_of_sending_the_request.status_code == 202
+
+            with allure.step(f'# {step_number}.2. Check message in feed point'):
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                GlobalClassCreateEi.feed_point_message = \
-                    KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
-                allure.attach(str(GlobalClassCreateEi.feed_point_message), 'Message in feed point')
-
-                GlobalClassCreateEi.ei_ocid = \
-                    GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
-
-                GlobalClassCreateEi.actual_ei_release = requests.get(
-                    url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
-                        f"{GlobalClassCreateEi.ei_ocid}").json()
+                ei_feed_point_message = KafkaMessage(ei_operation_id).get_message_from_kafka()
+                allure.attach(str(ei_feed_point_message), 'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    GlobalClassCreateEi.operation_id).create_ei_message_is_successful(
-                    environment=GlobalClassMetadata.environment,
-                    kafka_message=GlobalClassCreateEi.feed_point_message
-                )
+                    ei_operation_id).create_ei_message_is_successful(
+                    environment=environment,
+                    kafka_message=ei_feed_point_message)
+
+                ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
+                actual_ei_release = requests.get(url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
 
                 try:
                     """
@@ -447,27 +443,33 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                assert compare_actual_result_and_expected_result(
-                    expected_result=True,
-                    actual_result=asynchronous_result_of_sending_the_request_was_checked
-                )
+                with allure.step('Compare actual result of comparing asynchronous result and expected result and '
+                                 'expected result of comparing asynchronous result and expected result'):
+                    allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
+                                  "Actual status code of sending the request.")
+                    allure.attach(str(True), "Expected status code of sending request.")
+                    assert asynchronous_result_of_sending_the_request_was_checked == True
 
-            with allure.step('# 3.3. Check Ei release'):
+            with allure.step(f'# {step_number}.3. Check Ei release'):
                 """
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(GlobalClassCreateEi.actual_ei_release)), "Actual Ei release")
+                allure.attach(str(json.dumps(actual_ei_release)), "Actual Ei release")
 
                 expected_release_class = copy.deepcopy(EiExpectedRelease(
-                    environment=GlobalClassMetadata.environment,
-                    language=GlobalClassMetadata.language))
+                    environment=environment,
+                    language=language,
+                    ei_payload=ei_payload,
+                    ei_feed_point_message=ei_feed_point_message,
+                    actual_ei_release=actual_ei_release))
+
                 expected_ei_release_model = copy.deepcopy(
                     expected_release_class.ei_release_full_data_model())
 
                 allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
 
-                compare_releases = dict(DeepDiff(GlobalClassCreateEi.actual_ei_release, expected_ei_release_model))
+                compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
                 expected_result = {}
 
                 try:
@@ -476,20 +478,21 @@ class TestCreateEi:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
-                            operation_id=GlobalClassCreateEi.operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=ei_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassCreateEi.operation_id)
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=ei_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                assert str(compare_actual_result_and_expected_result(
-                    expected_result=expected_result,
-                    actual_result=compare_releases
-                )) == str(True)
+                with allure.step('Compare actual result of comparing Ei release and expected EI release and '
+                                 'expected result of comparing EI release and expected EI release.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing EI release and expected EI release.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing EI release and expected Ei release.")
+                    assert compare_releases == expected_result

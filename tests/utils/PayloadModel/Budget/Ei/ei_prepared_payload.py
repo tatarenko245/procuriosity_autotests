@@ -1,7 +1,6 @@
 import copy
 import random
 
-from tests.conftest import GlobalClassCreateEi
 from tests.utils.PayloadModel.Budget.Ei.ei_payload_library import PayloadLibrary
 from tests.utils.data_of_enum import cpv_category, cpv_goods_high_level, cpv_works_high_level, \
     cpv_services_high_level, typeOfBuyer, mainGeneralActivity, mainSectoralActivity, currency
@@ -148,7 +147,9 @@ class EiPreparePayload:
         payload['buyer']['contactPoint']['telephone'] = "create ei: buyer.contactPoint.telephone"
         return payload
 
-    def update_ei_full_data_model(self, tender_classification_id, quantity_of_tender_item_object=1):
+    def update_ei_full_data_model(self, create_ei_payload, quantity_of_tender_item_object=1):
+        tender_classification_id = create_ei_payload['tender']['classification']['id']
+
         payload = {
             "tender": {},
             "planning": {}
@@ -169,7 +170,7 @@ class EiPreparePayload:
 
         # This code must be deleted:
         payload['tender']['classification']['id'] = tender_classification_id
-        payload['buyer'] = GlobalClassCreateEi.payload['buyer']
+        payload['buyer'] = create_ei_payload['buyer']
         # =============================
 
         payload['tender']['title'] = "update ei: tender.title"
@@ -196,7 +197,7 @@ class EiPreparePayload:
         payload['planning']['rationale'] = "update ei: planning.rationale"
         return payload
 
-    def update_ei_obligatory_data_model(self):
+    def update_ei_obligatory_data_model(self, create_ei_payload):
         payload = {
             "tender": {},
             "planning": {}
@@ -210,8 +211,8 @@ class EiPreparePayload:
         # ======================================
 
         # This code must be deleted:
-        payload['tender']['classification']['id'] = GlobalClassCreateEi.payload['tender']['classification']['id']
-        payload['buyer'] = GlobalClassCreateEi.payload['buyer']
+        payload['tender']['classification']['id'] = create_ei_payload['tender']['classification']['id']
+        payload['buyer'] = create_ei_payload['buyer']
         # =============================
 
         del payload['tender']['description']

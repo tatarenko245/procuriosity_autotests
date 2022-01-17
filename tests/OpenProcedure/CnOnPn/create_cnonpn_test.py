@@ -712,7 +712,8 @@ class TestCreateCnOnPn:
 
                 with allure.step('Check a difference of comparing persones array before cn creating'
                                  ' and persones araray after cn creating.'):
-                    allure.attach(str(GlobalClassCreateCnOnPn.actual_ms_release['releases'][0]['parties'][3]['persones']),
+                    allure.attach(str(GlobalClassCreateCnOnPn.actual_ms_release[
+                                          'releases'][0]['parties'][3]['persones']),
                                   "Actual result of comparing contract period object.")
                     allure.attach(str(final_expected_persones_array),
                                   "Expected result of comparing contract period object.")
@@ -883,6 +884,8 @@ class TestCreateCnOnPn:
                 pn_token=GlobalClassCreatePn.pn_token,
                 payload=GlobalClassCreateCnOnPn.payload
             )
+            print("STATUS")
+            print(synchronous_result_of_sending_the_request.status_code)
         with allure.step('# 9. See result'):
             """
             Check the results of TestCase.
