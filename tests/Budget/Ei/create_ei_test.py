@@ -106,7 +106,7 @@ class TestCreateEi:
                     allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
                                   "Actual status code of sending the request.")
                     allure.attach(str(True), "Expected status code of sending request.")
-                    assert asynchronous_result_of_sending_the_request_was_checked == True
+                    assert asynchronous_result_of_sending_the_request_was_checked is True
 
     @allure.title('Check Ei release data after Ei creation based on full data model')
     def test_check_ei_release_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
@@ -189,7 +189,7 @@ class TestCreateEi:
                     allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
                                   "Actual status code of sending the request.")
                     allure.attach(str(True), "Expected status code of sending request.")
-                    assert asynchronous_result_of_sending_the_request_was_checked == True
+                    assert asynchronous_result_of_sending_the_request_was_checked is True
 
             with allure.step(f'# {step_number}.3. Check Ei release'):
                 """
@@ -318,7 +318,7 @@ class TestCreateEi:
                     allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
                                   "Actual status code of sending the request.")
                     allure.attach(str(True), "Expected status code of sending request.")
-                    assert asynchronous_result_of_sending_the_request_was_checked == True
+                    assert asynchronous_result_of_sending_the_request_was_checked is True
 
             with allure.step(f'# {step_number}.3. Check Ei release'):
                 """
@@ -448,7 +448,7 @@ class TestCreateEi:
                     allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
                                   "Actual status code of sending the request.")
                     allure.attach(str(True), "Expected status code of sending request.")
-                    assert asynchronous_result_of_sending_the_request_was_checked == True
+                    assert asynchronous_result_of_sending_the_request_was_checked is True
 
             with allure.step(f'# {step_number}.3. Check Ei release'):
                 """

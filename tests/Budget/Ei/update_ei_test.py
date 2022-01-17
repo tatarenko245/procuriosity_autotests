@@ -776,7 +776,6 @@ class TestUpdateEi:
                     environment=environment,
                     language=language,
                     ei_payload=update_ei_payload,
-                    ei_ocid=ei_ocid,
                     ei_feed_point_message=update_ei_feed_point_message,
                     actual_ei_release=actual_ei_release_after_updating))
 
