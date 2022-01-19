@@ -128,7 +128,7 @@ class TestDeclareNonConflictInterest:
             And save in variable fs_id.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -883,7 +883,7 @@ class TestDeclareNonConflictInterest:
             And save in variable fs_id.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -1789,7 +1789,7 @@ class TestDeclareNonConflictInterest:
             And save in variable fs_id.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -2682,7 +2682,7 @@ class TestDeclareNonConflictInterest:
             And save in variable fs_id.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -3529,7 +3529,7 @@ class TestDeclareNonConflictInterest:
             And save in variable fs_id.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -3537,8 +3537,8 @@ class TestDeclareNonConflictInterest:
                 x_operation_id=GlobalClassCreateFs.operation_id,
                 ei_ocid=GlobalClassCreateEi.ei_ocid,
                 payload=GlobalClassCreateFs.payload,
-                test_mode=True
-            )
+                test_mode=True)
+
             GlobalClassCreateFs.feed_point_message = \
                 KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
 

@@ -514,8 +514,6 @@ class PnExpectedRelease:
         release['releases'][0]['language'] = self.language
         release['releases'][0]['initiationType'] = "tender"
         release['releases'][0]['tender']['id'] = tender_id
-        release['releases'][0]['tender']['title'] = "Planning Notice"
-        release['releases'][0]['tender']['description'] = "Contracting process is planned"
         release['releases'][0]['tender']['status'] = "planning"
         release['releases'][0]['tender']['statusDetails'] = "planning"
         release['releases'][0]['tender']['lots'] = self.prepare_expected_lots_array(
@@ -724,7 +722,7 @@ class PnExpectedRelease:
         release['releases'][0]['tender']['title'] = GlobalClassCreatePn.payload['tender']['title']
         release['releases'][0]['tender']['description'] = GlobalClassCreatePn.payload['tender']['description']
         release['releases'][0]['tender']['status'] = "planning"
-        release['releases'][0]['tender']['statusDetails'] = "planning notice"
+        release['releases'][0]['tender']['statusDetails'] = "planning"
         release['releases'][0]['tender']['value']['amount'] = \
             get_sum_of_lot(lots_array=GlobalClassCreatePn.payload['tender']['lots'])
         release['releases'][0]['tender']['value']['currency'] = \
@@ -887,8 +885,6 @@ class PnExpectedRelease:
         release['releases'][0]['language'] = self.language
         release['releases'][0]['initiationType'] = "tender"
         release['releases'][0]['tender']['id'] = tender_id
-        release['releases'][0]['tender']['title'] = "Planning Notice"
-        release['releases'][0]['tender']['description'] = "Contracting process is planned"
         release['releases'][0]['tender']['status'] = "planning"
         release['releases'][0]['tender']['statusDetails'] = "planning"
         release['releases'][0]['tender']['lots'] = self.prepare_expected_lots_array(
@@ -1099,7 +1095,7 @@ class PnExpectedRelease:
         release['releases'][0]['tender']['title'] = GlobalClassCreatePn.payload['tender']['title']
         release['releases'][0]['tender']['description'] = GlobalClassCreatePn.payload['tender']['description']
         release['releases'][0]['tender']['status'] = "planning"
-        release['releases'][0]['tender']['statusDetails'] = "planning notice"
+        release['releases'][0]['tender']['statusDetails'] = "planning"
         release['releases'][0]['tender']['value']['amount'] = \
             get_sum_of_lot(lots_array=GlobalClassCreatePn.payload['tender']['lots'])
         release['releases'][0]['tender']['value']['currency'] = \
@@ -1253,8 +1249,6 @@ class PnExpectedRelease:
         release['releases'][0]['language'] = self.language
         release['releases'][0]['initiationType'] = "tender"
         release['releases'][0]['tender']['id'] = tender_id
-        release['releases'][0]['tender']['title'] = "Planning Notice"
-        release['releases'][0]['tender']['description'] = "Contracting process is planned"
         release['releases'][0]['tender']['status'] = "planning"
         release['releases'][0]['tender']['statusDetails'] = "planning"
         release['releases'][0]['tender']['lotGroups'][0]['optionToCombine'] = False
@@ -1455,7 +1449,7 @@ class PnExpectedRelease:
         release['releases'][0]['tender']['title'] = GlobalClassCreatePn.payload['tender']['title']
         release['releases'][0]['tender']['description'] = GlobalClassCreatePn.payload['tender']['description']
         release['releases'][0]['tender']['status'] = "planning"
-        release['releases'][0]['tender']['statusDetails'] = "planning notice"
+        release['releases'][0]['tender']['statusDetails'] = "planning"
         release['releases'][0]['tender']['value']['amount'] = \
             GlobalClassCreatePn.payload['planning']['budget']['budgetBreakdown'][0]['amount']['amount']
         release['releases'][0]['tender']['value']['currency'] = \

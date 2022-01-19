@@ -52,7 +52,8 @@ class TestUpdateEi:
                 x_operation_id=create_ei_operation_id,
                 country=country,
                 language=language,
-                payload=create_ei_payload)
+                payload=create_ei_payload,
+                test_mode=True)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -81,8 +82,8 @@ class TestUpdateEi:
                 x_operation_id=update_ei_operation_id,
                 ei_ocid=ei_ocid,
                 ei_token=ei_token,
-                payload=update_ei_payload
-            )
+                payload=update_ei_payload,
+                test_mode=True)
 
             step_number += 1
 
@@ -113,7 +114,8 @@ class TestUpdateEi:
                     update_ei_operation_id).update_ei_message_is_successful(
                     environment=environment,
                     kafka_message=update_ei_feed_point_message,
-                    ei_ocid=ei_ocid)
+                    ei_ocid=ei_ocid,
+                    test_mode=True)
 
                 try:
                     """
@@ -171,7 +173,8 @@ class TestUpdateEi:
                 x_operation_id=create_ei_operation_id,
                 country=country,
                 language=language,
-                payload=create_ei_payload)
+                payload=create_ei_payload,
+                test_mode=True)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -202,7 +205,8 @@ class TestUpdateEi:
                 x_operation_id=update_ei_operation_id,
                 ei_ocid=ei_ocid,
                 ei_token=ei_token,
-                payload=update_ei_payload)
+                payload=update_ei_payload,
+                test_mode=True)
 
             step_number += 1
 
@@ -232,7 +236,8 @@ class TestUpdateEi:
                     update_ei_operation_id).update_ei_message_is_successful(
                     environment=environment,
                     kafka_message=update_ei_feed_point_message,
-                    ei_ocid=ei_ocid)
+                    ei_ocid=ei_ocid,
+                    test_mode=True)
 
                 try:
                     """
@@ -347,7 +352,8 @@ class TestUpdateEi:
                 x_operation_id=create_ei_operation_id,
                 country=country,
                 language=language,
-                payload=create_ei_payload)
+                payload=create_ei_payload,
+                test_mode=True)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -380,7 +386,8 @@ class TestUpdateEi:
                 x_operation_id=update_ei_operation_id,
                 ei_ocid=ei_ocid,
                 ei_token=ei_token,
-                payload=update_ei_payload)
+                payload=update_ei_payload,
+                test_mode=True)
 
             step_number += 1
 
@@ -410,7 +417,8 @@ class TestUpdateEi:
                     update_ei_operation_id).update_ei_message_is_successful(
                     environment=environment,
                     kafka_message=update_ei_feed_point_message,
-                    ei_ocid=ei_ocid)
+                    ei_ocid=ei_ocid,
+                    test_mode=True)
 
                 try:
                     """
@@ -557,7 +565,8 @@ class TestUpdateEi:
                 x_operation_id=create_ei_operation_id,
                 country=country,
                 language=language,
-                payload=create_ei_payload)
+                payload=create_ei_payload,
+                test_mode=True)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -590,7 +599,8 @@ class TestUpdateEi:
                 x_operation_id=update_ei_operation_id,
                 ei_ocid=ei_ocid,
                 ei_token=ei_token,
-                payload=update_ei_payload)
+                payload=update_ei_payload,
+                test_mode=True)
 
             step_number += 1
 
@@ -620,7 +630,8 @@ class TestUpdateEi:
                     update_ei_operation_id).update_ei_message_is_successful(
                     environment=environment,
                     kafka_message=update_ei_feed_point_message,
-                    ei_ocid=ei_ocid)
+                    ei_ocid=ei_ocid,
+                    test_mode=True)
 
                 try:
                     """

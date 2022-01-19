@@ -102,7 +102,7 @@ class TestCreatePn:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=GlobalClassCreateEi.payload
             )
@@ -272,7 +272,7 @@ class TestCreatePn:
             And save in variable fs_id.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -411,6 +411,7 @@ class TestCreatePn:
                 compare_releases = dict(DeepDiff(
                     GlobalClassCreatePn.actual_pn_release, expected_pn_release_model))
                 expected_result = {}
+
                 try:
                     """
                         If compare_releases !=expected_result, then return process steps by operation-id.
@@ -693,7 +694,7 @@ class TestCreatePn:
             And save in variable fs_id.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -1111,7 +1112,7 @@ class TestCreatePn:
             And save in variable fs_id.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=GlobalClassCreateEi.payload
             )

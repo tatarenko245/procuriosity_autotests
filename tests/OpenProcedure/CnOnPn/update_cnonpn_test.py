@@ -16,7 +16,7 @@ from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.functions import compare_actual_result_and_expected_result, \
     get_value_from_classification_unit_dictionary_csv, get_value_from_region_csv, get_value_from_locality_csv, \
-    get_contract_period_for_ms_release, get_value_from_cpvs_dictionary_csv
+    get_contract_period_for_ms_release, get_value_from_cpvs_dictionary_csv, is_it_uuid
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.my_requests import Requests
@@ -108,7 +108,7 @@ class TestCreateCnOnPn:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -400,7 +400,7 @@ class TestCreateCnOnPn:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -629,6 +629,20 @@ class TestCreateCnOnPn:
                     str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
                 compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
                 compare_releases = dict(compare_releases)
+
+                try:
+                    for n in GlobalClassUpdateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details']:
+                        for n_1 in n:
+                            if n_1 == "id":
+                                is_it_uuid(
+                                    uuid_to_test=n['id'],
+                                    version=4
+                                )
+                except ValueError:
+                    raise ValueError("Check your electronic_auction_details array in release: "
+                                     "release_electronic_auction_details_array.id in release must be "
+                                     "uuid version 4")
 
                 expected_result = {
                     "dictionary_item_added": "['releases'][0]['tender']['amendments']",
@@ -899,6 +913,18 @@ class TestCreateCnOnPn:
                             "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['relatedLots'][0],
                             "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][1]['relatedLots'][0]
                         },
+                        "root['releases'][0]['tender']['electronicAuctions']['details'][0]['id']": {
+                            "new_value": GlobalClassUpdateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details'][0]['id'],
+                            "old_value": GlobalClassCreateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details'][0]['id']
+                        },
+                        "root['releases'][0]['tender']['electronicAuctions']['details'][1]['id']": {
+                            "new_value": GlobalClassUpdateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details'][1]['id'],
+                            "old_value": GlobalClassCreateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details'][1]['id']
+                        },
                         "root['releases'][0]['tender']['electronicAuctions']['details'][0]"
                         "['electronicAuctionModalities'][0]['eligibleMinimumDifference']['amount']": {
                             "new_value": GlobalClassUpdateCnOnPn.payload['tender']['electronicAuctions'][
@@ -1101,7 +1127,7 @@ class TestCreateCnOnPn:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=GlobalClassCreateEi.payload
             )
@@ -1611,7 +1637,7 @@ class TestCreateCnOnPn:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=GlobalClassCreateEi.payload
             )
@@ -2268,7 +2294,7 @@ class TestCreateCnOnPn:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=GlobalClassCreateEi.payload
             )
@@ -2503,6 +2529,20 @@ class TestCreateCnOnPn:
                 compare_releases['dictionary_item_removed'] = dictionary_item_removed_was_cleaned
                 compare_releases = dict(compare_releases)
 
+                try:
+                    for n in GlobalClassUpdateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details']:
+                        for n_1 in n:
+                            if n_1 == "id":
+                                is_it_uuid(
+                                    uuid_to_test=n['id'],
+                                    version=4
+                                )
+                except ValueError:
+                    raise ValueError("Check your electronic_auction_details array in release: "
+                                     "release_electronic_auction_details_array.id in release must be "
+                                     "uuid version 4")
+
                 expected_result = {
                     "dictionary_item_added": "['releases'][0]['tender']['amendments']",
                     "dictionary_item_removed": "['releases'][0]['tender']['procurementMethodModalities'], "
@@ -2732,12 +2772,24 @@ class TestCreateCnOnPn:
                             "old_value": GlobalClassCreateCnOnPn.actual_ev_release['releases'][0][
                                 'tender']['documents'][1]['relatedLots'][0]
                         },
+                        "root['releases'][0]['tender']['electronicAuctions']['details'][0]['id']": {
+                            "new_value": GlobalClassUpdateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details'][0]['id'],
+                            "old_value": GlobalClassCreateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details'][0]['id']
+                        },
                         "root['releases'][0]['tender']['electronicAuctions']['details'][0]"
                         "['electronicAuctionModalities'][0]['eligibleMinimumDifference']['amount']": {
                             "new_value": GlobalClassUpdateCnOnPn.payload['tender']['electronicAuctions'][
                                 'details'][0]['electronicAuctionModalities'][0]['eligibleMinimumDifference']['amount'],
                             "old_value": GlobalClassCreateCnOnPn.payload['tender']['electronicAuctions'][
                                 'details'][0]['electronicAuctionModalities'][0]['eligibleMinimumDifference']['amount']
+                        },
+                        "root['releases'][0]['tender']['electronicAuctions']['details'][1]['id']": {
+                            "new_value": GlobalClassUpdateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details'][1]['id'],
+                            "old_value": GlobalClassCreateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details'][1]['id']
                         },
                         "root['releases'][0]['tender']['electronicAuctions']['details'][1]"
                         "['electronicAuctionModalities'][0]['eligibleMinimumDifference']['amount']": {

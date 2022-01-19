@@ -138,7 +138,7 @@ class KafkaMessage:
         return kafka_message
 
     @staticmethod
-    def create_ei_message_is_successful(environment, kafka_message):
+    def create_ei_message_is_successful(environment, kafka_message, test_mode=False):
         budget_url = None
         if environment == "dev":
             budget_url = "http://dev.public.eprocurement.systems/budgets/"
@@ -172,8 +172,14 @@ class KafkaMessage:
         except KeyError:
             raise KeyError('KeyError: initiator')
         try:
-            if "ocid" in kafka_message["data"]:
+            if test_mode is False:
                 check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], "ocds-t1s2t3-MD-*")
+            else:
+                check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], "test-t1s2t3-MD-*")
+            if check_oc_id is True:
+                pass
+            else:
+                raise Exception("check_oc_id is False")
         except KeyError:
             raise KeyError('KeyError: ocid')
         try:
@@ -188,8 +194,15 @@ class KafkaMessage:
         except KeyError:
             raise KeyError('KeyError: operationDate')
         try:
-            if "id" in kafka_message["data"]["outcomes"]["ei"][0]:
+            if test_mode is False:
                 check_ei_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["ei"][0]["id"], "ocds-t1s2t3-MD-*")
+            else:
+                check_ei_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["ei"][0]["id"], "test-t1s2t3-MD-*")
+
+            if check_ei_id is True:
+                pass
+            else:
+                raise Exception("check_ei_id is False")
         except KeyError:
             raise KeyError('KeyError: id')
         try:
@@ -206,7 +219,7 @@ class KafkaMessage:
             return False
 
     @staticmethod
-    def update_ei_message_is_successful(environment, kafka_message, ei_ocid):
+    def update_ei_message_is_successful(environment, kafka_message, ei_ocid, test_mode=False):
         budget_url = None
         if environment == "dev":
             budget_url = "http://dev.public.eprocurement.systems/budgets/"
@@ -237,8 +250,14 @@ class KafkaMessage:
         except KeyError:
             raise KeyError('KeyError: initiator')
         try:
-            if "ocid" in kafka_message["data"]:
-                check_oc_id = fnmatch.fnmatch(ei_ocid, "ocds-t1s2t3-MD-*")
+            if test_mode is False:
+                check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], "ocds-t1s2t3-MD-*")
+            else:
+                check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], "test-t1s2t3-MD-*")
+            if check_oc_id is True:
+                pass
+            else:
+                raise Exception("check_oc_id is False")
         except KeyError:
             raise KeyError('KeyError: ocid')
         try:
@@ -259,7 +278,7 @@ class KafkaMessage:
             return False
 
     @staticmethod
-    def create_fs_message_is_successful(environment, kafka_message):
+    def create_fs_message_is_successful(environment, kafka_message, test_mode=False):
         budget_url = None
         if environment == "dev":
             budget_url = "http://dev.public.eprocurement.systems/budgets/"
@@ -292,8 +311,14 @@ class KafkaMessage:
         except KeyError:
             raise KeyError('KeyError: initiator')
         try:
-            if "ocid" in kafka_message["data"]:
+            if test_mode is False:
                 check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], "ocds-t1s2t3-MD-*")
+            else:
+                check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], "test-t1s2t3-MD-*")
+            if check_oc_id is True:
+                pass
+            else:
+                raise Exception("check_oc_id is False")
         except KeyError:
             raise KeyError('KeyError: ocid')
         try:
