@@ -1918,3 +1918,22 @@ File = kafka_message.py ->
 Class = KafkaMessage -> 
 Method = declare_non_conflict_interest_message_is_successful -> 
 KeyError: data.ocid
+
+2022-01-18 18:16:55.911381
+File = declare_non_conflict_interest_test.py -> 
+Class = TestDeclareNonConflictInterest -> 
+Method = test_check_result_of_sending_the_request_one -> 
+Step: # 9. Send request for create first Bid.
+Message: Impossible to set specific value into submission.rules.
+
+2022-01-18 18:17:03.682518
+File = declare_non_conflict_interest_test.py -> 
+Class = TestDeclareNonConflictInterest -> 
+Method = test_check_result_of_sending_the_request_two -> 
+Step: # 9. Send request for create first Bid.
+Message: Impossible to set specific value into submission.rules.
+2022-01-18 21:43:58.151570
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+KeyError: data.ocid

@@ -109,7 +109,7 @@ class TestCreateAnswer:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -438,7 +438,7 @@ class TestCreateAnswer:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -898,7 +898,7 @@ class TestCreateAnswer:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -1356,7 +1356,7 @@ class TestCreateAnswer:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload())
+            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().create_fs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,

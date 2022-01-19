@@ -294,7 +294,7 @@ class FsPreparePayload:
         payload['planning']['rationale'] = "create fs: planning.rationale"
         return payload
 
-    def update_fs_obligatory_data_model_treasury_money(self, create_ei_payload):
+    def update_fs_obligatory_data_model_treasury_money(self, create_fs_payload):
         payload = {
             "tender": {},
             "planning": {}
@@ -316,11 +316,11 @@ class FsPreparePayload:
         payload['planning']['budget']['period']['endDate'] = new_period[1]
         payload['planning']['budget']['amount']['amount'] = 11119.89
         payload['planning']['budget']['amount']['currency'] = \
-            create_ei_payload['planning']['budget']['amount']['currency']
+            create_fs_payload['planning']['budget']['amount']['currency']
         payload['planning']['budget']['isEuropeanUnionFunded'] = False
         return payload
 
-    def update_fs_full_data_model_treasury_money(self, create_ei_payload):
+    def update_fs_full_data_model_treasury_money(self, create_fs_payload):
         payload = {
             "tender": {},
             "planning": {}
@@ -373,7 +373,7 @@ class FsPreparePayload:
         payload['planning']['budget']['period']['endDate'] = new_period[1]
         payload['planning']['budget']['amount']['amount'] = 11119.89
         payload['planning']['budget']['amount']['currency'] = \
-            create_ei_payload['planning']['budget']['amount']['currency']
+            create_fs_payload['planning']['budget']['amount']['currency']
         payload['planning']['budget']['isEuropeanUnionFunded'] = True
         payload['planning']['budget']['europeanUnionFunding']['projectName'] = \
             "update fs: planning.budget.europeanUnionFunding.projectName"
@@ -387,7 +387,7 @@ class FsPreparePayload:
         payload['planning']['rationale'] = "update fs: planning.rationale"
         return payload
 
-    def update_fs_obligatory_data_model_own_money(self, create_ei_payload):
+    def update_fs_obligatory_data_model_own_money(self, create_fs_payload):
         payload = {
             "planning": {},
             "buyer": {}
@@ -430,11 +430,11 @@ class FsPreparePayload:
         payload['planning']['budget']['period']['endDate'] = new_period[1]
         payload['planning']['budget']['amount']['amount'] = 11119.89
         payload['planning']['budget']['amount']['currency'] = \
-            create_ei_payload['planning']['budget']['amount']['currency']
+            create_fs_payload['planning']['budget']['amount']['currency']
         payload['planning']['budget']['isEuropeanUnionFunded'] = False
         return payload
 
-    def update_fs_full_data_model_own_money(self, create_ei_payload):
+    def update_fs_full_data_model_own_money(self, create_fs_payload):
         payload = {
             "tender": {},
             "planning": {},
@@ -516,7 +516,7 @@ class FsPreparePayload:
         payload['planning']['budget']['period']['endDate'] = new_period[1]
         payload['planning']['budget']['amount']['amount'] = 11119.89
         payload['planning']['budget']['amount']['currency'] = \
-            create_ei_payload['planning']['budget']['amount']['currency']
+            create_fs_payload['planning']['budget']['amount']['currency']
         payload['planning']['budget']['isEuropeanUnionFunded'] = True
         payload['planning']['budget']['europeanUnionFunding']['projectName'] = \
             "update fs: planning.budget.europeanUnionFunding.projectName"

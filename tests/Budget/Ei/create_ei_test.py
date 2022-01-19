@@ -50,7 +50,8 @@ class TestCreateEi:
                 x_operation_id=create_ei_operation_id,
                 country=country,
                 language=language,
-                payload=create_ei_payload)
+                payload=create_ei_payload,
+                test_mode=True)
 
             step_number += 1
 
@@ -80,7 +81,8 @@ class TestCreateEi:
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     create_ei_operation_id).create_ei_message_is_successful(
                     environment=environment,
-                    kafka_message=ei_feed_point_message)
+                    kafka_message=ei_feed_point_message,
+                    test_mode=True)
 
                 ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
@@ -136,7 +138,8 @@ class TestCreateEi:
                 x_operation_id=create_ei_operation_id,
                 country=country,
                 language=language,
-                payload=ei_payload)
+                payload=ei_payload,
+                test_mode=True)
 
             step_number += 1
 
@@ -166,7 +169,8 @@ class TestCreateEi:
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     create_ei_operation_id).create_ei_message_is_successful(
                     environment=environment,
-                    kafka_message=ei_feed_point_message)
+                    kafka_message=ei_feed_point_message,
+                    test_mode=True)
 
                 ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
                 actual_ei_release = requests.get(url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
@@ -265,7 +269,8 @@ class TestCreateEi:
                 x_operation_id=create_ei_operation_id,
                 country=country,
                 language=language,
-                payload=create_ei_payload)
+                payload=create_ei_payload,
+                test_mode=True)
 
             step_number += 1
 
@@ -295,7 +300,8 @@ class TestCreateEi:
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     create_ei_operation_id).create_ei_message_is_successful(
                     environment=environment,
-                    kafka_message=ei_feed_point_message)
+                    kafka_message=ei_feed_point_message,
+                    test_mode=True)
 
                 ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
                 actual_ei_release = requests.get(url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
@@ -395,7 +401,8 @@ class TestCreateEi:
                 x_operation_id=ei_operation_id,
                 country=country,
                 language=language,
-                payload=ei_payload)
+                payload=ei_payload,
+                test_mode=True)
 
             step_number += 1
 
@@ -425,7 +432,8 @@ class TestCreateEi:
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     ei_operation_id).create_ei_message_is_successful(
                     environment=environment,
-                    kafka_message=ei_feed_point_message)
+                    kafka_message=ei_feed_point_message,
+                    test_mode=True)
 
                 ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
                 actual_ei_release = requests.get(url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
