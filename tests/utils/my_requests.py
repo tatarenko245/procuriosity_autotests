@@ -176,9 +176,9 @@ class Requests:
 
     @staticmethod
     @allure.step('Prepared request: create Enquiry')
-    def create_enquiry(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, payload, test_mode=False):
+    def create_enquiry(host_of_request, access_token, x_operation_id, pn_ocid, tender_id, payload, test_mode=False):
         enquiry = requests.post(
-            url=host_of_request + f"/do/enquiry/{pn_ocid}/{ev_id}",
+            url=host_of_request + f"/do/enquiry/{pn_ocid}/{tender_id}",
             params={
                 'testMode': test_mode
             },
@@ -194,10 +194,10 @@ class Requests:
 
     @staticmethod
     @allure.step('Prepared request: create Answer')
-    def create_answer(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, enquiry_id, enquiry_token,
+    def create_answer(host_of_request, access_token, x_operation_id, pn_ocid, tender_id, enquiry_id, enquiry_token,
                       payload, test_mode=False):
         answer = requests.post(
-            url=host_of_request + f"/do/enquiry/{pn_ocid}/{ev_id}/{enquiry_id}",
+            url=host_of_request + f"/do/enquiry/{pn_ocid}/{tender_id}/{enquiry_id}",
             params={
                 'testMode': test_mode
             },

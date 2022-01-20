@@ -41,7 +41,7 @@ class TestUpdatePn:
             And save in variable ei_ocid.
             """
             ei_payload_class = copy.deepcopy(EiPreparePayload())
-            ei_payload = ei_payload_class.create_ei_obligatory_data_model()
+            create_ei_payload = ei_payload_class.create_ei_obligatory_data_model()
 
             Requests().create_ei(
                 host_of_request=get_hosts[1],
@@ -49,7 +49,7 @@ class TestUpdatePn:
                 x_operation_id=ei_operation_id,
                 country=country,
                 language=language,
-                payload=ei_payload,
+                payload=create_ei_payload,
                 test_mode=True)
 
             ei_feed_point_message = KafkaMessage(ei_operation_id).get_message_from_kafka()
@@ -71,16 +71,16 @@ class TestUpdatePn:
             And save in variable fs_id.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload())
-            fs_payload = fs_payload_class.create_fs_obligatory_data_model_treasury_money(
-                ei_payload=ei_payload)
+            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            create_fs_payload = fs_payload_class.create_fs_obligatory_data_model_treasury_money(
+                ei_payload=create_ei_payload)
 
             Requests().create_fs(
                 host_of_request=get_hosts[1],
                 access_token=fs_access_token,
                 x_operation_id=fs_operation_id,
                 ei_ocid=ei_ocid,
-                payload=fs_payload,
+                payload=create_fs_payload,
                 test_mode=True)
 
             fs_feed_point_message = KafkaMessage(fs_operation_id).get_message_from_kafka()
@@ -104,7 +104,7 @@ class TestUpdatePn:
             """
             time.sleep(1)
             pn_payload_class = copy.deepcopy(PnPreparePayload(
-                fs_payload=fs_payload,
+                fs_payload=create_fs_payload,
                 fs_feed_point_message=fs_feed_point_message))
             create_pn_payload = \
                 pn_payload_class.create_pn_obligatory_data_model_without_lots_and_items_based_on_one_fs()
@@ -150,7 +150,7 @@ class TestUpdatePn:
             """
             time.sleep(1)
             pn_payload_class = copy.deepcopy(PnPreparePayload(
-                fs_payload=fs_payload,
+                fs_payload=create_fs_payload,
                 fs_feed_point_message=fs_feed_point_message))
             update_pn_payload = \
                 pn_payload_class.update_pn_obligatory_data_model_without_lots_and_items_based_on_one_fs()

@@ -263,7 +263,7 @@ class TestCreateAnswer:
                 access_token=GlobalClassCreateEnquiry.access_token,
                 x_operation_id=GlobalClassCreateEnquiry.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateEnquiry.payload
             )
 
@@ -300,7 +300,7 @@ class TestCreateAnswer:
                 access_token=GlobalClassCreateAnswer.access_token,
                 x_operation_id=GlobalClassCreateAnswer.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 enquiry_id=GlobalClassCreateEnquiry.enquiry_id,
                 enquiry_token=GlobalClassCreateEnquiry.enquiry_token,
                 payload=GlobalClassCreateAnswer.payload
@@ -591,7 +591,7 @@ class TestCreateAnswer:
                 access_token=GlobalClassCreateEnquiry.access_token,
                 x_operation_id=GlobalClassCreateEnquiry.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateEnquiry.payload
             )
 
@@ -635,7 +635,7 @@ class TestCreateAnswer:
                 access_token=GlobalClassCreateAnswer.access_token,
                 x_operation_id=GlobalClassCreateAnswer.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 enquiry_id=GlobalClassCreateEnquiry.enquiry_id,
                 enquiry_token=GlobalClassCreateEnquiry.enquiry_token,
                 payload=GlobalClassCreateAnswer.payload
@@ -769,31 +769,14 @@ class TestCreateAnswer:
                 """
                 Compare multistage release with expected multistage release model.
                 """
-                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
-                              "Actual MS release before Enquiry updating")
                 allure.attach(str(json.dumps(GlobalClassCreateEnquiry.actual_ms_release)),
+                              "Actual MS release before Enquiry updating")
+                allure.attach(str(json.dumps(GlobalClassCreateAnswer.actual_ms_release)),
                               "Actual MS release after Enquiry updating")
 
-                compare_releases = dict(DeepDiff(GlobalClassCreateCnOnPn.actual_ms_release,
-                                                 GlobalClassCreateEnquiry.actual_ms_release))
-                expected_result = {
-                    "values_changed": {
-                        "root['releases'][0]['id']": {
-                            "new_value": f"{GlobalClassCreatePn.pn_ocid}-"
-                                         f"{GlobalClassCreateEnquiry.actual_ms_release['releases'][0]['id'][29:42]}",
-                            "old_value": f"{GlobalClassCreatePn.pn_ocid}-"
-                                         f"{GlobalClassCreateCnOnPn.actual_ms_release['releases'][0]['id'][29:42]}"
-                        },
-                        "root['releases'][0]['date']": {
-                            "new_value": GlobalClassCreateEnquiry.feed_point_message_bpe['data']['operationDate'],
-                            "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
-                        },
-                        "root['releases'][0]['tender']['hasEnquiries']": {
-                            'new_value': True,
-                            'old_value': False
-                        }
-                    }
-                }
+                compare_releases = dict(DeepDiff(GlobalClassCreateEnquiry.actual_ms_release,
+                                                 GlobalClassCreateAnswer.actual_ms_release))
+                expected_result = {}
 
                 try:
                     """
@@ -1049,7 +1032,7 @@ class TestCreateAnswer:
                 access_token=GlobalClassCreateEnquiry.access_token,
                 x_operation_id=GlobalClassCreateEnquiry.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateEnquiry.payload
             )
 
@@ -1093,7 +1076,7 @@ class TestCreateAnswer:
                 access_token=GlobalClassCreateAnswer.access_token,
                 x_operation_id=GlobalClassCreateAnswer.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 enquiry_id=GlobalClassCreateEnquiry.enquiry_id,
                 enquiry_token=GlobalClassCreateEnquiry.enquiry_token,
                 payload=GlobalClassCreateAnswer.payload
@@ -1226,31 +1209,14 @@ class TestCreateAnswer:
                 """
                 Compare multistage release with expected multistage release model.
                 """
-                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
-                              "Actual MS release before Enquiry updating")
                 allure.attach(str(json.dumps(GlobalClassCreateEnquiry.actual_ms_release)),
+                              "Actual MS release before Enquiry updating")
+                allure.attach(str(json.dumps(GlobalClassCreateAnswer.actual_ms_release)),
                               "Actual MS release after Enquiry updating")
 
-                compare_releases = dict(DeepDiff(GlobalClassCreateCnOnPn.actual_ms_release,
-                                                 GlobalClassCreateEnquiry.actual_ms_release))
-                expected_result = {
-                    "values_changed": {
-                        "root['releases'][0]['id']": {
-                            "new_value": f"{GlobalClassCreatePn.pn_ocid}-"
-                                         f"{GlobalClassCreateEnquiry.actual_ms_release['releases'][0]['id'][29:42]}",
-                            "old_value": f"{GlobalClassCreatePn.pn_ocid}-"
-                                         f"{GlobalClassCreateCnOnPn.actual_ms_release['releases'][0]['id'][29:42]}"
-                        },
-                        "root['releases'][0]['date']": {
-                            "new_value": GlobalClassCreateEnquiry.feed_point_message_bpe['data']['operationDate'],
-                            "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
-                        },
-                        "root['releases'][0]['tender']['hasEnquiries']": {
-                            'new_value': True,
-                            'old_value': False
-                        }
-                    }
-                }
+                compare_releases = dict(DeepDiff(GlobalClassCreateEnquiry.actual_ms_release,
+                                                 GlobalClassCreateAnswer.actual_ms_release))
+                expected_result = {}
 
                 try:
                     """
@@ -1507,7 +1473,7 @@ class TestCreateAnswer:
                 access_token=GlobalClassCreateEnquiry.access_token,
                 x_operation_id=GlobalClassCreateEnquiry.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateEnquiry.payload
             )
 
@@ -1555,7 +1521,7 @@ class TestCreateAnswer:
                 access_token=GlobalClassCreateAnswer.access_token,
                 x_operation_id=GlobalClassCreateAnswer.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 enquiry_id=GlobalClassCreateEnquiry.enquiry_id,
                 enquiry_token=GlobalClassCreateEnquiry.enquiry_token,
                 payload=GlobalClassCreateAnswer.payload
@@ -1726,31 +1692,14 @@ class TestCreateAnswer:
                 """
                 Compare multistage release with expected multistage release model.
                 """
-                allure.attach(str(json.dumps(GlobalClassCreateCnOnPn.actual_ms_release)),
-                              "Actual MS release before Enquiry updating")
                 allure.attach(str(json.dumps(GlobalClassCreateEnquiry.actual_ms_release)),
+                              "Actual MS release before Enquiry updating")
+                allure.attach(str(json.dumps(GlobalClassCreateAnswer.actual_ms_release)),
                               "Actual MS release after Enquiry updating")
 
-                compare_releases = dict(DeepDiff(GlobalClassCreateCnOnPn.actual_ms_release,
-                                                 GlobalClassCreateEnquiry.actual_ms_release))
-                expected_result = {
-                    "values_changed": {
-                        "root['releases'][0]['id']": {
-                            "new_value": f"{GlobalClassCreatePn.pn_ocid}-"
-                                         f"{GlobalClassCreateEnquiry.actual_ms_release['releases'][0]['id'][29:42]}",
-                            "old_value": f"{GlobalClassCreatePn.pn_ocid}-"
-                                         f"{GlobalClassCreateCnOnPn.actual_ms_release['releases'][0]['id'][29:42]}"
-                        },
-                        "root['releases'][0]['date']": {
-                            "new_value": GlobalClassCreateEnquiry.feed_point_message_bpe['data']['operationDate'],
-                            "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
-                        },
-                        "root['releases'][0]['tender']['hasEnquiries']": {
-                            'new_value': True,
-                            'old_value': False
-                        }
-                    }
-                }
+                compare_releases = dict(DeepDiff(GlobalClassCreateEnquiry.actual_ms_release,
+                                                 GlobalClassCreateAnswer.actual_ms_release))
+                expected_result = {}
 
                 try:
                     """

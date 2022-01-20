@@ -88,8 +88,6 @@ class PnExpectedRelease:
                     "initiationType": "tender",
                     "tender": {
                         "id": actual_pn_release['releases'][0]['tender']['id'],
-                        "title": "Planning Notice",
-                        "description": "Contracting process is planned",
                         "status": "planning",
                         "statusDetails": "planning",
                         "lotGroups": [
@@ -286,7 +284,7 @@ class PnExpectedRelease:
                         "title": self.pn_payload['tender']['title'],
                         "description": self.pn_payload['tender']['description'],
                         "status": "planning",
-                        "statusDetails": "planning notice",
+                        "statusDetails": "planning",
                         "value": {
                             "amount": self.pn_payload['planning']['budget']['budgetBreakdown'][0]['amount']['amount'],
                             "currency": self.pn_payload['planning']['budget']['budgetBreakdown'][0]['amount'][

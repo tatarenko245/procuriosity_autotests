@@ -261,7 +261,7 @@ class TestEnquiryPeriodEnd:
                 access_token=GlobalClassCreateEnquiry.access_token,
                 x_operation_id=GlobalClassCreateEnquiry.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateEnquiry.payload
             )
 
@@ -620,7 +620,7 @@ class TestEnquiryPeriodEnd:
                 access_token=GlobalClassCreateEnquiry.access_token,
                 x_operation_id=GlobalClassCreateEnquiry.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateEnquiry.payload
             )
 
@@ -659,7 +659,7 @@ class TestEnquiryPeriodEnd:
                 access_token=GlobalClassCreateAnswer.access_token,
                 x_operation_id=GlobalClassCreateAnswer.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 enquiry_id=GlobalClassCreateEnquiry.enquiry_id,
                 enquiry_token=GlobalClassCreateEnquiry.enquiry_token,
                 payload=GlobalClassCreateAnswer.payload
