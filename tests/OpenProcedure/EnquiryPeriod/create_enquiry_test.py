@@ -257,7 +257,7 @@ class TestCreateEnquiry:
                 access_token=GlobalClassCreateEnquiry.access_token,
                 x_operation_id=GlobalClassCreateEnquiry.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateEnquiry.payload
             )
         with allure.step('# 11. See result'):
@@ -551,7 +551,7 @@ class TestCreateEnquiry:
                 access_token=GlobalClassCreateEnquiry.access_token,
                 x_operation_id=GlobalClassCreateEnquiry.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateEnquiry.payload
             )
         with allure.step('# 11. See result'):
@@ -984,7 +984,7 @@ class TestCreateEnquiry:
                 access_token=GlobalClassCreateEnquiry.access_token,
                 x_operation_id=GlobalClassCreateEnquiry.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateEnquiry.payload
             )
         with allure.step('# 11. See result'):

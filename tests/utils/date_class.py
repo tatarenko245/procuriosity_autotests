@@ -107,6 +107,21 @@ class Date:
     @staticmethod
     def selective_procedure_enquiry_period_end_date(pre_qualification_period_end_date, interval_seconds: int):
         duration_date_end = datetime.datetime.strptime(
-            pre_qualification_period_end_date,'%Y-%m-%dT%H:%M:%SZ') - datetime.timedelta(seconds=interval_seconds)
+            pre_qualification_period_end_date, '%Y-%m-%dT%H:%M:%SZ') - datetime.timedelta(seconds=interval_seconds)
+        end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+        return end_date
+
+    @staticmethod
+    def selective_procedure_enquiry_period_end_date_after_unsuspended(create_answer_date, interval_seconds: int):
+        duration_date_end = datetime.datetime.strptime(
+            create_answer_date, '%Y-%m-%dT%H:%M:%SZ') + datetime.timedelta(seconds=interval_seconds)
+        end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+        return end_date
+
+    @staticmethod
+    def selective_procedure_pre_qualification_period_end_date_after_unsuspended(create_answer_date,
+                                                                                interval_seconds: int):
+        duration_date_end = datetime.datetime.strptime(
+            create_answer_date, '%Y-%m-%dT%H:%M:%SZ') + datetime.timedelta(seconds=interval_seconds)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return end_date
