@@ -46,8 +46,8 @@ class TestUpdateCn:
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
             """
-            ei_access_token = authorization.get_access_token_for_platform_one()
-            ei_operation_id = authorization.get_x_operation_id(ei_access_token)
+            create_ei_access_token = authorization.get_access_token_for_platform_one()
+            create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
         with allure.step(f'# {step_number}. Send request to create Ei'):
@@ -60,14 +60,14 @@ class TestUpdateCn:
 
             Requests().create_ei(
                 host_of_request=get_hosts[1],
-                access_token=ei_access_token,
-                x_operation_id=ei_operation_id,
+                access_token=create_ei_access_token,
+                x_operation_id=create_ei_operation_id,
                 country=country,
                 language=language,
                 payload=create_ei_payload,
                 test_mode=True)
 
-            ei_feed_point_message = KafkaMessage(ei_operation_id).get_message_from_kafka()
+            ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -76,8 +76,8 @@ class TestUpdateCn:
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
             """
-            fs_access_token = authorization.get_access_token_for_platform_one()
-            fs_operation_id = authorization.get_x_operation_id(fs_access_token)
+            create_fs_access_token = authorization.get_access_token_for_platform_one()
+            create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
         with allure.step(f'# {step_number}. Send request to create Fs'):
@@ -92,13 +92,13 @@ class TestUpdateCn:
 
             Requests().create_fs(
                 host_of_request=get_hosts[1],
-                access_token=fs_access_token,
-                x_operation_id=fs_operation_id,
+                access_token=create_fs_access_token,
+                x_operation_id=create_fs_operation_id,
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload,
                 test_mode=True)
 
-            fs_feed_point_message = KafkaMessage(fs_operation_id).get_message_from_kafka()
+            fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
             step_number += 1
 
         with allure.step(f'# {step_number}. Authorization platform one: create Pn'):
@@ -106,8 +106,8 @@ class TestUpdateCn:
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
             """
-            pn_access_token = authorization.get_access_token_for_platform_one()
-            pn_operation_id = authorization.get_x_operation_id(pn_access_token)
+            create_pn_access_token = authorization.get_access_token_for_platform_one()
+            create_pn_operation_id = authorization.get_x_operation_id(create_pn_access_token)
             step_number += 1
 
         with allure.step(f'# {step_number}. Send request to create Pn'):
@@ -125,15 +125,15 @@ class TestUpdateCn:
 
             Requests().create_pn(
                 host_of_request=get_hosts[1],
-                access_token=pn_access_token,
-                x_operation_id=pn_operation_id,
+                access_token=create_pn_access_token,
+                x_operation_id=create_pn_operation_id,
                 country=country,
                 language=language,
                 pmd=pmd,
                 payload=create_pn_payload,
                 test_mode=True)
 
-            pn_feed_point_message = KafkaMessage(pn_operation_id).get_message_from_kafka()
+            pn_feed_point_message = KafkaMessage(create_pn_operation_id).get_message_from_kafka()
             pn_ocid = pn_feed_point_message['data']['ocid']
             pn_id = pn_feed_point_message['data']['outcomes']['pn'][0]['id']
             pn_token = pn_feed_point_message['data']['outcomes']['pn'][0]['X-TOKEN']
@@ -543,11 +543,11 @@ class TestUpdateCn:
 
                         connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=ei_operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=fs_operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=pn_operation_id)
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
 
                         connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
 
