@@ -322,3 +322,21 @@ class Requests:
             })
         allure.attach(host_of_request + f"/do/protocol", 'URL')
         return protocol
+
+    @staticmethod
+    @allure.step('Prepared request: create Submission')
+    def create_submission(host_of_request, access_token, x_operation_id, pn_ocid, tender_id, payload, test_mode=False):
+        submission = requests.post(
+            url=host_of_request + f"/do/submission/{pn_ocid}/{tender_id}",
+            params={
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json'
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/submission", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return submission

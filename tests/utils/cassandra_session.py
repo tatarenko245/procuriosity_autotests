@@ -74,6 +74,15 @@ class CassandraSession:
         self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
 
+    def submission_process_cleanup_table_of_services(self, pn_ocid):
+        self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
+        self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
+        self.clarification_keyspace.execute(f"DELETE FROM periods WHERE cpid='{pn_ocid}';")
+        self.dossier_keyspace.execute(f"DELETE FROM submission WHERE cpid='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+
     def tender_period_end_process_cleanup_table_of_services(self, pn_ocid):
         self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
         self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
@@ -176,6 +185,12 @@ class CassandraSession:
 
     def get_period_shift_rules(self, country, pmd, operation_type, parameter):
         value = self.clarification_keyspace.execute(
+            f"""SELECT "value" FROM rules WHERE "country"='{country}' AND "pmd" = '{pmd}' AND 
+            "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
+        return value.value
+
+    def get_min_submissions_from_dossier_rules(self, country, pmd, operation_type, parameter):
+        value = self.dossier_keyspace.execute(
             f"""SELECT "value" FROM rules WHERE "country"='{country}' AND "pmd" = '{pmd}' AND 
             "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
         return value.value
