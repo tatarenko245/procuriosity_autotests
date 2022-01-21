@@ -298,7 +298,8 @@ class TestCreateCn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Check a difference of comparing actual Tp release and expected Tp release.'):
+                with allure.step('Check a difference of comparing Tp release before submission creating and '
+                                 'Tp release after submission creating.'):
                     allure.attach(str(compare_releases),
                                   "Actual result of comparing Tp releases.")
                     allure.attach(str(expected_result),
@@ -353,8 +354,8 @@ class TestCreateCn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Check a difference of comparing Ms release before cn creating and '
-                                 'Ms release after cn creating.'):
+                with allure.step('Check a difference of comparing Ms release before submission creating and '
+                                 'Ms release after submission creating.'):
                     allure.attach(str(compare_releases),
                                   "Actual result of comparing MS releases.")
                     allure.attach(str(expected_result),
