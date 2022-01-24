@@ -354,3 +354,38 @@ class MdmService:
                                 'lang': language
                             }).json()
         return data
+
+    def get_criteria(self, language, country, pmd, phase):
+        data = requests.get(
+            url=f"{self.host}:{self.port}/criteria",
+            params={
+                'lang': language,
+                'country': country,
+                'pmd': pmd,
+                'phase': phase
+            }).json()
+        return data
+
+    def get_requirement_groups(self, language, country, pmd, phase, criterion_id):
+        data = requests.get(
+            url=f"{self.host}:{self.port}/requirementGroups",
+            params={
+                'lang': language,
+                'country': country,
+                'pmd': pmd,
+                'phase': phase,
+                'criterionId': criterion_id
+            }).json()
+        return data
+
+    def get_requirements(self, language, country, pmd, phase, requirement_group_id):
+        data = requests.get(
+            url=f"{self.host}:{self.port}/requirements",
+            params={
+                'lang': language,
+                'country': country,
+                'pmd': pmd,
+                'phase': phase,
+                'requirementGroupId': requirement_group_id
+            }).json()
+        return data
