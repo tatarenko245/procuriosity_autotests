@@ -204,7 +204,7 @@ class TestCreateCn:
             time.sleep(1)
             submission_payload_class = copy.deepcopy(SubmissionPreparePayload())
             create_submission_payload = \
-                submission_payload_class.create_submission_obligatory_data_model()
+                submission_payload_class.create_submission_moldova_obligatory_data_model()
 
             synchronous_result_of_sending_the_request = Requests().create_submission(
                 host_of_request=get_hosts[1],

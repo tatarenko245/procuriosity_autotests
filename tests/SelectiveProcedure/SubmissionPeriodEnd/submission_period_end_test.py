@@ -190,34 +190,69 @@ class TestCreateCn:
             actual_ms_release_before_submission_creating = requests.get(url=f"{pn_url}/{pn_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Submission'):
+        with allure.step(f'# {step_number}. Authorization platform one: create Submission from Moldova'):
             """
             Tender platform authorization for create tender phase process.
             As result get Tender platform's access token and process operation-id.
             """
-            create_submission_access_token = authorization.get_access_token_for_platform_one()
-            create_submission_operation_id = authorization.get_x_operation_id(create_submission_access_token)
+            create_submission_moldova_access_token = authorization.get_access_token_for_platform_one()
+            create_submission_moldova_operation_id = authorization.get_x_operation_id(
+                create_submission_moldova_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Submission'):
+        with allure.step(f'# {step_number}. Send request to create Submission from Moldova'):
             """
             Send api request on BPE host for create submission.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
             time.sleep(1)
             submission_payload_class = copy.deepcopy(SubmissionPreparePayload())
-            create_submission_payload = \
-                submission_payload_class.create_submission_obligatory_data_model()
+            create_submission_moldova_payload = \
+                submission_payload_class.create_submission_moldova_obligatory_data_model()
+
+            Requests().create_submission(
+                host_of_request=get_hosts[1],
+                access_token=create_submission_moldova_access_token,
+                x_operation_id=create_submission_moldova_operation_id,
+                pn_ocid=pn_ocid,
+                tender_id=tp_id,
+                payload=create_submission_moldova_payload,
+                test_mode=True)
+
+            create_submission_moldova_feed_point_message = KafkaMessage(
+                create_submission_moldova_operation_id).get_message_from_kafka()
+            step_number += 1
+
+        with allure.step(f'# {step_number}. Authorization platform one: create Submission from Belarus'):
+            """
+            Tender platform authorization for create tender phase process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            create_submission_belarus_access_token = authorization.get_access_token_for_platform_one()
+            create_submission_belarus_operation_id = authorization.get_x_operation_id(
+                create_submission_belarus_access_token)
+            step_number += 1
+
+        with allure.step(f'# {step_number}. Send request to create Submission from Belarus'):
+            """
+            Send api request on BPE host for create submission.
+            Save synchronous result of sending the request and asynchronous result of sending the request.
+            """
+            time.sleep(1)
+            create_submission_belarus_payload = \
+                submission_payload_class.create_submission_belarus_obligatory_data_model()
 
             synchronous_result_of_sending_the_request = Requests().create_submission(
                 host_of_request=get_hosts[1],
-                access_token=create_submission_access_token,
-                x_operation_id=create_submission_operation_id,
+                access_token=create_submission_belarus_access_token,
+                x_operation_id=create_submission_belarus_operation_id,
                 pn_ocid=pn_ocid,
                 tender_id=tp_id,
-                payload=create_submission_payload,
+                payload=create_submission_belarus_payload,
                 test_mode=True)
 
+            create_submission_belarus_feed_point_message = KafkaMessage(
+                create_submission_belarus_operation_id).get_message_from_kafka()
             step_number += 1
 
         with allure.step(f'# {step_number}. See result'):
@@ -225,58 +260,48 @@ class TestCreateCn:
             Check the results of TestCase.
             """
 
-            with allure.step(f'# {step_number}.1. Check status code'):
-                """
-                Check the synchronous_result_of_sending_the_request.
-                """
-                with allure.step('Compare actual status code of sending the request and '
-                                 'expected status code of sending request.'):
-                    allure.attach(str(synchronous_result_of_sending_the_request.status_code),
-                                  "Actual status code of sending the request.")
-                    allure.attach(str(202), "Expected status code of sending request.")
-                    assert str(synchronous_result_of_sending_the_request.status_code) == str(202)
-
             with allure.step(f'# {step_number}.2. Check message in feed point'):
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                create_submission_feed_point_message = KafkaMessage(
-                    create_submission_operation_id).get_message_from_kafka()
+                time_bot(expected_time=create_cn_payload['preQualification']['period']['endDate'])
+                kafka_message_class = KafkaMessage(ocid=tp_id,
+                                                   initiation="bpe")
+                submission_period_end_feed_point_message = \
+                    kafka_message_class.get_message_from_kafka_by_ocid_and_initiator()[0]
+                allure.attach(str(submission_period_end_feed_point_message), 'Message in feed point')
 
-                allure.attach(str(create_submission_feed_point_message), 'Message in feed point')
-
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    create_submission_operation_id).create_submission_message_is_successful(
-                    environment=environment,
-                    kafka_message=create_submission_feed_point_message,
-                    pn_ocid=pn_ocid,
-                    tender_id=tp_id)
+                asynchronous_result_of_expired_submission_period_end = \
+                    kafka_message_class.submission_period_end_no_auction_message_is_successful(
+                        environment=environment,
+                        kafka_message=submission_period_end_feed_point_message,
+                        pn_ocid=pn_ocid,
+                        tender_id=tp_id)
 
                 try:
                     """
                     If asynchronous_result_of_sending_the_request was False, then return process steps by
                     operation-id.
                     """
-                    if asynchronous_result_of_sending_the_request_was_checked is False:
+                    if asynchronous_result_of_expired_submission_period_end is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=create_submission_operation_id)
+                                operation_id=submission_period_end_feed_point_message['X-OPERATION-ID'])
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
                 with allure.step('Compare actual asynchronous result of sending the request and '
                                  'expected asynchronous result of sending request.'):
-                    allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
+                    allure.attach(str(asynchronous_result_of_expired_submission_period_end),
                                   "Actual asynchronous result of sending the request.")
                     allure.attach(str(True), "Expected asynchronous result of sending the request.")
-                    assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
+                    assert str(asynchronous_result_of_expired_submission_period_end) == str(True)
 
             with allure.step(f'# {step_number}.3. Check TP release'):
                 """
                 Compare actual Tp release before submission creating and actual Tp release after submission creating.
                 """
-                time_bot(expected_time=create_cn_payload['preQualification']['period']['endDate'])
 
                 actual_tp_release_after_submission_period_end_expired = requests.get(url=f"{pn_url}/{tp_id}").json()
 
@@ -288,14 +313,77 @@ class TestCreateCn:
                     actual_tp_release=actual_tp_release_after_submission_period_end_expired,
                     host_for_service=get_hosts[2])
 
-                criteria_array_source_procuring_entity = \
-                    submission_period_end_release_class.prepare_criteria_array_source_procuring_entity()
+                final_expected_criteria_array_source_procuring_entity = \
+                    submission_period_end_release_class.prepare_criteria_object_source_procuring_entity()
 
-                print("criteria_array_source_procuring_entity")
-                print(json.dumps(criteria_array_source_procuring_entity))
+                final_expected_submissions_object = {
+                    "details": []
+                }
 
-            #     allure.attach(str(json.dumps(actual_tp_release_before_submission_creating)),
-            #                   "Actual TP release before submission creating")
+                submission_details_object_from_moldova = submission_period_end_release_class.prepare_submission_object(
+                    sequence_number_of_submission=0,
+                    submission_payload=create_submission_moldova_payload,
+                    create_submission_feed_point_message=create_submission_moldova_feed_point_message)
+
+                final_expected_submissions_object['details'].append(submission_details_object_from_moldova)
+
+                submission_details_object_from_belarus = submission_period_end_release_class.prepare_submission_object(
+                    sequence_number_of_submission=1,
+                    submission_payload=create_submission_belarus_payload,
+                    create_submission_feed_point_message=create_submission_belarus_feed_point_message)
+
+                final_expected_submissions_object['details'].append(submission_details_object_from_belarus)
+
+                final_expected_qualifications_array = []
+                expected_qualifications_array = []
+
+                qualification_object_for_first_submission = \
+                    submission_period_end_release_class.prepare_qualification_object(
+                        cn_payload=create_cn_payload,
+                        sequence_number_of_submission=0,
+                        submission_id=create_submission_moldova_feed_point_message[
+                            'data']['outcomes']['submissions'][0]['id'],
+                        submission_period_end_feed_point_message=submission_period_end_feed_point_message
+                    )
+                expected_qualifications_array.append(qualification_object_for_first_submission)
+
+                qualification_object_for_second_submission = \
+                    submission_period_end_release_class.prepare_qualification_object(
+                        cn_payload=create_cn_payload,
+                        sequence_number_of_submission=1,
+                        submission_id=create_submission_belarus_feed_point_message[
+                            'data']['outcomes']['submissions'][0]['id'],
+                        submission_period_end_feed_point_message=submission_period_end_feed_point_message
+                    )
+
+                expected_qualifications_array.append(qualification_object_for_second_submission)
+
+                quantity_of_object_into_final_expected_qualifications_array = len(expected_qualifications_array)
+                print("quantity_of_object_into_final_expected_qualifications_array")
+                print(quantity_of_object_into_final_expected_qualifications_array)
+
+                quantity_of_object_into_release_qualifications_array = len(
+                    actual_tp_release_after_submission_period_end_expired['releases'][0]['qualifications'])
+                print("quantity_of_object_into_release_qualifications_array")
+                print(quantity_of_object_into_release_qualifications_array)
+
+                if quantity_of_object_into_final_expected_qualifications_array == \
+                        quantity_of_object_into_release_qualifications_array:
+                    for q in range(quantity_of_object_into_final_expected_qualifications_array):
+                        for q_1 in range(quantity_of_object_into_release_qualifications_array):
+                            if expected_qualifications_array[q]['id'] == \
+                                    actual_tp_release_after_submission_period_end_expired[
+                                        'releases'][0]['qualifications'][q_1]['id']:
+                                final_expected_qualifications_array.append(expected_qualifications_array[q]['value'])
+
+                print("Actual qualifications array")
+                print(json.dumps(actual_tp_release_after_submission_period_end_expired['releases'][0]['qualifications']))
+
+                print("Expected qualifications array")
+                print(json.dumps(final_expected_qualifications_array))
+
+            #    allure.attach(str(json.dumps(actual_tp_release_before_submission_creating)),
+            #                  "Actual TP release before submission creating")
             #
             #     actual_tp_release_after_submission_creating = requests.get(url=f"{pn_url}/{tp_id}").json()
             #     allure.attach(str(json.dumps(actual_tp_release_after_submission_creating)),
