@@ -99,7 +99,7 @@ class SubmissionPeriodEndExpectedRelease:
                         "title": criteria_groups_requirements_from_mdm['data'][r]['title'],
                         "dataType": "boolean",
                         "status": "active",
-                        "dataPublished": self.actual_tp_release['releases'][0]['preQualification'][
+                        "datePublished": self.actual_tp_release['releases'][0]['preQualification'][
                             'period']['endDate'],
                         "description": criteria_groups_requirements_from_mdm['data'][r]['description']
                     }
@@ -151,19 +151,10 @@ class SubmissionPeriodEndExpectedRelease:
             final_submissions_details_object['candidates'].append(submission_details_candidates_object)
         return final_submissions_details_object
 
-    def prepare_qualification_object(self, cn_payload, sequence_number_of_submission, submission_id,
-                                     submission_period_end_feed_point_message):
+    def prepare_qualification_object(self, cn_payload, submission_id, submission_period_end_feed_point_message):
         status_details = None
+        final_qualification_mapper = None
 
-        try:
-            is_it_uuid(
-                uuid_to_test=self.actual_tp_release[
-                    'releases'][0]['qualifications'][sequence_number_of_submission]['id'],
-                version=4
-            )
-        except ValueError:
-            raise ValueError("Check your actual_tp_release['releases'][0]['submissions']['details'][i]['id']: "
-                             "id must be uuid version 4")
         try:
             """
             FR.COM-7.13.1
@@ -174,17 +165,112 @@ class SubmissionPeriodEndExpectedRelease:
         except Exception:
             raise Exception("Impossible to set correct statusDetails for qualification")
 
-        qualification_object = {
-            "id": self.actual_tp_release[
-                    'releases'][0]['qualifications'][sequence_number_of_submission]['id'],
-            "date": submission_period_end_feed_point_message['data']['operationDate'],
-            "status": "pending",
-            "statusDetails": status_details,
-            "relatedSubmission": submission_id
-        }
+        for i in self.actual_tp_release['releases'][0]['qualifications']:
+            for i_1 in i:
+                if i_1 == "relatedSubmission":
+                    if i['relatedSubmission'] == submission_id:
+                        try:
+                            is_it_uuid(
+                                uuid_to_test=i['id'],
+                                version=4
+                            )
+                        except ValueError:
+                            raise ValueError("Check your qualification['id']: id must be uuid version 4")
 
-        final_qualification_mapper = {
-            "id": qualification_object['id'],
-            "value": qualification_object
-        }
+                        qualification_object = {
+                            "id": i['id'],
+                            "date": submission_period_end_feed_point_message['data']['operationDate'],
+                            "status": "pending",
+                            "statusDetails": status_details,
+                            "relatedSubmission": submission_id
+                        }
+
+                        final_qualification_mapper = {
+                            "id": qualification_object['id'],
+                            "value": qualification_object
+                        }
         return final_qualification_mapper
+
+    def prepare_parties_object(self, submission_payload):
+        final_parties_mapper = []
+        for i in range(len(submission_payload['submission']['candidates'])):
+            parties_object = {
+                "id": f"{submission_payload['submission']['candidates'][i]['identifier']['scheme']}-"
+                      f"{submission_payload['submission']['candidates'][i]['identifier']['id']}",
+                "name": submission_payload['submission']['candidates'][i]['name'],
+                "identifier": submission_payload['submission']['candidates'][i]['identifier'],
+                "address": submission_payload['submission']['candidates'][i]['address'],
+                "contactPoint": submission_payload['submission']['candidates'][i]['contactPoint'],
+                "roles": ["candidate"]
+            }
+
+            country_data = self.mdm_class.get_country(
+                country=submission_payload['submission']['candidates'][i]['address']['addressDetails']['country']['id'],
+                language=self.language
+            )
+            country_object = {
+                "scheme": country_data['data']['scheme'],
+                "id": country_data['data']['id'],
+                "description": country_data['data']['description'],
+                "uri": country_data['data']['uri']
+            }
+
+            region_data = self.mdm_class.get_region(
+                region=submission_payload['submission']['candidates'][i]['address']['addressDetails']['region']['id'],
+                country=submission_payload['submission']['candidates'][i]['address']['addressDetails']['country']['id'],
+                language=self.language
+            )
+            region_object = {
+                "scheme": region_data['data']['scheme'],
+                "id": region_data['data']['id'],
+                "description": region_data['data']['description'],
+                "uri": region_data['data']['uri']
+            }
+
+            if \
+                    submission_payload['submission']['candidates'][i]['address']['addressDetails']['locality'][
+                        'scheme'] == "CUATM":
+                locality_data = self.mdm_class.get_locality(
+                    locality=submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+                        'locality']['id'],
+                    region=submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+                        'region']['id'],
+                    country=submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+                        'country']['id'],
+                    language=self.language
+                )
+                locality_object = {
+                    "scheme": locality_data['data']['scheme'],
+                    "id": locality_data['data']['id'],
+                    "description": locality_data['data']['description'],
+                    "uri": locality_data['data']['uri']
+                }
+            else:
+                locality_object = {
+                    "scheme": submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+                        'locality']['scheme'],
+                    "id": submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+                        'locality']['id'],
+                    "description": submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+                        'locality']['description']
+                }
+
+            submission_payload['submission']['candidates'][i]['address']['addressDetails']['country'] = country_object
+            submission_payload['submission']['candidates'][i]['address']['addressDetails']['region'] = region_object
+            submission_payload['submission']['candidates'][i]['address']['addressDetails']['locality'] = locality_object
+
+            parties_mapper = {
+                "id": parties_object['id'],
+                "value": parties_object
+            }
+
+            final_parties_mapper.append(parties_mapper)
+
+        return final_parties_mapper
+
+    @staticmethod
+    def prepare_pre_qualification_qualification_period_object(submission_period_end_feed_point_message):
+        qualification_period_object = {
+            "startDate": submission_period_end_feed_point_message['data']['operationDate']
+        }
+        return qualification_period_object

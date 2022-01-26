@@ -310,14 +310,14 @@ class TestCreateCn:
                 Compare actual Ms release before submission creating and actual Ms release after submission creating.
                 """
                 allure.attach(str(json.dumps(actual_ms_release_before_submission_creating)),
-                              "Actual TP release before submission creating")
+                              "Actual Ms release before submission creating")
 
                 actual_ms_release_after_submission_creating = requests.get(url=f"{pn_url}/{pn_ocid}").json()
                 allure.attach(str(json.dumps(actual_ms_release_after_submission_creating)),
-                              "Actual TP release after submission creating")
+                              "Actual Ms release after submission creating")
 
-                compare_releases = dict(DeepDiff(actual_tp_release_before_submission_creating,
-                                                 actual_tp_release_after_submission_creating))
+                compare_releases = dict(DeepDiff(actual_ms_release_before_submission_creating,
+                                                 actual_ms_release_after_submission_creating))
                 expected_result = {}
 
                 try:

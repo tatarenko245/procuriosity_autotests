@@ -242,7 +242,7 @@ class TestCreateCn:
             create_submission_belarus_payload = \
                 submission_payload_class.create_submission_belarus_obligatory_data_model()
 
-            synchronous_result_of_sending_the_request = Requests().create_submission(
+            Requests().create_submission(
                 host_of_request=get_hosts[1],
                 access_token=create_submission_belarus_access_token,
                 x_operation_id=create_submission_belarus_operation_id,
@@ -302,8 +302,12 @@ class TestCreateCn:
                 """
                 Compare actual Tp release before submission creating and actual Tp release after submission creating.
                 """
+                allure.attach(str(json.dumps(actual_tp_release_before_submission_creating)),
+                              "Actual TP release before submission creating")
 
                 actual_tp_release_after_submission_period_end_expired = requests.get(url=f"{pn_url}/{tp_id}").json()
+                allure.attach(str(json.dumps(actual_tp_release_after_submission_period_end_expired)),
+                              "Actual TP release after submissionPeriodEnd expired.")
 
                 submission_period_end_release_class = SubmissionPeriodEndExpectedRelease(
                     language=language,
@@ -312,160 +316,274 @@ class TestCreateCn:
                     phase="qualification",
                     actual_tp_release=actual_tp_release_after_submission_period_end_expired,
                     host_for_service=get_hosts[2])
+                try:
+                    """
+                    Prepare expected criteria array, where source == procuringEntity.
+                    """
+                    final_expected_criteria_array_source_procuring_entity = \
+                        [submission_period_end_release_class.prepare_criteria_object_source_procuring_entity()]
+                except Exception:
+                    raise Exception("Impossible to prepare expected criteria array, where source == procuringEntity.")
 
-                final_expected_criteria_array_source_procuring_entity = \
-                    submission_period_end_release_class.prepare_criteria_object_source_procuring_entity()
+                try:
+                    """
+                    Prepare expected submission object.
+                    """
+                    final_expected_submissions_object = {
+                        "details": []
+                    }
 
-                final_expected_submissions_object = {
-                    "details": []
+                    submission_details_object_from_moldova = \
+                        submission_period_end_release_class.prepare_submission_object(
+                            sequence_number_of_submission=0,
+                            submission_payload=create_submission_moldova_payload,
+                            create_submission_feed_point_message=create_submission_moldova_feed_point_message)
+
+                    final_expected_submissions_object['details'].append(submission_details_object_from_moldova)
+
+                    submission_details_object_from_belarus = \
+                        submission_period_end_release_class.prepare_submission_object(
+                            sequence_number_of_submission=1,
+                            submission_payload=create_submission_belarus_payload,
+                            create_submission_feed_point_message=create_submission_belarus_feed_point_message)
+
+                    final_expected_submissions_object['details'].append(submission_details_object_from_belarus)
+                except Exception:
+                    raise Exception("Impossible to prepare expected submission object.")
+
+                try:
+                    """
+                    Prepare expected qualifications array.
+                    """
+                    final_expected_qualifications_array = []
+                    expected_qualifications_array = []
+
+                    qualification_object_for_first_submission = \
+                        submission_period_end_release_class.prepare_qualification_object(
+                            cn_payload=create_cn_payload,
+                            submission_id=create_submission_moldova_feed_point_message[
+                                'data']['outcomes']['submissions'][0]['id'],
+                            submission_period_end_feed_point_message=submission_period_end_feed_point_message
+                        )
+                    expected_qualifications_array.append(qualification_object_for_first_submission)
+
+                    qualification_object_for_second_submission = \
+                        submission_period_end_release_class.prepare_qualification_object(
+                            cn_payload=create_cn_payload,
+                            submission_id=create_submission_belarus_feed_point_message[
+                                'data']['outcomes']['submissions'][0]['id'],
+                            submission_period_end_feed_point_message=submission_period_end_feed_point_message
+                        )
+
+                    expected_qualifications_array.append(qualification_object_for_second_submission)
+
+                    quantity_of_object_into_final_expected_qualifications_array = len(expected_qualifications_array)
+
+                    quantity_of_object_into_release_qualifications_array = len(
+                        actual_tp_release_after_submission_period_end_expired['releases'][0]['qualifications'])
+
+                    if quantity_of_object_into_final_expected_qualifications_array == \
+                            quantity_of_object_into_release_qualifications_array:
+                        for q in range(quantity_of_object_into_release_qualifications_array):
+                            for q_1 in range(quantity_of_object_into_final_expected_qualifications_array):
+                                if actual_tp_release_after_submission_period_end_expired[
+                                            'releases'][0]['qualifications'][q]['id'] == \
+                                        expected_qualifications_array[q_1]['id']:
+                                    final_expected_qualifications_array.append(
+                                        expected_qualifications_array[q_1]['value'])
+                except Exception:
+                    raise Exception("Impossible to prepare expected qualifications array.")
+
+                compare_releases = dict(DeepDiff(actual_tp_release_before_submission_creating,
+                                                 actual_tp_release_after_submission_period_end_expired))
+
+                dictionary_item_added_was_cleaned = \
+                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+
+                try:
+                    """
+                    Prepare expected parties array.
+                    """
+                    final_expected_parties_array = []
+
+                    parties_object_from_moldova = submission_period_end_release_class.prepare_parties_object(
+                        submission_payload=create_submission_moldova_payload
+                    )
+
+                    parties_object_from_belarus = submission_period_end_release_class.prepare_parties_object(
+                        submission_payload=create_submission_belarus_payload
+                    )
+
+                    expected_parties_array = parties_object_from_moldova + parties_object_from_belarus
+
+                    quantity_of_object_into_final_expected_parties_array = len(expected_parties_array)
+
+                    quantity_of_object_into_release_parties_array = len(
+                        actual_tp_release_after_submission_period_end_expired['releases'][0]['parties'])
+
+                    if quantity_of_object_into_final_expected_parties_array == \
+                            quantity_of_object_into_release_parties_array:
+                        for q in range(quantity_of_object_into_release_parties_array):
+                            for q_1 in range(quantity_of_object_into_final_expected_parties_array):
+                                if actual_tp_release_after_submission_period_end_expired[
+                                            'releases'][0]['parties'][q]['id'] == expected_parties_array[q_1]['id']:
+                                    final_expected_parties_array.append(expected_parties_array[q_1]['value'])
+
+                except Exception:
+                    raise Exception("Impossible to prepare expected parties array.")
+
+                try:
+                    """
+                    Prepare expected preQualification.qualificationPeriod object.
+                    """
+                    final_expected_pre_qualification_qualification_period_object = \
+                        submission_period_end_release_class.prepare_pre_qualification_qualification_period_object(
+                            submission_period_end_feed_point_message=submission_period_end_feed_point_message
+                        )
+                except Exception:
+                    raise Exception("Impossible to prepare expected preQualification.qualificationPeriod object.")
+
+                expected_result = {
+                    "dictionary_item_added": "['releases'][0]['parties'], "
+                                             "['releases'][0]['submissions'], "
+                                             "['releases'][0]['qualifications'], "
+                                             "['releases'][0]['tender']['criteria'], "
+                                             "['releases'][0]['preQualification']['qualificationPeriod']",
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{tp_id}-"
+                                f"{actual_tp_release_after_submission_period_end_expired['releases'][0]['id'][46:59]}",
+                            "old_value": f"{tp_id}-"
+                                         f"{actual_tp_release_before_submission_creating['releases'][0]['id'][46:59]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": submission_period_end_feed_point_message['data']['operationDate'],
+                            "old_value": actual_tp_release_before_submission_creating['releases'][0]['date']
+                        },
+                        "root['releases'][0]['tender']['statusDetails']": {
+                            "new_value": "qualification",
+                            "old_value": "submission"
+                        }
+                    }
                 }
 
-                submission_details_object_from_moldova = submission_period_end_release_class.prepare_submission_object(
-                    sequence_number_of_submission=0,
-                    submission_payload=create_submission_moldova_payload,
-                    create_submission_feed_point_message=create_submission_moldova_feed_point_message)
+                try:
+                    """
+                        If compare_releases !=expected_result, then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=final_expected_pre_qualification_qualification_period_object[
+                                    'X-OPERATION-ID'])
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
-                final_expected_submissions_object['details'].append(submission_details_object_from_moldova)
+                with allure.step('Check a difference of comparing actual Tp release and expected Tp release.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing Tp releases.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing Tp releases.")
+                    assert str(compare_releases) == str(expected_result)
 
-                submission_details_object_from_belarus = submission_period_end_release_class.prepare_submission_object(
-                    sequence_number_of_submission=1,
-                    submission_payload=create_submission_belarus_payload,
-                    create_submission_feed_point_message=create_submission_belarus_feed_point_message)
+                with allure.step('Compare actual parties array and expected parties array.'):
+                    allure.attach(str(actual_tp_release_after_submission_period_end_expired['releases'][0]['parties']),
+                                  "Actual parties array.")
+                    allure.attach(str(final_expected_parties_array),
+                                  "Expected parties array.")
+                    assert actual_tp_release_after_submission_period_end_expired['releases'][0]['parties'] == \
+                           final_expected_parties_array
 
-                final_expected_submissions_object['details'].append(submission_details_object_from_belarus)
+                with allure.step('Compare actual submissions object and expected submissions object.'):
+                    allure.attach(str(actual_tp_release_after_submission_period_end_expired['releases'][0][
+                                          'submissions']), "Actual submissions object.")
+                    allure.attach(str(final_expected_submissions_object),
+                                  "Expected submissions object.")
+                    assert actual_tp_release_after_submission_period_end_expired['releases'][0]['submissions'] == \
+                           final_expected_submissions_object
 
-                final_expected_qualifications_array = []
-                expected_qualifications_array = []
+                with allure.step('Compare actual qualifications array and expected qualifications array'):
+                    allure.attach(str(actual_tp_release_after_submission_period_end_expired['releases'][0][
+                                          'qualifications']), "Actual qualifications array.")
+                    allure.attach(str(final_expected_qualifications_array), "Expected qualifications array.")
+                    assert actual_tp_release_after_submission_period_end_expired['releases'][0]['qualifications'] == \
+                           final_expected_qualifications_array
 
-                qualification_object_for_first_submission = \
-                    submission_period_end_release_class.prepare_qualification_object(
-                        cn_payload=create_cn_payload,
-                        sequence_number_of_submission=0,
-                        submission_id=create_submission_moldova_feed_point_message[
-                            'data']['outcomes']['submissions'][0]['id'],
-                        submission_period_end_feed_point_message=submission_period_end_feed_point_message
-                    )
-                expected_qualifications_array.append(qualification_object_for_first_submission)
+                with allure.step('Compare actual tender.criteria array and expected tender.criteria array'):
+                    allure.attach(str(actual_tp_release_after_submission_period_end_expired['releases'][0][
+                                          'tender']['criteria']), "Actual tender.criteria array.")
+                    allure.attach(str(final_expected_criteria_array_source_procuring_entity),
+                                  "Expected qualifications array.")
+                    assert actual_tp_release_after_submission_period_end_expired['releases'][0]['tender'][
+                               'criteria'] == final_expected_criteria_array_source_procuring_entity
 
-                qualification_object_for_second_submission = \
-                    submission_period_end_release_class.prepare_qualification_object(
-                        cn_payload=create_cn_payload,
-                        sequence_number_of_submission=1,
-                        submission_id=create_submission_belarus_feed_point_message[
-                            'data']['outcomes']['submissions'][0]['id'],
-                        submission_period_end_feed_point_message=submission_period_end_feed_point_message
-                    )
+                with allure.step('Compare actual preQualification.qualificationPeriod object and '
+                                 'expected preQualification.qualificationPeriod object'):
+                    allure.attach(str(actual_tp_release_after_submission_period_end_expired['releases'][0][
+                                          'preQualification']['qualificationPeriod']),
+                                  "Actual preQualification.qualificationPeriod object.")
+                    allure.attach(str(final_expected_pre_qualification_qualification_period_object),
+                                  "Expected preQualification.qualificationPeriod object.")
+                    assert actual_tp_release_after_submission_period_end_expired['releases'][0]['preQualification'][
+                               'qualificationPeriod'] == final_expected_pre_qualification_qualification_period_object
 
-                expected_qualifications_array.append(qualification_object_for_second_submission)
+            with allure.step(f'# {step_number}.4. Check MS release'):
+                """
+                Compare actual Ms release before submission creating and actual Ms release after submission creating.
+                """
+                allure.attach(str(json.dumps(actual_ms_release_before_submission_creating)),
+                              "Actual Ms release before submission creating")
 
-                quantity_of_object_into_final_expected_qualifications_array = len(expected_qualifications_array)
-                print("quantity_of_object_into_final_expected_qualifications_array")
-                print(quantity_of_object_into_final_expected_qualifications_array)
+                actual_ms_release_after_submission_period_end_expired = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(str(json.dumps(actual_ms_release_after_submission_period_end_expired)),
+                              "Actual Ms release after submissionPeriodEnd expired.")
 
-                quantity_of_object_into_release_qualifications_array = len(
-                    actual_tp_release_after_submission_period_end_expired['releases'][0]['qualifications'])
-                print("quantity_of_object_into_release_qualifications_array")
-                print(quantity_of_object_into_release_qualifications_array)
+                compare_releases = dict(DeepDiff(actual_ms_release_before_submission_creating,
+                                                 actual_ms_release_after_submission_period_end_expired))
 
-                if quantity_of_object_into_final_expected_qualifications_array == \
-                        quantity_of_object_into_release_qualifications_array:
-                    for q in range(quantity_of_object_into_final_expected_qualifications_array):
-                        for q_1 in range(quantity_of_object_into_release_qualifications_array):
-                            if expected_qualifications_array[q]['id'] == \
-                                    actual_tp_release_after_submission_period_end_expired[
-                                        'releases'][0]['qualifications'][q_1]['id']:
-                                final_expected_qualifications_array.append(expected_qualifications_array[q]['value'])
+                expected_result = {}
 
-                print("Actual qualifications array")
-                print(json.dumps(actual_tp_release_after_submission_period_end_expired['releases'][0]['qualifications']))
+                try:
+                    """
+                        If TestCase was passed, then cLean up the database.
+                        If TestCase was failed, then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result:
+                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                print("Expected qualifications array")
-                print(json.dumps(final_expected_qualifications_array))
+                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-            #    allure.attach(str(json.dumps(actual_tp_release_before_submission_creating)),
-            #                  "Actual TP release before submission creating")
-            #
-            #     actual_tp_release_after_submission_creating = requests.get(url=f"{pn_url}/{tp_id}").json()
-            #     allure.attach(str(json.dumps(actual_tp_release_after_submission_creating)),
-            #                   "Actual TP release after submission creating")
-            #
-            #     compare_releases = dict(DeepDiff(actual_tp_release_before_submission_creating,
-            #                                      actual_tp_release_after_submission_creating))
-            #     expected_result = {}
-            #
-            #     try:
-            #         """
-            #             If compare_releases !=expected_result, then return process steps by operation-id.
-            #             """
-            #         if compare_releases == expected_result:
-            #             pass
-            #         else:
-            #             with allure.step('# Steps from Casandra DataBase'):
-            #                 steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-            #                     operation_id=create_submission_operation_id)
-            #                 allure.attach(steps, "Cassandra DataBase: steps of process")
-            #     except ValueError:
-            #         raise ValueError("Can not return BPE operation step")
-            #
-            #     with allure.step('Check a difference of comparing actual Tp release and expected Tp release.'):
-            #         allure.attach(str(compare_releases),
-            #                       "Actual result of comparing Tp releases.")
-            #         allure.attach(str(expected_result),
-            #                       "Expected result of comparing Tp releases.")
-            #         assert str(compare_releases) == str(expected_result)
-            #
-            # with allure.step(f'# {step_number}.4. Check MS release'):
-            #     """
-            #     Compare actual Ms release before submission creating and actual Ms release after submission creating.
-            #     """
-            #     allure.attach(str(json.dumps(actual_ms_release_before_submission_creating)),
-            #                   "Actual TP release before submission creating")
-            #
-            #     actual_ms_release_after_submission_creating = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-            #     allure.attach(str(json.dumps(actual_ms_release_after_submission_creating)),
-            #                   "Actual TP release after submission creating")
-            #
-            #     compare_releases = dict(DeepDiff(actual_tp_release_before_submission_creating,
-            #                                      actual_tp_release_after_submission_creating))
-            #     expected_result = {}
-            #
-            #     try:
-            #         """
-            #             If TestCase was passed, then cLean up the database.
-            #             If TestCase was failed, then return process steps by operation-id.
-            #             """
-            #         if compare_releases == expected_result:
-            #             connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-            #
-            #             connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-            #
-            #             connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-            #
-            #             connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-            #
-            #             connection_to_database.submission_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-            #
-            #             connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-            #
-            #             connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-            #
-            #             connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
-            #
-            #             connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
-            #
-            #             connection_to_database.cleanup_steps_of_process(operation_id=create_submission_operation_id)
-            #         else:
-            #             with allure.step('# Steps from Casandra DataBase'):
-            #                 steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-            #                     operation_id=create_submission_operation_id)
-            #                 allure.attach(steps, "Cassandra DataBase: steps of process")
-            #     except ValueError:
-            #         raise ValueError("Can not return BPE operation step")
-            #
-            #     with allure.step('Check a difference of comparing Ms release before cn creating and '
-            #                      'Ms release after cn creating.'):
-            #         allure.attach(str(compare_releases),
-            #                       "Actual result of comparing MS releases.")
-            #         allure.attach(str(expected_result),
-            #                       "Expected result of comparing Ms releases.")
-            #         assert str(compare_releases) == str(expected_result)
+                        connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.submission_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(
+                            operation_id=submission_period_end_feed_point_message['X-OPERATION-ID'])
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=submission_period_end_feed_point_message['X-OPERATION-ID'])
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                with allure.step('Check a difference of comparing Ms release before submissionPeriodEnd expired and '
+                                 'Ms release after submissionPeriodEnd expired.'):
+                    allure.attach(str(compare_releases), "Actual result of comparing MS releases.")
+                    allure.attach(str(expected_result), "Expected result of comparing Ms releases.")
+                    assert str(compare_releases) == str(expected_result)
