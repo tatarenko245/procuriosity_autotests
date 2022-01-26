@@ -485,49 +485,49 @@ class TestCreateCn:
                     raise ValueError("Can not return BPE operation step")
 
                 with allure.step('Check a difference of comparing actual Tp release and expected Tp release.'):
-                    allure.attach(str(compare_releases),
+                    allure.attach(json.dumps(compare_releases),
                                   "Actual result of comparing Tp releases.")
-                    allure.attach(str(expected_result),
+                    allure.attach(json.dumps(expected_result),
                                   "Expected result of comparing Tp releases.")
-                    assert str(compare_releases) == str(expected_result)
+                    assert compare_releases == expected_result
 
                 with allure.step('Compare actual parties array and expected parties array.'):
-                    allure.attach(str(actual_tp_release_after_submission_period_end_expired['releases'][0]['parties']),
+                    allure.attach(json.dumps(actual_tp_release_after_submission_period_end_expired['releases'][0]['parties']),
                                   "Actual parties array.")
-                    allure.attach(str(final_expected_parties_array),
+                    allure.attach(json.dumps(final_expected_parties_array),
                                   "Expected parties array.")
                     assert actual_tp_release_after_submission_period_end_expired['releases'][0]['parties'] == \
                            final_expected_parties_array
 
                 with allure.step('Compare actual submissions object and expected submissions object.'):
-                    allure.attach(str(actual_tp_release_after_submission_period_end_expired['releases'][0][
+                    allure.attach(json.dumps(actual_tp_release_after_submission_period_end_expired['releases'][0][
                                           'submissions']), "Actual submissions object.")
-                    allure.attach(str(final_expected_submissions_object),
+                    allure.attach(json.dumps(final_expected_submissions_object),
                                   "Expected submissions object.")
                     assert actual_tp_release_after_submission_period_end_expired['releases'][0]['submissions'] == \
                            final_expected_submissions_object
 
                 with allure.step('Compare actual qualifications array and expected qualifications array'):
-                    allure.attach(str(actual_tp_release_after_submission_period_end_expired['releases'][0][
+                    allure.attach(json.dumps(actual_tp_release_after_submission_period_end_expired['releases'][0][
                                           'qualifications']), "Actual qualifications array.")
-                    allure.attach(str(final_expected_qualifications_array), "Expected qualifications array.")
+                    allure.attach(json.dumps(final_expected_qualifications_array), "Expected qualifications array.")
                     assert actual_tp_release_after_submission_period_end_expired['releases'][0]['qualifications'] == \
                            final_expected_qualifications_array
 
                 with allure.step('Compare actual tender.criteria array and expected tender.criteria array'):
-                    allure.attach(str(actual_tp_release_after_submission_period_end_expired['releases'][0][
+                    allure.attach(json.dumps(actual_tp_release_after_submission_period_end_expired['releases'][0][
                                           'tender']['criteria']), "Actual tender.criteria array.")
-                    allure.attach(str(final_expected_criteria_array_source_procuring_entity),
+                    allure.attach(json.dumps(final_expected_criteria_array_source_procuring_entity),
                                   "Expected qualifications array.")
                     assert actual_tp_release_after_submission_period_end_expired['releases'][0]['tender'][
                                'criteria'] == final_expected_criteria_array_source_procuring_entity
 
                 with allure.step('Compare actual preQualification.qualificationPeriod object and '
                                  'expected preQualification.qualificationPeriod object'):
-                    allure.attach(str(actual_tp_release_after_submission_period_end_expired['releases'][0][
+                    allure.attach(json.dumps(actual_tp_release_after_submission_period_end_expired['releases'][0][
                                           'preQualification']['qualificationPeriod']),
                                   "Actual preQualification.qualificationPeriod object.")
-                    allure.attach(str(final_expected_pre_qualification_qualification_period_object),
+                    allure.attach(json.dumps(final_expected_pre_qualification_qualification_period_object),
                                   "Expected preQualification.qualificationPeriod object.")
                     assert actual_tp_release_after_submission_period_end_expired['releases'][0]['preQualification'][
                                'qualificationPeriod'] == final_expected_pre_qualification_qualification_period_object
@@ -536,11 +536,11 @@ class TestCreateCn:
                 """
                 Compare actual Ms release before submission creating and actual Ms release after submission creating.
                 """
-                allure.attach(str(json.dumps(actual_ms_release_before_submission_creating)),
+                allure.attach(json.dumps(actual_ms_release_before_submission_creating),
                               "Actual Ms release before submission creating")
 
                 actual_ms_release_after_submission_period_end_expired = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-                allure.attach(str(json.dumps(actual_ms_release_after_submission_period_end_expired)),
+                allure.attach(json.dumps(actual_ms_release_after_submission_period_end_expired),
                               "Actual Ms release after submissionPeriodEnd expired.")
 
                 compare_releases = dict(DeepDiff(actual_ms_release_before_submission_creating,
@@ -584,6 +584,6 @@ class TestCreateCn:
 
                 with allure.step('Check a difference of comparing Ms release before submissionPeriodEnd expired and '
                                  'Ms release after submissionPeriodEnd expired.'):
-                    allure.attach(str(compare_releases), "Actual result of comparing MS releases.")
-                    allure.attach(str(expected_result), "Expected result of comparing Ms releases.")
-                    assert str(compare_releases) == str(expected_result)
+                    allure.attach(json.dumps(compare_releases), "Actual result of comparing MS releases.")
+                    allure.attach(json.dumps(expected_result), "Expected result of comparing Ms releases.")
+                    assert compare_releases == expected_result
