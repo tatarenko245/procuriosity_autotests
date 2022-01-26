@@ -204,7 +204,7 @@ class TestCreateCn:
             time.sleep(1)
             submission_payload_class = copy.deepcopy(SubmissionPreparePayload())
             create_submission_payload = \
-                submission_payload_class.create_submission_obligatory_data_model()
+                submission_payload_class.create_submission_moldova_obligatory_data_model()
 
             synchronous_result_of_sending_the_request = Requests().create_submission(
                 host_of_request=get_hosts[1],
@@ -311,14 +311,14 @@ class TestCreateCn:
                 Compare actual Ms release before submission creating and actual Ms release after submission creating.
                 """
                 allure.attach(str(json.dumps(actual_ms_release_before_submission_creating)),
-                              "Actual TP release before submission creating")
+                              "Actual Ms release before submission creating")
 
                 actual_ms_release_after_submission_creating = requests.get(url=f"{pn_url}/{pn_ocid}").json()
                 allure.attach(str(json.dumps(actual_ms_release_after_submission_creating)),
-                              "Actual TP release after submission creating")
+                              "Actual Ms release after submission creating")
 
-                compare_releases = dict(DeepDiff(actual_tp_release_before_submission_creating,
-                                                 actual_tp_release_after_submission_creating))
+                compare_releases = dict(DeepDiff(actual_ms_release_before_submission_creating,
+                                                 actual_ms_release_after_submission_creating))
                 expected_result = {}
 
                 try:

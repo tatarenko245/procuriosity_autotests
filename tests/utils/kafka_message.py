@@ -2662,3 +2662,120 @@ class KafkaMessage:
             return True
         else:
             return False
+
+    @staticmethod
+    def submission_period_end_no_auction_message_is_successful(environment, kafka_message, pn_ocid, tender_id):
+        tender_url = None
+        check_qualification_id = None
+        check_qualification_token = None
+
+        if environment == "dev":
+            tender_url = "http://dev.public.eprocurement.systems/tenders"
+        if environment == "sandbox":
+            tender_url = "http://public.eprocurement.systems/tenders"
+
+        try:
+            """
+            Check X-OPERATION-ID into message from feed point.
+            """
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            if check_x_operation_id is True:
+                pass
+            else:
+                raise Exception("check_x_operation_id is False")
+        except KeyError:
+            raise KeyError('KeyError: X-OPERATION-ID')
+
+        try:
+            """
+            Check X-RESPONSE-ID into message from feed point.
+            """
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            if check_x_response_id is True:
+                pass
+            else:
+                raise Exception("check_x_response_id is False")
+        except KeyError:
+            raise KeyError('KeyError: X-RESPONSE-ID')
+
+        try:
+            """
+            Check initiator into message from feed point.
+            """
+            check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "bpe")
+            if check_initiator is True:
+                pass
+            else:
+                raise Exception("initiator is False")
+        except KeyError:
+            raise KeyError('KeyError: initiator')
+
+        try:
+            """
+            Check data.ocid into message from feed point.
+            """
+            check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{tender_id}")
+            if check_oc_id is True:
+                pass
+            else:
+                raise Exception("check_oc_id is False")
+        except KeyError:
+            raise KeyError('KeyError: data.ocid')
+
+        try:
+            """
+            Check data.url into message from feed point.
+            """
+            check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
+                                        f"{tender_url}/{pn_ocid}/{tender_id}")
+            if check_url is True:
+                pass
+            else:
+                raise Exception("check_url is False")
+        except KeyError:
+            raise KeyError('KeyError: data.url')
+
+        try:
+            """
+            Check data.operationDate into message from feed point.
+            """
+            check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
+            if check_operation_date is True:
+                pass
+            else:
+                raise Exception("check_operation_date is False")
+        except KeyError:
+            raise KeyError('KeyError: data.operationDate')
+
+        if check_x_operation_id is True and check_x_response_id is True and check_initiator is True and \
+                check_oc_id is True and check_url is True and check_operation_date is True:
+            pass
+        else:
+            return False
+
+        try:
+            """
+            Check data.outcomes.awards into message from feed point.
+            """
+            for i in kafka_message["data"]["outcomes"]["qualifications"]:
+                for i_1 in i:
+                    if i_1 == "id":
+                        check_qualification_id = is_it_uuid(i["id"], 4)
+                        if check_qualification_id is True:
+                            pass
+                        else:
+                            raise Exception("check_qualification_id is False")
+
+                    if i_1 == "X-TOKEN":
+                        check_qualification_token = is_it_uuid(i["X-TOKEN"], 4)
+                        if check_qualification_token is True:
+                            pass
+                        else:
+                            raise ("check_qualification_token is False")
+        except KeyError:
+            raise KeyError('KeyError: data.outcomes.qualifications')
+
+        if check_qualification_id is True and check_qualification_token is True:
+            return True
+        else:
+            return False
