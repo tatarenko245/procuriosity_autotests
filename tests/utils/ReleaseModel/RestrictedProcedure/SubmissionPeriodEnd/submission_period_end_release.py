@@ -109,21 +109,23 @@ class SubmissionPeriodEndExpectedRelease:
 
         return expected_criteria_array_source_procuring_entity
 
-    def prepare_submission_object(self, sequence_number_of_submission, submission_payload,
-                                  create_submission_feed_point_message):
-        try:
-            is_it_uuid(
-                uuid_to_test=self.actual_tp_release[
-                    'releases'][0]['submissions']['details'][sequence_number_of_submission]['id'],
-                version=4
-            )
-        except ValueError:
-            raise ValueError("Check your actual_tp_release['releases'][0]['submissions']['details'][i]['id']: "
-                             "id must be uuid version 4")
+    def prepare_submission_object(self, submission_payload, create_submission_feed_point_message):
+        final_submission_mapper = None
+        correct_submission_id = None
+        for i in self.actual_tp_release['releases'][0]['submissions']['details']:
+            if i['date'] == create_submission_feed_point_message['data']['operationDate']:
+                try:
+                    is_it_uuid(
+                        uuid_to_test=i['id'],
+                        version=4
+                    )
+                except ValueError:
+                    raise ValueError("Check your actual_tp_release['releases'][0]['submissions']['details'][i]['id']: "
+                                     "id must be uuid version 4")
+                correct_submission_id = i['id']
 
         final_submissions_details_object = {
-            "id": self.actual_tp_release[
-                'releases'][0]['submissions']['details'][sequence_number_of_submission]['id'],
+            "id": correct_submission_id,
             "date": create_submission_feed_point_message['data']['operationDate'],
             "status": "pending",
             "candidates": []
@@ -149,7 +151,12 @@ class SubmissionPeriodEndExpectedRelease:
             }
 
             final_submissions_details_object['candidates'].append(submission_details_candidates_object)
-        return final_submissions_details_object
+
+            final_submission_mapper = {
+                "id": final_submissions_details_object['id'],
+                "value": final_submissions_details_object
+            }
+        return final_submission_mapper
 
     def prepare_qualification_object(self, cn_payload, submission_id, submission_period_end_feed_point_message):
         status_details = None

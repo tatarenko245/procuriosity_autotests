@@ -332,22 +332,38 @@ class TestCreateCn:
                     final_expected_submissions_object = {
                         "details": []
                     }
+                    expected_submissions_array = []
 
                     submission_details_object_from_moldova = \
                         submission_period_end_release_class.prepare_submission_object(
-                            sequence_number_of_submission=0,
                             submission_payload=create_submission_moldova_payload,
                             create_submission_feed_point_message=create_submission_moldova_feed_point_message)
 
-                    final_expected_submissions_object['details'].append(submission_details_object_from_moldova)
+                    expected_submissions_array.append(submission_details_object_from_moldova)
 
                     submission_details_object_from_belarus = \
                         submission_period_end_release_class.prepare_submission_object(
-                            sequence_number_of_submission=1,
                             submission_payload=create_submission_belarus_payload,
                             create_submission_feed_point_message=create_submission_belarus_feed_point_message)
 
-                    final_expected_submissions_object['details'].append(submission_details_object_from_belarus)
+                    expected_submissions_array.append(submission_details_object_from_belarus)
+
+                    quantity_of_object_into_expected_submissions_details_object = \
+                        len(expected_submissions_array)
+
+                    quantity_of_object_into_release_submissions_details_object = len(
+                        actual_tp_release_after_submission_period_end_expired['releases'][0]['submissions']['details'])
+
+                    if quantity_of_object_into_expected_submissions_details_object == \
+                            quantity_of_object_into_release_submissions_details_object:
+                        for q in range(quantity_of_object_into_release_submissions_details_object):
+                            for q_1 in range(quantity_of_object_into_expected_submissions_details_object):
+                                if actual_tp_release_after_submission_period_end_expired[
+                                    'releases'][0]['submissions']['details'][q]['id'] == \
+                                        expected_submissions_array[q_1]['id']:
+
+                                    final_expected_submissions_object['details'].append(
+                                        expected_submissions_array[q_1]['value'])
                 except Exception:
                     raise Exception("Impossible to prepare expected submission object.")
 
@@ -492,8 +508,8 @@ class TestCreateCn:
                     assert compare_releases == expected_result
 
                 with allure.step('Compare actual parties array and expected parties array.'):
-                    allure.attach(json.dumps(actual_tp_release_after_submission_period_end_expired['releases'][0]['parties']),
-                                  "Actual parties array.")
+                    allure.attach(json.dumps(actual_tp_release_after_submission_period_end_expired[
+                                                 'releases'][0]['parties']), "Actual parties array.")
                     allure.attach(json.dumps(final_expected_parties_array),
                                   "Expected parties array.")
                     assert actual_tp_release_after_submission_period_end_expired['releases'][0]['parties'] == \
