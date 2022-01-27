@@ -73,7 +73,7 @@ class TestProtocol:
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions, "
                   "awardCriteriaDetails = automated;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
-                  "Declaration non conflict interest: full data model with old person.\n"
+                  "DeclareNonConflictInterest non conflict interest: full data model with old person.\n"
                   "Evaluate award: full data model with full documents.\n"
                   )
     def test_check_result_of_sending_the_request_one(self):
@@ -931,7 +931,7 @@ class TestProtocol:
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions, "
                   "awardCriteriaDetails = automated;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
-                  "Declaration non conflict interest: full data model with old person.\n"
+                  "DeclareNonConflictInterest non conflict interest: full data model with old person.\n"
                   "Evaluate award: full data model with full documents.\n"
                   )
     def test_check_result_of_sending_the_request_two(self):

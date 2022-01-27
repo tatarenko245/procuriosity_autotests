@@ -70,7 +70,7 @@ class TestAwardConsideration:
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions, "
                   "awardCriteriaDetails = automated;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
-                  "Declaration non conflict interest: full data model.\n"
+                  "DeclareNonConflictInterest non conflict interest: full data model.\n"
                   )
     def test_check_result_of_sending_the_request_one(self):
         step_number = 1
@@ -906,7 +906,7 @@ class TestAwardConsideration:
                   "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions, "
                   "awardCriteriaDetails = manual;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
-                  "Declaration non conflict interest: full data model.\n"
+                  "DeclareNonConflictInterest non conflict interest: full data model.\n"
                   )
     def test_check_result_of_sending_the_request_two(self):
         step_number = 1

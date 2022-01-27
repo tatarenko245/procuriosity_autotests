@@ -228,7 +228,7 @@ class TenderPeriodExpectedChanges:
         expected_criteria_array_source_procuring_entity = {
             "id": GlobalClassTenderPeriodEndAuction.actual_ev_release[
                 'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release]['id'],
-            "title": "Declaration of absence of conflict of interest and confidentiality",
+            "title": "DeclareNonConflictInterest of absence of conflict of interest and confidentiality",
             "source": "procuringEntity",
             "description": "Conflict of interest",
             "requirementGroups": [

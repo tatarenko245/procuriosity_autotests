@@ -340,3 +340,23 @@ class Requests:
         allure.attach(host_of_request + f"/do/submission", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return submission
+
+    @staticmethod
+    @allure.step('Prepared request: create DeclareNonConflictInterest')
+    def create_qualification(host_of_request, access_token, x_operation_id, pn_ocid, tender_id, qualification_id,
+                             qualification_token, payload, test_mode=False):
+        qualification = requests.post(
+            url=host_of_request + f"/do/qualification/{pn_ocid}/{tender_id}/{qualification_id}",
+            params={
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'X-TOKEN': qualification_token,
+                'Content-Type': 'application/json'
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/qualification", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return qualification

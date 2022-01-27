@@ -2755,7 +2755,7 @@ class KafkaMessage:
 
         try:
             """
-            Check data.outcomes.awards into message from feed point.
+            Check data.outcomes.qualifications into message from feed point.
             """
             for i in kafka_message["data"]["outcomes"]["qualifications"]:
                 for i_1 in i:
