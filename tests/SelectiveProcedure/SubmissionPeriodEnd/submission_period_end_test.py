@@ -17,7 +17,7 @@ from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
 
-class TestCreateCn:
+class TestSubmissionPeriodEnd:
     @allure.title("Check Ev and MS releases data after CnOnPn creating without optional fields. \n"
                   "------------------------------------------------\n"
                   "create Ei: obligatory data model without items array;\n"
