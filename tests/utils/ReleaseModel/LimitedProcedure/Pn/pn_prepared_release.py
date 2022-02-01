@@ -15,7 +15,7 @@ class PnExpectedRelease:
 
         try:
             if pmd == "TEST_NP":
-                self.procurement_method_details = ""
+                self.procurement_method_details = "testNegotiatedProcedure"
             elif pmd == "TEST_IP":
                 self.procurement_method_details = ""
             elif pmd == "TEST_DA":
@@ -304,7 +304,7 @@ class PnExpectedRelease:
                             "currency": self.pn_payload['planning']['budget']['budgetBreakdown'][0]['amount'][
                                 'currency']
                         },
-                        "procurementMethod": "selective",
+                        "procurementMethod": "limited",
                         "procurementMethodDetails": self.procurement_method_details,
                         "mainProcurementCategory": actual_ei_release['releases'][0]['tender'][
                             'mainProcurementCategory'],
