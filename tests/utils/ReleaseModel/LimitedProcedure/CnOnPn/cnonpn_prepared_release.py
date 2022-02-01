@@ -5,7 +5,7 @@ from tests.utils.functions import is_it_uuid, get_value_from_classification_cpv_
 
 
 class CnOnPnExpectedRelease:
-    def __init__(self, environment, period_shift, language, pmd, pn_ocid, pn_id, cn_feed_point_message,
+    def __init__(self, environment, language, pmd, pn_ocid, pn_id, cn_feed_point_message,
                  tender_id, cn_payload, actual_tp_release):
         self.language = language
         self.pn_ocid = pn_ocid
@@ -14,7 +14,6 @@ class CnOnPnExpectedRelease:
         self.cn_feed_point_message = cn_feed_point_message
         self.cn_payload = cn_payload
         self.actual_tp_release = actual_tp_release
-        self.period_shift = period_shift
         self.metadata_tender_url = None
         self.procurement_method_details = None
 
