@@ -310,7 +310,7 @@ class TestCreateCn:
                             "old_value": "planning"
                         },
                         "root['releases'][0]['tender']['statusDetails']": {
-                            "new_value": "evaluation",
+                            "new_value": "negotiation",
                             "old_value": "planning"
                         },
                         "root['releases'][0]['tender']['classification']['id']": {
@@ -331,7 +331,7 @@ class TestCreateCn:
                     'iterable_item_added': {
                         "root['releases'][0]['relatedProcesses'][3]": {
                             'id': actual_ms_release_after_cn_creating['releases'][0]['relatedProcesses'][3]['id'],
-                            'relationship': ['x_tendering'],
+                            'relationship': ['x_negotiation'],
                             'scheme': 'ocid',
                             'identifier': np_id,
                             'uri': f"{self.metadata_tender_url}/{pn_ocid}/{np_id}"
