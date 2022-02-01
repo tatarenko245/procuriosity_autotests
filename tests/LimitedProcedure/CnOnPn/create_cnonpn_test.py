@@ -157,25 +157,11 @@ class TestCreateCn:
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
             time.sleep(1)
-            try:
-                """
-                Get minSubmissionPeriodDuration value from dossier.rules for this testcase
-                """
-                min_submission_period_duration = int(connection_to_database.get_min_submission_period_duration_rules(
-                    country=country,
-                    pmd=pmd,
-                    operation_type='all',
-                    parameter='minSubmissionPeriodDuration'
-                ))
-            except Exception:
-                raise Exception("Impossible to get minSubmissionPeriodDuration value from dossier.rules "
-                                "for this testcase")
 
             cn_payload_class = copy.deepcopy(CnOnPnPreparePayload(host_for_services=get_hosts[2]))
             create_cn_payload = \
                 cn_payload_class.create_cnonpn_obligatory_data_model(
                     actual_ei_release=actual_ei_release_before_cn_creation,
-                    pre_qualification_period_end=min_submission_period_duration,
                     pn_payload=create_pn_payload)
 
             synchronous_result_of_sending_the_request = Requests().create_cnonpn(
