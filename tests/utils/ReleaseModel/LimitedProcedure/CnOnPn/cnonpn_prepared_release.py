@@ -303,13 +303,6 @@ class CnOnPnExpectedRelease:
                                 "optionToCombine": False
                             }
                         ],
-                        "enquiryPeriod": {
-                            "startDate": self.cn_feed_point_message['data']['operationDate'],
-                            "endDate": Date().selective_procedure_enquiry_period_end_date(
-                                pre_qualification_period_end_date=self.cn_payload['preQualification']['period'][
-                                    'endDate'],
-                                interval_seconds=self.period_shift)
-                        },
                         "hasEnquiries": False,
                         "documents": [
                             {
@@ -334,12 +327,6 @@ class CnOnPnExpectedRelease:
                             "Ofertele vor fi primite prin intermediul unei platforme electronice de achiziții publice"
                         ],
                         "requiresElectronicCatalogue": False
-                    },
-                    "preQualification": {
-                        "period": {
-                            "startDate": self.cn_feed_point_message['data']['operationDate'],
-                            "endDate": self.cn_payload['preQualification']['period']['endDate']
-                        }
                     },
                     "hasPreviousNotice": True,
                     "purposeOfNotice": {
