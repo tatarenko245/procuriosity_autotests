@@ -234,22 +234,8 @@ class TestCreateCn:
                 """
                 allure.attach(str(json.dumps(actual_np_release_after_cn_creating)), "Actual NP release")
 
-                try:
-                    """
-                    Get period_shift value from clarification.rules for this testcase
-                    """
-                    period_shift = int(connection_to_database.get_period_shift_rules(
-                        country=country,
-                        pmd=pmd,
-                        operation_type='all',
-                        parameter='period_shift'
-                    ))
-                except Exception:
-                    raise Exception("Impossible to get period_shift value from clarification.rules for this testcase")
-
                 expected_release_class = copy.deepcopy(CnOnPnExpectedRelease(
                     environment=environment,
-                    period_shift=period_shift,
                     language=language,
                     pmd=pmd,
                     pn_ocid=pn_ocid,
