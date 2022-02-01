@@ -175,8 +175,8 @@ class TestCreateCn:
                 test_mode=True)
 
             cn_feed_point_message = KafkaMessage(create_cn_operation_id).get_message_from_kafka()
-            tp_id = cn_feed_point_message['data']['outcomes']['tp'][0]['id']
-            actual_tp_release_after_cn_creating = requests.get(url=f"{pn_url}/{tp_id}").json()
+            np_id = cn_feed_point_message['data']['outcomes']['np'][0]['id']
+            actual_np_release_after_cn_creating = requests.get(url=f"{pn_url}/{np_id}").json()
             actual_ms_release_after_cn_creating = requests.get(url=f"{pn_url}/{pn_ocid}").json()
             step_number += 1
 
@@ -228,11 +228,11 @@ class TestCreateCn:
                     allure.attach(str(True), "Expected asynchronous result of sending the request.")
                     assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
 
-            with allure.step(f'# {step_number}.3. Check TP release'):
+            with allure.step(f'# {step_number}.3. Check NP release'):
                 """
-                Compare actual TP release with expected TP release model.
+                Compare actual NP release with expected NP release model.
                 """
-                allure.attach(str(json.dumps(actual_tp_release_after_cn_creating)), "Actual TP release")
+                allure.attach(str(json.dumps(actual_np_release_after_cn_creating)), "Actual NP release")
 
                 try:
                     """
@@ -254,17 +254,17 @@ class TestCreateCn:
                     pmd=pmd,
                     pn_ocid=pn_ocid,
                     pn_id=pn_id,
-                    tender_id=tp_id,
+                    tender_id=np_id,
                     cn_feed_point_message=cn_feed_point_message,
                     cn_payload=create_cn_payload,
-                    actual_tp_release=actual_tp_release_after_cn_creating))
+                    actual_tp_release=actual_np_release_after_cn_creating))
 
                 expected_cn_release_model = \
                     expected_release_class.cn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs()
 
-                allure.attach(str(json.dumps(expected_cn_release_model)), "Expected TP release")
+                allure.attach(str(json.dumps(expected_cn_release_model)), "Expected NP release")
 
-                compare_releases = dict(DeepDiff(actual_tp_release_after_cn_creating, expected_cn_release_model))
+                compare_releases = dict(DeepDiff(actual_np_release_after_cn_creating, expected_cn_release_model))
                 expected_result = {}
 
                 try:
@@ -281,11 +281,11 @@ class TestCreateCn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Check a difference of comparing actual Tp release and expected Tp release.'):
+                with allure.step('Check a difference of comparing actual NP release and expected NP release.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Tp releases.")
+                                  "Actual result of comparing NP releases.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Tp releases.")
+                                  "Expected result of comparing NP releases.")
                     assert str(compare_releases) == str(expected_result)
 
             with allure.step(f'# {step_number}.4. Check MS release'):
@@ -347,8 +347,8 @@ class TestCreateCn:
                             'id': actual_ms_release_after_cn_creating['releases'][0]['relatedProcesses'][3]['id'],
                             'relationship': ['x_tendering'],
                             'scheme': 'ocid',
-                            'identifier': tp_id,
-                            'uri': f"{self.metadata_tender_url}/{pn_ocid}/{tp_id}"
+                            'identifier': np_id,
+                            'uri': f"{self.metadata_tender_url}/{pn_ocid}/{np_id}"
                         }
                     }
                 }
