@@ -53,18 +53,7 @@ class CnOnPnPreparePayload:
             raise KeyError("Check tender_classification_id")
 
         payload = {
-            "preQualification": {
-                "period": {
-                    "endDate": Date().pre_qualification_period_end_date(interval_seconds=pre_qualification_period_end)
-                }
-            },
             "tender": {
-                "otherCriteria": {
-                    "reductionCriteria": "none",
-                    "qualificationSystemMethods": [
-                        "manual"
-                    ]
-                },
                 "lots": [{
                     "id": "0",
                     "title": "create cnonpn: tender.lots.title",
