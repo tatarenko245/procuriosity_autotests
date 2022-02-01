@@ -312,7 +312,6 @@ class CnOnPnExpectedRelease:
                             }
                         ],
                         "awardCriteria": "priceOnly",
-                        "awardCriteriaDetails": "automated",
                         "submissionMethod": [
                             "electronicSubmission"
                         ],
