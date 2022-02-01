@@ -6,14 +6,14 @@ from tests.utils.functions import is_it_uuid, get_value_from_classification_cpv_
 
 class CnOnPnExpectedRelease:
     def __init__(self, environment, language, pmd, pn_ocid, pn_id, cn_feed_point_message,
-                 tender_id, cn_payload, actual_tp_release):
+                 tender_id, cn_payload, actual_np_release):
         self.language = language
         self.pn_ocid = pn_ocid
         self.pn_id = pn_id
-        self.tp_id = tender_id
+        self.np_id = tender_id
         self.cn_feed_point_message = cn_feed_point_message
         self.cn_payload = cn_payload
-        self.actual_tp_release = actual_tp_release
+        self.actual_np_release = actual_np_release
         self.metadata_tender_url = None
         self.procurement_method_details = None
 
@@ -70,14 +70,14 @@ class CnOnPnExpectedRelease:
     def cn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs(self):
         try:
             is_it_uuid(
-                uuid_to_test=self.actual_tp_release['releases'][0]['tender']['id'],
+                uuid_to_test=self.actual_np_release['releases'][0]['tender']['id'],
                 version=4
             )
         except ValueError:
             raise ValueError("Check your actual_pn_release['releases'][0]['tender']['id']: "
                              "id must be uuid version 4")
         try:
-            for n in self.actual_tp_release['releases'][0]['relatedProcesses']:
+            for n in self.actual_np_release['releases'][0]['relatedProcesses']:
                 for n_1 in n:
                     if n_1 == "id":
                         is_it_uuid(
@@ -94,7 +94,7 @@ class CnOnPnExpectedRelease:
             Check release_lots_array[*]['id'] -> is it uuid.
             """
             list_of_release_lot_id = list()
-            for lot_object in self.actual_tp_release['releases'][0]['tender']['lots']:
+            for lot_object in self.actual_np_release['releases'][0]['tender']['lots']:
                 for i in lot_object:
                     if i == "id":
                         list_of_release_lot_id.append(lot_object['id'])
@@ -116,7 +116,7 @@ class CnOnPnExpectedRelease:
             Check release_items_array[*]['id'] -> is it uuid.
             """
             list_of_release_item_id = list()
-            for item_object in self.actual_tp_release['releases'][0]['tender']['items']:
+            for item_object in self.actual_np_release['releases'][0]['tender']['items']:
                 for i in item_object:
                     if i == "id":
                         list_of_release_item_id.append(item_object['id'])
@@ -159,7 +159,7 @@ class CnOnPnExpectedRelease:
                         "name": unit_data[1],
                         "id": unit_data[0]
                     },
-                    "relatedLot": self.actual_tp_release['releases'][0]['tender']['lots'][n]['id']
+                    "relatedLot": self.actual_np_release['releases'][0]['tender']['lots'][n]['id']
                 }
                 items_array.append(item_object)
         except ValueError:
@@ -266,7 +266,7 @@ class CnOnPnExpectedRelease:
             raise ValueError("Impossible to build expected lots array framework.")
 
         release = {
-            "uri": f"{self.metadata_tender_url}/{self.pn_ocid}/{self.tp_id}",
+            "uri": f"{self.metadata_tender_url}/{self.pn_ocid}/{self.np_id}",
             "version": "1.1",
             "extensions": self.extensions,
             "publisher": {
@@ -278,8 +278,8 @@ class CnOnPnExpectedRelease:
             "publishedDate": self.cn_feed_point_message['data']['operationDate'],
             "releases": [
                 {
-                    "ocid": self.tp_id,
-                    "id": f"{self.tp_id}-{self.actual_tp_release['releases'][0]['id'][46:59]}",
+                    "ocid": self.np_id,
+                    "id": f"{self.np_id}-{self.actual_np_release['releases'][0]['id'][46:59]}",
                     "date": self.cn_feed_point_message['data']['operationDate'],
                     "tag": [
                         "tender"
@@ -287,15 +287,9 @@ class CnOnPnExpectedRelease:
                     "language": self.language,
                     "initiationType": "tender",
                     "tender": {
-                        "id": self.actual_tp_release['releases'][0]['tender']['id'],
+                        "id": self.actual_np_release['releases'][0]['tender']['id'],
                         "status": "active",
-                        "statusDetails": "submission",
-                        "otherCriteria": {
-                            "reductionCriteria": "none",
-                            "qualificationSystemMethods": [
-                                "manual"
-                            ]
-                        },
+                        "statusDetails": "negotiation",
                         "items": items_array,
                         "lots": lots_array,
                         "lotGroups": [
@@ -313,7 +307,7 @@ class CnOnPnExpectedRelease:
                                 "url": f"{self.metadata_document_url}/"
                                        f"{self.cn_payload['tender']['documents'][0]['id']}",
                                 "datePublished": self.cn_feed_point_message['data']['operationDate'],
-                                "relatedLots": [self.actual_tp_release['releases'][0]['tender']['lots'][0]['id']
+                                "relatedLots": [self.actual_np_release['releases'][0]['tender']['lots'][0]['id']
                                                 ]
                             }
                         ],
@@ -334,7 +328,7 @@ class CnOnPnExpectedRelease:
                     },
                     "relatedProcesses": [
                         {
-                            "id": self.actual_tp_release['releases'][0]['relatedProcesses'][0]['id'],
+                            "id": self.actual_np_release['releases'][0]['relatedProcesses'][0]['id'],
                             "relationship": [
                                 "parent"
                             ],
@@ -343,7 +337,7 @@ class CnOnPnExpectedRelease:
                             "uri": f"{self.metadata_tender_url}/{self.pn_ocid}/{self.pn_ocid}"
                         },
                         {
-                            "id": self.actual_tp_release['releases'][0]['relatedProcesses'][1]['id'],
+                            "id": self.actual_np_release['releases'][0]['relatedProcesses'][1]['id'],
                             "relationship": [
                                 "planning"
                             ],
@@ -360,7 +354,7 @@ class CnOnPnExpectedRelease:
     def update_cn_amendments_array(self):
         try:
             is_it_uuid(
-                uuid_to_test=self.actual_tp_release['releases'][0]['tender']['amendments'][0]['id'],
+                uuid_to_test=self.actual_np_release['releases'][0]['tender']['amendments'][0]['id'],
                 version=4
             )
         except ValueError:
@@ -368,13 +362,13 @@ class CnOnPnExpectedRelease:
                              "id must be uuid version 4")
 
         amendments_array = [{
-            "id": self.actual_tp_release['releases'][0]['tender']['amendments'][0]['id'],
+            "id": self.actual_np_release['releases'][0]['tender']['amendments'][0]['id'],
             "date": self.cn_feed_point_message['data']['operationDate'],
             "releaseID":
-                f"{self.tp_id}-{self.actual_tp_release['releases'][0]['tender']['amendments'][0]['releaseID'][46:59]}",
+                f"{self.np_id}-{self.actual_np_release['releases'][0]['tender']['amendments'][0]['releaseID'][46:59]}",
             "amendsReleaseID":
-                f"{self.tp_id}-"
-                f"{self.actual_tp_release['releases'][0]['tender']['amendments'][0]['amendsReleaseID'][46:59]}",
+                f"{self.np_id}-"
+                f"{self.actual_np_release['releases'][0]['tender']['amendments'][0]['amendsReleaseID'][46:59]}",
             "rationale": "General change of Contract Notice"
         }]
         return amendments_array

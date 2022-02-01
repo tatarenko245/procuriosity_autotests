@@ -243,7 +243,7 @@ class TestCreateCn:
                     tender_id=np_id,
                     cn_feed_point_message=cn_feed_point_message,
                     cn_payload=create_cn_payload,
-                    actual_tp_release=actual_np_release_after_cn_creating))
+                    actual_np_release=actual_np_release_after_cn_creating))
 
                 expected_cn_release_model = \
                     expected_release_class.cn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs()
