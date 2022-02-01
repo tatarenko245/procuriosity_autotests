@@ -670,6 +670,11 @@ class KafkaMessage:
                 if "id" in kafka_message["data"]["outcomes"]["tp"][0]:
                     check_ev_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["tp"][0]["id"],
                                                   f"{kafka_message['data']['ocid']}-TP-*")
+            elif pmd == "TEST_CD" or pmd == "TEST_DC" or pmd == "CD" or pmd == "DC" or pmd == "IP" or pmd == "TEST_IP"\
+                    or pmd == "NP" or pmd == "TEST_NP":
+                if "id" in kafka_message["data"]["outcomes"]["np"][0]:
+                    check_ev_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["np"][0]["id"],
+                                                  f"{kafka_message['data']['ocid']}-NP-*")
             else:
                 raise ValueError(f"Unknown pmd:{pmd}")
         except KeyError:
