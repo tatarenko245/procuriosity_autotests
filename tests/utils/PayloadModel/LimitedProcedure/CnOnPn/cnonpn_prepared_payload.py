@@ -17,7 +17,7 @@ class CnOnPnPreparePayload:
         self.contact_period = Date().contact_period()
         self.duration_period = Date().duration_period()
 
-    def create_cnonpn_obligatory_data_model(self, actual_ei_release, pn_payload, pre_qualification_period_end):
+    def create_cnonpn_obligatory_data_model(self, actual_ei_release, pn_payload):
         try:
             item_classification_id = None
             tender_classification_id = \
@@ -153,11 +153,6 @@ class CnOnPnPreparePayload:
             raise KeyError("Check tender_classification_id")
 
         payload = {
-            "preQualification": {
-                "period": {
-                    "endDate": Date().pre_qualification_period_end_date(interval_seconds=pre_qualification_period_end)
-                }
-            },
             "tender": {
                 "title": "update cnonpn: tender.title",
                 "description": "update cnonpn: tender.desciption",
