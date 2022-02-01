@@ -17,23 +17,23 @@ class PnExpectedRelease:
             if pmd == "TEST_NP":
                 self.procurement_method_details = "testNegotiatedProcedure"
             elif pmd == "TEST_IP":
-                self.procurement_method_details = ""
+                self.procurement_method_details = "innovativePartnership"
             elif pmd == "TEST_DA":
-                self.procurement_method_details = ""
+                self.procurement_method_details = "testDirectAward"
             elif pmd == "TEST_CD":
-                self.procurement_method_details = ""
+                self.procurement_method_details = "competetiveDialogue"
             elif pmd == "TEST_DC":
-                self.procurement_method_details = ""
+                self.procurement_method_details = "designContest"
             elif pmd == "NP":
-                self.procurement_method_details = ""
+                self.procurement_method_details = "NegotiatedProcedure"
             elif pmd == "IP":
-                self.procurement_method_details = ""
+                self.procurement_method_details = "innovativePartnership"
             elif pmd == "DA":
-                self.procurement_method_details = ""
+                self.procurement_method_details = "directAward"
             elif pmd == "CD":
-                self.procurement_method_details = ""
+                self.procurement_method_details = "competetiveDialogue"
             elif pmd == "DC":
-                self.procurement_method_details = ""
+                self.procurement_method_details = "designContest"
             else:
                 raise ValueError("Check your pmd: You must use 'TEST_NP', "
                                  "'TEST_IP', 'TEST_DA', 'TEST_CD', 'TEST_DC',"
