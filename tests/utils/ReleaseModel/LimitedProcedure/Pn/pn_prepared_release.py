@@ -195,7 +195,7 @@ class PnExpectedRelease:
         )
 
         try:
-            procuring_entity_country_data = MdmService().get_country(
+            procuring_entity_country_data = self.mdm_class.get_country(
                 country=self.pn_payload['tender']['procuringEntity']['address'][
                     'addressDetails']['country']['id'],
                 language=self.language
