@@ -70,7 +70,7 @@ class TestDeclareNonConflictInterest:
                   "Pn: full data model, 1 lots, 1 items;\n"
                   "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
-                  "DeclareNonConflictInterest non conflict interest: full data model with old person.\n"
+                  "QualificationDeclaration non conflict interest: full data model with old person.\n"
                   )
     def test_check_result_of_sending_the_request_one(self):
         step_number = 1
@@ -462,7 +462,7 @@ class TestDeclareNonConflictInterest:
                         access_token=GlobalClassCreateDeclareNonConflict.access_token,
                         x_operation_id=GlobalClassCreateDeclareNonConflict.operation_id,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id,
+                        tender_id=GlobalClassCreateCnOnPn.ev_id,
                         payload=GlobalClassCreateDeclareNonConflict.payload,
                         award_id=GlobalClassCreateDeclareNonConflict.award_id,
                         award_token=GlobalClassCreateDeclareNonConflict.award_token,
@@ -492,7 +492,7 @@ class TestDeclareNonConflictInterest:
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
-                            ev_id=GlobalClassCreateCnOnPn.ev_id
+                            tender_id=GlobalClassCreateCnOnPn.ev_id
                         )
 
                         try:
@@ -825,7 +825,7 @@ class TestDeclareNonConflictInterest:
                   "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
-                  "DeclareNonConflictInterest non conflict interest: full data model with old person.\n"
+                  "QualificationDeclaration non conflict interest: full data model with old person.\n"
                   )
     def test_check_result_of_sending_the_request_two(self):
         step_number = 1
@@ -1311,7 +1311,7 @@ class TestDeclareNonConflictInterest:
                         access_token=GlobalClassCreateDeclareNonConflict.access_token,
                         x_operation_id=GlobalClassCreateDeclareNonConflict.operation_id,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id,
+                        tender_id=GlobalClassCreateCnOnPn.ev_id,
                         payload=GlobalClassCreateDeclareNonConflict.payload,
                         award_id=GlobalClassCreateDeclareNonConflict.award_id,
                         award_token=GlobalClassCreateDeclareNonConflict.award_token,
@@ -1341,7 +1341,7 @@ class TestDeclareNonConflictInterest:
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
-                            ev_id=GlobalClassCreateCnOnPn.ev_id
+                            tender_id=GlobalClassCreateCnOnPn.ev_id
                         )
                         try:
                             """
@@ -1730,7 +1730,7 @@ class TestDeclareNonConflictInterest:
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
-                  "DeclareNonConflictInterest non conflict interest: full data model with old person but new businessFunctions and "
+                  "QualificationDeclaration non conflict interest: full data model with old person but new businessFunctions and "
                   "new businessFunctions.documents.\n"
                   )
     def test_check_result_of_sending_the_request_three(self):
@@ -2218,7 +2218,7 @@ class TestDeclareNonConflictInterest:
                         access_token=GlobalClassCreateDeclareNonConflict.access_token,
                         x_operation_id=GlobalClassCreateDeclareNonConflict.operation_id,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id,
+                        tender_id=GlobalClassCreateCnOnPn.ev_id,
                         payload=GlobalClassCreateDeclareNonConflict.payload,
                         award_id=GlobalClassCreateDeclareNonConflict.award_id,
                         award_token=GlobalClassCreateDeclareNonConflict.award_token,
@@ -2248,7 +2248,7 @@ class TestDeclareNonConflictInterest:
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
-                            ev_id=GlobalClassCreateCnOnPn.ev_id
+                            tender_id=GlobalClassCreateCnOnPn.ev_id
                         )
                         try:
                             """
@@ -2624,7 +2624,7 @@ class TestDeclareNonConflictInterest:
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
-                  "DeclareNonConflictInterest non conflict interest: full data model with old person.\n"
+                  "QualificationDeclaration non conflict interest: full data model with old person.\n"
                   )
     def test_check_result_of_sending_the_request_four(self):
         step_number = 1
@@ -3013,7 +3013,7 @@ class TestDeclareNonConflictInterest:
                         access_token=GlobalClassCreateDeclareNonConflict.access_token,
                         x_operation_id=GlobalClassCreateDeclareNonConflict.operation_id,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id,
+                        tender_id=GlobalClassCreateCnOnPn.ev_id,
                         payload=GlobalClassCreateDeclareNonConflict.payload,
                         award_id=GlobalClassCreateDeclareNonConflict.award_id,
                         award_token=GlobalClassCreateDeclareNonConflict.award_token,
@@ -3043,7 +3043,7 @@ class TestDeclareNonConflictInterest:
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
-                            ev_id=GlobalClassCreateCnOnPn.ev_id
+                            tender_id=GlobalClassCreateCnOnPn.ev_id
                         )
                         try:
                             """
@@ -3292,7 +3292,7 @@ class TestDeclareNonConflictInterest:
                         access_token=GlobalClassUpdateDeclareNonConflict.access_token,
                         x_operation_id=GlobalClassUpdateDeclareNonConflict.operation_id,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id,
+                        tender_id=GlobalClassCreateCnOnPn.ev_id,
                         payload=GlobalClassUpdateDeclareNonConflict.payload,
                         award_id=GlobalClassCreateDeclareNonConflict.award_id,
                         award_token=GlobalClassCreateDeclareNonConflict.award_token,
@@ -3322,7 +3322,7 @@ class TestDeclareNonConflictInterest:
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassUpdateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
-                            ev_id=GlobalClassCreateCnOnPn.ev_id
+                            tender_id=GlobalClassCreateCnOnPn.ev_id
                         )
                         try:
                             """
@@ -3471,7 +3471,7 @@ class TestDeclareNonConflictInterest:
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
-                  "DeclareNonConflictInterest non conflict interest: full data model with old person.\n"
+                  "QualificationDeclaration non conflict interest: full data model with old person.\n"
                   )
     def test_check_result_of_sending_the_request_five(self):
         step_number = 1
@@ -3860,7 +3860,7 @@ class TestDeclareNonConflictInterest:
                         access_token=GlobalClassCreateDeclareNonConflict.access_token,
                         x_operation_id=GlobalClassCreateDeclareNonConflict.operation_id,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id,
+                        tender_id=GlobalClassCreateCnOnPn.ev_id,
                         payload=GlobalClassCreateDeclareNonConflict.payload,
                         award_id=GlobalClassCreateDeclareNonConflict.award_id,
                         award_token=GlobalClassCreateDeclareNonConflict.award_token,
@@ -3890,7 +3890,7 @@ class TestDeclareNonConflictInterest:
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
-                            ev_id=GlobalClassCreateCnOnPn.ev_id
+                            tender_id=GlobalClassCreateCnOnPn.ev_id
                         )
                         try:
                             """
@@ -4277,7 +4277,7 @@ class TestDeclareNonConflictInterest:
                         access_token=GlobalClassUpdateDeclareNonConflict.access_token,
                         x_operation_id=GlobalClassUpdateDeclareNonConflict.operation_id,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id,
+                        tender_id=GlobalClassCreateCnOnPn.ev_id,
                         payload=GlobalClassUpdateDeclareNonConflict.payload,
                         award_id=GlobalClassCreateDeclareNonConflict.award_id,
                         award_token=GlobalClassCreateDeclareNonConflict.award_token,
@@ -4306,7 +4306,7 @@ class TestDeclareNonConflictInterest:
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassUpdateDeclareNonConflict.feed_point_message,
                             pn_ocid=GlobalClassCreatePn.pn_ocid,
-                            ev_id=GlobalClassCreateCnOnPn.ev_id
+                            tender_id=GlobalClassCreateCnOnPn.ev_id
                         )
                         try:
                             """

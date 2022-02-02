@@ -18,14 +18,14 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 class TestSubmissionPeriodEnd:
-    @allure.title("Check Ev and MS releases data after CnOnPn creating without optional fields. \n"
+    @allure.title("Check Ev and MS releases data if submissionPeriodEnd was expired. \n"
                   "------------------------------------------------\n"
                   "create Ei: obligatory data model without items array;\n"
                   "create Fs: obligatory data model, treasury money;\n"
                   "create Pn: obligatory data model, without lots and items;\n"
                   "create CnOnPn: obligatory data model, with lots and items;\n"
-                  "create Submission from Moldova: obligatory data model. \n"
-                  "create Submission from Belarus: obligatory data model. \n")
+                  "create Submission from Moldova: obligatory data model contains 2 candidates. \n"
+                  "create Submission from Belarus: obligatory data model contains 1 candidate. \n")
     def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1

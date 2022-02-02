@@ -1833,7 +1833,7 @@ class KafkaMessage:
         return True
 
     @staticmethod
-    def declare_non_confl_message_is_successful(environment, kafka_message, pn_ocid, ev_id):
+    def declare_non_confl_message_is_successful(environment, kafka_message, pn_ocid, tender_id):
         tender_url = None
 
         if environment == "dev":
@@ -1928,7 +1928,7 @@ class KafkaMessage:
             """
             Check data.ocid into message from feed point.
             """
-            check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{ev_id}")
+            check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{tender_id}")
             if check_oc_id is True:
                 pass
             else:
@@ -1937,7 +1937,7 @@ class KafkaMessage:
                               f"Class = KafkaMessage -> \n" \
                               f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
                               f"Actual result: data.ocid = {kafka_message['data']['ocid']} is not correct.\n" \
-                              f"Expected result: {ev_id}\n"
+                              f"Expected result: {tender_id}\n"
                 with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                     logfile.write(log_msg_one)
                 return "check_oc_id is False"
@@ -1956,7 +1956,7 @@ class KafkaMessage:
             Check data.url into message from feed point.
             """
             check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
-                                        f"{tender_url}/{pn_ocid}/{ev_id}")
+                                        f"{tender_url}/{pn_ocid}/{tender_id}")
             if check_url is True:
                 pass
             else:
@@ -1965,7 +1965,7 @@ class KafkaMessage:
                               f"Class = KafkaMessage -> \n" \
                               f"Method = declare_non_conflict_interest_message_is_successful -> \n" \
                               f"Actual result: data.url = {kafka_message['data']['url']} is not correct.\n" \
-                              f"Expected result: {tender_url}/{pn_ocid}/{ev_id}\n"
+                              f"Expected result: {tender_url}/{pn_ocid}/{tender_id}\n"
                 with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
                     logfile.write(log_msg_one)
                 return "check_url is False"

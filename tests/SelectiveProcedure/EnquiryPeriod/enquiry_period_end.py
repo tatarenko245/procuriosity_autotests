@@ -18,7 +18,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 class TestCreateEnquiry:
-    @allure.title("Check Tp and MS releases if enquiry period end was expired,"
+    @allure.title("Check Tp and MS releases if enquiryPeriodEnd was expired,"
                   "set tender status suspended. \n"
                   "------------------------------------------------\n"
                   "create Ei: obligatory data model without items array;\n"
