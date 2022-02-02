@@ -200,13 +200,12 @@ class PnExpectedRelease:
                     'addressDetails']['country']['id'],
                 language=self.language
             )
-            print(procuring_entity_country_data)
             procuring_entity_country_object = {
-                "scheme": procuring_entity_country_data[2],
+                "scheme": procuring_entity_country_data['data']['scheme'],
                 "id": self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['country'][
                     'id'],
-                "description": procuring_entity_country_data[1],
-                "uri": procuring_entity_country_data[3]
+                "description": procuring_entity_country_data['data']['description'],
+                "uri": procuring_entity_country_data['data']['uri']
             }
 
             procuring_entity_region_data = self.mdm_class.get_region(
@@ -216,10 +215,10 @@ class PnExpectedRelease:
             )
 
             procuring_entity_region_object = {
-                "scheme": procuring_entity_region_data[2],
+                "scheme": procuring_entity_region_data['data']['scheme'],
                 "id": self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
-                "description": procuring_entity_region_data[1],
-                "uri": procuring_entity_region_data[3]
+                "description": procuring_entity_region_data['data']['description'],
+                "uri": procuring_entity_region_data['data']['uri']
             }
 
             if \
