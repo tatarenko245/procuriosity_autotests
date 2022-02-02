@@ -389,3 +389,13 @@ class MdmService:
                 'requirementGroupId': requirement_group_id
             }).json()
         return data
+
+
+mdm = MdmService(host='http://10.0.20.127')
+r = mdm.get_locality(
+    country="MD",
+    language='ro',
+    region="1700000",
+    locality="1701000"
+)
+print(r['data'])
