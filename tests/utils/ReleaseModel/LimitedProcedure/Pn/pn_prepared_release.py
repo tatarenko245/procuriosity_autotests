@@ -200,7 +200,7 @@ class PnExpectedRelease:
                     'addressDetails']['country']['id'],
                 language=self.language
             )
-
+            print(procuring_entity_country_data)
             procuring_entity_country_object = {
                 "scheme": procuring_entity_country_data[2],
                 "id": self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['country'][
