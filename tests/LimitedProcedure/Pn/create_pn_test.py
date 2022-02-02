@@ -203,7 +203,9 @@ class TestCreatePn:
                     language=language,
                     pn_feed_point_message=pn_feed_point_message,
                     pn_payload=create_pn_payload,
-                    pmd=pmd))
+                    pmd=pmd,
+                    host_for_service=get_hosts[2]
+                ))
 
                 expected_pn_release_model = \
                     expected_release_class.pn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs(

@@ -1,10 +1,11 @@
-from tests.utils.functions import is_it_uuid, get_value_from_classification_cpv_dictionary_xls, \
-    get_value_from_country_csv, get_value_from_region_csv, \
+from tests.utils.functions import is_it_uuid, get_value_from_classification_cpv_dictionary_xls,\
+    get_value_from_region_csv, \
     get_value_from_locality_csv
+from tests.utils.services.e_mdm_service import MdmService
 
 
 class PnExpectedRelease:
-    def __init__(self, environment, language, pmd, pn_feed_point_message, pn_payload):
+    def __init__(self, environment, language, pmd, pn_feed_point_message, pn_payload, host_for_service):
         self.language = language
         self.pn_ocid = pn_feed_point_message['data']['ocid']
         self.pn_id = pn_feed_point_message['data']['outcomes']['pn'][0]['id']
@@ -12,6 +13,7 @@ class PnExpectedRelease:
         self.pn_payload = pn_payload
         self.metadata_tender_url = None
         self.procurement_method_details = None
+        self.mdm_class = MdmService(host=host_for_service)
 
         try:
             if pmd == "TEST_NP":
@@ -193,11 +195,12 @@ class PnExpectedRelease:
         )
 
         try:
-            procuring_entity_country_data = get_value_from_country_csv(
+            procuring_entity_country_data = MdmService().get_country(
                 country=self.pn_payload['tender']['procuringEntity']['address'][
                     'addressDetails']['country']['id'],
                 language=self.language
             )
+
             procuring_entity_country_object = {
                 "scheme": procuring_entity_country_data[2],
                 "id": self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['country'][
