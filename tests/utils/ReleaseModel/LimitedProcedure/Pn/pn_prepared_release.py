@@ -15,24 +15,34 @@ class PnExpectedRelease:
 
         try:
             if pmd == "TEST_NP":
+                self.procurement_method = 'limited'
                 self.procurement_method_details = "testNegotiatedProcedure"
             elif pmd == "TEST_IP":
+                self.procurement_method = 'selective'
                 self.procurement_method_details = "innovativePartnership"
             elif pmd == "TEST_DA":
+                self.procurement_method = 'limited'
                 self.procurement_method_details = "testDirectAward"
             elif pmd == "TEST_CD":
+                self.procurement_method = 'selective'
                 self.procurement_method_details = "competetiveDialogue"
             elif pmd == "TEST_DC":
+                self.procurement_method = 'selective'
                 self.procurement_method_details = "designContest"
             elif pmd == "NP":
+                self.procurement_method = 'limited'
                 self.procurement_method_details = "NegotiatedProcedure"
             elif pmd == "IP":
+                self.procurement_method = 'selective'
                 self.procurement_method_details = "innovativePartnership"
             elif pmd == "DA":
+                self.procurement_method = 'limited'
                 self.procurement_method_details = "directAward"
             elif pmd == "CD":
+                self.procurement_method = 'selective'
                 self.procurement_method_details = "competetiveDialogue"
             elif pmd == "DC":
+                self.procurement_method = 'selective'
                 self.procurement_method_details = "designContest"
             else:
                 raise ValueError("Check your pmd: You must use 'TEST_NP', "
@@ -304,7 +314,7 @@ class PnExpectedRelease:
                             "currency": self.pn_payload['planning']['budget']['budgetBreakdown'][0]['amount'][
                                 'currency']
                         },
-                        "procurementMethod": "limited",
+                        "procurementMethod": self.procurement_method,
                         "procurementMethodDetails": self.procurement_method_details,
                         "mainProcurementCategory": actual_ei_release['releases'][0]['tender'][
                             'mainProcurementCategory'],
