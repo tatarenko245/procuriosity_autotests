@@ -224,7 +224,7 @@ class PnExpectedRelease:
             if \
                     self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
                         'scheme'] == "CUATM":
-                procuring_entity_locality_data = get_value_from_locality_csv(
+                procuring_entity_locality_data = self.mdm_class.get_locality(
                     locality=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
                         'id'],
                     region=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
@@ -232,10 +232,10 @@ class PnExpectedRelease:
                     language=self.language
                 )
                 procuring_entity_locality_object = {
-                    "scheme": procuring_entity_locality_data[2],
+                    "scheme": procuring_entity_locality_data['data']['scheme'],
                     "id": self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
-                    "description": procuring_entity_locality_data[1],
-                    "uri": procuring_entity_locality_data[3]
+                    "description": procuring_entity_locality_data['data']['description'],
+                    "uri": procuring_entity_locality_data['data']['uri']
                 }
             else:
                 procuring_entity_locality_object = {
