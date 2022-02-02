@@ -209,7 +209,7 @@ class PnExpectedRelease:
                 "uri": procuring_entity_country_data[3]
             }
 
-            procuring_entity_region_data = get_value_from_region_csv(
+            procuring_entity_region_data = self.mdm_class.get_region(
                 region=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
                 country=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'],
                 language=self.language
