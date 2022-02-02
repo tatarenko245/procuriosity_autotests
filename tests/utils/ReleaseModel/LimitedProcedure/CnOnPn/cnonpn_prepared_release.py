@@ -18,34 +18,6 @@ class CnOnPnExpectedRelease:
         self.procurement_method_details = None
 
         try:
-            if pmd == "TEST_NP":
-                self.procurement_method_details = "testNegotiatedProcedure"
-            elif pmd == "TEST_IP":
-                self.procurement_method_details = "innovativePartnership"
-            elif pmd == "TEST_DA":
-                self.procurement_method_details = "testDirectAward"
-            elif pmd == "TEST_CD":
-                self.procurement_method_details = "competetiveDialogue"
-            elif pmd == "TEST_DC":
-                self.procurement_method_details = "designContest"
-            elif pmd == "NP":
-                self.procurement_method_details = "NegotiatedProcedure"
-            elif pmd == "IP":
-                self.procurement_method_details = "innovativePartnership"
-            elif pmd == "DA":
-                self.procurement_method_details = "directAward"
-            elif pmd == "CD":
-                self.procurement_method_details = "competetiveDialogue"
-            elif pmd == "DC":
-                self.procurement_method_details = "designContest"
-            else:
-                raise ValueError("Check your pmd: You must use 'TEST_NP', "
-                                 "'TEST_IP', 'TEST_DA', 'TEST_CD', 'TEST_DC',"
-                                 " 'NP', 'IP', 'DA', 'CD', 'DC' in pytest command")
-        except Exception:
-            raise Exception("Check your pmd!")
-
-        try:
             if environment == "dev":
                 self.metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
                 self.metadata_budget_url = "http://dev.public.eprocurement.systems/budgets"
@@ -74,7 +46,7 @@ class CnOnPnExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your actual_pn_release['releases'][0]['tender']['id']: "
+            raise ValueError("Check your actual_np_release['releases'][0]['tender']['id']: "
                              "id must be uuid version 4")
         try:
             for n in self.actual_np_release['releases'][0]['relatedProcesses']:
@@ -85,7 +57,7 @@ class CnOnPnExpectedRelease:
                             version=1
                         )
         except ValueError:
-            raise ValueError("Check your actual_pn_release['releases'][0]['relatedProcesses'][*]['id']: "
+            raise ValueError("Check your actual_np_release['releases'][0]['relatedProcesses'][*]['id']: "
                              "id must be uuid version 1")
 
         try:
@@ -357,7 +329,7 @@ class CnOnPnExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your actual_pn_release['releases'][0]['tender']['amendments']: "
+            raise ValueError("Check your actual_np_release['releases'][0]['tender']['amendments']: "
                              "id must be uuid version 4")
 
         amendments_array = [{
