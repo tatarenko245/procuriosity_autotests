@@ -321,25 +321,3 @@ class CnOnPnExpectedRelease:
             ]
         }
         return release
-
-    def update_cn_amendments_array(self):
-        try:
-            is_it_uuid(
-                uuid_to_test=self.actual_np_release['releases'][0]['tender']['amendments'][0]['id'],
-                version=4
-            )
-        except ValueError:
-            raise ValueError("Check your actual_np_release['releases'][0]['tender']['amendments']: "
-                             "id must be uuid version 4")
-
-        amendments_array = [{
-            "id": self.actual_np_release['releases'][0]['tender']['amendments'][0]['id'],
-            "date": self.cn_feed_point_message['data']['operationDate'],
-            "releaseID":
-                f"{self.np_id}-{self.actual_np_release['releases'][0]['tender']['amendments'][0]['releaseID'][46:59]}",
-            "amendsReleaseID":
-                f"{self.np_id}-"
-                f"{self.actual_np_release['releases'][0]['tender']['amendments'][0]['amendsReleaseID'][46:59]}",
-            "rationale": "General change of Contract Notice"
-        }]
-        return amendments_array
