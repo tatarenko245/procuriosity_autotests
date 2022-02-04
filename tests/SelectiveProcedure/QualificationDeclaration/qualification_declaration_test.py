@@ -357,6 +357,7 @@ class TestQualificationDeclareNonConflictInterest:
 
                     kafka_message_class = KafkaMessage(create_qualification_declaration_operation_id)
 
+                    final_expected_requirement_response_for_first_qualification = list()
                     for q in range(len(qualification_list)):
                         if qualification_list[q][0] == candidates_list[y]['qualification_id']:
                             create_qualification_declaration_payload = \
@@ -391,236 +392,253 @@ class TestQualificationDeclareNonConflictInterest:
 
                             expected_requirement_response_object = expected_qualif_declaration_release_class. \
                                 prepare_qualifications_requirement_response_mapper(
-                                    actual_tp_release=actual_tp_release_after_qualification_declaration_creation)
+                                actual_tp_release=actual_tp_release_after_qualification_declaration_creation)
 
                             expected_release_qualification_requirement_response_list.append(
                                 expected_requirement_response_object)
 
                             step_number += 1
 
-                    with allure.step(f'# {step_number}. See result.'
-                                     f'QualificationDeclaration with {y_mapper[y]} candidate '
-                                     f'and {x_mapper[x]} requirement.'):
-                        """
-                        Check the results of TestCase.
-                        """
-
-                        with allure.step(f'# {step_number}.1. Check status code'):
-                            """
-                            Check the synchronous_result_of_sending_the_request.
-                            """
-                            with allure.step('Compare actual status code of sending the request and '
-                                             'expected status code of sending request.'):
-                                allure.attach(str(synchronous_result_of_sending_the_request.status_code),
-                                              "Actual status code of sending the request.")
-                                allure.attach(str(202), "Expected status code of sending request.")
-                                assert str(synchronous_result_of_sending_the_request.status_code) == str(202)
-
-                        with allure.step(f'# {step_number}.2. Check message in feed point'
-                                         f'QualificationDeclaration with {y_mapper[y]} candidate '
-                                         f'and {x_mapper[x]} requirement.'):
-                            """
-                            Check the asynchronous_result_of_sending_the_request.
-                            """
-                            allure.attach(str(create_qualification_declaration_feed_point_message),
-                                          'Message in feed point')
-
-                            asynchronous_result_of_sending_the_request_was_checked = \
-                                kafka_message_class.declare_non_confl_message_is_successful(
-                                    environment=environment,
-                                    kafka_message=create_qualification_declaration_feed_point_message,
-                                    pn_ocid=pn_ocid,
-                                    tender_id=tp_id)
-
-                            try:
+                            with allure.step(f'# {step_number}. See result.'
+                                             f'QualificationDeclaration with {y_mapper[y]} candidate '
+                                             f'and {x_mapper[x]} requirement.'):
                                 """
-                                If asynchronous_result_of_sending_the_request was False, then return process steps by
-                                operation-id.
+                                Check the results of TestCase.
                                 """
-                                if asynchronous_result_of_sending_the_request_was_checked is False:
-                                    with allure.step('# Steps from Casandra DataBase'):
-                                        steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                            operation_id=create_qualification_declaration_operation_id)
-                                        allure.attach(steps, "Cassandra DataBase: steps of process")
-                            except ValueError:
-                                raise ValueError("Can not return BPE operation step")
 
-                            with allure.step('Compare actual asynchronous result of sending the request and '
-                                             'expected asynchronous result of sending request.'):
-                                allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
-                                              "Actual asynchronous result of sending the request.")
-                                allure.attach(str(True), "Expected asynchronous result of sending the request.")
-                                assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
+                                with allure.step(f'# {step_number}.1. Check status code'):
+                                    """
+                                    Check the synchronous_result_of_sending_the_request.
+                                    """
+                                    with allure.step('Compare actual status code of sending the request and '
+                                                     'expected status code of sending request.'):
+                                        allure.attach(str(synchronous_result_of_sending_the_request.status_code),
+                                                      "Actual status code of sending the request.")
+                                        allure.attach(str(202), "Expected status code of sending request.")
+                                        assert str(synchronous_result_of_sending_the_request.status_code) == str(202)
 
-            step_number += 1
+                                with allure.step(f'# {step_number}.2. Check message in feed point'
+                                                 f'QualificationDeclaration with {y_mapper[y]} candidate '
+                                                 f'and {x_mapper[x]} requirement.'):
+                                    """
+                                    Check the asynchronous_result_of_sending_the_request.
+                                    """
+                                    allure.attach(str(create_qualification_declaration_feed_point_message),
+                                                  'Message in feed point')
 
-            with allure.step(f'# {step_number}.3. Check TP release'):
-                """
-                Compare actual Tp release before submission creating and actual Tp release after submission creating.
-                """
-                allure.attach(str(json.dumps(actual_tp_release_before_qualif_declaration_creation)),
-                              "Actual TP release before qualification declaration creation.")
+                                    asynchronous_result_of_sending_the_request_was_checked = \
+                                        kafka_message_class.declare_non_confl_message_is_successful(
+                                            environment=environment,
+                                            kafka_message=create_qualification_declaration_feed_point_message,
+                                            pn_ocid=pn_ocid,
+                                            tender_id=tp_id)
 
-                actual_tp_release_after_qualification_declaration_creation = \
-                    requests.get(url=f"{pn_url}/{tp_id}").json()
-                allure.attach(str(json.dumps(actual_tp_release_after_qualification_declaration_creation)),
-                              "Actual TP release after qualification declaration creation.")
+                                    try:
+                                        """
+                                        If asynchronous_result_of_sending_the_request was False, then return process steps by
+                                        operation-id.
+                                        """
+                                        if asynchronous_result_of_sending_the_request_was_checked is False:
+                                            with allure.step('# Steps from Casandra DataBase'):
+                                                steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                                    operation_id=create_qualification_declaration_operation_id)
+                                                allure.attach(steps, "Cassandra DataBase: steps of process")
+                                    except ValueError:
+                                        raise ValueError("Can not return BPE operation step")
 
-                try:
-                    """
-                    Prepare expected qualifications.requirementResponses array.
-                    """
+                                    with allure.step('Compare actual asynchronous result of sending the request and '
+                                                     'expected asynchronous result of sending request.'):
+                                        allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
+                                                      "Actual asynchronous result of sending the request.")
+                                        allure.attach(str(True), "Expected asynchronous result of sending the request.")
+                                        assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
 
-                    final_expected_requirement_response_for_first_qualification = list()
-                    for q in range(len(expected_release_qualification_requirement_response_list)):
+                                step_number += 1
 
-                        if expected_release_qualification_requirement_response_list[q]['qualification_id'] == \
-                                actual_tp_release_after_qualification_declaration_creation[
-                                    'releases'][0]['qualifications'][0]['id']:
+                                with allure.step(f'# {step_number}.3. Check TP release'):
+                                    """
+                                    Compare actual Tp release before submission creating and actual Tp release after submission creating.
+                                    """
+                                    allure.attach(str(json.dumps(actual_tp_release_before_qualif_declaration_creation)),
+                                                  "Actual TP release before qualification declaration creation.")
 
-                            for response in actual_tp_release_after_qualification_declaration_creation[
-                                    'releases'][0]['qualifications'][0]['requirementResponses']:
-                                if expected_release_qualification_requirement_response_list[q][
-                                    'requirement_response']['relatedTenderer']['id'] == \
-                                        response['relatedTenderer']['id']:
-                                    final_expected_requirement_response_for_first_qualification.append(
-                                        expected_release_qualification_requirement_response_list[q][
-                                            'requirement_response'])
+                                    actual_tp_release_after_qualification_declaration_creation = \
+                                        requests.get(url=f"{pn_url}/{tp_id}").json()
+                                    allure.attach(
+                                        str(json.dumps(actual_tp_release_after_qualification_declaration_creation)),
+                                        "Actual TP release after qualification declaration creation.")
 
-                    final_expected_requirement_response_for_second_qualification = list()
-                    for q in range(len(expected_release_qualification_requirement_response_list)):
+                                    try:
+                                        """
+                                        Prepare expected qualifications.requirementResponses array.
+                                        """
+                                        for e in range(len(expected_release_qualification_requirement_response_list)):
 
-                        if actual_tp_release_after_qualification_declaration_creation[
-                            'releases'][0]['qualifications'][1]['id'] == \
-                                expected_release_qualification_requirement_response_list[q]['qualification_id']:
+                                            if expected_release_qualification_requirement_response_list[e][
+                                                'qualification_id'] == \
+                                                    actual_tp_release_after_qualification_declaration_creation[
+                                                        'releases'][0]['qualifications'][q]['id']:
 
-                            for response in actual_tp_release_after_qualification_declaration_creation[
-                                    'releases'][0]['qualifications'][1]['requirementResponses']:
-                                if expected_release_qualification_requirement_response_list[q][
-                                    'requirement_response']['relatedTenderer']['id'] == \
-                                        response['relatedTenderer']['id']:
-                                    final_expected_requirement_response_for_second_qualification.append(
-                                        expected_release_qualification_requirement_response_list[q][
-                                            'requirement_response'])
+                                                for response in \
+                                                        actual_tp_release_after_qualification_declaration_creation[
+                                                            'releases'][0]['qualifications'][q]['requirementResponses']:
+                                                    if expected_release_qualification_requirement_response_list[e][
+                                                        'requirement_response']['relatedTenderer']['id'] == \
+                                                            response['relatedTenderer']['id']:
+                                                        final_expected_requirement_response_for_first_qualification.append(
+                                                            expected_release_qualification_requirement_response_list[e][
+                                                                'requirement_response'])
+                                    except Exception:
+                                        raise Exception(
+                                            "Impossible to prepare expected qualifications.requirementResponses array.")
 
-                except Exception:
-                    raise Exception("Impossible to prepare expected qualifications.requirementResponses array.")
+                                    if len(final_expected_requirement_response_for_first_qualification) == 1:
+                                        compare_releases = dict(
+                                            DeepDiff(actual_tp_release_before_qualif_declaration_creation,
+                                                     actual_tp_release_after_qualification_declaration_creation))
 
-                compare_releases = dict(DeepDiff(actual_tp_release_before_qualif_declaration_creation,
-                                                 actual_tp_release_after_qualification_declaration_creation))
+                                        dictionary_item_added_was_cleaned = \
+                                            str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                                        compare_releases[
+                                            'dictionary_item_added'] = dictionary_item_added_was_cleaned
 
-                dictionary_item_added_was_cleaned = \
-                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+                                        expected_result = {
+                                            "dictionary_item_added":
+                                                f"['releases'][0]['qualifications'][{q}]['requirementResponses']",
+                                            "values_changed": {
+                                                "root['releases'][0]['id']": {
+                                                    "new_value":
+                                                        f"{tp_id}-"
+                                                        f"{actual_tp_release_after_qualification_declaration_creation['releases'][0]['id'][46:59]}",
+                                                    "old_value":
+                                                        f"{tp_id}-"
+                                                        f"{actual_tp_release_before_qualif_declaration_creation['releases'][0]['id'][46:59]}"
+                                                },
+                                                "root['releases'][0]['date']": {
+                                                    "new_value":
+                                                        create_qualification_declaration_feed_point_message['data'][
+                                                            'operationDate'],
+                                                    "old_value":
+                                                        actual_tp_release_before_qualif_declaration_creation[
+                                                            'releases'][0][
+                                                            'date']
+                                                }
+                                            }
+                                        }
+                                    else:
+                                        s = len(final_expected_requirement_response_for_first_qualification) - 1
+                                        compare_releases = dict(
+                                            DeepDiff(actual_tp_release_before_qualif_declaration_creation,
+                                                     actual_tp_release_after_qualification_declaration_creation))
 
-                expected_result = {
-                    "dictionary_item_added": "['releases'][0]['qualifications'][0]['requirementResponses'], "
-                                             "['releases'][0]['qualifications'][1]['requirementResponses']",
-                    "values_changed": {
-                        "root['releases'][0]['id']": {
-                            "new_value":
-                                f"{tp_id}-"
-                                f"{actual_tp_release_after_qualification_declaration_creation['releases'][0]['id'][46:59]}",
-                            "old_value":
-                                f"{tp_id}-"
-                                f"{actual_tp_release_before_qualif_declaration_creation['releases'][0]['id'][46:59]}"
-                        },
-                        "root['releases'][0]['date']": {
-                            "new_value": create_qualification_declaration_feed_point_message['data']['operationDate'],
-                            "old_value": actual_tp_release_before_qualif_declaration_creation['releases'][0][
-                                'date']
-                        }
-                    }
-                }
+                                        expected_result = {
+                                            "values_changed": {
+                                                "root['releases'][0]['id']": {
+                                                    "new_value":
+                                                        f"{tp_id}-"
+                                                        f"{actual_tp_release_after_qualification_declaration_creation['releases'][0]['id'][46:59]}",
+                                                    "old_value":
+                                                        f"{tp_id}-"
+                                                        f"{actual_tp_release_before_qualif_declaration_creation['releases'][0]['id'][46:59]}"
+                                                },
+                                                "root['releases'][0]['date']": {
+                                                    "new_value":
+                                                        create_qualification_declaration_feed_point_message['data'][
+                                                            'operationDate'],
+                                                    "old_value":
+                                                        actual_tp_release_before_qualif_declaration_creation[
+                                                            'releases'][0][
+                                                            'date']
+                                                }
+                                            },
+                                            'iterable_item_added': {
+                                                f"root['releases'][0]['qualifications'][{q}]['requirementResponses'][{s}]":
+                                                    final_expected_requirement_response_for_first_qualification[
+                                                        s]
+                                            }
+                                        }
 
-                try:
-                    """
-                        If compare_releases !=expected_result, then return process steps by operation-id.
-                        """
-                    if compare_releases == expected_result:
-                        pass
-                    else:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=create_qualification_declaration_operation_id)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-                except ValueError:
-                    raise ValueError("Can not return BPE operation step")
+                                    actual_tp_release_before_qualif_declaration_creation = requests.get(
+                                        url=f"{pn_url}/{tp_id}").json()
 
-                with allure.step('Check a difference of comparing Tp release before qualificationDeclaration creation '
-                                 'and Tp release after qualificationDeclaration creation.'):
-                    allure.attach(json.dumps(compare_releases),
-                                  "Actual result of comparing Tp releases.")
-                    allure.attach(json.dumps(expected_result),
-                                  "Expected result of comparing Tp releases.")
-                    assert compare_releases == expected_result
+                                    try:
+                                        """
+                                            If compare_releases !=expected_result, then return process steps by operation-id.
+                                            """
+                                        if compare_releases == expected_result and \
+                                                final_expected_requirement_response_for_first_qualification == \
+                                                actual_tp_release_after_qualification_declaration_creation[
+                                                    'releases'][0]['qualifications'][q]['requirementResponses']:
+                                            pass
+                                        else:
+                                            with allure.step('# Steps from Casandra DataBase'):
+                                                steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                                    operation_id=create_qualification_declaration_operation_id)
+                                                allure.attach(steps, "Cassandra DataBase: steps of process")
+                                    except ValueError:
+                                        raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare first actual qualifications.requirementResponses array and '
-                                 'expected qualifications.requirementResponses.'):
-                    allure.attach(json.dumps(actual_tp_release_after_qualification_declaration_creation[
-                                                 'releases'][0]['qualifications'][0]['requirementResponses']),
-                                  "Actual qualifications.requirementResponses array.")
+                                    with allure.step(
+                                            'Check a difference of comparing Tp release before qualificationDeclaration creation '
+                                            'and Tp release after qualificationDeclaration creation.'):
+                                        allure.attach(json.dumps(compare_releases),
+                                                      "Actual result of comparing Tp releases.")
+                                        allure.attach(json.dumps(expected_result),
+                                                      "Expected result of comparing Tp releases.")
+                                        assert compare_releases == expected_result
 
-                    allure.attach(json.dumps(final_expected_requirement_response_for_first_qualification),
-                                  "Expected qualifications[0].requirementResponses array.")
-                    assert actual_tp_release_after_qualification_declaration_creation[
-                               'releases'][0]['qualifications'][0]['requirementResponses'] == \
-                           final_expected_requirement_response_for_first_qualification
+                                    with allure.step(
+                                            'Compare actual qualifications.requirementResponses array and '
+                                            'expected qualifications.requirementResponses.'):
+                                        allure.attach(
+                                            json.dumps(actual_tp_release_after_qualification_declaration_creation[
+                                                    'releases'][0]['qualifications'][q]['requirementResponses']),
+                                            "Actual qualifications.requirementResponses array.")
+                                        allure.attach(
+                                            json.dumps(final_expected_requirement_response_for_first_qualification),
+                                            "Expected qualifications.requirementResponses array.")
+                                        assert actual_tp_release_after_qualification_declaration_creation[
+                                                    'releases'][0]['qualifications'][q]['requirementResponses'] == \
+                                            final_expected_requirement_response_for_first_qualification
 
-                with allure.step('Compare second actual qualifications.requirementResponses array and '
-                                 'expected qualifications.requirementResponses.'):
-                    allure.attach(json.dumps(actual_tp_release_after_qualification_declaration_creation[
-                                                 'releases'][0]['qualifications'][1]['requirementResponses']),
-                                  "Actual qualifications.requirementResponses array.")
+                                with allure.step(f'# {step_number}.4. Check MS release'):
+                                    """
+                                    Compare actual Ms release before submission creating and actual Ms release after submission creating.
+                                    """
+                                    allure.attach(json.dumps(actual_ms_release_before_qualif_declaration_creation),
+                                                  "Actual MS release before qualification declaration creation")
 
-                    allure.attach(json.dumps(final_expected_requirement_response_for_second_qualification),
-                                  "Expected qualifications.requirementResponses array.")
-                    assert actual_tp_release_after_qualification_declaration_creation[
-                               'releases'][0]['qualifications'][1]['requirementResponses'] == \
-                           final_expected_requirement_response_for_second_qualification
+                                    actual_ms_release_after_qualif_declaration_creation = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                                    allure.attach(json.dumps(actual_ms_release_after_qualif_declaration_creation),
+                                                  "Actual MS release after submission period end expired")
 
-            with allure.step(f'# {step_number}.4. Check MS release'):
-                """
-                Compare actual Ms release before submission creating and actual Ms release after submission creating.
-                """
-                allure.attach(json.dumps(actual_ms_release_before_qualif_declaration_creation),
-                              "Actual MS release before qualification declaration creation")
+                                    compare_releases = dict(DeepDiff(actual_ms_release_before_qualif_declaration_creation,
+                                                                     actual_ms_release_after_qualif_declaration_creation))
 
-                actual_ms_release_after_qualif_declaration_creation = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-                allure.attach(json.dumps(actual_ms_release_after_qualif_declaration_creation),
-                              "Actual MS release after submission period end expired")
+                                    expected_result = {
+                                        'dictionary_item_added': "['releases'][0]['parties'][2]['persones']",
+                                        "values_changed": {
+                                            "root['releases'][0]['id']": {
+                                                "new_value":
+                                                    f"{pn_ocid}-"
+                                                    f"{actual_ms_release_after_qualif_declaration_creation['releases'][0]['id'][29:42]}",
+                                                "old_value":
+                                                    f"{pn_ocid}-"
+                                                    f"{actual_ms_release_after_qualif_declaration_creation['releases'][0]['id'][29:42]}"
+                                            },
+                                            "root['releases'][0]['date']": {
+                                                "new_value": create_qualification_declaration_feed_point_message['data']['operationDate'],
+                                                "old_value": actual_ms_release_after_qualif_declaration_creation['releases'][0]['date']
+                                            }
+                                        }
+                                    }
 
-                compare_releases = dict(DeepDiff(actual_ms_release_before_qualif_declaration_creation,
-                                                 actual_ms_release_after_qualif_declaration_creation))
+                                    # final_expected_parties_persones = expected_qualif_declaration_release_class.
+                                    print("Compare result")
+                                    print(compare_releases)
 
-                expected_result = {
-                    'dictionary_item_added': "['releases'][0]['parties'][2]['persones']",
-                    "values_changed": {
-                        "root['releases'][0]['id']": {
-                            "new_value":
-                                f"{pn_ocid}-"
-                                f"{actual_ms_release_after_qualif_declaration_creation['releases'][0]['id'][29:42]}",
-                            "old_value":
-                                f"{pn_ocid}-"
-                                f"{actual_ms_release_after_qualif_declaration_creation['releases'][0]['id'][29:42]}"
-                        },
-                        "root['releases'][0]['date']": {
-                            "new_value": create_qualification_declaration_feed_point_message['data']['operationDate'],
-                            "old_value": actual_ms_release_after_qualif_declaration_creation['releases'][0]['date']
-                        }
-                    }
-                }
-
-                final_expected_parties_persones = expected_qualif_declaration_release_class.
-
-                print("Actual persones")
-                print(json.dumps(actual_ms_release_after_qualif_declaration_creation[
-                                     'releases'][0]['parties'][2]['persones']))
-
-                print("")
-
-
-
+                                    actual_ms_release_before_qualif_declaration_creation = requests.get(
+                                        url=f"{pn_url}/{pn_ocid}").json()
         # try:
         #     """
         #         If TestCase was passed, then cLean up the database.

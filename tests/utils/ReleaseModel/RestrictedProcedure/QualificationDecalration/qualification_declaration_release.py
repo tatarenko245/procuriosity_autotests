@@ -52,9 +52,11 @@ class QualificationDeclarationRelease:
                         }
         return requirement_response_mapper
 
-    def prepare_expected_parties_persones_object(self, actual_ms_release):
+    def prepare_expected_parties_new_persones_object(self, actual_ms_release):
+
+
         persones_object = {
-            "id": "MD-IDNO-responder.identifier.id",
+            "id": f"{self.qualification_declaration_payload['requirementResponse']['responder']['identifier']}",
             "title": "Mr.",
             "name": "responder.name",
             "identifier": {

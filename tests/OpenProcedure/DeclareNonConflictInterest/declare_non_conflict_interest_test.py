@@ -1390,126 +1390,126 @@ class TestDeclareNonConflictInterest:
                             GlobalClassTenderPeriodEndAuction.actual_ev_release,
                             GlobalClassCreateDeclareNonConflict.actual_ev_release)
 
-                    dictionary_item_added_was_cleaned = \
-                        str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                    compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
-                    compare_releases = dict(compare_releases)
+                        dictionary_item_added_was_cleaned = \
+                            str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                        compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+                        compare_releases = dict(compare_releases)
 
-                    new_value_for_release_id = GlobalClassCreateDeclareNonConflict.actual_ev_release[
-                                                   'releases'][0]['id'][46:59]
-                    old_value_for_release_id = GlobalClassTenderPeriodEndAuction.actual_ev_release[
-                                                   'releases'][0]['id'][46:59]
-                    expected_result = {
-                        "dictionary_item_added": "['releases'][0]['awards'][0]['requirementResponses']",
-                        "values_changed": {
-                            "root['releases'][0]['id']": {
-                                "new_value":
-                                    f"{GlobalClassCreateCnOnPn.ev_id}-{new_value_for_release_id}",
-                                "old_value":
-                                    f"{GlobalClassCreateCnOnPn.ev_id}-{old_value_for_release_id}"
-                            },
-                            "root['releases'][0]['date']": {
-                                "new_value":
-                                    GlobalClassCreateDeclareNonConflict.feed_point_message['data'][
-                                        'operationDate'],
-                                "old_value":
-                                    GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['date']
+                        new_value_for_release_id = GlobalClassCreateDeclareNonConflict.actual_ev_release[
+                                                       'releases'][0]['id'][46:59]
+                        old_value_for_release_id = GlobalClassTenderPeriodEndAuction.actual_ev_release[
+                                                       'releases'][0]['id'][46:59]
+                        expected_result = {
+                            "dictionary_item_added": "['releases'][0]['awards'][0]['requirementResponses']",
+                            "values_changed": {
+                                "root['releases'][0]['id']": {
+                                    "new_value":
+                                        f"{GlobalClassCreateCnOnPn.ev_id}-{new_value_for_release_id}",
+                                    "old_value":
+                                        f"{GlobalClassCreateCnOnPn.ev_id}-{old_value_for_release_id}"
+                                },
+                                "root['releases'][0]['date']": {
+                                    "new_value":
+                                        GlobalClassCreateDeclareNonConflict.feed_point_message['data'][
+                                            'operationDate'],
+                                    "old_value":
+                                        GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['date']
+                                }
                             }
                         }
-                    }
 
-                    actual_awards_array = GlobalClassCreateDeclareNonConflict.actual_ev_release['releases'][0][
-                        'awards']
-                    try:
-                        """
-                        Prepare actual awards.requirementResponses array.
-                        """
-                        actual_awards_requirement_responses_array = list()
-                        for a in actual_awards_array:
-                            if a['status'] == "pending":
-                                if a['statusDetails'] == "awaiting":
-                                    for a_1 in a:
-                                        if a_1 == "requirementResponses":
-                                            for a_2 in a['requirementResponses']:
-                                                if a_2['requirement']['id'] == \
-                                                        GlobalClassCreateDeclareNonConflict.payload[
-                                                            'requirementResponse']['requirement']['id']:
-                                                    if a_2['relatedTenderer']['id'] == \
-                                                            GlobalClassCreateDeclareNonConflict.payload[
-                                                                'requirementResponse'][
-                                                                'relatedTenderer']['id']:
-                                                        actual_awards_requirement_responses_array.append(a_2)
-                    except Exception:
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = declare_non_conflict_interest_test.py -> \n" \
-                                      f"Class = TestDeclareNonConflictInterest -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_two -> \n" \
-                                      f"Step: # {step_number}.2. Check EV release.\n" \
-                                      f"Message: Impossible to prepare actual awards.requirementResponses.\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise Exception("Impossible to prepare actual awards.requirementResponses.")
-
-                    try:
-                        """
-                        Prepare expected awards.requirementResponses array.
-                        """
-                        expected_requirement_response_array = list()
-                        expected_requirement_response_object = DeclareExpectedRelease(
-                            environment=GlobalClassMetadata.environment,
-                            language=GlobalClassMetadata.language
-                        ).awards_requirement_responses_array(
-                            actual_awards_array=actual_awards_array,
-                            declare_payload=GlobalClassCreateDeclareNonConflict.payload)
-                        expected_requirement_response_array.append(expected_requirement_response_object)
-                    except Exception:
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = declare_non_conflict_interest_test.py -> \n" \
-                                      f"Class = TestDeclareNonConflictInterest -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_two -> \n" \
-                                      f"Step: # {step_number}.2. Check EV release.\n" \
-                                      f"Message: Impossible to prepare expected awards.requirementResponses.\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise Exception("Impossible to prepare expected awards.requirementResponses.")
-
-                    try:
-                        """
-                            If compare_releases !=expected_result, then return process steps by operation-id.
+                        actual_awards_array = GlobalClassCreateDeclareNonConflict.actual_ev_release['releases'][0][
+                            'awards']
+                        try:
                             """
-                        if compare_releases == expected_result and \
-                                expected_requirement_response_array == actual_awards_requirement_responses_array:
-                            pass
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                database = GlobalClassMetadata.database
-                                steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-                                    operation_id=GlobalClassCreateDeclareNonConflict.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        log_msg_one = f"\n{datetime.datetime.now()}\n" \
-                                      f"File = declare_non_conflict_interest_test.py -> \n" \
-                                      f"Class = TTestDeclareNonConflictInterest -> \n" \
-                                      f"Method = test_check_result_of_sending_the_request_two -> \n" \
-                                      f"Step: # {step_number}.2. Check EV release.\n" \
-                                      f"Message: Can not return BPE operation step.\n"
-                        with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
-                            logfile.write(log_msg_one)
-                        raise ValueError("Can not return BPE operation step.")
+                            Prepare actual awards.requirementResponses array.
+                            """
+                            actual_awards_requirement_responses_array = list()
+                            for a in actual_awards_array:
+                                if a['status'] == "pending":
+                                    if a['statusDetails'] == "awaiting":
+                                        for a_1 in a:
+                                            if a_1 == "requirementResponses":
+                                                for a_2 in a['requirementResponses']:
+                                                    if a_2['requirement']['id'] == \
+                                                            GlobalClassCreateDeclareNonConflict.payload[
+                                                                'requirementResponse']['requirement']['id']:
+                                                        if a_2['relatedTenderer']['id'] == \
+                                                                GlobalClassCreateDeclareNonConflict.payload[
+                                                                    'requirementResponse'][
+                                                                    'relatedTenderer']['id']:
+                                                            actual_awards_requirement_responses_array.append(a_2)
+                        except Exception:
+                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                                          f"Class = TestDeclareNonConflictInterest -> \n" \
+                                          f"Method = test_check_result_of_sending_the_request_two -> \n" \
+                                          f"Step: # {step_number}.2. Check EV release.\n" \
+                                          f"Message: Impossible to prepare actual awards.requirementResponses.\n"
+                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                logfile.write(log_msg_one)
+                            raise Exception("Impossible to prepare actual awards.requirementResponses.")
 
-                    with allure.step('Compare actual EV release and expected EV release'):
-                        allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
-                        allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
-                        assert expected_result == compare_releases
+                        try:
+                            """
+                            Prepare expected awards.requirementResponses array.
+                            """
+                            expected_requirement_response_array = list()
+                            expected_requirement_response_object = DeclareExpectedRelease(
+                                environment=GlobalClassMetadata.environment,
+                                language=GlobalClassMetadata.language
+                            ).awards_requirement_responses_array(
+                                actual_awards_array=actual_awards_array,
+                                declare_payload=GlobalClassCreateDeclareNonConflict.payload)
+                            expected_requirement_response_array.append(expected_requirement_response_object)
+                        except Exception:
+                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                                          f"Class = TestDeclareNonConflictInterest -> \n" \
+                                          f"Method = test_check_result_of_sending_the_request_two -> \n" \
+                                          f"Step: # {step_number}.2. Check EV release.\n" \
+                                          f"Message: Impossible to prepare expected awards.requirementResponses.\n"
+                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                logfile.write(log_msg_one)
+                            raise Exception("Impossible to prepare expected awards.requirementResponses.")
 
-                    with allure.step('Compare actual requirementResponse and '
-                                     'expected requirementResponse into awards array'):
-                        allure.attach(str(json.dumps(actual_awards_requirement_responses_array)),
-                                      "Actual requirementResponse")
-                        allure.attach(str(json.dumps(expected_requirement_response_array)),
-                                      "Expected requirementResponse")
-                        assert actual_awards_requirement_responses_array == \
-                               expected_requirement_response_array
+                        try:
+                            """
+                                If compare_releases !=expected_result, then return process steps by operation-id.
+                                """
+                            if compare_releases == expected_result and \
+                                    expected_requirement_response_array == actual_awards_requirement_responses_array:
+                                pass
+                            else:
+                                with allure.step('# Steps from Casandra DataBase'):
+                                    database = GlobalClassMetadata.database
+                                    steps = database.get_bpe_operation_step_by_operation_id_from_orchestrator(
+                                        operation_id=GlobalClassCreateDeclareNonConflict.operation_id)
+                                    allure.attach(steps, "Cassandra DataBase: steps of process")
+                        except ValueError:
+                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                          f"File = declare_non_conflict_interest_test.py -> \n" \
+                                          f"Class = TTestDeclareNonConflictInterest -> \n" \
+                                          f"Method = test_check_result_of_sending_the_request_two -> \n" \
+                                          f"Step: # {step_number}.2. Check EV release.\n" \
+                                          f"Message: Can not return BPE operation step.\n"
+                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                logfile.write(log_msg_one)
+                            raise ValueError("Can not return BPE operation step.")
+
+                        with allure.step('Compare actual EV release and expected EV release'):
+                            allure.attach(str(json.dumps(compare_releases)), "Actual comparing releases")
+                            allure.attach(str(json.dumps(expected_result)), "Expected comparing releases")
+                            assert expected_result == compare_releases
+
+                        with allure.step('Compare actual requirementResponse and '
+                                         'expected requirementResponse into awards array'):
+                            allure.attach(str(json.dumps(actual_awards_requirement_responses_array)),
+                                          "Actual requirementResponse")
+                            allure.attach(str(json.dumps(expected_requirement_response_array)),
+                                          "Expected requirementResponse")
+                            assert actual_awards_requirement_responses_array == \
+                                   expected_requirement_response_array
 
                     with allure.step(f'# {step_number}.3. Check MS release.'):
                         """

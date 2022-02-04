@@ -1944,3 +1944,8 @@ Class = KafkaMessage ->
 Method = declare_non_conflict_interest_message_is_successful -> 
 Actual result: initiator = bpe is not correct.
 Expected result: platform
+2022-02-04 00:43:11.660163
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+KeyError: data.ocid

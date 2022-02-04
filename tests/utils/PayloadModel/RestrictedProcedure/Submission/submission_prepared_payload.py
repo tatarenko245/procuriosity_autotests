@@ -84,6 +84,45 @@ class SubmissionPreparePayload:
                         "details": {
                             "scale": random.choice(scale)
                         }
+                    },
+                    {
+                        "name": "create submission: candidates.name 32",
+                        "identifier": {
+                            "id": "create submission: candidates.identifier.id 32",
+                            "legalName": "create submission: candidates.identifier.legalName 32",
+                            "scheme": "MD-IDNO"
+                        },
+                        "address": {
+                            "streetAddress": "create submission: candidates.address.streetAddress 32",
+                            "addressDetails": {
+                                "country": {
+                                    "id": "MD",
+                                    "scheme": "ISO-ALPHA2",
+                                    "description":
+                                        "create submission: candidates.address.addressDetails.country.description 2"
+                                },
+                                "region": {
+                                    "id": "1700000",
+                                    "scheme": "CUATM",
+                                    "description":
+                                        "create submission: candidates.address.addressDetails.region.description 2"
+                                },
+                                "locality": {
+                                    "id": "1701000",
+                                    "scheme": "CUATM",
+                                    "description":
+                                        "create submission: candidates.address.addressDetails.locality.description 2"
+                                }
+                            }
+                        },
+                        "contactPoint": {
+                            "name": "create submission: candidates.contactPoint.name 32",
+                            "telephone": "create submission: candidates.contactPoint.telephone 32",
+                            "email": "create submission: candidates.contactPoint.email 32"
+                        },
+                        "details": {
+                            "scale": random.choice(scale)
+                        }
                     }
                 ]
             }
@@ -106,7 +145,7 @@ class SubmissionPreparePayload:
                         "addressDetails": {
                             "country": {
                                 "id": "BY",
-                                "scheme": "iso-alpha2",
+                                "scheme": "ISO-ALPHA2",
                                 "description":
                                     "create submission: candidates.address.addressDetails.country.description 3"
                             },
