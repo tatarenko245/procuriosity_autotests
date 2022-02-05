@@ -787,7 +787,7 @@ class TestQualificationDeclareNonConflictInterest:
                                     actual_ms_release_before_qualif_declaration_creation = requests.get(
                                         url=f"{pn_url}/{pn_ocid}").json()
                                     n += 1
-
+                                    step_number += 1
                                     try:
                                         """
                                             If compare_releases !=expected_result, 
