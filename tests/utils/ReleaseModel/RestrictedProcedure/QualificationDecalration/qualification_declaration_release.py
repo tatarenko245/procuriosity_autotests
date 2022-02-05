@@ -1,5 +1,4 @@
 from tests.utils.functions import is_it_uuid
-from tests.utils.services.e_mdm_service import MdmService
 
 
 class QualificationDeclarationRelease:
@@ -52,38 +51,52 @@ class QualificationDeclarationRelease:
                         }
         return requirement_response_mapper
 
-    def prepare_expected_parties_new_persones_object(self, actual_ms_release):
+    def prepare_expected_parties_new_person_object(self, actual_ms_release):
+        person_object_id = \
+            f"{self.qualification_declaration_payload['requirementResponse']['responder']['identifier']['scheme']}-" \
+            f"{self.qualification_declaration_payload['requirementResponse']['responder']['identifier']['id']}"
 
+        person_permanent_id_list = list()
+        try:
+            for p in actual_ms_release['releases'][0]['parties']:
+                if p['roles'][0] == "procuringEntity":
+                    for p_1 in p['persones']:
+                        if p_1['id'] == person_object_id:
+                            if "businessFunctions" in p_1:
+                                for p_2 in p_1['businessFunctions']:
+                                    check = is_it_uuid(
+                                        uuid_to_test=p_2['id'],
+                                        version=4
+                                    )
+                                    if check is True:
+                                        d = {
+                                            "business_func_id": p_2['id'],
+                                            "value": p_2
+                                        }
+                                        person_permanent_id_list.append(d)
 
-        persones_object = {
-            "id": f"{self.qualification_declaration_payload['requirementResponse']['responder']['identifier']}",
-            "title": "Mr.",
-            "name": "responder.name",
+        except ValueError:
+            raise ValueError("Check your actual_ms_release['releases'][0]['parties']["
+                             "*]['businessFunctions'][*]['id;]: id must be uuid version 4")
+
+        person_object = {
+            "id": person_object_id,
+            "title": self.qualification_declaration_payload['requirementResponse']['responder']['title'],
+            "name": self.qualification_declaration_payload['requirementResponse']['responder']['name'],
             "identifier": {
-                "scheme": "MD-IDNO",
-                "id": "responder.identifier.id"
+                "scheme": self.qualification_declaration_payload['requirementResponse']['responder']['identifier'][
+                    'scheme'],
+                "id": self.qualification_declaration_payload['requirementResponse']['responder']['identifier']['id']
             },
-            "businessFunctions": [{
-                "id": "c4707d95-baae-4a36-b235-2c0f9304e922",
-                "type": "priceEvaluator",
-                "jobTitle": "responder.businessFunctions.jobTitle",
-                "period": {
-                    "startDate": "2021-02-01T19:58:08Z"
-                }
-            }, {
-                "id": "f58140d6-791c-4e81-a62c-263799d888e9",
-                "type": "contactPoint",
-                "jobTitle": "responder.businessFunctions.jobTitle",
-                "period": {
-                    "startDate": "2021-02-01T19:58:11Z"
-                }
-            }, {
-                "id": "087acf91-ee41-433e-a432-8ec0a3b65668",
-                "type": "chairman",
-                "jobTitle": "responder.businessFunctions.jobTitle",
-                "period": {
-                    "startDate": "2021-02-01T19:58:13Z"
-                }
-            }]
+            "businessFunctions": self.qualification_declaration_payload['requirementResponse']['responder'][
+                'businessFunctions']
         }
-        return
+
+        for a in range(len(person_permanent_id_list)):
+            for b in range(len(person_object['businessFunctions'])):
+                if person_object['businessFunctions'][b]['type'] == person_permanent_id_list[a]['value']['type'] and \
+                        person_object['businessFunctions'][b]['jobTitle'] == person_permanent_id_list[a]['value'][
+                    'jobTitle'] and person_object['businessFunctions'][b]['period']['startDate'] == \
+                        person_permanent_id_list[a]['value']['period']['startDate']:
+                    person_object['businessFunctions'][b]['id'] = person_permanent_id_list[a]['business_func_id']
+        return person_object

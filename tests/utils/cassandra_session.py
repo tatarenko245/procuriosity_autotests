@@ -21,6 +21,7 @@ class CassandraSession:
         self.submission_keyspace = self.cluster.connect('submission')
         self.evaluation_keyspace = self.cluster.connect('evaluation')
         self.dossier_keyspace = self.cluster.connect('dossier')
+        self.qualification_keyspace = self.cluster.connect('qualification')
 
     def ei_process_cleanup_table_of_services(self, ei_id):
         self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one()
@@ -78,6 +79,16 @@ class CassandraSession:
         self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
         self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
         self.clarification_keyspace.execute(f"DELETE FROM periods WHERE cpid='{pn_ocid}';")
+        self.dossier_keyspace.execute(f"DELETE FROM submission WHERE cpid='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+
+    def qualification_declaration_process_cleanup_table_of_services(self, pn_ocid):
+        self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
+        self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
+        self.qualification_keyspace.execute(f"DELETE FROM qualifications WHERE cpid='{pn_ocid}';")
+        self.qualification_keyspace.execute(f"DELETE FROM period WHERE cpid='{pn_ocid}';")
         self.dossier_keyspace.execute(f"DELETE FROM submission WHERE cpid='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
