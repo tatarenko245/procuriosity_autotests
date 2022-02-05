@@ -304,8 +304,8 @@ class TestQualificationDeclareNonConflictInterest:
             qualification_list.append(q)
 
         expected_release_qualification_requirement_response_list = list()
+        expected_release_parties_persones_list = list()
 
-        n = 0
         for x in range(len(requirements_list)):
             for y in range(len(candidates_list)):
                 x_mapper = {
@@ -358,7 +358,6 @@ class TestQualificationDeclareNonConflictInterest:
 
                     kafka_message_class = KafkaMessage(create_qualification_declaration_operation_id)
 
-                    final_expected_requirement_response_for_first_qualification = list()
                     for q in range(len(qualification_list)):
                         if qualification_list[q][0] == candidates_list[y]['qualification_id']:
                             create_qualification_declaration_payload = \
@@ -385,6 +384,9 @@ class TestQualificationDeclareNonConflictInterest:
                             actual_tp_release_after_qualification_declaration_creation = \
                                 requests.get(url=f"{pn_url}/{tp_id}").json()
 
+                            actual_ms_release_after_qualif_declaration_creation = \
+                                requests.get(url=f"{pn_url}/{pn_ocid}").json()
+
                             expected_qualif_declaration_release_class = QualificationDeclarationRelease(
                                 qualification_id=qualification_list[q][0],
                                 tenderer_id=candidates_list[y]['candidates']['id'],
@@ -397,6 +399,14 @@ class TestQualificationDeclareNonConflictInterest:
 
                             expected_release_qualification_requirement_response_list.append(
                                 expected_requirement_response_object)
+
+                            expected_parties_persones_object = \
+                                expected_qualif_declaration_release_class.prepare_expected_parties_new_person_object(
+                                    actual_ms_release=actual_ms_release_after_qualif_declaration_creation
+                                )
+
+                            expected_release_parties_persones_list.append(
+                                expected_parties_persones_object)
 
                             with allure.step(f'# {step_number}. See result.'
                                              f'QualificationDeclaration with {y_mapper[y]} candidate '
@@ -434,7 +444,7 @@ class TestQualificationDeclareNonConflictInterest:
 
                                     try:
                                         """
-                                        If asynchronous_result_of_sending_the_request was False, 
+                                        If asynchronous_result_of_sending_the_request was False,
                                         then return process steps by operation-id.
                                         """
                                         if asynchronous_result_of_sending_the_request_was_checked is False:
@@ -452,420 +462,306 @@ class TestQualificationDeclareNonConflictInterest:
                                         allure.attach(str(True), "Expected asynchronous result of sending the request.")
                                         assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
 
-                                with allure.step(f'# {step_number}.3. Check TP release'):
-                                    """
-                                    Compare actual Tp release before qualificationDeclaration creating and 
-                                    actual Tp release after qualificationDeclaration creating.
-                                    """
-                                    allure.attach(str(json.dumps(actual_tp_release_before_qualif_declaration_creation)),
-                                                  "Actual TP release before qualificationDeclaration creation.")
-
-                                    actual_tp_release_after_qualification_declaration_creation = \
-                                        requests.get(url=f"{pn_url}/{tp_id}").json()
-                                    allure.attach(
-                                        str(json.dumps(actual_tp_release_after_qualification_declaration_creation)),
-                                        "Actual TP release after qualificationDeclaration creation.")
-
-                                    try:
-                                        """
-                                        Prepare expected qualifications.requirementResponses array.
-                                        """
-                                        for e in range(len(expected_release_qualification_requirement_response_list)):
-
-                                            if expected_release_qualification_requirement_response_list[e][
-                                                'qualification_id'] == \
-                                                    actual_tp_release_after_qualification_declaration_creation[
-                                                        'releases'][0]['qualifications'][q]['id']:
-
-                                                for response in \
-                                                        actual_tp_release_after_qualification_declaration_creation[
-                                                            'releases'][0]['qualifications'][q]['requirementResponses']:
-                                                    if expected_release_qualification_requirement_response_list[e][
-                                                        'requirement_response']['relatedTenderer']['id'] == \
-                                                            response['relatedTenderer']['id']:
-                                                        final_expected_requirement_response_for_first_qualification.\
-                                                            append(
-                                                                expected_release_qualification_requirement_response_list
-                                                                [e]['requirement_response'])
-                                    except Exception:
-                                        raise Exception(
-                                            "Impossible to prepare expected qualifications.requirementResponses array.")
-
-                                    if len(final_expected_requirement_response_for_first_qualification) == 1:
-                                        compare_releases = dict(
-                                            DeepDiff(actual_tp_release_before_qualif_declaration_creation,
-                                                     actual_tp_release_after_qualification_declaration_creation))
-
-                                        dictionary_item_added_was_cleaned = \
-                                            str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                                        compare_releases[
-                                            'dictionary_item_added'] = dictionary_item_added_was_cleaned
-
-                                        actual_tp_release_id_new_value = \
-                                            actual_tp_release_after_qualification_declaration_creation[
-                                                'releases'][0]['id'][46:59]
-
-                                        actual_tp_release_id_old_value = \
-                                            actual_tp_release_before_qualif_declaration_creation['releases'][0]['id'][
-                                                46:59]
-
-                                        expected_result = {
-                                            "dictionary_item_added":
-                                                f"['releases'][0]['qualifications'][{q}]['requirementResponses']",
-                                            "values_changed": {
-                                                "root['releases'][0]['id']": {
-                                                    "new_value":
-                                                        f"{tp_id}-{actual_tp_release_id_new_value}",
-                                                    "old_value":
-                                                        f"{tp_id}-{actual_tp_release_id_old_value}"
-                                                },
-                                                "root['releases'][0]['date']": {
-                                                    "new_value":
-                                                        create_qualification_declaration_feed_point_message['data'][
-                                                            'operationDate'],
-                                                    "old_value":
-                                                        actual_tp_release_before_qualif_declaration_creation[
-                                                            'releases'][0][
-                                                            'date']
-                                                }
-                                            }
-                                        }
-                                    else:
-                                        s = len(final_expected_requirement_response_for_first_qualification) - 1
-                                        compare_releases = dict(
-                                            DeepDiff(actual_tp_release_before_qualif_declaration_creation,
-                                                     actual_tp_release_after_qualification_declaration_creation))
-
-                                        actual_tp_release_id_new_value = \
-                                            actual_tp_release_after_qualification_declaration_creation[
-                                                'releases'][0]['id'][46:59]
-
-                                        actual_tp_release_id_old_value = \
-                                            actual_tp_release_before_qualif_declaration_creation['releases'][0]['id'][
-                                                46:59]
-
-                                        expected_result = {
-                                            "values_changed": {
-                                                "root['releases'][0]['id']": {
-                                                    "new_value":
-                                                        f"{tp_id}-{actual_tp_release_id_new_value}",
-                                                    "old_value":
-                                                        f"{tp_id}-{actual_tp_release_id_old_value}"
-                                                },
-                                                "root['releases'][0]['date']": {
-                                                    "new_value":
-                                                        create_qualification_declaration_feed_point_message['data'][
-                                                            'operationDate'],
-                                                    "old_value":
-                                                        actual_tp_release_before_qualif_declaration_creation[
-                                                            'releases'][0]['date']
-                                                }
-                                            },
-                                            'iterable_item_added': {
-                                                f"root['releases'][0]['qualifications'][{q}]["
-                                                f"'requirementResponses'][{s}]":
-                                                    final_expected_requirement_response_for_first_qualification[s]
-                                            }
-                                        }
-
-                                    actual_tp_release_before_qualif_declaration_creation = requests.get(
-                                        url=f"{pn_url}/{tp_id}").json()
-
-                                    try:
-                                        """
-                                            If compare_releases !=expected_result, 
-                                            then return process steps by operation-id.
-                                            """
-                                        if compare_releases == expected_result and \
-                                                final_expected_requirement_response_for_first_qualification == \
-                                                actual_tp_release_after_qualification_declaration_creation[
-                                                    'releases'][0]['qualifications'][q]['requirementResponses']:
-                                            pass
-                                        else:
-                                            with allure.step('# Steps from Casandra DataBase'):
-                                                steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                                    operation_id=create_qualification_declaration_operation_id)
-                                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                                    except ValueError:
-                                        raise ValueError("Can not return BPE operation step")
-
-                                    with allure.step(
-                                            'Check a difference of comparing Tp release before '
-                                            'qualificationDeclaration creation '
-                                            'and Tp release after qualificationDeclaration creation.'):
-                                        allure.attach(json.dumps(compare_releases),
-                                                      "Actual result of comparing Tp releases.")
-                                        allure.attach(json.dumps(expected_result),
-                                                      "Expected result of comparing Tp releases.")
-                                        assert compare_releases == expected_result
-
-                                    with allure.step(
-                                            'Compare actual qualifications.requirementResponses array and '
-                                            'expected qualifications.requirementResponses.'):
-                                        allure.attach(
-                                            json.dumps(actual_tp_release_after_qualification_declaration_creation[
-                                                           'releases'][0]['qualifications'][q]['requirementResponses']),
-                                            "Actual qualifications.requirementResponses array.")
-                                        allure.attach(
-                                            json.dumps(final_expected_requirement_response_for_first_qualification),
-                                            "Expected qualifications.requirementResponses array.")
-                                        assert actual_tp_release_after_qualification_declaration_creation[
-                                                   'releases'][0]['qualifications'][q]['requirementResponses'] == \
-                                               final_expected_requirement_response_for_first_qualification
-
-                                with allure.step(f'# {step_number}.4. Check MS release'):
-                                    """
-                                    Compare actual Ms release before qualificationDeclaration creating and 
-                                    actual Ms release after qualificationDeclaration creating.
-                                    """
-                                    allure.attach(json.dumps(actual_ms_release_before_qualif_declaration_creation),
-                                                  "Actual MS release before qualificationDeclaration creation")
-
-                                    actual_ms_release_after_qualif_declaration_creation = requests.get(
-                                        url=f"{pn_url}/{pn_ocid}").json()
-                                    allure.attach(json.dumps(actual_ms_release_after_qualif_declaration_creation),
-                                                  "Actual MS release after submission period end expired")
-
-                                    if n == 0:
-                                        compare_releases = dict(
-                                            DeepDiff(actual_ms_release_before_qualif_declaration_creation,
-                                                     actual_ms_release_after_qualif_declaration_creation))
-
-                                        dictionary_item_added_was_cleaned = \
-                                            str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                                        compare_releases[
-                                            'dictionary_item_added'] = dictionary_item_added_was_cleaned
-
-                                        for p in actual_ms_release_after_qualif_declaration_creation[
-                                                'releases'][0]['parties']:
-                                            if p['roles'][0] == "procuringEntity":
-                                                actual_parties_persones_array = p['persones']
-
-                                        actual_ms_release_id_new_value = \
-                                            actual_ms_release_after_qualif_declaration_creation['releases'][0]['id'][
-                                                29:42]
-
-                                        actual_ms_release_id_old_value = \
-                                            actual_ms_release_before_qualif_declaration_creation['releases'][0]['id'][
-                                                29:42]
-
-                                        expected_result = {
-                                            'dictionary_item_added': "['releases'][0]['parties'][2]['persones']",
-                                            "values_changed": {
-                                                "root['releases'][0]['id']": {
-                                                    "new_value": f"{pn_ocid}-{actual_ms_release_id_new_value}",
-                                                    "old_value": f"{pn_ocid}-{actual_ms_release_id_old_value}"
-                                                },
-                                                "root['releases'][0]['date']": {
-                                                    "new_value":
-                                                        create_qualification_declaration_feed_point_message['data'][
-                                                            'operationDate'],
-                                                    "old_value":
-                                                        actual_ms_release_before_qualif_declaration_creation[
-                                                            'releases'][
-                                                            0]['date']
-                                                }
-                                            }
-                                        }
-
-                                        final_expected_parties_persones_array = list()
-                                        final_expected_parties_persones_array.append(
-                                            expected_qualif_declaration_release_class.
-                                            prepare_expected_parties_new_person_object(
-                                                actual_ms_release=actual_ms_release_after_qualif_declaration_creation
-                                                ))
-
-                                    else:
-                                        value_was_changed = None
-                                        compare_releases = dict(
-                                            DeepDiff(actual_ms_release_before_qualif_declaration_creation,
-                                                     actual_ms_release_after_qualif_declaration_creation))
-
-                                        expected_parties_person = expected_qualif_declaration_release_class. \
-                                            prepare_expected_parties_new_person_object(
-                                                actual_ms_release=actual_ms_release_after_qualif_declaration_creation
-                                            )
-
-                                        for f in final_expected_parties_persones_array:
-                                            if expected_parties_person['id'] == f['id']:
-                                                if "businessFunctions" in f and \
-                                                        "businessFunctions" in expected_parties_person:
-                                                    for f_1 in f['businessFunctions']:
-                                                        for e in expected_parties_person['businessFunctions']:
-                                                            if f_1['id'] == e['id']:
-                                                                f_1.update(e)
-
-                                                            elif f_1['id'] != e['id']:
-                                                                list_of_id = list()
-                                                                for b in range(len(f['businessFunctions'])):
-                                                                    list_of_id.append(f['businessFunctions'][b]['id'])
-                                                                if e['id'] not in list_of_id:
-                                                                    f['businessFunctions'].append(e)
-                                                    for g in expected_parties_person:
-                                                        if g != "businessFunctions":
-                                                            if f[g] != expected_parties_person[g]:
-                                                                value_was_changed = {
-                                                                    "key": f"root['releases'][0]['parties'][2]["
-                                                                    f"'persones'][0]['{g}']",
-                                                                    "value": {
-                                                                        "new_value": expected_parties_person[g],
-                                                                        "old_value": f[g]
-                                                                    }
-                                                                }
-                                                                f[g] = expected_parties_person[g]
-                                                else:
-                                                    f.update(expected_parties_person)
-                                            else:
-                                                final_expected_parties_persones_array.append(expected_parties_person)
-
-                                        for p in actual_ms_release_after_qualif_declaration_creation[
-                                                'releases'][0]['parties']:
-                                            if p['roles'][0] == "procuringEntity":
-                                                actual_parties_persones_array = p['persones']
-
-                                        actual_ms_release_id_new_value = \
-                                            actual_ms_release_after_qualif_declaration_creation['releases'][0]['id'][
-                                                29:42]
-
-                                        actual_ms_release_id_old_value = \
-                                            actual_ms_release_before_qualif_declaration_creation['releases'][0]['id'][
-                                                29:42]
-                                        if value_was_changed is None:
-                                            expected_result = {
-                                                "values_changed": {
-                                                    "root['releases'][0]['id']": {
-                                                        "new_value":
-                                                            f"{pn_ocid}-{actual_ms_release_id_new_value}",
-                                                        "old_value":
-                                                            f"{pn_ocid}-{actual_ms_release_id_old_value}"
-                                                    },
-                                                    "root['releases'][0]['date']": {
-                                                        "new_value":
-                                                            create_qualification_declaration_feed_point_message['data'][
-                                                                'operationDate'],
-                                                        "old_value":
-                                                            actual_ms_release_before_qualif_declaration_creation[
-                                                                'releases'][
-                                                                0]['date']
-                                                    }
-                                                },
-                                                "iterable_item_added": {
-                                                    f"root['releases'][0]['parties'][2]['persones'][0]["
-                                                    f"'businessFunctions'][{n}]":
-                                                        expected_parties_person['businessFunctions'][0]
-
-                                                }
-                                            }
-                                        else:
-                                            expected_result = {
-                                                "values_changed": {
-                                                    "root['releases'][0]['id']": {
-                                                        "new_value":
-                                                            f"{pn_ocid}-{actual_ms_release_id_new_value}",
-                                                        "old_value":
-                                                            f"{pn_ocid}-{actual_ms_release_id_old_value}"
-                                                    },
-                                                    "root['releases'][0]['date']": {
-                                                        "new_value":
-                                                            create_qualification_declaration_feed_point_message['data'][
-                                                                'operationDate'],
-                                                        "old_value":
-                                                            actual_ms_release_before_qualif_declaration_creation[
-                                                                'releases'][
-                                                                0]['date']
-                                                    },
-                                                    value_was_changed['key']: value_was_changed['value']
-                                                },
-                                                "iterable_item_added": {
-                                                    f"root['releases'][0]['parties'][2]['persones'][0]["
-                                                    f"'businessFunctions'][{n}]":
-                                                        expected_parties_person['businessFunctions'][0]
-
-                                                }
-                                            }
-
-                                    actual_ms_release_before_qualif_declaration_creation = requests.get(
-                                        url=f"{pn_url}/{pn_ocid}").json()
-                                    n += 1
-
-                                    try:
-                                        """
-                                            If compare_releases !=expected_result, 
-                                            then return process steps by operation-id.
-                                            """
-                                        if compare_releases == expected_result and \
-                                                actual_parties_persones_array == final_expected_parties_persones_array:
-                                            pass
-                                        else:
-                                            with allure.step('# Steps from Casandra DataBase'):
-                                                steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                                    operation_id=create_qualification_declaration_operation_id)
-                                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                                    except ValueError:
-                                        raise ValueError("Can not return BPE operation step")
-
-                                    with allure.step('Check a difference of comparing Ms release before '
-                                                     'qualificationDeclaration creating and '
-                                                     'Ms release after qualificationDeclaration creating.'):
-                                        allure.attach(json.dumps(compare_releases),
-                                                      "Actual result of comparing MS releases.")
-                                        allure.attach(json.dumps(expected_result),
-                                                      "Expected result of comparing Ms releases.")
-                                        assert compare_releases == expected_result
-
-                                    with allure.step('Check a difference of comparing actual parties.persones array '
-                                                     'and expected parties.persones array'):
-                                        allure.attach(json.dumps(actual_parties_persones_array),
-                                                      "Actual parties.persones array.")
-                                        allure.attach(json.dumps(final_expected_parties_persones_array),
-                                                      "Expected parties.persones array.")
-                                        assert compare_releases == expected_result
-
-        try:
+        step_number += 1
+        with allure.step(f'# {step_number}. See result.'):
             """
-                If TestCase was passed, then cLean up the database.
-                If TestCase was failed, then return process steps by operation-id.
+            Check the results of TestCase.
+            """
+
+            with allure.step(f'# {step_number}.3. Check TP release'):
                 """
+                Compare actual Tp release before qualificationDeclaration creating and
+                actual Tp release after qualificationDeclaration creating.
+                """
+                allure.attach(str(json.dumps(actual_tp_release_before_qualif_declaration_creation)),
+                              "Actual TP release before qualificationDeclaration creation.")
 
-            connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+                actual_tp_release_after_qualification_declaration_creation = \
+                    requests.get(url=f"{pn_url}/{tp_id}").json()
+                allure.attach(
+                    str(json.dumps(actual_tp_release_after_qualification_declaration_creation)),
+                    "Actual TP release after qualificationDeclaration creation.")
 
-            connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                compare_releases = dict(
+                    DeepDiff(actual_tp_release_before_qualif_declaration_creation,
+                             actual_tp_release_after_qualification_declaration_creation))
 
-            connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                dictionary_item_added_was_cleaned = \
+                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
 
-            connection_to_database.cnonpn_process_cleanup_table_of_services(
-                pn_ocid=pn_ocid)
+                new_releases_timestamp = actual_tp_release_after_qualification_declaration_creation[
+                                             'releases'][0]['id'][46:59]
+                old_releases_timestamp = actual_tp_release_before_qualif_declaration_creation[
+                                             'releases'][0]['id'][46:59]
+                expected_result = {
+                    "dictionary_item_added":
+                        "['releases'][0]['qualifications'][0]['requirementResponses'], "
+                        "['releases'][0]['qualifications'][1]['requirementResponses']",
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value": f"{tp_id}-{new_releases_timestamp}",
+                            "old_value": f"{tp_id}-{old_releases_timestamp}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": create_qualification_declaration_feed_point_message['data']['operationDate'],
+                            "old_value": actual_tp_release_before_qualif_declaration_creation['releases'][0]['date']
+                        }
+                    }
+                }
 
-            connection_to_database.submission_process_cleanup_table_of_services(
-                pn_ocid=pn_ocid)
+                try:
+                    """
+                    Prepare expected qualifications.requirementResponses array.
+                    """
+                    final_expected_requirement_response_for_first_qualification = list()
+                    final_expected_requirement_response_for_second_qualification = list()
+                    for e in range(len(expected_release_qualification_requirement_response_list)):
+                        if expected_release_qualification_requirement_response_list[e]['qualification_id'] == \
+                                actual_tp_release_after_qualification_declaration_creation[
+                                    'releases'][0]['qualifications'][0]['id']:
 
-            connection_to_database.\
-                qualification_declaration_process_cleanup_table_of_services(
-                    pn_ocid=pn_ocid)
+                            for response in \
+                                    actual_tp_release_after_qualification_declaration_creation[
+                                        'releases'][0]['qualifications'][0]['requirementResponses']:
+                                if expected_release_qualification_requirement_response_list[e][
+                                    'requirement_response']['relatedTenderer']['id'] == \
+                                        response['relatedTenderer']['id'] and \
+                                        expected_release_qualification_requirement_response_list[e][
+                                            'requirement_response']['requirement']['id'] == \
+                                        response['requirement']['id']:
+                                    final_expected_requirement_response_for_first_qualification.append(
+                                        expected_release_qualification_requirement_response_list[e][
+                                            'requirement_response'])
 
-            connection_to_database.cleanup_steps_of_process(
-                operation_id=create_ei_operation_id)
+                        elif expected_release_qualification_requirement_response_list[e]['qualification_id'] == \
+                                actual_tp_release_after_qualification_declaration_creation[
+                                    'releases'][0]['qualifications'][1]['id']:
 
-            connection_to_database.cleanup_steps_of_process(
-                operation_id=create_fs_operation_id)
+                            for response in \
+                                    actual_tp_release_after_qualification_declaration_creation[
+                                        'releases'][0]['qualifications'][1]['requirementResponses']:
+                                if expected_release_qualification_requirement_response_list[e][
+                                    'requirement_response']['relatedTenderer']['id'] == \
+                                        response['relatedTenderer']['id'] and \
+                                        expected_release_qualification_requirement_response_list[e][
+                                            'requirement_response']['requirement']['id'] == \
+                                        response['requirement']['id']:
+                                    final_expected_requirement_response_for_second_qualification.append(
+                                        expected_release_qualification_requirement_response_list[e][
+                                            'requirement_response'])
+                except Exception:
+                    raise Exception(
+                        "Impossible to prepare expected qualifications.requirementResponses array.")
 
-            connection_to_database.cleanup_steps_of_process(
-                operation_id=create_pn_operation_id)
+                try:
+                    """
+                        If compare_releases !=expected_result,
+                        then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result and \
+                            actual_tp_release_after_qualification_declaration_creation[
+                                'releases'][0]['qualifications'][0]['requirementResponses'] == \
+                            final_expected_requirement_response_for_first_qualification and \
+                            actual_tp_release_after_qualification_declaration_creation[
+                                'releases'][0]['qualifications'][1]['requirementResponses'] == \
+                            final_expected_requirement_response_for_second_qualification:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=create_qualification_declaration_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
-            connection_to_database.cleanup_steps_of_process(
-                operation_id=create_cn_operation_id)
+                with allure.step(
+                        'Check a difference of comparing Tp release before '
+                        'qualificationDeclaration creation '
+                        'and Tp release after qualificationDeclaration creation.'):
+                    allure.attach(json.dumps(compare_releases),
+                                  "Actual result of comparing Tp releases.")
+                    allure.attach(json.dumps(expected_result),
+                                  "Expected result of comparing Tp releases.")
+                    assert compare_releases == expected_result
 
-            connection_to_database.cleanup_steps_of_process(
-                operation_id=create_submission_belarus_operation_id)
+                with allure.step(
+                        'Compare actual qualifications[0].requirementResponses array and '
+                        'expected qualifications[0].requirementResponses.'):
+                    allure.attach(
+                        json.dumps(actual_tp_release_after_qualification_declaration_creation[
+                                       'releases'][0]['qualifications'][0]['requirementResponses']),
+                        "Actual qualifications[0].requirementResponses array.")
+                    allure.attach(
+                        json.dumps(final_expected_requirement_response_for_first_qualification),
+                        "Expected qualifications[0].requirementResponses array.")
+                    assert actual_tp_release_after_qualification_declaration_creation[
+                               'releases'][0]['qualifications'][0]['requirementResponses'] == \
+                           final_expected_requirement_response_for_first_qualification
 
-            connection_to_database.cleanup_steps_of_process(
-                operation_id=create_submission_moldova_operation_id)
+                    with allure.step(
+                            'Compare actual qualifications[1].requirementResponses array and '
+                            'expected qualifications[1].requirementResponses.'):
+                        allure.attach(
+                            json.dumps(actual_tp_release_after_qualification_declaration_creation[
+                                           'releases'][0]['qualifications'][1]['requirementResponses']),
+                            "Actual qualifications[1].requirementResponses array.")
+                        allure.attach(
+                            json.dumps(final_expected_requirement_response_for_first_qualification),
+                            "Expected qualifications[1].requirementResponses array.")
+                        assert actual_tp_release_after_qualification_declaration_creation[
+                                   'releases'][0]['qualifications'][1]['requirementResponses'] == \
+                               final_expected_requirement_response_for_second_qualification
 
-            connection_to_database.cleanup_steps_of_process(
-                operation_id=submission_period_end_feed_point_message['X-OPERATION-ID'])
+            with allure.step(f'# {step_number}.4. Check MS release'):
+                """
+                Compare actual Ms release before qualificationDeclaration creating and
+                actual Ms release after qualificationDeclaration creating.
+                """
+                allure.attach(json.dumps(actual_ms_release_before_qualif_declaration_creation),
+                              "Actual MS release before qualificationDeclaration creation")
 
-            connection_to_database.cleanup_steps_of_process(
-                operation_id=create_qualification_declaration_operation_id)
+                actual_ms_release_after_qualif_declaration_creation = requests.get(
+                    url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(json.dumps(actual_ms_release_after_qualif_declaration_creation),
+                              "Actual MS release after submission period end expired")
 
-        except ValueError:
-            raise ValueError("Can not return BPE operation step")
+                compare_releases = dict(
+                    DeepDiff(actual_ms_release_before_qualif_declaration_creation,
+                             actual_ms_release_after_qualif_declaration_creation))
+
+                dictionary_item_added_was_cleaned = \
+                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+
+                new_releases_timestamp = \
+                    actual_ms_release_after_qualif_declaration_creation['releases'][0]['id'][29:42]
+
+                old_releases_timestamp = \
+                    actual_ms_release_before_qualif_declaration_creation['releases'][0]['id'][29:42]
+
+                expected_result = {
+                    'dictionary_item_added': "['releases'][0]['parties'][2]['persones']",
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value": f"{pn_ocid}-{new_releases_timestamp}",
+                            "old_value": f"{pn_ocid}-{old_releases_timestamp}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value":
+                                create_qualification_declaration_feed_point_message['data']['operationDate'],
+                            "old_value":
+                                actual_ms_release_before_qualif_declaration_creation['releases'][0]['date']
+                        }
+                    }
+                }
+
+                try:
+                    """
+                    Prepare expected parties[2].persones array.
+                    """
+                    final_expected_parties_persones_for_procuring_entity = list()
+
+                    final_expected_parties_persones_for_procuring_entity.append(
+                        expected_release_parties_persones_list[0])
+
+                    for f in final_expected_parties_persones_for_procuring_entity:
+                        for e in expected_release_parties_persones_list:
+                            if e['id'] == f['id']:
+                                if "businessFunctions" in f and \
+                                        "businessFunctions" in e:
+                                    for f_1 in f['businessFunctions']:
+                                        for e_1 in e['businessFunctions']:
+                                            if f_1['id'] == e_1['id']:
+                                                f_1.update(e_1)
+
+                                            elif f_1['id'] != e_1['id']:
+                                                list_of_id = list()
+                                                for b in range(len(f['businessFunctions'])):
+                                                    list_of_id.append(f['businessFunctions'][b]['id'])
+                                                if e_1['id'] not in list_of_id:
+                                                    f['businessFunctions'].append(e_1)
+                                    for g in e:
+                                        if g != "businessFunctions":
+                                            if f[g] != e[g]:
+                                                f[g] = e[g]
+                                else:
+                                    f.update(expected_release_parties_persones_list)
+                            else:
+                                final_expected_parties_persones_for_procuring_entity.append(
+                                    expected_release_parties_persones_list)
+
+                except Exception:
+                    raise Exception(
+                        "Impossible to prepare expected parties[2].persones array.")
+
+                try:
+                    """
+                    If TestCase was passed, then cLean up the database.
+                    If TestCase was failed, then return process steps by operation-id.
+                    """
+                    if compare_releases == expected_result and \
+                            actual_ms_release_after_qualif_declaration_creation[
+                                'releases'][0]['parties'][2]['persones'] == \
+                            final_expected_parties_persones_for_procuring_entity:
+
+                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+
+                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+
+                        connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.submission_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.qualification_declaration_process_cleanup_table_of_services(
+                            pn_ocid=pn_ocid)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(
+                            operation_id=create_submission_belarus_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(
+                            operation_id=create_submission_moldova_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(
+                            operation_id=submission_period_end_feed_point_message['X-OPERATION-ID'])
+
+                        connection_to_database.cleanup_steps_of_process(
+                            operation_id=create_qualification_declaration_operation_id)
+
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=create_qualification_declaration_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                with allure.step('Check a difference of comparing Ms release before '
+                                 'qualificationDeclaration creating and '
+                                 'Ms release after qualificationDeclaration creating.'):
+                    allure.attach(json.dumps(compare_releases),
+                                  "Actual result of comparing MS releases.")
+                    allure.attach(json.dumps(expected_result),
+                                  "Expected result of comparing Ms releases.")
+                    assert compare_releases == expected_result
+
+                with allure.step('Check a difference of comparing actual parties[2].persones array '
+                                 'and expected parties[2].persones array'):
+                    allure.attach(json.dumps(actual_ms_release_after_qualif_declaration_creation[
+                                                 'releases'][0]['parties'][2]['persones']),
+                                  "Actual parties[2].persones array.")
+                    allure.attach(json.dumps(final_expected_parties_persones_for_procuring_entity),
+                                  "Expected parties[2].persones array.")
+                    assert actual_ms_release_after_qualif_declaration_creation[
+                               'releases'][0]['parties'][2]['persones'] == \
+                           final_expected_parties_persones_for_procuring_entity
