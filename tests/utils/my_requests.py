@@ -249,10 +249,11 @@ class Requests:
 
     @staticmethod
     @allure.step('Prepared request: create Declare non conflict interest')
-    def create_declare_non_conflict_interest(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, award_id,
-                                             award_token, payload, test_mode=False):
+    def create_declare_non_conflict_interest(host_of_request, access_token, x_operation_id, pn_ocid, tender_id,
+                                             award_id, award_token, payload,
+                                             test_mode=False):
         declaration = requests.post(
-            url=host_of_request + f"/do/declaration/{pn_ocid}/{ev_id}/{award_id}",
+            url=host_of_request + f"/do/declaration/{pn_ocid}/{tender_id}/{award_id}",
             params={
                 'testMode': test_mode
             },
@@ -340,3 +341,44 @@ class Requests:
         allure.attach(host_of_request + f"/do/submission", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return submission
+
+    @staticmethod
+    @allure.step('Prepared request: create QualificationDeclaration')
+    def create_qualification(host_of_request, access_token, x_operation_id, pn_ocid, tender_id, qualification_id,
+                             qualification_token, payload, test_mode=False):
+        qualification = requests.post(
+            url=host_of_request + f"/do/qualification/{pn_ocid}/{tender_id}/{qualification_id}",
+            params={
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'X-TOKEN': qualification_token,
+                'Content-Type': 'application/json'
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/qualification", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return qualification
+
+    @staticmethod
+    @allure.step('Prepared request: create Declare non conflict interest')
+    def create_declaration_qualification_non_conflict_interest(
+            host_of_request, access_token, x_operation_id, pn_ocid, tender_id, qualification_id, qualification_token,
+            payload, test_mode=False):
+        declaration = requests.post(
+            url=host_of_request + f"/do/declaration/qualification/{pn_ocid}/{tender_id}/{qualification_id}",
+            params={
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': qualification_token
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/declaration/qualification", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return declaration

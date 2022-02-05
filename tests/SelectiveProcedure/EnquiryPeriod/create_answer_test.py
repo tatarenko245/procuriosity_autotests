@@ -18,7 +18,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 class TestCreateAnswer:
-    @allure.title("Check TP and MS releases data after Enquiry creating without optional fields. \n"
+    @allure.title("Check TP and MS releases data after Answer creating without optional fields. \n"
                   "------------------------------------------------\n"
                   "create Ei: obligatory data model without items array;\n"
                   "create Fs: obligatory data model, treasury money;\n"

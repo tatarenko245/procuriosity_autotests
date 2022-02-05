@@ -106,7 +106,7 @@ class SubmissionPreparePayload:
                         "addressDetails": {
                             "country": {
                                 "id": "BY",
-                                "scheme": "iso-alpha2",
+                                "scheme": "ISO-ALPHA2",
                                 "description":
                                     "create submission: candidates.address.addressDetails.country.description 3"
                             },

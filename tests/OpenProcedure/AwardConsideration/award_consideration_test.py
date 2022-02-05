@@ -70,7 +70,7 @@ class TestAwardConsideration:
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions, "
                   "awardCriteriaDetails = automated;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
-                  "Declaration non conflict interest: full data model.\n"
+                  "QualificationDeclaration non conflict interest: full data model.\n"
                   )
     def test_check_result_of_sending_the_request_one(self):
         step_number = 1
@@ -459,7 +459,7 @@ class TestAwardConsideration:
                         access_token=GlobalClassCreateDeclareNonConflict.access_token,
                         x_operation_id=GlobalClassCreateDeclareNonConflict.operation_id,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id,
+                        tender_id=GlobalClassCreateCnOnPn.ev_id,
                         payload=GlobalClassCreateDeclareNonConflict.payload,
                         award_id=GlobalClassCreateDeclareNonConflict.award_id,
                         award_token=GlobalClassCreateDeclareNonConflict.award_token,
@@ -906,7 +906,7 @@ class TestAwardConsideration:
                   "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions, "
                   "awardCriteriaDetails = manual;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
-                  "Declaration non conflict interest: full data model.\n"
+                  "QualificationDeclaration non conflict interest: full data model.\n"
                   )
     def test_check_result_of_sending_the_request_two(self):
         step_number = 1
@@ -1296,7 +1296,7 @@ class TestAwardConsideration:
                         access_token=GlobalClassCreateDeclareNonConflict.access_token,
                         x_operation_id=GlobalClassCreateDeclareNonConflict.operation_id,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id,
+                        tender_id=GlobalClassCreateCnOnPn.ev_id,
                         payload=GlobalClassCreateDeclareNonConflict.payload,
                         award_id=GlobalClassCreateDeclareNonConflict.award_id,
                         award_token=GlobalClassCreateDeclareNonConflict.award_token,
