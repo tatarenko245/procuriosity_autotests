@@ -382,3 +382,21 @@ class Requests:
         allure.attach(host_of_request + f"/do/declaration/qualification", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return declaration
+
+    @staticmethod
+    @allure.step('Prepared request: award consideration')
+    def create_consideration_qualification(host_of_request, access_token, x_operation_id, pn_ocid, tender_id,
+                                           qualification_id, qualification_token, test_mode=False):
+        consideration = requests.post(
+            url=host_of_request + f"/do/consideration/qualification/{pn_ocid}/{tender_id}/{qualification_id}",
+            params={
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': qualification_token
+            })
+        allure.attach(host_of_request + f"/do/consideration/qualification", 'URL')
+        return consideration
