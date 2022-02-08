@@ -328,6 +328,7 @@ class TestQualificationDeclareNonConflictInterest:
                     9: "tenth"
                 }
 
+                step_number += 1
                 with allure.step(f'# {step_number}. Authorization platform one: create '
                                  f'QualificationDeclaration with {y_mapper[y]} candidate and'
                                  f' {x_mapper[x]} requirement.'):
@@ -338,8 +339,8 @@ class TestQualificationDeclareNonConflictInterest:
                     create_qualification_declaration_access_token = authorization.get_access_token_for_platform_one()
                     create_qualification_declaration_operation_id = authorization.get_x_operation_id(
                         create_qualification_declaration_access_token)
-                    step_number += 1
 
+                step_number += 1
                 with allure.step(f'# {step_number}. Send request to create '
                                  f'QualificationDeclaration with {y_mapper[y]} candidate and'
                                  f' {x_mapper[x]} requirement.'):
@@ -389,8 +390,8 @@ class TestQualificationDeclareNonConflictInterest:
                     authorization.get_access_token_for_platform_one()
                 create_qualification_consideration_operation_id = authorization.get_x_operation_id(
                     create_qualification_consideration_access_token)
-                step_number += 1
 
+            step_number += 1
             with allure.step(f'# {step_number}. Send request to create '
                              f'QualificationDeclaration for {q} qualification. See synchronous  result and '
                              f'check message from feed-point.'):
