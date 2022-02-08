@@ -253,8 +253,6 @@ class TestQualificationDeclareNonConflictInterest:
                 payload=create_submission_belarus_payload,
                 test_mode=True)
 
-            step_number += 1
-
         time_bot(expected_time=create_cn_payload['preQualification']['period']['endDate'])
         kafka_message_class = KafkaMessage(ocid=tp_id,
                                            initiation="bpe")
