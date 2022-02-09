@@ -424,7 +424,7 @@ class TestQualification:
                         test_mode=True)
 
             step_number += 1
-            with allure.step(f'# {step_number}. See result: check status code of request and message from feed-point.'):
+            with allure.step(f'# {step_number}. See result.'):
                 """
                 Check the results of TestCase.
                 """
