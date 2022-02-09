@@ -524,7 +524,8 @@ class TestAwardConsideration:
                               'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    GlobalClassAwardConsideration.operation_id).award_or_qualification_consideration_message_is_successful(
+                    GlobalClassAwardConsideration.operation_id).\
+                    award_or_qualification_consideration_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,

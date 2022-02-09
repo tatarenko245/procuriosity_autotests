@@ -9,8 +9,8 @@ from deepdiff import DeepDiff
 
 from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
-from tests.utils.PayloadModel.RestrictedProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
-from tests.utils.PayloadModel.RestrictedProcedure.Pn.pn_prepared_payload import PnPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.ReleaseModel.RestrictedProcedure.CnOnPn.cnonpn_prepared_release import CnOnPnExpectedRelease
 from tests.utils.functions import get_value_from_classification_cpv_dictionary_xls, \
     generate_tender_classification_id, get_contract_period_for_ms_release

@@ -6,11 +6,11 @@ import requests
 from deepdiff import DeepDiff
 from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
-from tests.utils.PayloadModel.RestrictedProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
-from tests.utils.PayloadModel.RestrictedProcedure.Pn.pn_prepared_payload import PnPreparePayload
-from tests.utils.PayloadModel.RestrictedProcedure.QualificationDeclare.qualification_declare_prepared_payload import \
+from tests.utils.PayloadModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.QualificationDeclare.qualification_declare_prepared_payload import \
     DeclarePreparePayload
-from tests.utils.PayloadModel.RestrictedProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload
 from tests.utils.ReleaseModel.RestrictedProcedure.QualificationDecalration.qualification_declaration_release import \
     QualificationDeclarationRelease
 from tests.utils.functions import time_bot, get_id_token_of_qualification_in_pending_awaiting_state
@@ -409,7 +409,8 @@ class TestQualificationDeclareNonConflictInterest:
                             expected_release_parties_persones_list.append(
                                 expected_parties_persones_object)
 
-                            with allure.step(f'# {step_number}. See result.'
+                            with allure.step(f'# {step_number}. See result: check status code of request and '
+                                             f'message from feed-point.'
                                              f'QualificationDeclaration with {y_mapper[y]} candidate '
                                              f'and {x_mapper[x]} requirement.'):
                                 """
