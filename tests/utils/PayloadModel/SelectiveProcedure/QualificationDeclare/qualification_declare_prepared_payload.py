@@ -2,7 +2,7 @@ import copy
 import random
 import uuid
 
-from tests.utils.PayloadModel.RestrictedProcedure.QualificationDeclare.qualification_declare_library import \
+from tests.utils.PayloadModel.SelectiveProcedure.QualificationDeclare.qualification_declare_library import \
     PayloadLibrary
 from tests.utils.data_of_enum import person_title, business_function_type_for_declare
 from tests.utils.date_class import Date

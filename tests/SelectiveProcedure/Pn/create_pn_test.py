@@ -8,7 +8,7 @@ from deepdiff import DeepDiff
 
 from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
-from tests.utils.PayloadModel.RestrictedProcedure.Pn.pn_prepared_payload import PnPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.ReleaseModel.RestrictedProcedure.Pn.pn_prepared_release import PnExpectedRelease
 from tests.utils.functions import is_it_uuid
 

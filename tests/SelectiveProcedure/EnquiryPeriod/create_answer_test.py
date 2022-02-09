@@ -8,10 +8,10 @@ from deepdiff import DeepDiff
 
 from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
-from tests.utils.PayloadModel.RestrictedProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
-from tests.utils.PayloadModel.RestrictedProcedure.EnquiryPeriod.answer_prepared_payload import AnswerPreparePayload
-from tests.utils.PayloadModel.RestrictedProcedure.EnquiryPeriod.enquiry_prepared_payload import EnquiryPreparePayload
-from tests.utils.PayloadModel.RestrictedProcedure.Pn.pn_prepared_payload import PnPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.EnquiryPeriod.answer_prepared_payload import AnswerPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.EnquiryPeriod.enquiry_prepared_payload import EnquiryPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
