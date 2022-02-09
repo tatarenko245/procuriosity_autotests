@@ -30,7 +30,8 @@ class TestQualificationDeclareNonConflictInterest:
                   "create Submission from Moldova: obligatory data model contains 2 candidates. \n"
                   "create Submission from Belarus: obligatory data model contains 1 candidate \n"
                   "create QualificationDeclaration: obligatory data model. \n")
-    def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database,
+                                      queue_mapper):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -308,34 +309,9 @@ class TestQualificationDeclareNonConflictInterest:
 
         for x in range(len(requirements_list)):
             for y in range(len(candidates_list)):
-                x_mapper = {
-                    0: "first",
-                    1: "second",
-                    2: "third",
-                    3: "fourth",
-                    4: "fifth",
-                    5: "sixth",
-                    6: "seventh",
-                    7: "eighth",
-                    8: "ninth",
-                    9: "tenth"
-                }
-                y_mapper = {
-                    0: "first",
-                    1: "second",
-                    2: "third",
-                    3: "fourth",
-                    4: "fifth",
-                    5: "sixth",
-                    6: "seventh",
-                    7: "eighth",
-                    8: "ninth",
-                    9: "tenth"
-                }
-
                 with allure.step(f'# {step_number}. Authorization platform one: create '
-                                 f'QualificationDeclaration with {y_mapper[y]} candidate and'
-                                 f' {x_mapper[x]} requirement.'):
+                                 f'QualificationDeclaration with {queue_mapper[y]} candidate and'
+                                 f' {queue_mapper[x]} requirement.'):
                     """
                     Tender platform authorization for create QualificationDeclaration process.
                     As result get Tender platform's access token and process operation-id.
@@ -346,8 +322,8 @@ class TestQualificationDeclareNonConflictInterest:
                     step_number += 1
 
                 with allure.step(f'# {step_number}. Send request to create '
-                                 f'QualificationDeclaration with {y_mapper[y]} candidate and'
-                                 f' {x_mapper[x]} requirement. See synchronous  result and '
+                                 f'QualificationDeclaration with {queue_mapper[y]} candidate and'
+                                 f' {queue_mapper[x]} requirement. See synchronous  result and '
                                  f'check message from feed-point.'):
                     """
                     Send api request on BPE host for create QualificationDeclaration.
@@ -360,6 +336,18 @@ class TestQualificationDeclareNonConflictInterest:
                     kafka_message_class = KafkaMessage(create_qualification_declaration_operation_id)
 
                     for q in range(len(qualification_list)):
+                        q_mapper = {
+                            0: "first",
+                            1: "second",
+                            2: "third",
+                            3: "fourth",
+                            4: "fifth",
+                            5: "sixth",
+                            6: "seventh",
+                            7: "eighth",
+                            8: "ninth",
+                            9: "tenth"
+                        }
                         if qualification_list[q][0] == candidates_list[y]['qualification_id']:
                             create_qualification_declaration_payload = \
                                 qualification_declaration_payload_class.create_declare_new_person_obligatory_data_model(
@@ -411,8 +399,8 @@ class TestQualificationDeclareNonConflictInterest:
 
                             with allure.step(f'# {step_number}. See result: check status code of request and '
                                              f'message from feed-point.'
-                                             f'QualificationDeclaration with {y_mapper[y]} candidate '
-                                             f'and {x_mapper[x]} requirement.'):
+                                             f'QualificationDeclaration with {queue_mapper[y]} candidate '
+                                             f'and {queue_mapper[x]} requirement for {q_mapper[q]} qualification.'):
                                 """
                                 Check the results of TestCase.
                                 """
@@ -429,8 +417,8 @@ class TestQualificationDeclareNonConflictInterest:
                                         assert str(synchronous_result_of_sending_the_request.status_code) == str(202)
 
                                 with allure.step(f'# {step_number}.2. Check message in feed point'
-                                                 f'QualificationDeclaration with {y_mapper[y]} candidate '
-                                                 f'and {x_mapper[x]} requirement.'):
+                                                 f'QualificationDeclaration with {queue_mapper[y]} candidate '
+                                                 f'and {queue_mapper[x]} requirement for {q_mapper[q]} qualification.'):
                                     """
                                     Check the asynchronous_result_of_sending_the_request.
                                     """

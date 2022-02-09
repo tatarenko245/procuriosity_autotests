@@ -109,6 +109,23 @@ def connection_to_database(get_hosts, cassandra_username, cassandra_password):
     return connection
 
 
+@pytest.fixture(scope="function")
+def queue_mapper():
+    queue_mapper = {
+        0: "first",
+        1: "second",
+        2: "third",
+        3: "fourth",
+        4: "fifth",
+        5: "sixth",
+        6: "seventh",
+        7: "eighth",
+        8: "ninth",
+        9: "tenth"
+    }
+    return queue_mapper
+
+
 class GlobalClassCreateEi:
     access_token = None
     operation_id = None

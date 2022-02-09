@@ -20,7 +20,7 @@ from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
 
-class TestQualificationDeclareNonConflictInterest:
+class TestQualification:
     @allure.title("Check Ev and MS releases data after qualificationDeclareNonConflictInterest creating "
                   "without optional fields. \n"
                   "------------------------------------------------\n"
@@ -30,8 +30,11 @@ class TestQualificationDeclareNonConflictInterest:
                   "create CnOnPn: obligatory data model, with lots and items;\n"
                   "create Submission from Moldova: obligatory data model contains 2 candidates. \n"
                   "create Submission from Belarus: obligatory data model contains 1 candidate \n"
-                  "create QualificationDeclaration: obligatory data model. \n")
-    def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
+                  "create QualificationDeclaration: obligatory data model. \n"
+                  "create QualificationConsideration: payload is not needed. \n"
+                  "create Qualification: obligatory data model. \n")
+    def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database,
+                                      queue_mapper):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -303,35 +306,11 @@ class TestQualificationDeclareNonConflictInterest:
 
         for x in range(len(requirements_list)):
             for y in range(len(candidates_list)):
-                x_mapper = {
-                    0: "first",
-                    1: "second",
-                    2: "third",
-                    3: "fourth",
-                    4: "fifth",
-                    5: "sixth",
-                    6: "seventh",
-                    7: "eighth",
-                    8: "ninth",
-                    9: "tenth"
-                }
-                y_mapper = {
-                    0: "first",
-                    1: "second",
-                    2: "third",
-                    3: "fourth",
-                    4: "fifth",
-                    5: "sixth",
-                    6: "seventh",
-                    7: "eighth",
-                    8: "ninth",
-                    9: "tenth"
-                }
 
                 step_number += 1
                 with allure.step(f'# {step_number}. Authorization platform one: create '
-                                 f'QualificationDeclaration with {y_mapper[y]} candidate and'
-                                 f' {x_mapper[x]} requirement.'):
+                                 f'QualificationDeclaration with {queue_mapper[y]} candidate and'
+                                 f' {queue_mapper[x]} requirement.'):
                     """
                     Tender platform authorization for create QualificationDeclaration process.
                     As result get Tender platform's access token and process operation-id.
@@ -342,8 +321,8 @@ class TestQualificationDeclareNonConflictInterest:
 
                 step_number += 1
                 with allure.step(f'# {step_number}. Send request to create '
-                                 f'QualificationDeclaration with {y_mapper[y]} candidate and'
-                                 f' {x_mapper[x]} requirement.'):
+                                 f'QualificationDeclaration with {queue_mapper[y]} candidate and'
+                                 f' {queue_mapper[x]} requirement.'):
                     """
                     Send api request on BPE host for create QualificationDeclaration.
                     Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -374,7 +353,7 @@ class TestQualificationDeclareNonConflictInterest:
         step_number += 1
         for q in range(len(qualification_list)):
             with allure.step(f'# {step_number}. Authorization platform one: create '
-                             f'QualificationConsideration for {q} qualification.'):
+                             f'QualificationConsideration for {queue_mapper[q]} qualification.'):
                 """
                 Tender platform authorization for create QualificationConsideration process.
                 As result get Tender platform's access token and process operation-id.
@@ -386,8 +365,7 @@ class TestQualificationDeclareNonConflictInterest:
 
             step_number += 1
             with allure.step(f'# {step_number}. Send request to create '
-                             f'QualificationConsideration for {q} qualification. See synchronous  result and '
-                             f'check message from feed-point.'):
+                             f'QualificationConsideration for {queue_mapper[q]} qualification.'):
                 """
                 Send api request on BPE host for create QualificationConsideration.
                 Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -410,7 +388,7 @@ class TestQualificationDeclareNonConflictInterest:
         for q in range(len(qualification_list)):
             step_number += 1
             with allure.step(f'# {step_number}. Authorization platform one: create '
-                             f'Qualification process for {q} qualification.'):
+                             f'Qualification process for {queue_mapper[q]} qualification.'):
                 """
                 Tender platform authorization for create QualificationConsideration process.
                 As result get Tender platform's access token and process operation-id.
@@ -420,8 +398,7 @@ class TestQualificationDeclareNonConflictInterest:
 
             step_number += 1
             with allure.step(f'# {step_number}. Send request to create '
-                             f'Qualification process for {q} qualification. See synchronous  result and '
-                             f'check message from feed-point.'):
+                             f'Qualification process for {queue_mapper[q]} qualification.'):
                 """
                 Send api request on BPE host for create QualificationConsideration.
                 Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -654,4 +631,3 @@ class TestQualificationDeclareNonConflictInterest:
                         allure.attach(json.dumps(expected_result),
                                       "Expected result of comparing Ms releases.")
                         assert compare_releases == expected_result
-
