@@ -329,18 +329,6 @@ class TestQualificationConsideration:
                         host_for_services=get_hosts[2]))
 
                     for q in range(len(qualification_list)):
-                        q_mapper = {
-                            0: "first",
-                            1: "second",
-                            2: "third",
-                            3: "fourth",
-                            4: "fifth",
-                            5: "sixth",
-                            6: "seventh",
-                            7: "eighth",
-                            8: "ninth",
-                            9: "tenth"
-                        }
                         if qualification_list[q][0] == candidates_list[y]['qualification_id']:
                             create_qualification_declaration_payload = \
                                 qualification_declaration_payload_class.create_declare_new_person_obligatory_data_model(
@@ -369,7 +357,7 @@ class TestQualificationConsideration:
         step_number += 1
         for q in range(len(qualification_list)):
             with allure.step(f'# {step_number}. Authorization platform one: create '
-                             f'QualificationConsideration for {q_mapper[q]} qualification.'):
+                             f'QualificationConsideration for {queue_mapper[q]} qualification.'):
                 """
                 Tender platform authorization for create QualificationConsideration process.
                 As result get Tender platform's access token and process operation-id.
@@ -381,8 +369,8 @@ class TestQualificationConsideration:
 
             step_number += 1
             with allure.step(f'# {step_number}. Send request to create '
-                             f'QualificationConsideration for {q_mapper[q]} qualification. See synchronous  result and '
-                             f'check message from feed-point.'):
+                             f'QualificationConsideration for {queue_mapper[q]} qualification. '
+                             f'See synchronous  result and check message from feed-point.'):
                 """
                 Send api request on BPE host for create QualificationConsideration.
                 Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -404,12 +392,12 @@ class TestQualificationConsideration:
 
             step_number += 1
             with allure.step(f'# {step_number}. See result: check status code of request and message from feed-point'
-                             f'for {q_mapper[q]} qualification.'):
+                             f'for {queue_mapper[q]} qualification.'):
                 """
                 Check the results of TestCase.
                 """
 
-                with allure.step(f'# {step_number}.1. Check status code'):
+                with allure.step(f'# 1. Check status code'):
                     """
                     Check the synchronous_result_of_sending_the_request.
                     """
@@ -421,8 +409,7 @@ class TestQualificationConsideration:
                         allure.attach(str(202), "Expected status code of sending request.")
                         assert str(synchronous_result_of_sending_the_request.status_code) == str(202)
 
-                with allure.step(f'# {step_number}.2. Check message in feed point'
-                                 f'QualificationConsideration.'):
+                with allure.step(f'# 2. Check message in feed point QualificationConsideration.'):
                     """
                     Check the asynchronous_result_of_sending_the_request.
                     """
@@ -463,7 +450,7 @@ class TestQualificationConsideration:
             Check the results of TestCase.
             """
 
-            with allure.step(f'# {step_number}.3. Check TP release'):
+            with allure.step(f'# {step_number}.1. Check TP release'):
                 """
                 Compare actual Tp release before QualificationConsideration creating and
                 actual Tp release after QualificationConsideration creating.
@@ -532,7 +519,7 @@ class TestQualificationConsideration:
                                   "Expected result of comparing Tp releases.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.4. Check MS release'):
+            with allure.step(f'# {step_number}.2. Check MS release'):
                 """
                 Compare actual Ms release before QualificationConsideration creating and
                 actual Ms release after QualificationConsideration creating.

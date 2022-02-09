@@ -336,18 +336,6 @@ class TestQualificationDeclareNonConflictInterest:
                     kafka_message_class = KafkaMessage(create_qualification_declaration_operation_id)
 
                     for q in range(len(qualification_list)):
-                        q_mapper = {
-                            0: "first",
-                            1: "second",
-                            2: "third",
-                            3: "fourth",
-                            4: "fifth",
-                            5: "sixth",
-                            6: "seventh",
-                            7: "eighth",
-                            8: "ninth",
-                            9: "tenth"
-                        }
                         if qualification_list[q][0] == candidates_list[y]['qualification_id']:
                             create_qualification_declaration_payload = \
                                 qualification_declaration_payload_class.create_declare_new_person_obligatory_data_model(
@@ -397,15 +385,15 @@ class TestQualificationDeclareNonConflictInterest:
                             expected_release_parties_persones_list.append(
                                 expected_parties_persones_object)
 
-                            with allure.step(f'# {step_number}. See result: check status code of request and '
+                            with allure.step(f'See result: check status code of request and '
                                              f'message from feed-point.'
                                              f'QualificationDeclaration with {queue_mapper[y]} candidate '
-                                             f'and {queue_mapper[x]} requirement for {q_mapper[q]} qualification.'):
+                                             f'and {queue_mapper[x]} requirement for {queue_mapper[q]} qualification.'):
                                 """
                                 Check the results of TestCase.
                                 """
 
-                                with allure.step(f'# {step_number}.1. Check status code'):
+                                with allure.step(f'# 1. Check status code'):
                                     """
                                     Check the synchronous_result_of_sending_the_request.
                                     """
@@ -416,9 +404,10 @@ class TestQualificationDeclareNonConflictInterest:
                                         allure.attach(str(202), "Expected status code of sending request.")
                                         assert str(synchronous_result_of_sending_the_request.status_code) == str(202)
 
-                                with allure.step(f'# {step_number}.2. Check message in feed point'
+                                with allure.step(f'# 2. Check message in feed point'
                                                  f'QualificationDeclaration with {queue_mapper[y]} candidate '
-                                                 f'and {queue_mapper[x]} requirement for {q_mapper[q]} qualification.'):
+                                                 f'and {queue_mapper[x]} requirement for {queue_mapper[q]} '
+                                                 f'qualification.'):
                                     """
                                     Check the asynchronous_result_of_sending_the_request.
                                     """
@@ -458,7 +447,7 @@ class TestQualificationDeclareNonConflictInterest:
             Check the results of TestCase.
             """
 
-            with allure.step(f'# {step_number}.3. Check TP release'):
+            with allure.step(f'# {step_number}.1. Check TP release'):
                 """
                 Compare actual Tp release before qualificationDeclaration creating and
                 actual Tp release after qualificationDeclaration creating.
@@ -603,7 +592,7 @@ class TestQualificationDeclareNonConflictInterest:
                                    'releases'][0]['qualifications'][1]['requirementResponses'] == \
                                final_expected_requirement_response_for_second_qualification
 
-            with allure.step(f'# {step_number}.4. Check MS release'):
+            with allure.step(f'# {step_number}.2. Check MS release'):
                 """
                 Compare actual Ms release before qualificationDeclaration creating and
                 actual Ms release after qualificationDeclaration creating.
