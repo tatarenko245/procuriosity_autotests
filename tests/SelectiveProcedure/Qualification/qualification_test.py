@@ -424,7 +424,7 @@ class TestQualification:
                         test_mode=True)
 
             step_number += 1
-            with allure.step(f'# {step_number}. See result.'):
+            with allure.step(f'# {step_number}. See result for {queue_mapper[q]} qualification.'):
                 """
                 Check the results of TestCase.
                 """

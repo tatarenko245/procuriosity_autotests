@@ -1949,3 +1949,24 @@ File = kafka_message.py ->
 Class = KafkaMessage -> 
 Method = declare_non_conflict_interest_message_is_successful -> 
 KeyError: data.ocid
+
+2022-02-09 20:52:15.813747
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 3bda0c05-1dc6-4a47-ab93-850079905732 is not correct.
+Expected result: actual result must be UUID v.4
+
+2022-02-09 20:58:05.043698
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = ee324851-d446-442d-9f2c-0e86a22eab61 is not correct.
+Expected result: actual result must be UUID v.4
+
+2022-02-09 21:27:36.784771
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = f7d4b174-50e1-4d94-b13e-a68fe87ae75a is not correct.
+Expected result: actual result must be UUID v.4
