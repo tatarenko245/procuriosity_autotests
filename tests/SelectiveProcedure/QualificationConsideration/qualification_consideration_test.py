@@ -569,19 +569,19 @@ class TestQualificationConsideration:
 
                         connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(
+                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=create_submission_belarus_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(
+                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=create_submission_moldova_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(
+                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=submission_period_end_feed_point_message['X-OPERATION-ID'])
 
-                        connection_to_database.cleanup_steps_of_process(
+                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=create_qualification_declaration_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(
+                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=create_qualification_consideration_operation_id)
 
                     else:

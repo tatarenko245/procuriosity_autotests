@@ -590,7 +590,7 @@ class TestSubmissionPeriodEnd:
 
                         connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(
+                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=submission_period_end_feed_point_message['X-OPERATION-ID'])
                     else:
                         with allure.step('# Steps from Casandra DataBase'):

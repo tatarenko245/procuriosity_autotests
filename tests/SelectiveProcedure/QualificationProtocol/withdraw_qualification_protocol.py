@@ -13,8 +13,7 @@ from tests.utils.PayloadModel.SelectiveProcedure.Qualification.qualification_pre
 from tests.utils.PayloadModel.SelectiveProcedure.QualificationDeclare.qualification_declare_prepared_payload import \
     DeclarePreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload
-from tests.utils.ReleaseModel.SelectiveProcedure.QualificationProtocol.qualification_protocol_release import \
-    QualificationProtocolExpectedRelease
+
 
 from tests.utils.functions import time_bot, get_id_token_of_qualification_in_pending_awaiting_state
 from tests.utils.kafka_message import KafkaMessage
@@ -35,7 +34,8 @@ class TestQualificationProtocol:
                   "create QualificationDeclaration: obligatory data model. \n"
                   "create QualificationConsideration: payload is not needed. \n"
                   "create Qualification: obligatory data model. \n"
-                  "create QualificationProtocol: payload is not needed. \n")
+                  "create QualificationProtocol: payload is not needed. \n"
+                  "WithdrawProtocol: payload is not needed. \n")
     def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database,
                                       queue_mapper):
         authorization = PlatformAuthorization(get_hosts[1])
@@ -290,7 +290,7 @@ class TestQualificationProtocol:
             if qu['status'] == "pending":
                 if qu['statusDetails'] == "awaiting":
                     for s in actual_tp_release_before_qualif_declaration_creation[
-                        'releases'][0]['submissions']['details']:
+                            'releases'][0]['submissions']['details']:
                         if s['id'] == qu['relatedSubmission']:
                             for cand in range(len(s['candidates'])):
                                 candidate_dictionary = {
@@ -421,10 +421,6 @@ class TestQualificationProtocol:
                     payload=create_qualification_payload,
                     test_mode=True)
 
-        time.sleep(10)
-        actual_tp_release_before_qualification_protocol_creation = requests.get(url=f"{pn_url}/{tp_id}").json()
-        actual_ms_release_before_qualification_protocol_creation = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-
         with allure.step(f'# {step_number}. Authorization platform one: create QualificationProtocol process.'):
             """
             Tender platform authorization for create QualificationProtocol process.
@@ -442,11 +438,42 @@ class TestQualificationProtocol:
             """
             time.sleep(1)
 
+            Requests().create_qualification_protocol(
+                host_of_request=get_hosts[1],
+                access_token=create_qualification_protocol_access_token,
+                x_operation_id=create_qualification_protocol_operation_id,
+                pn_ocid=pn_ocid,
+                pn_token=pn_token,
+                tender_id=tp_id,
+                test_mode=True)
+
+        time.sleep(10)
+        actual_tp_release_before_qualification_protocol_withdraw = requests.get(url=f"{pn_url}/{tp_id}").json()
+        actual_ms_release_before_qualification_protocol_withdraw = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Authorization platform one: WithdrawProtocol process.'):
+            """
+            Tender platform authorization for create QualificationProtocol process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            withdraw_qualification_protocol_access_token = authorization.get_access_token_for_platform_one()
+            withdraw_qualification_protocol_operation_id = \
+                authorization.get_x_operation_id(withdraw_qualification_protocol_access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send request to WithdrawProtocol process.'):
+            """
+            Send api request on BPE host for WithdrawProtocol.
+            Save synchronous result of sending the request and asynchronous result of sending the request.
+            """
+            time.sleep(1)
+
             synchronous_result_of_sending_the_request = \
-                Requests().create_qualification_protocol(
+                Requests().withdraw_qualification_protocol(
                     host_of_request=get_hosts[1],
-                    access_token=create_qualification_protocol_access_token,
-                    x_operation_id=create_qualification_protocol_operation_id,
+                    access_token=withdraw_qualification_protocol_access_token,
+                    x_operation_id=withdraw_qualification_protocol_operation_id,
                     pn_ocid=pn_ocid,
                     pn_token=pn_token,
                     tender_id=tp_id,
@@ -474,14 +501,14 @@ class TestQualificationProtocol:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                kafka_message_class = KafkaMessage(create_qualification_protocol_operation_id)
-                create_qualification_protocol_feed_point_message = kafka_message_class.get_message_from_kafka()
-                allure.attach(str(create_qualification_protocol_feed_point_message), 'Message in feed point.')
+                kafka_message_class = KafkaMessage(withdraw_qualification_protocol_operation_id)
+                withdraw_qualification_protocol_feed_point_message = kafka_message_class.get_message_from_kafka()
+                allure.attach(str(withdraw_qualification_protocol_feed_point_message), 'Message in feed point.')
 
                 asynchronous_result_of_sending_the_request_was_checked = \
-                    kafka_message_class.qualification_protocol_message_is_successful(
+                    kafka_message_class.withdraw_qualification_protocol_message_is_successful(
                         environment=environment,
-                        kafka_message=create_qualification_protocol_feed_point_message,
+                        kafka_message=withdraw_qualification_protocol_feed_point_message,
                         pn_ocid=pn_ocid,
                         tender_id=tp_id)
 
@@ -507,148 +534,80 @@ class TestQualificationProtocol:
 
             with allure.step(f'# {step_number}.3. Check TP release'):
                 """
-                Compare actual Tp release before QualificationProtocol creating and
-                actual Tp release after QualificationProtocol creating.
+                Compare actual Tp release before WithdrawProtocol and
+                actual Tp release after WithdrawProtocol.
                 """
-                allure.attach(str(json.dumps(actual_tp_release_before_qualification_protocol_creation)),
-                              "Actual TP release before QualificationProtocol creation.")
+                allure.attach(str(json.dumps(actual_tp_release_before_qualification_protocol_withdraw)),
+                              "Actual TP release before QualificationProtocol withdraw.")
 
-                actual_tp_release_after_qualification_protocol_creation = \
+                actual_tp_release_after_qualification_protocol_withdraw = \
                     requests.get(url=f"{pn_url}/{tp_id}").json()
-                allure.attach(str(json.dumps(actual_tp_release_after_qualification_protocol_creation)),
-                              "Actual TP release after QualificationProtocol creation.")
+                allure.attach(str(json.dumps(actual_tp_release_after_qualification_protocol_withdraw)),
+                              "Actual TP release after QualificationProtocol withdraw.")
 
                 compare_releases = dict(
-                    DeepDiff(actual_tp_release_before_qualification_protocol_creation,
-                             actual_tp_release_after_qualification_protocol_creation))
+                    DeepDiff(actual_tp_release_before_qualification_protocol_withdraw,
+                             actual_tp_release_after_qualification_protocol_withdraw))
 
-                dictionary_item_added_was_cleaned = \
-                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
-
-                new_releases_timestamp = actual_tp_release_after_qualification_protocol_creation[
+                new_releases_timestamp = actual_tp_release_after_qualification_protocol_withdraw[
                                              'releases'][0]['id'][46:59]
-                old_releases_timestamp = actual_tp_release_before_qualification_protocol_creation[
+                old_releases_timestamp = actual_tp_release_before_qualification_protocol_withdraw[
                                              'releases'][0]['id'][46:59]
 
                 expected_result = {
-                    "dictionary_item_added": "['releases'][0]['invitations']",
                     "values_changed": {
                         "root['releases'][0]['id']": {
                             "new_value": f"{tp_id}-{new_releases_timestamp}",
                             "old_value": f"{tp_id}-{old_releases_timestamp}"
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": create_qualification_protocol_feed_point_message['data']['operationDate'],
-                            "old_value": actual_tp_release_before_qualification_protocol_creation['releases'][0]['date']
+                            "new_value": withdraw_qualification_protocol_feed_point_message['data']['operationDate'],
+                            "old_value": actual_tp_release_before_qualification_protocol_withdraw['releases'][0]['date']
                         },
                         "root['releases'][0]['tender']['statusDetails']": {
-                            "new_value": "qualificationStandStill",
-                            "old_value": "qualification"
+                            "new_value": "qualification",
+                            "old_value": "qualificationStandStill"
                         }
                     }
                 }
 
                 try:
                     """
-                    Prepare expected Invitation array.
-                    """
-                    final_expected_invitation_array = list()
-                    temporary_expected_invitation_array = list()
-                    qualification_protocol_release_class = QualificationProtocolExpectedRelease(
-                        actual_tp_release=actual_tp_release_after_qualification_protocol_creation)
-
-                    expected_invitation_object_for_first_submission = \
-                        qualification_protocol_release_class.prepare_qualification_object(
-                            submission_payload=create_submission_moldova_payload,
-                            qualification_protocol_feed_point_message=create_qualification_protocol_feed_point_message
-                        )
-                    temporary_expected_invitation_array.append(expected_invitation_object_for_first_submission)
-
-                    expected_invitation_object_for_second_submission = \
-                        qualification_protocol_release_class.prepare_qualification_object(
-                            submission_payload=create_submission_belarus_payload,
-                            qualification_protocol_feed_point_message=create_qualification_protocol_feed_point_message
-                        )
-                    temporary_expected_invitation_array.append(expected_invitation_object_for_second_submission)
-
-                    try:
-                        """
-                        Sort expected Invitations array by id.
-                        """
-                        actual_invitations_array = \
-                            actual_tp_release_after_qualification_protocol_creation['releases'][0]['invitations']
-
-                        if len(actual_invitations_array) == len(temporary_expected_invitation_array):
-                            pass
-                        else:
-                            raise Exception("Quantity of object into actual Invitations array != "
-                                            "Quantity of object into expected Invitations array")
-
-                        for q in range(len(actual_invitations_array)):
-                            for q_1 in range(len(temporary_expected_invitation_array)):
-
-                                if temporary_expected_invitation_array[q_1]['id'] == \
-                                        actual_invitations_array[q]['id']:
-                                    final_expected_invitation_array.append(
-                                        temporary_expected_invitation_array[q_1]['value'])
-                    except Exception:
-                        raise Exception("Impossible to sort expected Invitations array by id.")
-
-                except Exception:
-                    raise Exception("Impossible to prepare expected Invitations array.")
-
-                try:
-                    """
                         If compare_releases !=expected_result,
                         then return process steps by operation-id.
                         """
-                    if compare_releases == expected_result and \
-                            actual_tp_release_after_qualification_protocol_creation['releases'][0]['invitations'] == \
-                            final_expected_invitation_array:
+                    if compare_releases == expected_result:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=create_qualification_protocol_operation_id)
+                                operation_id=withdraw_qualification_protocol_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
                 with allure.step(
                         'Check a difference of comparing Tp release before '
-                        'QualificationProtocol creation and Tp release after QualificationProtocol creation.'):
-                    allure.attach(json.dumps(compare_releases),
-                                  "Actual result of comparing Tp releases.")
-                    allure.attach(json.dumps(expected_result),
-                                  "Expected result of comparing Tp releases.")
+                        'WithdrawProtocol and Tp release after WithdrawProtocol.'):
+                    allure.attach(json.dumps(compare_releases), "Actual result of comparing Tp releases.")
+                    allure.attach(json.dumps(expected_result), "Expected result of comparing Tp releases.")
                     assert compare_releases == expected_result
-
-                with allure.step(
-                        'Compare actual Invitations array and expected Invitations array.'):
-                    allure.attach(json.dumps(
-                        actual_tp_release_after_qualification_protocol_creation['releases'][0]['invitations']),
-                        "Actual Invitations array.")
-                    allure.attach(json.dumps(final_expected_invitation_array),
-                                  "Expected Invitations array.")
-                    assert actual_tp_release_after_qualification_protocol_creation['releases'][0]['invitations'] == \
-                           final_expected_invitation_array
 
             with allure.step(f'# {step_number}.4. Check MS release'):
                 """
-                Compare actual Ms release before QualificationProtocol creating and
-                actual Ms release after QualificationProtocol creating.
+                Compare actual Ms release before WithdrawProtocol and
+                actual Ms release after WithdrawProtocol.
                 """
-                allure.attach(json.dumps(actual_ms_release_before_qualification_protocol_creation),
-                              "Actual MS release before Qualification creation")
+                allure.attach(json.dumps(actual_ms_release_before_qualification_protocol_withdraw),
+                              "Actual MS release before QualificationProtocol withdraw.")
 
-                actual_ms_release_after_qualification_protocol_creation = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-                allure.attach(json.dumps(actual_ms_release_after_qualification_protocol_creation),
-                              "Actual MS release after QualificationProtocol creation")
+                actual_ms_release_after_qualification_protocol_withdraw = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(json.dumps(actual_ms_release_after_qualification_protocol_withdraw),
+                              "Actual MS release after QualificationProtocol withdraw.")
 
                 compare_releases = dict(
-                    DeepDiff(actual_ms_release_before_qualification_protocol_creation,
-                             actual_ms_release_after_qualification_protocol_creation))
+                    DeepDiff(actual_ms_release_before_qualification_protocol_withdraw,
+                             actual_ms_release_after_qualification_protocol_withdraw))
 
                 expected_result = {}
 
@@ -677,6 +636,9 @@ class TestQualificationProtocol:
 
                         connection_to_database.qualification_protocol_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
+                        connection_to_database.withdraw_qualification_protocol_process_cleanup_table_of_services(
+                            pn_ocid=pn_ocid)
+
                         connection_to_database.qualification_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
                         connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
@@ -687,34 +649,19 @@ class TestQualificationProtocol:
 
                         connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
 
-                        сonnection_to_database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=create_submission_belarus_operation_id)
-
                         connection_to_database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=create_submission_moldova_operation_id)
-
-                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=submission_period_end_feed_point_message['X-OPERATION-ID'])
-
-                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=create_qualification_declaration_operation_id)
-
-                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=create_qualification_consideration_operation_id)
-
-                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
-                            operation_id=create_qualification_protocol_operation_id)
+                            pn_ocid=pn_ocid)
 
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=create_qualification_protocol_operation_id)
+                                operation_id=withdraw_qualification_protocol_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
                 with allure.step('Check a difference of comparing Ms release before '
-                                 'QualificationProtocol creating and Ms release after QualificationProtocol creating.'):
+                                 'WithdrawProtocol and Ms release after WithdrawProtocol.'):
                     allure.attach(json.dumps(compare_releases),
                                   "Actual result of comparing MS releases.")
                     allure.attach(json.dumps(expected_result),

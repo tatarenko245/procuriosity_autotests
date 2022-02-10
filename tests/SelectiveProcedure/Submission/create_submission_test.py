@@ -346,7 +346,8 @@ class TestCreateCn:
 
                         connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_submission_operation_id)
+                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
+                            operation_id=create_submission_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(

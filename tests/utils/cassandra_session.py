@@ -37,9 +37,9 @@ class CassandraSession:
         process_id = get_process_id.process_id
         self.ocds_keyspace.execute(f"DELETE FROM orchestrator_operation_step WHERE process_id = '{process_id}';")
 
-    def cleanup_steps_of_process_from_orchestrator(self, operation_id):
+    def cleanup_steps_of_process_from_orchestrator(self, pn_ocid):
         yield
-        self.orchestrator_keyspace.execute(f"DELETE FROM steps WHERE operation_id = '{operation_id}';")
+        self.orchestrator_keyspace.execute(f"DELETE FROM steps WHERE cpid = '{pn_ocid}' ALLOW FILTERING;")
 
     def fs_process_cleanup_table_of_services(self, ei_id):
         self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one()
@@ -204,6 +204,15 @@ class CassandraSession:
         self.qualification_keyspace.execute(f"DELETE FROM period WHERE cpid='{pn_ocid}';")
         self.dossier_keyspace.execute(f"DELETE FROM submission WHERE cpid='{pn_ocid}';")
         self.dossier_keyspace.execute(f"DELETE FROM period WHERE cpid='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
+        self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+
+    def withdraw_qualification_protocol_process_cleanup_table_of_services(self, pn_ocid):
+        self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
+        self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
+        self.qualification_keyspace.execute(f"DELETE FROM qualifications WHERE cpid='{pn_ocid}';")
+        self.qualification_keyspace.execute(f"DELETE FROM period WHERE cpid='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
         self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
