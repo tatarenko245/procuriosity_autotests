@@ -290,7 +290,7 @@ class TestQualificationProtocol:
             if qu['status'] == "pending":
                 if qu['statusDetails'] == "awaiting":
                     for s in actual_tp_release_before_qualif_declaration_creation[
-                        'releases'][0]['submissions']['details']:
+                            'releases'][0]['submissions']['details']:
                         if s['id'] == qu['relatedSubmission']:
                             for cand in range(len(s['candidates'])):
                                 candidate_dictionary = {
@@ -687,7 +687,7 @@ class TestQualificationProtocol:
 
                         connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
 
-                        сonnection_to_database.cleanup_steps_of_process_from_orchestrator(
+                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
                             operation_id=create_submission_belarus_operation_id)
 
                         connection_to_database.cleanup_steps_of_process_from_orchestrator(

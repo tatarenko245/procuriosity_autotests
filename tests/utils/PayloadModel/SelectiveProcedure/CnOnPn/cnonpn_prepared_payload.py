@@ -124,6 +124,125 @@ class CnOnPnPreparePayload:
         }
         return payload
 
+    def create_cnonpn_obligatory_data_model_many_lots(
+            self, actual_ei_release, pn_payload, pre_qualification_period_end, quantity_of_lots_object,
+            quantity_of_items_object):
+        try:
+            item_classification_id = None
+            tender_classification_id = \
+                actual_ei_release['releases'][0]['tender']['classification']['id']
+
+            if tender_classification_id[0:3] == "031":
+                item_classification_id = random.choice(cpv_goods_low_level_03)
+            elif tender_classification_id[0:3] == "146":
+                item_classification_id = random.choice(cpv_goods_low_level_1)
+            elif tender_classification_id[0:3] == "221":
+                item_classification_id = random.choice(cpv_goods_low_level_2)
+            elif tender_classification_id[0:3] == "301":
+                item_classification_id = random.choice(cpv_goods_low_level_3)
+            elif tender_classification_id[0:3] == "444":
+                item_classification_id = random.choice(cpv_goods_low_level_44)
+            elif tender_classification_id[0:3] == "482":
+                item_classification_id = random.choice(cpv_goods_low_level_48)
+            elif tender_classification_id[0:3] == "451":
+                item_classification_id = random.choice(cpv_works_low_level_45)
+            elif tender_classification_id[0:3] == "515":
+                item_classification_id = random.choice(cpv_services_low_level_5)
+            elif tender_classification_id[0:3] == "637":
+                item_classification_id = random.choice(cpv_services_low_level_6)
+            elif tender_classification_id[0:3] == "713":
+                item_classification_id = random.choice(cpv_services_low_level_7)
+            elif tender_classification_id[0:3] == "851":
+                item_classification_id = random.choice(cpv_services_low_level_8)
+            elif tender_classification_id[0:3] == "923":
+                item_classification_id = random.choice(cpv_services_low_level_92)
+            elif tender_classification_id[0:3] == "983":
+                item_classification_id = random.choice(cpv_services_low_level_98)
+        except KeyError:
+            raise KeyError("Check tender_classification_id")
+
+        payload = {
+            "preQualification": {
+                "period": {
+                    "endDate": Date().pre_qualification_period_end_date(interval_seconds=pre_qualification_period_end)
+                }
+            },
+            "tender": {
+                "otherCriteria": {
+                    "reductionCriteria": "none",
+                    "qualificationSystemMethods": [
+                        "manual"
+                    ]
+                },
+                "lots": [{
+                    "id": "0",
+                    "title": "create cnonpn: tender.lots.title",
+                    "description": "create cnonpn: tender.lots.description",
+                    "value": {
+                        "amount": pn_payload['planning']['budget']['budgetBreakdown'][0]['amount']['amount'],
+                        "currency": pn_payload['planning']['budget']['budgetBreakdown'][0]['amount']['currency']
+                    },
+                    "contractPeriod": {
+                        "startDate": self.contact_period[0],
+                        "endDate": self.contact_period[1]
+                    },
+                    "placeOfPerformance": {
+                        "address": {
+                            "streetAddress": "create cnonpn: tender.lots.placeOfPerformance.address.streetAddress",
+                            "addressDetails": {
+                                "country": {
+                                    "id": "MD"
+                                },
+                                "region": {
+                                    "id": "1700000"
+                                },
+                                "locality": {
+                                    "scheme": "CUATM",
+                                    "id": "1701000",
+                                    "description": "create cnonpn: tender.lots.placeOfPerformance.address."
+                                                   "addressDetails.locality.description"
+                                }
+                            }
+                        }
+                    }
+                }],
+                "items": [{
+                    "id": "0",
+                    "classification": {
+                        "id": item_classification_id,
+                        "scheme": "CPV",
+                        "description": "create cnonpn: tender.items.classification.description"
+                    },
+                    "quantity": 60.0,
+                    "unit": {
+                        "id": "20",
+                        "name": "create cnonpn: tender.items.unit.name"
+                    },
+                    "description": "create CNonPN: tender.items.description",
+                    "relatedLot": "0"
+                }],
+                "documents": [{
+                    "documentType": f"{random.choice(documentType)}",
+                    "id": self.document_one_was_uploaded[0]["data"]["id"],
+                    "title": "create cnonpn: tender.documents.title",
+                    "description": "create cnonpn: tender.documents.description",
+                    "relatedLots": ["0"]
+                }],
+                "awardCriteria": "priceOnly"
+            }
+        }
+
+        payload['tender']['lots'] = generate_lots_array(
+            quantity_of_object=quantity_of_lots_object,
+            lot_object=payload['tender']['lots'][0])
+
+        payload['tender']['items'] = generate_items_array(
+            quantity_of_object=quantity_of_items_object,
+            item_object=payload['tender']['items'][0],
+            tender_classification_id=tender_classification_id,
+            lots_array=payload['tender']['lots'])
+        return payload
+
     def update_cnonpn_obligatory_data_model(self, actual_ei_release, pre_qualification_period_end,
                                             actual_tp_release, need_to_set_permanent_id_for_lots_array=False,
                                             quantity_of_items_object=1, quantity_of_lots_object=1,
