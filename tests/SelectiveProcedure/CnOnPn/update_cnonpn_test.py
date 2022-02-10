@@ -10,7 +10,7 @@ from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayl
 from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
-from tests.utils.ReleaseModel.RestrictedProcedure.CnOnPn.cnonpn_prepared_release import CnOnPnExpectedRelease
+from tests.utils.ReleaseModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_release import CnOnPnExpectedRelease
 from tests.utils.date_class import Date
 from tests.utils.functions import get_value_from_region_csv, \
     get_value_from_classification_unit_dictionary_csv

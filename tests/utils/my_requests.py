@@ -400,3 +400,21 @@ class Requests:
             })
         allure.attach(host_of_request + f"/do/consideration/qualification", 'URL')
         return consideration
+
+    @staticmethod
+    @allure.step('Prepared request: award consideration')
+    def create_qualification_protocol(host_of_request, access_token, x_operation_id, pn_ocid, pn_token, tender_id,
+                                      test_mode=False):
+        protocol = requests.post(
+            url=host_of_request + f"/do/protocol/qualification/{pn_ocid}/{tender_id}",
+            params={
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': pn_token
+            })
+        allure.attach(host_of_request + f"/do/protocol/qualification", 'URL')
+        return protocol

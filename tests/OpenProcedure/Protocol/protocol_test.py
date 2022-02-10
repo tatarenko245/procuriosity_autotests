@@ -624,7 +624,7 @@ class TestProtocol:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassProtocol.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
 
                 try:
@@ -1483,7 +1483,7 @@ class TestProtocol:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassProtocol.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
 
                 try:
