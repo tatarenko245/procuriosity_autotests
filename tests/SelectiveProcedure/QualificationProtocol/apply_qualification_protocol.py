@@ -29,7 +29,7 @@ class TestQualificationProtocol:
                   "create Ei: obligatory data model without items array;\n"
                   "create Fs: obligatory data model, treasury money;\n"
                   "create Pn: obligatory data model, without lots and items;\n"
-                  "create CnOnPn: obligatory data model, with lots and items;\n"
+                  "create CnOnPn: obligatory data model, with 2 lots and 2 items;\n"
                   "create Submission from Moldova: obligatory data model contains 2 candidates. \n"
                   "create Submission from Belarus: obligatory data model contains 1 candidate \n"
                   "create QualificationDeclaration: obligatory data model. \n"
@@ -538,8 +538,8 @@ class TestQualificationProtocol:
 
             with allure.step(f'# {step_number}.3. Check TP release'):
                 """
-                Compare actual Tp release before WithdrawProtocol and
-                actual Tp release after WithdrawProtocol.
+                Compare actual Tp release before ApplyProtocol and
+                actual Tp release after ApplyProtocol.
                 """
                 allure.attach(str(json.dumps(actual_tp_release_before_qualification_protocol_apply)),
                               "Actual TP release before QualificationProtocol apply.")
@@ -584,6 +584,10 @@ class TestQualificationProtocol:
                         "root['releases'][0]['tender']['lots'][0]['status']": {
                             "new_value": "unsuccessful",
                             "old_value": "active"
+                        },
+                        "root['releases'][0]['tender']['lots'][1]['status']": {
+                            "new_value": "unsuccessful",
+                            "old_value": "active"
                         }
                     }
                 }
@@ -601,8 +605,7 @@ class TestQualificationProtocol:
                             cn_payload=create_cn_payload,
                             apply_protocol_feed_point_message=apply_qualification_protocol_feed_point_message
                         )
-                    print("temporary_expected_awards_array")
-                    print(json.dumps(temporary_expected_awards_array))
+
                     try:
                         """
                         Sort expected Awards array by id.
@@ -628,117 +631,105 @@ class TestQualificationProtocol:
                 except Exception:
                     raise Exception("Impossible to prepare expected Awards array.")
 
-                print("Before")
-                print(json.dumps(actual_tp_release_before_qualification_protocol_apply))
-                print("After")
-                print(json.dumps(actual_tp_release_after_qualification_protocol_apply))
-                print()
-                print("Compare releases")
-                print(json.dumps(compare_releases))
-                print("Expected result")
-                print(json.dumps(expected_result))
-                print()
-                print("actual_awards_array")
-                print(json.dumps(actual_awards_array))
-                print("expected awards array")
-                print(json.dumps(final_expected_awards_array))
-                print()
-                print("CN Payload")
-                print(json.dumps(create_cn_payload))
-        #
-        #         try:
-        #             """
-        #                 If compare_releases !=expected_result,
-        #                 then return process steps by operation-id.
-        #                 """
-        #             if compare_releases == expected_result:
-        #                 pass
-        #             else:
-        #                 with allure.step('# Steps from Casandra DataBase'):
-        #                     steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-        #                         operation_id=withdraw_qualification_protocol_operation_id)
-        #                     allure.attach(steps, "Cassandra DataBase: steps of process")
-        #         except ValueError:
-        #             raise ValueError("Can not return BPE operation step")
-        #
-        #         with allure.step(
-        #                 'Check a difference of comparing Tp release before '
-        #                 'WithdrawProtocol and Tp release after WithdrawProtocol.'):
-        #             allure.attach(json.dumps(compare_releases), "Actual result of comparing Tp releases.")
-        #             allure.attach(json.dumps(expected_result), "Expected result of comparing Tp releases.")
-        #             assert compare_releases == expected_result
-        #
-        #     with allure.step(f'# {step_number}.4. Check MS release'):
-        #         """
-        #         Compare actual Ms release before WithdrawProtocol and
-        #         actual Ms release after WithdrawProtocol.
-        #         """
-        #         allure.attach(json.dumps(actual_ms_release_before_qualification_protocol_withdraw),
-        #                       "Actual MS release before QualificationProtocol withdraw.")
-        #
-        #         actual_ms_release_after_qualification_protocol_withdraw = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-        #         allure.attach(json.dumps(actual_ms_release_after_qualification_protocol_withdraw),
-        #                       "Actual MS release after QualificationProtocol withdraw.")
-        #
-        #         compare_releases = dict(
-        #             DeepDiff(actual_ms_release_before_qualification_protocol_withdraw,
-        #                      actual_ms_release_after_qualification_protocol_withdraw))
-        #
-        #         expected_result = {}
-        #
-        #         try:
-        #             """
-        #             If TestCase was passed, then cLean up the database.
-        #             If TestCase was failed, then return process steps by operation-id.
-        #             """
-        #             if compare_releases == expected_result:
-        #
-        #                 connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-        #
-        #                 connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-        #
-        #                 connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.submission_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.qualification_declaration_process_cleanup_table_of_services(
-        #                     pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.qualification_consideration_process_cleanup_table_of_services(
-        #                     pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.qualification_protocol_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.withdraw_qualification_protocol_process_cleanup_table_of_services(
-        #                     pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.qualification_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
-        #
-        #                 connection_to_database.cleanup_steps_of_process_from_orchestrator(
-        #                     pn_ocid=pn_ocid)
-        #
-        #             else:
-        #                 with allure.step('# Steps from Casandra DataBase'):
-        #                     steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-        #                         operation_id=withdraw_qualification_protocol_operation_id)
-        #                     allure.attach(steps, "Cassandra DataBase: steps of process")
-        #         except ValueError:
-        #             raise ValueError("Can not return BPE operation step")
-        #
-        #         with allure.step('Check a difference of comparing Ms release before '
-        #                          'WithdrawProtocol and Ms release after WithdrawProtocol.'):
-        #             allure.attach(json.dumps(compare_releases),
-        #                           "Actual result of comparing MS releases.")
-        #             allure.attach(json.dumps(expected_result),
-        #                           "Expected result of comparing Ms releases.")
-        #             assert compare_releases == expected_result
+                try:
+                    """
+                        If compare_releases != expected_result and actual Awards array != expected Awards array,
+                        then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result and actual_awards_array == final_expected_awards_array:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=apply_qualification_protocol_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                with allure.step(
+                        'Check a difference of comparing Tp release before '
+                        'ApplyProtocol and Tp release after ApplyProtocol.'):
+                    allure.attach(json.dumps(compare_releases), "Actual result of comparing Tp releases.")
+                    allure.attach(json.dumps(expected_result), "Expected result of comparing Tp releases.")
+                    assert compare_releases == expected_result
+
+                with allure.step(
+                        'Check a difference of comparing actual Awards array and expected Awards array.'):
+                    allure.attach(json.dumps(actual_awards_array), "Actual result.")
+                    allure.attach(json.dumps(final_expected_awards_array), "Expected result.")
+                    assert actual_awards_array == final_expected_awards_array
+
+            with allure.step(f'# {step_number}.4. Check MS release'):
+                """
+                Compare actual MS release before ApplyProtocol and
+                actual MS release after ApplyProtocol.
+                """
+                allure.attach(json.dumps(actual_ms_release_before_qualification_protocol_apply),
+                              "Actual MS release before QualificationProtocol apply.")
+
+                actual_ms_release_after_qualification_protocol_apply = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(json.dumps(actual_ms_release_after_qualification_protocol_apply),
+                              "Actual MS release after QualificationProtocol apply.")
+
+                compare_releases = dict(
+                    DeepDiff(actual_ms_release_before_qualification_protocol_apply,
+                             actual_ms_release_after_qualification_protocol_apply))
+
+                expected_result = {}
+
+                try:
+                    """
+                    If TestCase was passed, then cLean up the database.
+                    If TestCase was failed, then return process steps by operation-id.
+                    """
+                    if compare_releases == expected_result:
+
+                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+
+                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+
+                        connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.submission_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.qualification_declaration_process_cleanup_table_of_services(
+                            pn_ocid=pn_ocid)
+
+                        connection_to_database.qualification_consideration_process_cleanup_table_of_services(
+                            pn_ocid=pn_ocid)
+
+                        connection_to_database.qualification_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.qualification_protocol_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.apply_qualification_protocol_process_cleanup_table_of_services(
+                            pn_ocid=pn_ocid)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
+                            pn_ocid=pn_ocid)
+
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=apply_qualification_protocol_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                with allure.step('Check a difference of comparing Ms release before '
+                                 'ApplyProtocol and Ms release after ApplyProtocol.'):
+                    allure.attach(json.dumps(compare_releases),
+                                  "Actual result of comparing MS releases.")
+                    allure.attach(json.dumps(expected_result),
+                                  "Expected result of comparing Ms releases.")
+                    assert compare_releases == expected_result
