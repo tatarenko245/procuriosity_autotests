@@ -1,5 +1,4 @@
 import copy
-import json
 
 from tests.utils.ReleaseModel.SelectiveProcedure.QualificationProtocol.qualification_protocol_library import \
     ReleaseLibrary
@@ -41,3 +40,28 @@ class QualificationProtocolExpectedRelease:
             "value": invitation_object
         }
         return final_invitation_mapper
+
+    def prepare_award_object(self, cn_payload, apply_protocol_feed_point_message):
+        award_array = list()
+
+        for i in range(len(cn_payload['tender']['lots'])):
+            award_object = {}
+            award_object.update(self.constructor.award_object())
+
+            award_object['relatedLots'].append(self.actual_tp_release['releases'][0]['tender']['lots'][i]['id'])
+            award_object['date'] = apply_protocol_feed_point_message['data']['operationDate']
+            award_object['statusDetails'] = "lackOfQualifications"
+            award_object['status'] = "unsuccessful"
+            award_object['description'] = "Other reasons (discontinuation of procedure)"
+            award_object['title'] = "Lot is not awarded"
+
+            for a in range(len(self.actual_tp_release['releases'][0]['awards'])):
+                if self.actual_tp_release['releases'][0]['awards'][a]['relatedLots'] == award_object['relatedLots']:
+                    award_object['id'] = self.actual_tp_release['releases'][0]['awards'][a]['id']
+
+            final_award_mapper = {
+                "id": award_object['id'],
+                "value": award_object
+            }
+            award_array.append(final_award_mapper)
+        return award_array

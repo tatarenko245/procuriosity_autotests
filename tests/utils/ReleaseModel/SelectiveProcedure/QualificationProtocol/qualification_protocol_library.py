@@ -17,3 +17,16 @@ class ReleaseLibrary:
             "name": None
         }
         return tenderer
+
+    @staticmethod
+    def award_object():
+        award = {
+            "id": None,
+            "date": None,
+            "title": None,
+            "description": None,
+            "status": None,
+            "statusDetails": None,
+            "relatedLots": []
+        }
+        return award
