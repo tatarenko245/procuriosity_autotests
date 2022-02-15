@@ -469,142 +469,142 @@ class TestCreatePn:
                     actual_result=compare_releases
                 )) == str(True)
 
-                with allure.step('# 7.5. Check Ei release'):
-                    """
-                    Compare expenditure item release before pn creating and expenditure item after pn creating.
-                    """
-                    allure.attach(str(json.dumps(GlobalClassCreatePn.actual_ei_release)),
-                                  "Actual Ei release after pn creating")
+            with allure.step('# 7.5. Check Ei release'):
+                """
+                Compare expenditure item release before pn creating and expenditure item after pn creating.
+                """
+                allure.attach(str(json.dumps(GlobalClassCreatePn.actual_ei_release)),
+                              "Actual Ei release after pn creating")
 
-                    allure.attach(str(json.dumps(GlobalClassCreateFs.actual_ei_release)),
-                                  "Actual Ei release after fs creating")
+                allure.attach(str(json.dumps(GlobalClassCreateFs.actual_ei_release)),
+                              "Actual Ei release after fs creating")
 
-                    compare_releases = dict(
-                        DeepDiff(GlobalClassCreateFs.actual_ei_release, GlobalClassCreatePn.actual_ei_release))
+                compare_releases = dict(
+                    DeepDiff(GlobalClassCreateFs.actual_ei_release, GlobalClassCreatePn.actual_ei_release))
 
-                    expected_result = {
-                        'values_changed': {
-                            "root['releases'][0]['id']": {
-                                'new_value':
-                                    f"{GlobalClassCreateEi.ei_ocid}-"
-                                    f"{GlobalClassCreatePn.actual_ei_release['releases'][0]['id'][29:42]}",
-                                'old_value':
-                                    f"{GlobalClassCreateEi.ei_ocid}-"
-                                    f"{GlobalClassCreateFs.actual_ei_release['releases'][0]['id'][29:42]}",
-                            },
-                            "root['releases'][0]['date']": {
-                                'new_value': GlobalClassCreatePn.feed_point_message['data']['operationDate'],
-                                'old_value': GlobalClassCreateFs.feed_point_message['data']['operationDate']
-                            }
+                expected_result = {
+                    'values_changed': {
+                        "root['releases'][0]['id']": {
+                            'new_value':
+                                f"{GlobalClassCreateEi.ei_ocid}-"
+                                f"{GlobalClassCreatePn.actual_ei_release['releases'][0]['id'][29:42]}",
+                            'old_value':
+                                f"{GlobalClassCreateEi.ei_ocid}-"
+                                f"{GlobalClassCreateFs.actual_ei_release['releases'][0]['id'][29:42]}",
                         },
-                        'iterable_item_added': {
-                            "root['releases'][0]['relatedProcesses'][1]": {
-                                'id': GlobalClassCreatePn.actual_ei_release['releases'][0]['relatedProcesses'][1]['id'],
-                                'relationship': ['x_execution'],
-                                'scheme': 'ocid',
-                                'identifier': GlobalClassCreatePn.pn_ocid,
-                                'uri': f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
-                                       f"/{GlobalClassCreatePn.pn_ocid}"
-                            }
+                        "root['releases'][0]['date']": {
+                            'new_value': GlobalClassCreatePn.feed_point_message['data']['operationDate'],
+                            'old_value': GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                        }
+                    },
+                    'iterable_item_added': {
+                        "root['releases'][0]['relatedProcesses'][1]": {
+                            'id': GlobalClassCreatePn.actual_ei_release['releases'][0]['relatedProcesses'][1]['id'],
+                            'relationship': ['x_execution'],
+                            'scheme': 'ocid',
+                            'identifier': GlobalClassCreatePn.pn_ocid,
+                            'uri': f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
+                                   f"/{GlobalClassCreatePn.pn_ocid}"
                         }
                     }
-                    try:
-                        is_it_uuid(
-                            uuid_to_test=GlobalClassCreatePn.actual_ei_release['releases'][0][
-                                'relatedProcesses'][1]['id'],
-                            version=4
-                        )
-                    except ValueError:
-                        raise ValueError(
-                            "Check your ['releases'][0]['relatedProcesses'][1]['id'] in Ei release: "
-                            "id must be uuid version 4")
-                    try:
-                        """
-                        If compare_releases !=expected_result, then return process steps by operation-id.
-                        """
-                        if compare_releases == expected_result:
-                            pass
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassCreatePn.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
-
-                    assert str(compare_actual_result_and_expected_result(
-                        expected_result=expected_result,
-                        actual_result=compare_releases
-                    )) == str(True)
-
-                with allure.step('# 7.6. Check Fs release'):
+                }
+                try:
+                    is_it_uuid(
+                        uuid_to_test=GlobalClassCreatePn.actual_ei_release['releases'][0][
+                            'relatedProcesses'][1]['id'],
+                        version=4
+                    )
+                except ValueError:
+                    raise ValueError(
+                        "Check your ['releases'][0]['relatedProcesses'][1]['id'] in Ei release: "
+                        "id must be uuid version 4")
+                try:
                     """
-                    Compare financial source before pn creating release and financial source after pn creating.
+                    If compare_releases !=expected_result, then return process steps by operation-id.
                     """
-                    allure.attach(str(json.dumps(GlobalClassCreatePn.actual_fs_release)),
-                                  "Actual Fs release after pn creating")
+                    if compare_releases == expected_result:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                                operation_id=GlobalClassCreatePn.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
-                    allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)),
-                                  "Actual Fs release after fs creating")
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
 
-                    compare_releases = dict(
-                        DeepDiff(GlobalClassCreateFs.actual_fs_release, GlobalClassCreatePn.actual_fs_release))
+            with allure.step('# 7.6. Check Fs release'):
+                """
+                Compare financial source before pn creating release and financial source after pn creating.
+                """
+                allure.attach(str(json.dumps(GlobalClassCreatePn.actual_fs_release)),
+                              "Actual Fs release after pn creating")
 
-                    expected_result = {
-                        "values_changed": {
-                            "root['releases'][0]['id']": {
-                                "new_value":
-                                    f"{GlobalClassCreateFs.fs_id}-"
-                                    f"{GlobalClassCreatePn.actual_fs_release['releases'][0]['id'][46:59]}",
-                                "old_value":
-                                    f"{GlobalClassCreateFs.fs_id}-"
-                                    f"{GlobalClassCreateFs.actual_fs_release['releases'][0]['id'][46:59]}",
-                            },
-                            "root['releases'][0]['date']": {
-                                "new_value": GlobalClassCreatePn.feed_point_message['data']['operationDate'],
-                                "old_value": GlobalClassCreateFs.feed_point_message['data']['operationDate']
-                            },
-                            "root['releases'][0]['tag'][0]": {
-                                "new_value": "planningUpdate",
-                                "old_value": "planning"
-                            }
+                allure.attach(str(json.dumps(GlobalClassCreateFs.actual_fs_release)),
+                              "Actual Fs release after fs creating")
+
+                compare_releases = dict(
+                    DeepDiff(GlobalClassCreateFs.actual_fs_release, GlobalClassCreatePn.actual_fs_release))
+
+                expected_result = {
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{GlobalClassCreateFs.fs_id}-"
+                                f"{GlobalClassCreatePn.actual_fs_release['releases'][0]['id'][46:59]}",
+                            "old_value":
+                                f"{GlobalClassCreateFs.fs_id}-"
+                                f"{GlobalClassCreateFs.actual_fs_release['releases'][0]['id'][46:59]}",
                         },
-                        "iterable_item_added": {
-                            "root['releases'][0]['relatedProcesses'][1]": {
-                                "id": GlobalClassCreatePn.actual_fs_release['releases'][0]['relatedProcesses'][1]['id'],
-                                "relationship": [
-                                    "x_execution"],
-                                "scheme": "ocid",
-                                "identifier": GlobalClassCreatePn.pn_ocid,
-                                "uri": f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
-                                       f"/{GlobalClassCreatePn.pn_ocid}"
-                            }
+                        "root['releases'][0]['date']": {
+                            "new_value": GlobalClassCreatePn.feed_point_message['data']['operationDate'],
+                            "old_value": GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                        },
+                        "root['releases'][0]['tag'][0]": {
+                            "new_value": "planningUpdate",
+                            "old_value": "planning"
+                        }
+                    },
+                    "iterable_item_added": {
+                        "root['releases'][0]['relatedProcesses'][1]": {
+                            "id": GlobalClassCreatePn.actual_fs_release['releases'][0]['relatedProcesses'][1]['id'],
+                            "relationship": [
+                                "x_execution"],
+                            "scheme": "ocid",
+                            "identifier": GlobalClassCreatePn.pn_ocid,
+                            "uri": f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
+                                   f"/{GlobalClassCreatePn.pn_ocid}"
                         }
                     }
+                }
 
-                    try:
-                        is_it_uuid(
-                            uuid_to_test=GlobalClassCreatePn.actual_fs_release['releases'][0][
-                                'relatedProcesses'][1]['id'],
-                            version=4
-                        )
-                    except ValueError:
-                        raise ValueError(
-                            "Check your ['releases'][0]['relatedProcesses'][1]['id'] in Fs release: "
-                            "id must be uuid version 4")
-                    try:
-                        """
-                        If compare_releases !=expected_result, then return process steps by operation-id.
-                        """
-                        if compare_releases == expected_result:
-                            pass
-                        else:
-                            with allure.step('# Steps from Casandra DataBase'):
-                                steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                    operation_id=GlobalClassCreatePn.operation_id)
-                                allure.attach(steps, "Cassandra DataBase: steps of process")
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
+                try:
+                    is_it_uuid(
+                        uuid_to_test=GlobalClassCreatePn.actual_fs_release['releases'][0][
+                            'relatedProcesses'][1]['id'],
+                        version=4
+                    )
+                except ValueError:
+                    raise ValueError(
+                        "Check your ['releases'][0]['relatedProcesses'][1]['id'] in Fs release: "
+                        "id must be uuid version 4")
+                try:
+                    """
+                    If compare_releases !=expected_result, then return process steps by operation-id.
+                    """
+                    if compare_releases == expected_result:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                                operation_id=GlobalClassCreatePn.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
                 try:
                     """
@@ -1025,38 +1025,38 @@ class TestCreatePn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-            try:
-                """
-                    If TestCase was passed, then cLean up the database.
-                    If TestCase was failed, then return process steps by operation-id.
+                try:
                     """
-                if compare_releases == expected_result:
-                    GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                        ei_id=GlobalClassCreateEi.ei_ocid)
+                        If TestCase was passed, then cLean up the database.
+                        If TestCase was failed, then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result:
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
 
-                    GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
-                        ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreateEi.operation_id)
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreateFs.operation_id)
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateFs.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreatePn.operation_id)
-                else:
-                    with allure.step('# Steps from Casandra DataBase'):
-                        steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreatePn.operation_id)
-                        allure.attach(steps, "Cassandra DataBase: steps of process")
-            except ValueError:
-                raise ValueError("Can not return BPE operation step")
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                                operation_id=GlobalClassCreatePn.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
-            assert str(compare_actual_result_and_expected_result(
-                expected_result=expected_result,
-                actual_result=compare_releases
-            )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
 
     @allure.title('Check Pn and MS releases data after Pn creating without optional fields')
     def test_check_pn_ms_releases_three(self):
