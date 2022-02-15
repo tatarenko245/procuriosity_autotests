@@ -2334,7 +2334,7 @@ class CnOnPnPreparePayload:
         return payload
 
     def update_cnonpn_obligatory_data_model_with_lots_items_documents_without_auction(
-            self, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
+            self, pmd, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
             based_stage_release, need_to_set_permanent_id_for_lots_array=False,
             need_to_set_permanent_id_for_items_array=False, need_to_set_permanent_id_for_documents_array=False):
 
@@ -2357,10 +2357,8 @@ class CnOnPnPreparePayload:
             payload['tender']['documents'] = [{}]
             payload['tender']['documents'][0].update(self.constructor.tender_document_object())
 
-            del payload['tender']['electronicAuctions']
             del payload['tender']['procurementMethodRationale']
             del payload['tender']['procurementMethodAdditionalInfo']
-            del payload['tender']['procurementMethodModalities']
             del payload['tender']['criteria']
             del payload['tender']['conversions']
             del payload['tender']['lots'][0]['internalId']
@@ -2378,40 +2376,6 @@ class CnOnPnPreparePayload:
 
         except KeyError:
             raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
-
-        try:
-            item_classification_id = None
-            tender_classification_id = \
-                GlobalClassCreateEi.actual_ei_release['releases'][0]['tender']['classification']['id']
-
-            if tender_classification_id[0:3] == "031":
-                item_classification_id = random.choice(cpv_goods_low_level_03)
-            elif tender_classification_id[0:3] == "146":
-                item_classification_id = random.choice(cpv_goods_low_level_1)
-            elif tender_classification_id[0:3] == "221":
-                item_classification_id = random.choice(cpv_goods_low_level_2)
-            elif tender_classification_id[0:3] == "301":
-                item_classification_id = random.choice(cpv_goods_low_level_3)
-            elif tender_classification_id[0:3] == "444":
-                item_classification_id = random.choice(cpv_goods_low_level_44)
-            elif tender_classification_id[0:3] == "482":
-                item_classification_id = random.choice(cpv_goods_low_level_48)
-            elif tender_classification_id[0:3] == "451":
-                item_classification_id = random.choice(cpv_works_low_level_45)
-            elif tender_classification_id[0:3] == "515":
-                item_classification_id = random.choice(cpv_services_low_level_5)
-            elif tender_classification_id[0:3] == "637":
-                item_classification_id = random.choice(cpv_services_low_level_6)
-            elif tender_classification_id[0:3] == "713":
-                item_classification_id = random.choice(cpv_services_low_level_7)
-            elif tender_classification_id[0:3] == "851":
-                item_classification_id = random.choice(cpv_services_low_level_8)
-            elif tender_classification_id[0:3] == "923":
-                item_classification_id = random.choice(cpv_services_low_level_92)
-            elif tender_classification_id[0:3] == "983":
-                item_classification_id = random.choice(cpv_services_low_level_98)
-        except KeyError:
-            raise KeyError("Check tender_classification_id")
 
         payload['tender']['title'] = "This field is redundant"
         payload['tender']['description'] = "This field is redundant"
@@ -2457,6 +2421,258 @@ class CnOnPnPreparePayload:
                 pass
         except KeyError:
             raise KeyError("Could not to set permanent id for lots array. Key 'lots' was not found.")
+
+        try:
+            item_classification_id = None
+            tender_classification_id = \
+                GlobalClassCreateEi.actual_ei_release['releases'][0]['tender']['classification']['id']
+
+            # VR-1.0.1.7.7
+            if tender_classification_id[0:3] == "031":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_03)
+
+            elif tender_classification_id[0:3] == "146":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_1)
+
+            elif tender_classification_id[0:3] == "221":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_2)
+
+            elif tender_classification_id[0:3] == "301":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_3)
+            elif tender_classification_id[0:3] == "444":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_44)
+
+            elif tender_classification_id[0:3] == "482":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_48)
+
+            elif tender_classification_id[0:3] == "451":
+                item_classification_id = random.choice(cpv_works_low_level_45)
+                del payload['tender']['electronicAuctions']
+                del payload['tender']['procurementMethodModalities']
+
+            elif tender_classification_id[0:3] == "515":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_5)
+
+            elif tender_classification_id[0:3] == "637":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_6)
+
+            elif tender_classification_id[0:3] == "713":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_7)
+
+            elif tender_classification_id[0:3] == "851":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_8)
+
+            elif tender_classification_id[0:3] == "923":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_92)
+
+            elif tender_classification_id[0:3] == "983":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_98)
+        except KeyError:
+            raise KeyError("Check tender_classification_id")
 
         payload['tender']['items'][0]['id'] = "0"
         payload['tender']['items'][0]['classification']['id'] = item_classification_id
@@ -2509,7 +2725,7 @@ class CnOnPnPreparePayload:
         return payload
 
     def update_cnonpn_full_data_model_with_lots_items_documents_without_auction(
-            self, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
+            self, pmd, enquiry_interval, tender_interval, quantity_of_lots_object, quantity_of_items_object,
             based_stage_release, need_to_set_permanent_id_for_lots_array=False,
             need_to_set_permanent_id_for_items_array=False, need_to_set_permanent_id_for_documents_array=False):
         payload = {
@@ -2548,41 +2764,6 @@ class CnOnPnPreparePayload:
 
         del payload['tender']['criteria']
         del payload['tender']['conversions']
-        del payload['tender']['electronicAuctions']
-
-        try:
-            item_classification_id = None
-            tender_classification_id = \
-                GlobalClassCreateEi.actual_ei_release['releases'][0]['tender']['classification']['id']
-
-            if tender_classification_id[0:3] == "031":
-                item_classification_id = random.choice(cpv_goods_low_level_03)
-            elif tender_classification_id[0:3] == "146":
-                item_classification_id = random.choice(cpv_goods_low_level_1)
-            elif tender_classification_id[0:3] == "221":
-                item_classification_id = random.choice(cpv_goods_low_level_2)
-            elif tender_classification_id[0:3] == "301":
-                item_classification_id = random.choice(cpv_goods_low_level_3)
-            elif tender_classification_id[0:3] == "444":
-                item_classification_id = random.choice(cpv_goods_low_level_44)
-            elif tender_classification_id[0:3] == "482":
-                item_classification_id = random.choice(cpv_goods_low_level_48)
-            elif tender_classification_id[0:3] == "451":
-                item_classification_id = random.choice(cpv_works_low_level_45)
-            elif tender_classification_id[0:3] == "515":
-                item_classification_id = random.choice(cpv_services_low_level_5)
-            elif tender_classification_id[0:3] == "637":
-                item_classification_id = random.choice(cpv_services_low_level_6)
-            elif tender_classification_id[0:3] == "713":
-                item_classification_id = random.choice(cpv_services_low_level_7)
-            elif tender_classification_id[0:3] == "851":
-                item_classification_id = random.choice(cpv_services_low_level_8)
-            elif tender_classification_id[0:3] == "923":
-                item_classification_id = random.choice(cpv_services_low_level_92)
-            elif tender_classification_id[0:3] == "983":
-                item_classification_id = random.choice(cpv_services_low_level_98)
-        except KeyError:
-            raise KeyError("Check tender_classification_id")
 
         payload['tender']['title'] = "This field is redundant"
         payload['tender']['description'] = "This field is redundant"
@@ -2659,6 +2840,258 @@ class CnOnPnPreparePayload:
                 pass
         except KeyError:
             raise KeyError("Could not to set permanent id for lots array. Key 'lots' was not found.")
+
+        try:
+            item_classification_id = None
+            tender_classification_id = \
+                GlobalClassCreateEi.actual_ei_release['releases'][0]['tender']['classification']['id']
+
+            # VR-1.0.1.7.7
+            if tender_classification_id[0:3] == "031":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_03)
+
+            elif tender_classification_id[0:3] == "146":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_1)
+
+            elif tender_classification_id[0:3] == "221":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_2)
+
+            elif tender_classification_id[0:3] == "301":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_3)
+            elif tender_classification_id[0:3] == "444":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_44)
+
+            elif tender_classification_id[0:3] == "482":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_goods_low_level_48)
+
+            elif tender_classification_id[0:3] == "451":
+                item_classification_id = random.choice(cpv_works_low_level_45)
+                del payload['tender']['electronicAuctions']
+                del payload['tender']['procurementMethodModalities']
+
+            elif tender_classification_id[0:3] == "515":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_5)
+
+            elif tender_classification_id[0:3] == "637":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_6)
+
+            elif tender_classification_id[0:3] == "713":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_7)
+
+            elif tender_classification_id[0:3] == "851":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_8)
+
+            elif tender_classification_id[0:3] == "923":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_92)
+
+            elif tender_classification_id[0:3] == "983":
+                if pmd == "SV" or pmd == "TEST_SV":
+                    for ql in range(quantity_of_lots_object):
+                        payload['tender']['electronicAuctions']['details'].append(
+                            self.constructor.tender_electronic_auctions_details_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'].append(
+                            self.constructor.tender_electronic_auctions_details_electronic_auction_modalities_object())
+                        payload['tender']['electronicAuctions']['details'][ql]['id'] = str(ql)
+                        payload['tender']['electronicAuctions']['details'][ql]['relatedLot'] = \
+                            payload['tender']['lots'][ql]['id']
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['amount'] = 10.00
+                        payload['tender']['electronicAuctions']['details'][ql]['electronicAuctionModalities'][0][
+                            'eligibleMinimumDifference']['currency'] = \
+                            GlobalClassCreateFs.payload['planning']['budget']['amount']['currency']
+                else:
+                    del payload['tender']['electronicAuctions']
+                    del payload['tender']['procurementMethodModalities']
+                item_classification_id = random.choice(cpv_services_low_level_98)
+        except KeyError:
+            raise KeyError("Check tender_classification_id")
 
         payload['tender']['items'][0]['id'] = "0"
         payload['tender']['items'][0]['internalId'] = "update cnonpn: tender.items.internalId"

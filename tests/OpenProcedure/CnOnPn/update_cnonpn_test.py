@@ -273,8 +273,8 @@ class TestCreateCnOnPn:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_full_data_model_with_lots_items_documents_auction(
-                    enquiry_interval=interval_from_clarification_rules + 5,
-                    tender_interval=interval_from_submission_rules + 5,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release,
@@ -578,8 +578,8 @@ class TestCreateCnOnPn:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_full_data_model_with_lots_items_documents_auction(
-                    enquiry_interval=interval_from_clarification_rules + 5,
-                    tender_interval=interval_from_submission_rules + 5,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release,
@@ -670,7 +670,7 @@ class TestCreateCnOnPn:
 
                 try:
                     for n in GlobalClassUpdateCnOnPn.actual_ev_release[
-                                'releases'][0]['tender']['electronicAuctions']['details']:
+                            'releases'][0]['tender']['electronicAuctions']['details']:
                         for n_1 in n:
                             if n_1 == "id":
                                 is_it_uuid(
@@ -1325,8 +1325,9 @@ class TestCreateCnOnPn:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_obligatory_data_model_with_lots_items_documents_without_auction(
-                    enquiry_interval=interval_from_clarification_rules + 5,
-                    tender_interval=interval_from_submission_rules + 5,
+                    pmd=pmd,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=1,
                     quantity_of_items_object=1,
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release,
@@ -1415,135 +1416,299 @@ class TestCreateCnOnPn:
                 compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
                 compare_releases = dict(compare_releases)
 
-                expected_result = {
-                    "dictionary_item_added": "['releases'][0]['tender']['amendments']",
-                    "values_changed": {
-                        "root['releases'][0]['id']": {
-                            "new_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
-                                         f"{GlobalClassUpdateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}",
-                            "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
-                                         f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
-                        },
-                        "root['releases'][0]['date']": {
-                            "new_value": GlobalClassUpdateCnOnPn.feed_point_message['data']['operationDate'],
-                            "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
-                        },
-                        "root['releases'][0]['tag'][0]": {
-                            "new_value": "tenderAmendment",
-                            "old_value": "tender"
-                        },
-                        "root['releases'][0]['tender']['items'][0]['description']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['description'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['description']
-                        },
-                        "root['releases'][0]['tender']['items'][0]['quantity']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['quantity'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['quantity']
-                        },
-                        "root['releases'][0]['tender']['items'][0]['unit']['name']": {
-                            "new_value": get_value_from_classification_unit_dictionary_csv(
-                                unit_id=GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
-                                language=GlobalClassMetadata.language)[1],
-                            "old_value": get_value_from_classification_unit_dictionary_csv(
-                                unit_id=GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id'],
-                                language=GlobalClassMetadata.language)[1]
-                        },
-                        "root['releases'][0]['tender']['items'][0]['unit']['id']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['title']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['title'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['title']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['description']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['description'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['description']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['contractPeriod']['startDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
-                                'contractPeriod']['startDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                'contractPeriod']['startDate']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['contractPeriod']['endDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
-                                'contractPeriod']['endDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                'contractPeriod']['endDate']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']['streetAddress']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['streetAddress'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['streetAddress']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
-                        "['addressDetails']['region']['id']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['addressDetails']['region']['id']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
-                        "['addressDetails']['region']['description']": {
-                            "new_value": get_value_from_region_csv(
-                                region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                # VR-1.0.1.7.7
+                if pmd == "SV" or pmd == "TEST_SV" and GlobalClassCreateCnOnPn.payload[
+                                                           'tender']['items'][0]['classification']['id'][0:3] != "451":
+
+                    try:
+                        """
+                        Check releases.tender.electronicAuctions.details.id
+                        """
+                        for i in range(1):
+                            check_electronic_auction_details_id = is_it_uuid(
+                                uuid_to_test=GlobalClassUpdateCnOnPn.actual_ev_release[
+                                    'releases'][0]['tender']['electronicAuctions']['details'][i]['id'],
+                                version=4
+                            )
+                            if check_electronic_auction_details_id is True:
+                                pass
+                            else:
+                                raise Exception("releases.tender.electronicAuctions.details.id: "
+                                                "id is not uuid version 4")
+                    except ValueError:
+                        raise ValueError(
+                            "Impossible to check releases.tender.electronicAuctions.details.id: "
+                            "id must be uuid version 4")
+
+                    expected_result = {
+                        "dictionary_item_added": "['releases'][0]['tender']['amendments']",
+                        "values_changed": {
+                            "root['releases'][0]['id']": {
+                                "new_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                             f"{GlobalClassUpdateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}",
+                                "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                             f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
+                            },
+                            "root['releases'][0]['date']": {
+                                "new_value": GlobalClassUpdateCnOnPn.feed_point_message['data']['operationDate'],
+                                "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
+                            },
+                            "root['releases'][0]['tag'][0]": {
+                                "new_value": "tenderAmendment",
+                                "old_value": "tender"
+                            },
+                            "root['releases'][0]['tender']['items'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['description']
+                            },
+                            "root['releases'][0]['tender']['items'][0]['quantity']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['quantity'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['quantity']
+                            },
+                            "root['releases'][0]['tender']['items'][0]['unit']['name']": {
+                                "new_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['items'][0]['unit']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['title']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['title'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['title']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['description']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['contractPeriod']['startDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['startDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['startDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['contractPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']["
+                            "'streetAddress']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['streetAddress'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['streetAddress']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
                                     'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1],
-                            "old_value": get_value_from_region_csv(
-                                region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1]
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
-                        "['addressDetails']['locality']['id']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['addressDetails']['locality']['id'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['addressDetails']['locality']['id']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
-                        "['addressDetails']['locality']['description']": {
-                            "new_value": get_value_from_locality_csv(
-                                locality=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['region']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['description']": {
+                                "new_value": get_value_from_region_csv(
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_region_csv(
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
                                     'placeOfPerformance']['address']['addressDetails']['locality']['id'],
-                                region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
-                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1],
-                            "old_value": get_value_from_locality_csv(
-                                locality=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                    'placeOfPerformance']['address']['addressDetails']['locality']['id'],
-                                region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1]
-                        },
-                        "root['releases'][0]['tender']['tenderPeriod']['startDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
-                        },
-                        "root['releases'][0]['tender']['tenderPeriod']['endDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['tenderPeriod']['endDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate']
-                        },
-                        "root['releases'][0]['tender']['enquiryPeriod']['endDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
-                        },
-                        "root['releases'][0]['tender']['documents'][0]['title']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['title'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['title']
-                        },
-                        "root['releases'][0]['tender']['documents'][0]['description']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['description'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['description']
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['locality']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['description']": {
+                                "new_value": get_value_from_locality_csv(
+                                    locality=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_locality_csv(
+                                    locality=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['tenderPeriod']['startDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['tenderPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['tenderPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['enquiryPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['documents'][0]['title']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['title'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['title']
+                            },
+                            "root['releases'][0]['tender']['documents'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['description']
+                            },
+                            "root['releases'][0]['tender']['electronicAuctions']['details'][0]['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.actual_ev_release[
+                                    'releases'][0]['tender']['electronicAuctions']['details'][0]['id'],
+                                "old_value": GlobalClassCreateCnOnPn.actual_ev_release[
+                                    'releases'][0]['tender']['electronicAuctions']['details'][0]['id']
+                            }
                         }
                     }
-                }
+
+                else:
+                    expected_result = {
+                        "dictionary_item_added": "['releases'][0]['tender']['amendments']",
+                        "values_changed": {
+                            "root['releases'][0]['id']": {
+                                "new_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                             f"{GlobalClassUpdateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}",
+                                "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                             f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
+                            },
+                            "root['releases'][0]['date']": {
+                                "new_value": GlobalClassUpdateCnOnPn.feed_point_message['data']['operationDate'],
+                                "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
+                            },
+                            "root['releases'][0]['tag'][0]": {
+                                "new_value": "tenderAmendment",
+                                "old_value": "tender"
+                            },
+                            "root['releases'][0]['tender']['items'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['description']
+                            },
+                            "root['releases'][0]['tender']['items'][0]['quantity']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['quantity'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['quantity']
+                            },
+                            "root['releases'][0]['tender']['items'][0]['unit']['name']": {
+                                "new_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['items'][0]['unit']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['title']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['title'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['title']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['description']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['contractPeriod']['startDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['startDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['startDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['contractPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']["
+                            "'streetAddress']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['streetAddress'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['streetAddress']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['region']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['description']": {
+                                "new_value": get_value_from_region_csv(
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_region_csv(
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['locality']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['description']": {
+                                "new_value": get_value_from_locality_csv(
+                                    locality=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_locality_csv(
+                                    locality=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['tenderPeriod']['startDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['tenderPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['tenderPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['enquiryPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['documents'][0]['title']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['title'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['title']
+                            },
+                            "root['releases'][0]['tender']['documents'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['description']
+                            }
+                        }
+                    }
+
                 try:
                     """
                         If compare_releases !=expected_result, then return process steps by operation-id.
@@ -1557,6 +1722,11 @@ class TestCreateCnOnPn:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
+
+                print("compare_releases")
+                print(json.dumps(compare_releases))
+                print("expected result")
+                print(json.dumps(expected_result))
 
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
@@ -1855,8 +2025,9 @@ class TestCreateCnOnPn:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_full_data_model_with_lots_items_documents_without_auction(
-                    enquiry_interval=interval_from_clarification_rules + 5,
-                    tender_interval=interval_from_submission_rules + 5,
+                    pmd=pmd,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release,
@@ -1945,249 +2116,537 @@ class TestCreateCnOnPn:
                 compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
                 compare_releases = dict(compare_releases)
 
-                expected_result = {
-                    "dictionary_item_added": "['releases'][0]['tender']['amendments'], ['releases'][0]['tender']"
-                                             "['items'][0]['internalId'], ['releases'][0]['tender']['items'][0]"
-                                             "['additionalClassifications'], ['releases'][0]['tender']['items'][1]"
-                                             "['internalId'], ['releases'][0]['tender']['items'][1]"
-                                             "['additionalClassifications'], ['releases'][0]['tender']['lots'][0]"
-                                             "['internalId'], ['releases'][0]['tender']['lots'][0]"
-                                             "['placeOfPerformance']['description'], ['releases'][0]['tender']"
-                                             "['lots'][0]['placeOfPerformance']['address']['postalCode'], "
-                                             "['releases'][0]['tender']['lots'][1]['internalId'], "
-                                             "['releases'][0]['tender']['lots'][1]['placeOfPerformance']"
-                                             "['description'], ['releases'][0]['tender']['lots'][1]"
-                                             "['placeOfPerformance']['address']['postalCode']",
-                    "values_changed": {
-                        "root['releases'][0]['id']": {
-                            "new_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
-                                         f"{GlobalClassUpdateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}",
-                            "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
-                                         f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
-                        },
-                        "root['releases'][0]['date']": {
-                            "new_value": GlobalClassUpdateCnOnPn.feed_point_message['data']['operationDate'],
-                            "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
-                        },
-                        "root['releases'][0]['tag'][0]": {
-                            "new_value": "tenderAmendment",
-                            "old_value": "tender"
-                        },
-                        "root['releases'][0]['tender']['items'][0]['description']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['description'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['description']
-                        },
-                        "root['releases'][0]['tender']['items'][0]['quantity']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['quantity'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['quantity']
-                        },
-                        "root['releases'][0]['tender']['items'][0]['unit']['name']": {
-                            "new_value": get_value_from_classification_unit_dictionary_csv(
-                                unit_id=GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
-                                language=GlobalClassMetadata.language)[1],
-                            "old_value": get_value_from_classification_unit_dictionary_csv(
-                                unit_id=GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id'],
-                                language=GlobalClassMetadata.language)[1]
-                        },
-                        "root['releases'][0]['tender']['items'][0]['unit']['id']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id']
-                        },
-                        "root['releases'][0]['tender']['items'][1]['description']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['description'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][1]['description']
-                        },
-                        "root['releases'][0]['tender']['items'][1]['quantity']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['quantity'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][1]['quantity']
-                        },
-                        "root['releases'][0]['tender']['items'][1]['unit']['name']": {
-                            "new_value": get_value_from_classification_unit_dictionary_csv(
-                                unit_id=GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['unit']['id'],
-                                language=GlobalClassMetadata.language)[1],
-                            "old_value": get_value_from_classification_unit_dictionary_csv(
-                                unit_id=GlobalClassCreateCnOnPn.payload['tender']['items'][1]['unit']['id'],
-                                language=GlobalClassMetadata.language)[1]
-                        },
-                        "root['releases'][0]['tender']['items'][1]['unit']['id']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['unit']['id'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][1]['unit']['id']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['title']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['title'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['title']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['description']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['description'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['description']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['contractPeriod']['startDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
-                                'contractPeriod']['startDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                'contractPeriod']['startDate']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['contractPeriod']['endDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
-                                'contractPeriod']['endDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                'contractPeriod']['endDate']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']['streetAddress']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['streetAddress'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['streetAddress']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
-                        "['addressDetails']['region']['id']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['addressDetails']['region']['id']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
-                        "['addressDetails']['region']['description']": {
-                            "new_value": get_value_from_region_csv(
-                                region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                # VR-1.0.1.7.7
+                if pmd == "SV" or pmd == "TEST_SV" and GlobalClassCreateCnOnPn.payload[
+                                                           'tender']['items'][0]['classification']['id'][0:3] != "451":
+
+                    try:
+                        """
+                        Check releases.tender.electronicAuctions.details.id
+                        """
+                        for i in range(2):
+                            check_electronic_auction_details_id = is_it_uuid(
+                                uuid_to_test=GlobalClassUpdateCnOnPn.actual_ev_release[
+                                    'releases'][0]['tender']['electronicAuctions']['details'][i]['id'],
+                                version=4
+                            )
+                            if check_electronic_auction_details_id is True:
+                                pass
+                            else:
+                                raise Exception(
+                                    "releases.tender.electronicAuctions.details.id: id is not uuid version 4")
+                    except ValueError:
+                        raise ValueError(
+                            "Impossible to check releases.tender.electronicAuctions.details.id: "
+                            "id must be uuid version 4")
+
+                    expected_result = {
+                        "dictionary_item_added": "['releases'][0]['tender']['amendments'], ['releases'][0]['tender']"
+                                                 "['items'][0]['internalId'], ['releases'][0]['tender']['items'][0]"
+                                                 "['additionalClassifications'], ['releases'][0]['tender']['items'][1]"
+                                                 "['internalId'], ['releases'][0]['tender']['items'][1]"
+                                                 "['additionalClassifications'], ['releases'][0]['tender']['lots'][0]"
+                                                 "['internalId'], ['releases'][0]['tender']['lots'][0]"
+                                                 "['placeOfPerformance']['description'], ['releases'][0]['tender']"
+                                                 "['lots'][0]['placeOfPerformance']['address']['postalCode'], "
+                                                 "['releases'][0]['tender']['lots'][1]['internalId'], "
+                                                 "['releases'][0]['tender']['lots'][1]['placeOfPerformance']"
+                                                 "['description'], ['releases'][0]['tender']['lots'][1]"
+                                                 "['placeOfPerformance']['address']['postalCode']",
+                        "values_changed": {
+                            "root['releases'][0]['id']": {
+                                "new_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                             f"{GlobalClassUpdateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}",
+                                "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                             f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
+                            },
+                            "root['releases'][0]['date']": {
+                                "new_value": GlobalClassUpdateCnOnPn.feed_point_message['data']['operationDate'],
+                                "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
+                            },
+                            "root['releases'][0]['tag'][0]": {
+                                "new_value": "tenderAmendment",
+                                "old_value": "tender"
+                            },
+                            "root['releases'][0]['tender']['items'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['description']
+                            },
+                            "root['releases'][0]['tender']['items'][0]['quantity']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['quantity'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['quantity']
+                            },
+                            "root['releases'][0]['tender']['items'][0]['unit']['name']": {
+                                "new_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['items'][0]['unit']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id']
+                            },
+                            "root['releases'][0]['tender']['items'][1]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][1]['description']
+                            },
+                            "root['releases'][0]['tender']['items'][1]['quantity']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['quantity'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][1]['quantity']
+                            },
+                            "root['releases'][0]['tender']['items'][1]['unit']['name']": {
+                                "new_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassCreateCnOnPn.payload['tender']['items'][1]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['items'][1]['unit']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['unit']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][1]['unit']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['title']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['title'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['title']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['description']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['contractPeriod']['startDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['startDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['startDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['contractPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']["
+                            "'streetAddress']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['streetAddress'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['streetAddress']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
                                     'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1],
-                            "old_value": get_value_from_region_csv(
-                                region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1]
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
-                        "['addressDetails']['locality']['id']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['addressDetails']['locality']['id'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                'placeOfPerformance']['address']['addressDetails']['locality']['id']
-                        },
-                        "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
-                        "['addressDetails']['locality']['description']": {
-                            "new_value": get_value_from_locality_csv(
-                                locality=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['region']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['description']": {
+                                "new_value": get_value_from_region_csv(
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_region_csv(
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
                                     'placeOfPerformance']['address']['addressDetails']['locality']['id'],
-                                region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['locality']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['description']": {
+                                "new_value": get_value_from_locality_csv(
+                                    locality=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_locality_csv(
+                                    locality=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['title']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1]['title'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1]['title']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1]['description']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['contractPeriod']['startDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                    'contractPeriod']['startDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                    'contractPeriod']['startDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['contractPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                    'contractPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                    'contractPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']["
+                            "'streetAddress']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                    'placeOfPerformance']['address']['streetAddress'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                    'placeOfPerformance']['address']['streetAddress']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
                                     'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1],
-                            "old_value": get_value_from_locality_csv(
-                                locality=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                    'placeOfPerformance']['address']['addressDetails']['region']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['description']": {
+                                "new_value": get_value_from_region_csv(
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_region_csv(
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
                                     'placeOfPerformance']['address']['addressDetails']['locality']['id'],
-                                region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
-                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1]
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                    'placeOfPerformance']['address']['addressDetails']['locality']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['description']": {
+                                "new_value": get_value_from_locality_csv(
+                                    locality=GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_locality_csv(
+                                    locality=GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['tenderPeriod']['startDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['tenderPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['tenderPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['enquiryPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['documents'][0]['title']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['title'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['title']
+                            },
+                            "root['releases'][0]['tender']['documents'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['description']
+                            },
+                            "root['releases'][0]['tender']['electronicAuctions']['details'][0]['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.actual_ev_release[
+                                    'releases'][0]['tender']['electronicAuctions']['details'][0]['id'],
+                                "old_value": GlobalClassCreateCnOnPn.actual_ev_release[
+                                    'releases'][0]['tender']['electronicAuctions']['details'][0]['id']
+                            },
+                            "root['releases'][0]['tender']['electronicAuctions']['details'][1]['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.actual_ev_release[
+                                    'releases'][0]['tender']['electronicAuctions']['details'][1]['id'],
+                                "old_value": GlobalClassCreateCnOnPn.actual_ev_release[
+                                    'releases'][0]['tender']['electronicAuctions']['details'][1]['id']
+                            }
                         },
-                        "root['releases'][0]['tender']['lots'][1]['title']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1]['title'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1]['title']
-                        },
-                        "root['releases'][0]['tender']['lots'][1]['description']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1]['description'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1]['description']
-                        },
-                        "root['releases'][0]['tender']['lots'][1]['contractPeriod']['startDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
-                                'contractPeriod']['startDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
-                                'contractPeriod']['startDate']
-                        },
-                        "root['releases'][0]['tender']['lots'][1]['contractPeriod']['endDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
-                                'contractPeriod']['endDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
-                                'contractPeriod']['endDate']
-                        },
-                        "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']['streetAddress']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
-                                'placeOfPerformance']['address']['streetAddress'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
-                                'placeOfPerformance']['address']['streetAddress']
-                        },
-                        "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
-                        "['addressDetails']['region']['id']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
-                                'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
-                                'placeOfPerformance']['address']['addressDetails']['region']['id']
-                        },
-                        "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
-                        "['addressDetails']['region']['description']": {
-                            "new_value": get_value_from_region_csv(
-                                region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
-                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1],
-                            "old_value": get_value_from_region_csv(
-                                region=GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
-                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1]
-                        },
-                        "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
-                        "['addressDetails']['locality']['id']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
-                                'placeOfPerformance']['address']['addressDetails']['locality']['id'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
-                                'placeOfPerformance']['address']['addressDetails']['locality']['id']
-                        },
-                        "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
-                        "['addressDetails']['locality']['description']": {
-                            "new_value": get_value_from_locality_csv(
-                                locality=GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
-                                    'placeOfPerformance']['address']['addressDetails']['locality']['id'],
-                                region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
-                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1],
-                            "old_value": get_value_from_locality_csv(
-                                locality=GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
-                                    'placeOfPerformance']['address']['addressDetails']['locality']['id'],
-                                region=GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
-                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
-                                country=GlobalClassMetadata.country,
-                                language=GlobalClassMetadata.language)[1]
-                        },
-                        "root['releases'][0]['tender']['tenderPeriod']['startDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
-                        },
-                        "root['releases'][0]['tender']['tenderPeriod']['endDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['tenderPeriod']['endDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate']
-                        },
-                        "root['releases'][0]['tender']['enquiryPeriod']['endDate']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
-                        },
-                        "root['releases'][0]['tender']['documents'][0]['title']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['title'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['title']
-                        },
-                        "root['releases'][0]['tender']['documents'][0]['description']": {
-                            "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['description'],
-                            "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['description']
-                        }
-                    },
-                    "iterable_item_added": {
-                        "root['releases'][0]['tender']['documents'][1]": {
-                            "id": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['id'],
-                            "documentType": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['documentType'],
-                            "title": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['title'],
-                            "description": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['description'],
-                            "url": f"{GlobalClassMetadata.metadata_document_url}/"
-                                   f"{GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['id']}",
-                            "datePublished": GlobalClassUpdateCnOnPn.feed_point_message['data']['operationDate'],
-                            "relatedLots": [
-                                GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['relatedLots'][0]]
+                        "iterable_item_added": {
+                            "root['releases'][0]['tender']['documents'][1]": {
+                                "id": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['id'],
+                                "documentType": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1][
+                                    'documentType'],
+                                "title": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['title'],
+                                "description": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['description'],
+                                "url": f"{GlobalClassMetadata.metadata_document_url}/"
+                                       f"{GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['id']}",
+                                "datePublished": GlobalClassUpdateCnOnPn.feed_point_message['data']['operationDate'],
+                                "relatedLots": [
+                                    GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['relatedLots'][0]]
+                            }
                         }
                     }
-                }
+
+                else:
+                    expected_result = {
+                        "dictionary_item_added": "['releases'][0]['tender']['amendments'], ['releases'][0]['tender']"
+                                                 "['items'][0]['internalId'], ['releases'][0]['tender']['items'][0]"
+                                                 "['additionalClassifications'], ['releases'][0]['tender']['items'][1]"
+                                                 "['internalId'], ['releases'][0]['tender']['items'][1]"
+                                                 "['additionalClassifications'], ['releases'][0]['tender']['lots'][0]"
+                                                 "['internalId'], ['releases'][0]['tender']['lots'][0]"
+                                                 "['placeOfPerformance']['description'], ['releases'][0]['tender']"
+                                                 "['lots'][0]['placeOfPerformance']['address']['postalCode'], "
+                                                 "['releases'][0]['tender']['lots'][1]['internalId'], "
+                                                 "['releases'][0]['tender']['lots'][1]['placeOfPerformance']"
+                                                 "['description'], ['releases'][0]['tender']['lots'][1]"
+                                                 "['placeOfPerformance']['address']['postalCode']",
+                        "values_changed": {
+                            "root['releases'][0]['id']": {
+                                "new_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                             f"{GlobalClassUpdateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}",
+                                "old_value": f"{GlobalClassCreateCnOnPn.ev_id}-"
+                                             f"{GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['id'][46:59]}"
+                            },
+                            "root['releases'][0]['date']": {
+                                "new_value": GlobalClassUpdateCnOnPn.feed_point_message['data']['operationDate'],
+                                "old_value": GlobalClassCreateCnOnPn.feed_point_message['data']['operationDate']
+                            },
+                            "root['releases'][0]['tag'][0]": {
+                                "new_value": "tenderAmendment",
+                                "old_value": "tender"
+                            },
+                            "root['releases'][0]['tender']['items'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['description']
+                            },
+                            "root['releases'][0]['tender']['items'][0]['quantity']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['quantity'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['quantity']
+                            },
+                            "root['releases'][0]['tender']['items'][0]['unit']['name']": {
+                                "new_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['items'][0]['unit']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][0]['unit']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][0]['unit']['id']
+                            },
+                            "root['releases'][0]['tender']['items'][1]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][1]['description']
+                            },
+                            "root['releases'][0]['tender']['items'][1]['quantity']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['quantity'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][1]['quantity']
+                            },
+                            "root['releases'][0]['tender']['items'][1]['unit']['name']": {
+                                "new_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_classification_unit_dictionary_csv(
+                                    unit_id=GlobalClassCreateCnOnPn.payload['tender']['items'][1]['unit']['id'],
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['items'][1]['unit']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['items'][1]['unit']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['items'][1]['unit']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['title']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['title'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['title']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0]['description']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['contractPeriod']['startDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['startDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['startDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['contractPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'contractPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']["
+                            "'streetAddress']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['streetAddress'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['streetAddress']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['region']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['description']": {
+                                "new_value": get_value_from_region_csv(
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_region_csv(
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                    'placeOfPerformance']['address']['addressDetails']['locality']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][0]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['description']": {
+                                "new_value": get_value_from_locality_csv(
+                                    locality=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_locality_csv(
+                                    locality=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][0][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['title']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1]['title'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1]['title']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1]['description']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['contractPeriod']['startDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                    'contractPeriod']['startDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                    'contractPeriod']['startDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['contractPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                    'contractPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                    'contractPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']["
+                            "'streetAddress']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                    'placeOfPerformance']['address']['streetAddress'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                    'placeOfPerformance']['address']['streetAddress']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                    'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                    'placeOfPerformance']['address']['addressDetails']['region']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
+                            "['addressDetails']['region']['description']": {
+                                "new_value": get_value_from_region_csv(
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_region_csv(
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['id']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                    'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                    'placeOfPerformance']['address']['addressDetails']['locality']['id']
+                            },
+                            "root['releases'][0]['tender']['lots'][1]['placeOfPerformance']['address']"
+                            "['addressDetails']['locality']['description']": {
+                                "new_value": get_value_from_locality_csv(
+                                    locality=GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassUpdateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1],
+                                "old_value": get_value_from_locality_csv(
+                                    locality=GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['locality']['id'],
+                                    region=GlobalClassCreateCnOnPn.payload['tender']['lots'][1][
+                                        'placeOfPerformance']['address']['addressDetails']['region']['id'],
+                                    country=GlobalClassMetadata.country,
+                                    language=GlobalClassMetadata.language)[1]
+                            },
+                            "root['releases'][0]['tender']['tenderPeriod']['startDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['tenderPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['tenderPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['enquiryPeriod']['endDate']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['enquiryPeriod']['endDate'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['enquiryPeriod']['endDate']
+                            },
+                            "root['releases'][0]['tender']['documents'][0]['title']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['title'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['title']
+                            },
+                            "root['releases'][0]['tender']['documents'][0]['description']": {
+                                "new_value": GlobalClassUpdateCnOnPn.payload['tender']['documents'][0]['description'],
+                                "old_value": GlobalClassCreateCnOnPn.payload['tender']['documents'][0]['description']
+                            }
+                        },
+                        "iterable_item_added": {
+                            "root['releases'][0]['tender']['documents'][1]": {
+                                "id": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['id'],
+                                "documentType": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1][
+                                    'documentType'],
+                                "title": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['title'],
+                                "description": GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['description'],
+                                "url": f"{GlobalClassMetadata.metadata_document_url}/"
+                                       f"{GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['id']}",
+                                "datePublished": GlobalClassUpdateCnOnPn.feed_point_message['data']['operationDate'],
+                                "relatedLots": [
+                                    GlobalClassUpdateCnOnPn.payload['tender']['documents'][1]['relatedLots'][0]]
+                            }
+                        }
+                    }
+
                 try:
                     """
                         If compare_releases !=expected_result, then return process steps by operation-id.
@@ -2201,6 +2660,11 @@ class TestCreateCnOnPn:
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
+
+                print("compare_releases")
+                print(json.dumps(compare_releases))
+                print("expected result")
+                print(json.dumps(expected_result))
 
                 assert str(compare_actual_result_and_expected_result(
                     expected_result=expected_result,
@@ -2531,8 +2995,8 @@ class TestCreateCnOnPn:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_obligatory_data_model_with_lots_items_documents_with_auction(
-                    enquiry_interval=interval_from_clarification_rules + 5,
-                    tender_interval=interval_from_submission_rules + 5,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release,
@@ -2628,7 +3092,7 @@ class TestCreateCnOnPn:
 
                 try:
                     for n in GlobalClassUpdateCnOnPn.actual_ev_release[
-                                'releases'][0]['tender']['electronicAuctions']['details']:
+                            'releases'][0]['tender']['electronicAuctions']['details']:
                         for n_1 in n:
                             if n_1 == "id":
                                 is_it_uuid(
