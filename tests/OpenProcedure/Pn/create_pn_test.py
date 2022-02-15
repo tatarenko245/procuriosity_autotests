@@ -1445,35 +1445,35 @@ class TestCreatePn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-            try:
-                """
-                    If TestCase was passed, then cLean up the database.
-                    If TestCase was failed, then return process steps by operation-id.
+                try:
                     """
-                if compare_releases == expected_result:
-                    GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                        ei_id=GlobalClassCreateEi.ei_ocid)
+                        If TestCase was passed, then cLean up the database.
+                        If TestCase was failed, then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result:
+                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
 
-                    GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
-                        ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
+                            ei_id=GlobalClassCreateEi.ei_ocid)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreateEi.operation_id)
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateEi.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreateFs.operation_id)
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                            operation_id=GlobalClassCreateFs.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
-                        operation_id=GlobalClassCreatePn.operation_id)
-                else:
-                    with allure.step('# Steps from Casandra DataBase'):
-                        steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                        GlobalClassMetadata.database.cleanup_steps_of_process(
                             operation_id=GlobalClassCreatePn.operation_id)
-                        allure.attach(steps, "Cassandra DataBase: steps of process")
-            except ValueError:
-                raise ValueError("Can not return BPE operation step")
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                                operation_id=GlobalClassCreatePn.operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
-            assert str(compare_actual_result_and_expected_result(
-                expected_result=expected_result,
-                actual_result=compare_releases
-            )) == str(True)
+                assert str(compare_actual_result_and_expected_result(
+                    expected_result=expected_result,
+                    actual_result=compare_releases
+                )) == str(True)
