@@ -1050,7 +1050,7 @@ class TestCreateCnOnPn:
                                 'startDate']
                         }
 
-                    expected_electronic_auctions = copy.deepcopy(
+                    expected_electronic_auctions_details = copy.deepcopy(
                         expected_release_class.prepare_expected_electronic_auction_details_array(
                             payload_electronic_auction_details_array=GlobalClassCreateCnOnPn.payload[
                                 'tender']['electronicAuctions']['details'],
@@ -1091,7 +1091,7 @@ class TestCreateCnOnPn:
                                       "Expected releases.tender.auctionPeriod object.")
                         assert str(GlobalClassCreateCnOnPn.actual_ev_release[
                                               'releases'][0]['tender']['auctionPeriod']) == str(
-                            [expected_auction_period_object])
+                            expected_auction_period_object)
 
                     with allure.step('Compare actual releases.tender.procurementMethodModalities array '
                                      'and expected releases.tender.procurementMethodModalities array.'):
@@ -1104,16 +1104,16 @@ class TestCreateCnOnPn:
                                        'releases'][0]['tender']['procurementMethodModalities']) == str(
                             expected_electronic_procurement_method_modalities)
 
-                    with allure.step('Compare actual releases.tender.electronicAuctions array '
-                                     'and expected releases.tender.electronicAuctions array.'):
+                    with allure.step('Compare actual releases.tender.electronicAuctions_details array '
+                                     'and expected releases.tender.electronicAuctions.details array.'):
                         allure.attach(str(GlobalClassCreateCnOnPn.actual_ev_release[
-                                              'releases'][0]['tender']['electronicAuctions']),
-                                      "Actual releases.tender.electronicAuctions array.")
-                        allure.attach(str(expected_electronic_auctions),
-                                      "Expected releases.tender.electronicAuctions array.")
+                                              'releases'][0]['tender']['electronicAuctions']['details']),
+                                      "Actual releases.tender.electronicAuctions.details array.")
+                        allure.attach(str(expected_electronic_auctions_details),
+                                      "Expected releases.tender.electronicAuctions.details array.")
                         assert str(GlobalClassCreateCnOnPn.actual_ev_release[
-                                       'releases'][0]['tender']['electronicAuctions']) == str(
-                            expected_electronic_auctions)
+                                       'releases'][0]['tender']['electronicAuctions']['details']) == str(
+                            expected_electronic_auctions_details)
 
                 else:
                     expected_result = {}
