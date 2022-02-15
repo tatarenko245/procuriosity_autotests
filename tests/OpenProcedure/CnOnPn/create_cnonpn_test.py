@@ -1,4 +1,5 @@
 import copy
+import fnmatch
 import json
 import time
 
@@ -923,6 +924,7 @@ class TestCreateCnOnPn:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_obligatory_data_model_with_lots_items_documents(
+                    pmd=pmd,
                     enquiry_interval=interval_from_clarification_rules + 1,
                     tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=1,
@@ -1023,28 +1025,119 @@ class TestCreateCnOnPn:
 
                 compare_releases = dict(DeepDiff(
                     GlobalClassCreateCnOnPn.actual_ev_release, expected_ev_release_model))
-                expected_result = {}
-                try:
-                    """
-                        If compare_releases !=expected_result, then return process steps by operation-id.
-                        """
-                    if compare_releases == expected_result:
-                        pass
-                    else:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
-                                operation_id=GlobalClassCreateCnOnPn.operation_id)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-                except ValueError:
-                    raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Check a difference of comparing Ms release before cn creating and '
-                                 'Ms release after cn creating.'):
-                    allure.attach(str(compare_releases),
-                                  "Actual result of comparing MS releases.")
-                    allure.attach(str(expected_result),
-                                  "Expected result of comparing Ms releases.")
-                    assert str(compare_releases) == str(expected_result)
+                # VR-1.0.1.7.7
+                if pmd == "SV" or pmd == "TEST_SV" and GlobalClassCreateCnOnPn.payload[
+                                                           'tender']['items'][0]['classification']['id'][0:3] != "451":
+                    dictionary_item_removed_was_cleaned = \
+                        str(compare_releases['dictionary_item_removed']).replace('root', '')[1:-1]
+                    compare_releases['dictionary_item_removed'] = dictionary_item_removed_was_cleaned
+                    compare_releases = dict(compare_releases)
+
+                    expected_result = {
+                        'dictionary_item_removed': "['releases'][0]['tender']['auctionPeriod'], "
+                                                   "['releases'][0]['tender']['procurementMethodModalities'], "
+                                                   "['releases'][0]['tender']['electronicAuctions']"
+                    }
+
+                    expected_auction_period_start_date = fnmatch.fnmatch(
+                        GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']['electronicAuctions'][
+                            'details'][0]['auctionPeriod']['startDate'], "202*-*-*T*:*:*Z")
+                    if expected_auction_period_start_date is True:
+                        expected_auction_period_object = {
+                            "startDate": GlobalClassCreateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details'][0]['auctionPeriod'][
+                                'startDate']
+                        }
+
+                    expected_electronic_auctions = copy.deepcopy(
+                        expected_release_class.prepare_expected_electronic_auction_details_array(
+                            payload_electronic_auction_details_array=GlobalClassCreateCnOnPn.payload[
+                                'tender']['electronicAuctions']['details'],
+                            release_electronic_auction_details_array=GlobalClassCreateCnOnPn.actual_ev_release[
+                                'releases'][0]['tender']['electronicAuctions']['details']
+                        ))
+
+                    expected_electronic_procurement_method_modalities = ["electronicAuction"]
+
+                    try:
+                        """
+                            If compare_releases !=expected_result, then return process steps by operation-id.
+                            """
+                        if compare_releases == expected_result:
+                            pass
+                        else:
+                            with allure.step('# Steps from Casandra DataBase'):
+                                steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                                    operation_id=GlobalClassCreateCnOnPn.operation_id)
+                                allure.attach(steps, "Cassandra DataBase: steps of process")
+                    except ValueError:
+                        raise ValueError("Can not return BPE operation step")
+
+                    with allure.step('Check a difference of comparing Ms release before cn creating and '
+                                     'Ms release after cn creating.'):
+                        allure.attach(str(compare_releases),
+                                      "Actual result of comparing MS releases.")
+                        allure.attach(str(expected_result),
+                                      "Expected result of comparing Ms releases.")
+                        assert str(compare_releases) == str(expected_result)
+
+                    with allure.step('Check actual releases.tender.auctionPeriod object '
+                                     'and expected releases.tender.auctionPeriod object.'):
+                        allure.attach(str(GlobalClassCreateCnOnPn.actual_ev_release[
+                                              'releases'][0]['tender']['auctionPeriod']),
+                                      "Actual releases.tender.auctionPeriod object.")
+                        allure.attach(str(expected_auction_period_object),
+                                      "Expected releases.tender.auctionPeriod object.")
+                        assert str(GlobalClassCreateCnOnPn.actual_ev_release[
+                                              'releases'][0]['tender']['auctionPeriod']) == str(
+                            [expected_auction_period_object])
+
+                    with allure.step('Compare actual releases.tender.procurementMethodModalities array '
+                                     'and expected releases.tender.procurementMethodModalities array.'):
+                        allure.attach(str(GlobalClassCreateCnOnPn.actual_ev_release[
+                                              'releases'][0]['tender']['procurementMethodModalities']),
+                                      "Actual releases.tender.procurementMethodModalities array.")
+                        allure.attach(str(expected_electronic_procurement_method_modalities),
+                                      "Expected releases.tender.procurementMethodModalities array.")
+                        assert str(GlobalClassCreateCnOnPn.actual_ev_release[
+                                       'releases'][0]['tender']['procurementMethodModalities']) == str(
+                            expected_electronic_procurement_method_modalities)
+
+                    with allure.step('Compare actual releases.tender.electronicAuctions array '
+                                     'and expected releases.tender.electronicAuctions array.'):
+                        allure.attach(str(GlobalClassCreateCnOnPn.actual_ev_release[
+                                              'releases'][0]['tender']['electronicAuctions']),
+                                      "Actual releases.tender.electronicAuctions array.")
+                        allure.attach(str(expected_electronic_auctions),
+                                      "Expected releases.tender.electronicAuctions array.")
+                        assert str(GlobalClassCreateCnOnPn.actual_ev_release[
+                                       'releases'][0]['tender']['electronicAuctions']) == str(
+                            expected_electronic_auctions)
+
+                else:
+                    expected_result = {}
+                    try:
+                        """
+                            If compare_releases !=expected_result, then return process steps by operation-id.
+                            """
+                        if compare_releases == expected_result:
+                            pass
+                        else:
+                            with allure.step('# Steps from Casandra DataBase'):
+                                steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
+                                    operation_id=GlobalClassCreateCnOnPn.operation_id)
+                                allure.attach(steps, "Cassandra DataBase: steps of process")
+                    except ValueError:
+                        raise ValueError("Can not return BPE operation step")
+
+                    with allure.step('Check a difference of comparing Ms release before cn creating and '
+                                     'Ms release after cn creating.'):
+                        allure.attach(str(compare_releases),
+                                      "Actual result of comparing MS releases.")
+                        allure.attach(str(expected_result),
+                                      "Expected result of comparing Ms releases.")
+                        assert str(compare_releases) == str(expected_result)
 
             with allure.step('# 9.4. Check MS release'):
                 """

@@ -955,10 +955,9 @@ class CnOnPnExpectedRelease:
                 - "auctionPeriod.startDate";
                 - "electronicAuctionModalities";
                 """
+
                 expected_electronic_auction_details_array[quantity_two]['relatedLot'] = \
-                    payload_electronic_auction_details_array[quantity_two]['relatedLot']
-                expected_electronic_auction_details_array[quantity_two]['relatedLot'] = \
-                    payload_electronic_auction_details_array[quantity_two]['relatedLot']
+                    GlobalClassCreateCnOnPn.actual_ev_release['releases'][0]['tender']['lots'][quantity_two]['id']
 
                 try:
                     check_date = fnmatch.fnmatch(
