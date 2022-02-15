@@ -199,22 +199,29 @@ class TestCreateCnOnPn:
 
             try:
                 """
-                Get interval period value from clarification.rules for this testcase
+                Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                offset_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                    country=country,
+                    pmd=pmd,
+                    operation_type='all',
+                    parameter='interval'
+                ))
+
+                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
                     country=country,
                     pmd=pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
             except Exception:
-                raise Exception("Impossible to get interval value from clarification.rules")
+                raise Exception("Impossible to get interval value from clarification.rules and from submission.rules")
 
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
-                    enquiry_interval=offset_from_clarification_rules+1,
-                    tender_interval=300,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     need_to_set_permanent_id_for_lots_array=True,
@@ -442,22 +449,29 @@ class TestCreateCnOnPn:
             """
             try:
                 """
-                Get offset interval from clarification.rules for this testcase
+                Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                offset_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                    country=country,
+                    pmd=pmd,
+                    operation_type='all',
+                    parameter='interval'
+                ))
+
+                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
                     country=country,
                     pmd=pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
             except Exception:
-                raise Exception("Impossible to get interval value from clarification.rules")
+                raise Exception("Impossible to get interval value from clarification.rules and from submission.rules")
 
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
-                    enquiry_interval=offset_from_clarification_rules+1,
-                    tender_interval=300,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     need_to_set_permanent_id_for_lots_array=True,
@@ -888,22 +902,29 @@ class TestCreateCnOnPn:
             """
             try:
                 """
-                Get offset interval from clarification.rules for this testcase
+                Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                offset_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                    country=country,
+                    pmd=pmd,
+                    operation_type='all',
+                    parameter='interval'
+                ))
+
+                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
                     country=country,
                     pmd=pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
             except Exception:
-                raise Exception("Impossible to get interval value from clarification.rules")
+                raise Exception("Impossible to get interval value from clarification.rules and from submission.rules")
 
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_obligatory_data_model_with_lots_items_documents(
-                    enquiry_interval=offset_from_clarification_rules+1,
-                    tender_interval=300,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=1,
                     quantity_of_items_object=1,
                     need_to_set_permanent_id_for_lots_array=False,

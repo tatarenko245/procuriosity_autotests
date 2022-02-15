@@ -180,7 +180,8 @@ class CnOnPnPreparePayload:
         payload['tender']['awardCriteria'] = "ratedCriteria"
         payload['tender']['awardCriteriaDetails'] = award_criteria_details
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+            interval=tender_interval+enquiry_interval)
         payload['tender']['procuringEntity']['id'] = \
             GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']['id']
         payload['tender']['procuringEntity']['persones'][0]['title'] = f"{random.choice(person_title)}"
@@ -631,7 +632,9 @@ class CnOnPnPreparePayload:
 
         payload['tender']['awardCriteria'] = "priceOnly"
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+            interval=tender_interval + enquiry_interval
+        )
 
         payload['tender']['lots'][0]['id'] = "create cnonpn: tender.lots.id"
         payload['tender']['lots'][0]['title'] = "create cnonpn: tender.lots.title"
@@ -807,7 +810,9 @@ class CnOnPnPreparePayload:
         payload['tender']['awardCriteria'] = "ratedCriteria"
         payload['tender']['awardCriteriaDetails'] = "automated"
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+            interval=tender_interval + enquiry_interval
+        )
         payload['tender']['procuringEntity']['id'] = \
             GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']['id']
         payload['tender']['procuringEntity']['persones'][0]['title'] = f"{random.choice(person_title)}"
@@ -1301,7 +1306,9 @@ class CnOnPnPreparePayload:
         payload['tender']['procurementMethodRationale'] = "create cnonpn: tender.procurementMethodRationale"
         payload['tender']['procurementMethodAdditionalInfo'] = "create cnonpn: tender.procurementMethodAdditionalInfo"
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+            interval=tender_interval + enquiry_interval
+        )
         payload['tender']['procuringEntity'] = \
             GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']
 
@@ -1522,7 +1529,9 @@ class CnOnPnPreparePayload:
         payload['tender']['procurementMethodRationale'] = "update cnonpn: tender.procurementMethodRationale"
         payload['tender']['procurementMethodAdditionalInfo'] = "update cnonpn: tender.procurementMethodAdditionalInfo"
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+            interval=tender_interval + enquiry_interval
+        )
         payload['tender']['procuringEntity'] = \
             GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']
 
@@ -1763,7 +1772,9 @@ class CnOnPnPreparePayload:
 
         payload['tender']['awardCriteria'] = "priceOnly"
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+            interval=tender_interval + enquiry_interval
+        )
 
         payload['tender']['lots'][0]['id'] = "update cnonpn: tender.lots.id"
         payload['tender']['lots'][0]['title'] = "update cnonpn: tender.lots.title"
@@ -1935,7 +1946,9 @@ class CnOnPnPreparePayload:
         payload['tender']['procurementMethodRationale'] = "update cnonpn: tender.procurementMethodRationale"
         payload['tender']['procurementMethodAdditionalInfo'] = "update cnonpn: tender.procurementMethodAdditionalInfo"
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+            interval=tender_interval + enquiry_interval
+        )
         payload['tender']['procuringEntity'] = \
             GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']
 
@@ -2158,7 +2171,9 @@ class CnOnPnPreparePayload:
 
         payload['tender']['awardCriteria'] = "priceOnly"
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+            interval=tender_interval + enquiry_interval
+        )
 
         payload['tender']['lots'][0]['id'] = "update cnonpn: tender.lots.id"
         payload['tender']['lots'][0]['title'] = "update cnonpn: tender.lots.title"
@@ -2361,7 +2376,9 @@ class CnOnPnPreparePayload:
 
         payload['tender']['awardCriteria'] = "priceOnly"
         payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(interval=tender_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+            interval=tender_interval + enquiry_interval
+        )
 
         payload['tender']['lots'][0]['id'] = "create cnonpn: tender.lots.id"
         payload['tender']['lots'][0]['title'] = "create cnonpn: tender.lots.title"

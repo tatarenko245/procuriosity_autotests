@@ -164,6 +164,12 @@ class CassandraSession:
             "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
         return value.value
 
+    def get_offset_from_submission_rules(self, country, pmd, operation_type, parameter):
+        value = self.submission_keyspace.execute(
+            f"""SELECT "value" FROM rules WHERE "country"='{country}' AND "pmd" = '{pmd}' AND 
+            "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
+        return value.value
+
     def set_min_bids_from_submission_rules(self, value, country, pmd, operation_type, parameter):
         self.submission_keyspace.execute(
             f"""UPDATE rules SET value = '{value}' WHERE "country"='{country}' AND "pmd" ='{pmd}' 
