@@ -494,7 +494,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             'new_value': GlobalClassCreatePn.feed_point_message['data']['operationDate'],
-                            'old_value': GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            'old_value': GlobalClassCreateFs.actual_ei_release['releases'][0]['date']
                         }
                     },
                     'iterable_item_added': {
@@ -562,7 +562,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             "new_value": GlobalClassCreatePn.feed_point_message['data']['operationDate'],
-                            "old_value": GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            "old_value": GlobalClassCreateFs.actual_fs_release['releases'][0]['date']
                         },
                         "root['releases'][0]['tag'][0]": {
                             "new_value": "planningUpdate",
@@ -913,7 +913,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             'new_value': GlobalClassCreatePn.feed_point_message['data']['operationDate'],
-                            'old_value': GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            'old_value': GlobalClassCreateFs.actual_ei_release['releases'][0]['date']
                         }
                     },
                     'iterable_item_added': {
@@ -981,7 +981,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             "new_value": GlobalClassCreatePn.feed_point_message['data']['operationDate'],
-                            "old_value": GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            "old_value": GlobalClassCreateFs.actual_fs_release['releases'][0]['date']
                         },
                         "root['releases'][0]['tag'][0]": {
                             "new_value": "planningUpdate",
@@ -1333,7 +1333,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             'new_value': GlobalClassCreatePn.feed_point_message['data']['operationDate'],
-                            'old_value': GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            'old_value': GlobalClassCreateFs.actual_ei_release['releases'][0]['date']
                         }
                     },
                     'iterable_item_added': {
@@ -1401,7 +1401,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             "new_value": GlobalClassCreatePn.feed_point_message['data']['operationDate'],
-                            "old_value": GlobalClassCreateFs.feed_point_message['data']['operationDate']
+                            "old_value": GlobalClassCreateFs.actual_fs_release['releases'][0]['date']
                         },
                         "root['releases'][0]['tag'][0]": {
                             "new_value": "planningUpdate",
