@@ -549,7 +549,7 @@ class PnExpectedRelease:
 
         return release
 
-    def ms_release_full_data_model_with_four_parties_object_based_on_fs(self):
+    def ms_release_full_data_model_with_four_parties_object_based_on_fs(self, pmd):
         release_id = GlobalClassCreatePn.actual_ms_release['releases'][0]['id']
         tender_id = GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['id']
         related_processes_id_first = GlobalClassCreatePn.actual_ms_release['releases'][0]['relatedProcesses'][0]['id']
@@ -704,6 +704,14 @@ class PnExpectedRelease:
             language=self.language
         )
 
+        procurement_method_details = None
+        if pmd == "TEST_OT":
+            procurement_method_details = "testOpenTender"
+        elif pmd == "TEST_SV":
+            procurement_method_details = "testSmallValue"
+        elif pmd == "TEST_MV":
+            procurement_method_details = "testMicroValue"
+
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_ocid}"
         release['version'] = "1.1"
         release['extensions'] = self.extensions
@@ -728,7 +736,7 @@ class PnExpectedRelease:
         release['releases'][0]['tender']['value']['currency'] = \
             GlobalClassCreatePn.payload['planning']['budget']['budgetBreakdown'][0]['amount']['currency']
         release['releases'][0]['tender']['procurementMethod'] = "open"
-        release['releases'][0]['tender']['procurementMethodDetails'] = "testOpenTender"
+        release['releases'][0]['tender']['procurementMethodDetails'] = procurement_method_details
         release['releases'][0]['tender']['mainProcurementCategory'] = \
             GlobalClassCreateEi.actual_ei_release['releases'][0]['tender']['mainProcurementCategory']
         release['releases'][0]['tender']['procurementMethodRationale'] = \
@@ -916,7 +924,7 @@ class PnExpectedRelease:
 
         return release
 
-    def ms_release_obligatory_data_model_with_four_parties_object_based_on_fs_full(self):
+    def ms_release_obligatory_data_model_with_four_parties_object_based_on_fs_full(self, pmd):
         release_id = GlobalClassCreatePn.actual_ms_release['releases'][0]['id']
         tender_id = GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['id']
         related_processes_id_first = GlobalClassCreatePn.actual_ms_release['releases'][0]['relatedProcesses'][0]['id']
@@ -1077,6 +1085,14 @@ class PnExpectedRelease:
             language=self.language
         )
 
+        procurement_method_details = None
+        if pmd == "TEST_OT":
+            procurement_method_details = "testOpenTender"
+        elif pmd == "TEST_SV":
+            procurement_method_details = "testSmallValue"
+        elif pmd == "TEST_MV":
+            procurement_method_details = "testMicroValue"
+
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_ocid}"
         release['version'] = "1.1"
         release['extensions'] = self.extensions
@@ -1101,7 +1117,7 @@ class PnExpectedRelease:
         release['releases'][0]['tender']['value']['currency'] = \
             GlobalClassCreatePn.payload['planning']['budget']['budgetBreakdown'][0]['amount']['currency']
         release['releases'][0]['tender']['procurementMethod'] = "open"
-        release['releases'][0]['tender']['procurementMethodDetails'] = "testOpenTender"
+        release['releases'][0]['tender']['procurementMethodDetails'] = procurement_method_details
         release['releases'][0]['tender']['mainProcurementCategory'] = \
             GlobalClassCreateEi.actual_ei_release['releases'][0]['tender']['mainProcurementCategory']
 
@@ -1272,7 +1288,7 @@ class PnExpectedRelease:
 
         return release
 
-    def ms_release_obligatory_two(self):
+    def ms_release_obligatory_two(self, pmd):
         release_id = GlobalClassCreatePn.actual_ms_release['releases'][0]['id']
         tender_id = GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['id']
         related_processes_id_first = GlobalClassCreatePn.actual_ms_release['releases'][0]['relatedProcesses'][0]['id']
@@ -1431,6 +1447,14 @@ class PnExpectedRelease:
         except ValueError:
             raise ValueError("Check language")
 
+        procurement_method_details = None
+        if pmd == "TEST_OT":
+            procurement_method_details = "testOpenTender"
+        elif pmd == "TEST_SV":
+            procurement_method_details = "testSmallValue"
+        elif pmd == "TEST_MV":
+            procurement_method_details = "testMicroValue"
+
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_ocid}"
         release['version'] = "1.1"
         release['extensions'] = self.extensions
@@ -1455,7 +1479,7 @@ class PnExpectedRelease:
         release['releases'][0]['tender']['value']['currency'] = \
             GlobalClassCreatePn.payload['planning']['budget']['budgetBreakdown'][0]['amount']['currency']
         release['releases'][0]['tender']['procurementMethod'] = "open"
-        release['releases'][0]['tender']['procurementMethodDetails'] = "testOpenTender"
+        release['releases'][0]['tender']['procurementMethodDetails'] = procurement_method_details
         release['releases'][0]['tender']['mainProcurementCategory'] = \
             GlobalClassCreateEi.actual_ei_release['releases'][0]['tender']['mainProcurementCategory']
 

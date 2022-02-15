@@ -219,7 +219,7 @@ class TestCreatePn:
 
     @allure.title('Check Pn and MS releases data after Pn creating with optional fields '
                   'and 3 lots, 3 items (full data model)')
-    def test_check_pn_ms_releases_one(self):
+    def test_check_pn_ms_releases_one(self, pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -442,7 +442,7 @@ class TestCreatePn:
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ms_release_model = copy.deepcopy(
-                    expected_release_class.ms_release_full_data_model_with_four_parties_object_based_on_fs())
+                    expected_release_class.ms_release_full_data_model_with_four_parties_object_based_on_fs(pmd=pmd))
 
                 allure.attach(str(json.dumps(expected_ms_release_model)), "Expected MS release")
 
@@ -641,7 +641,7 @@ class TestCreatePn:
 
     @allure.title('Check Pn and MS releases data after Pn creating without optional fields '
                   'and with lots and items (without optional fields).')
-    def test_check_pn_ms_releases_two(self):
+    def test_check_pn_ms_releases_two(self, pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -861,7 +861,9 @@ class TestCreatePn:
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ms_release_model = copy.deepcopy(
-                    expected_release_class.ms_release_obligatory_data_model_with_four_parties_object_based_on_fs_full())
+                    expected_release_class.ms_release_obligatory_data_model_with_four_parties_object_based_on_fs_full(
+                        pmd=pmd
+                    ))
 
                 allure.attach(str(json.dumps(expected_ms_release_model)), "Expected MS release")
 
@@ -1059,7 +1061,7 @@ class TestCreatePn:
                 )) == str(True)
 
     @allure.title('Check Pn and MS releases data after Pn creating without optional fields')
-    def test_check_pn_ms_releases_three(self):
+    def test_check_pn_ms_releases_three(self, pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -1281,7 +1283,7 @@ class TestCreatePn:
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ms_release_model = copy.deepcopy(
-                    expected_release_class.ms_release_obligatory_two())
+                    expected_release_class.ms_release_obligatory_two(pmd=pmd))
 
                 allure.attach(str(json.dumps(expected_ms_release_model)), "Expected MS release")
 
