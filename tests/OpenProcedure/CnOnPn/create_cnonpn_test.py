@@ -199,16 +199,16 @@ class TestCreateCnOnPn:
 
             try:
                 """
-                Get offset period value from clarification.rules for this testcase
+                Get interval period value from clarification.rules for this testcase
                 """
                 offset_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
                     country=country,
                     pmd=pmd,
                     operation_type='all',
-                    parameter='offset'
+                    parameter='interval'
                 ))
             except Exception:
-                raise Exception("Impossible to get offset period value from clarification.rules")
+                raise Exception("Impossible to get interval value from clarification.rules")
 
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
@@ -442,16 +442,16 @@ class TestCreateCnOnPn:
             """
             try:
                 """
-                Get offset period value from clarification.rules for this testcase
+                Get offset interval from clarification.rules for this testcase
                 """
                 offset_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
                     country=country,
                     pmd=pmd,
                     operation_type='all',
-                    parameter='offset'
+                    parameter='interval'
                 ))
             except Exception:
-                raise Exception("Impossible to get offset period value from clarification.rules")
+                raise Exception("Impossible to get interval value from clarification.rules")
 
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
@@ -888,16 +888,16 @@ class TestCreateCnOnPn:
             """
             try:
                 """
-                Get offset period value from clarification.rules for this testcase
+                Get offset interval from clarification.rules for this testcase
                 """
                 offset_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
                     country=country,
                     pmd=pmd,
                     operation_type='all',
-                    parameter='offset'
+                    parameter='interval'
                 ))
             except Exception:
-                raise Exception("Impossible to get offset period value from clarification.rules")
+                raise Exception("Impossible to get interval value from clarification.rules")
 
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
