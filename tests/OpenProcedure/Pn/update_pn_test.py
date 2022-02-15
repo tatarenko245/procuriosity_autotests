@@ -536,7 +536,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             'new_value': GlobalClassUpdatePn.feed_point_message['data']['operationDate'],
-                            'old_value': GlobalClassCreatePn.actual_pn_release['releases'][0]['date']
+                            'old_value': actual_pn_release_before_updating['releases'][0]['date']
                         },
                         "root['releases'][0]['tag'][0]": {
                             'new_value': 'planningUpdate',
@@ -852,7 +852,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             "new_value": GlobalClassUpdatePn.feed_point_message['data']['operationDate'],
-                            "old_value": GlobalClassCreatePn.actual_ms_release['releases'][0]['date']
+                            "old_value": actual_ms_release_before_updating['releases'][0]['date']
                         },
                         "root['releases'][0]['planning']['budget']['description']": {
                             "new_value": GlobalClassUpdatePn.payload['planning']['budget']['description'],
@@ -1287,7 +1287,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             "new_value": GlobalClassUpdatePn.feed_point_message['data']['operationDate'],
-                            "old_value": GlobalClassCreatePn.actual_pn_release['releases'][0]['date']
+                            "old_value": actual_pn_release_before_updating['releases'][0]['date']
                         },
                         "root['releases'][0]['tag'][0]": {
                             "new_value": "planningUpdate",
@@ -1459,7 +1459,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             "new_value": GlobalClassUpdatePn.feed_point_message['data']['operationDate'],
-                            "old_value": GlobalClassCreatePn.actual_ms_release['releases'][0]['date']
+                            "old_value": actual_ms_release_before_updating['releases'][0]['date']
                         }
                     }
                 }
@@ -1824,7 +1824,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             "new_value": GlobalClassUpdatePn.feed_point_message['data']['operationDate'],
-                            "old_value": GlobalClassCreatePn.actual_pn_release['releases'][0]['date']
+                            "old_value": actual_pn_release_before_updating['releases'][0]['date']
                         },
                         "root['releases'][0]['tag'][0]": {
                             "new_value": "planningUpdate",
@@ -1880,7 +1880,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             "new_value": GlobalClassUpdatePn.feed_point_message['data']['operationDate'],
-                            "old_value": GlobalClassCreatePn.actual_ms_release['releases'][0]['date']
+                            "old_value": actual_ms_release_before_updating['releases'][0]['date']
                         }
                     }
                 }
