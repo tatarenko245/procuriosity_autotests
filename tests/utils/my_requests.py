@@ -421,6 +421,26 @@ class Requests:
 
     @staticmethod
     @allure.step('Prepared request: award consideration')
+    def do_second_stage(host_of_request, access_token, x_operation_id, pn_ocid, pn_token, tender_id, payload,
+                        test_mode=False):
+        second_stage = requests.post(
+            url=host_of_request + f"/do/secondStage/{pn_ocid}/{tender_id}",
+            params={
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': pn_token
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/secondStage", 'URL')
+        allure.attach(json.dumps(payload), "Prepared payload")
+        return second_stage
+
+    @staticmethod
+    @allure.step('Prepared request: award consideration')
     def withdraw_qualification_protocol(host_of_request, access_token, x_operation_id, pn_ocid, pn_token, tender_id,
                                         test_mode=False):
         protocol = requests.post(
