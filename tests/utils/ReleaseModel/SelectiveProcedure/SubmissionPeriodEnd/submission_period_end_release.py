@@ -67,7 +67,6 @@ class SubmissionPeriodEndExpectedRelease:
             for g in range(quantity_of_criteria_groups_object_into_mdm):
                 requirement_groups_framework = {
                     "id": criteria_groups_from_mdm['data'][g]['id'],
-                    "description": criteria_groups_from_mdm['data'][g]['description'],
                     "requirements": []
                 }
                 criteria_framework['requirementGroups'].append(requirement_groups_framework)
@@ -83,25 +82,25 @@ class SubmissionPeriodEndExpectedRelease:
                     """
                     Check how many quantity of object into criteria_groups_requirements_from_mdm
                     """
-                    list_of_mdm_tender_criteria_groups_id = list()
-                    for group_object in criteria_groups_from_mdm['data']:
-                        for i in group_object:
+                    list_of_mdm_tender_criteria_groups_requirement_id = list()
+                    for requirement_object in criteria_groups_requirements_from_mdm['data']:
+                        for i in requirement_object:
                             if i == "id":
-                                list_of_mdm_tender_criteria_groups_id.append(i)
-                    quantity_of_criteria_groups_object_into_mdm = len(list_of_mdm_tender_criteria_groups_id)
+                                list_of_mdm_tender_criteria_groups_requirement_id.append(i)
+                    quantity_of_criteria_groups_requirement_object_into_mdm = \
+                        len(list_of_mdm_tender_criteria_groups_requirement_id)
                 except Exception:
                     raise Exception("Impossible to check how many quantity of object contains "
                                     "criteria_groups_requirements_from_mdm")
 
-                for r in range(quantity_of_criteria_groups_object_into_mdm):
+                for r in range(quantity_of_criteria_groups_requirement_object_into_mdm):
                     requirements_framework = {
                         "id": criteria_groups_requirements_from_mdm['data'][r]['id'],
                         "title": criteria_groups_requirements_from_mdm['data'][r]['title'],
                         "dataType": "boolean",
                         "status": "active",
                         "datePublished": self.actual_tp_release['releases'][0]['preQualification'][
-                            'period']['endDate'],
-                        "description": criteria_groups_requirements_from_mdm['data'][r]['description']
+                            'period']['endDate']
                     }
                     criteria_framework['requirementGroups'][g]['requirements'].append(requirements_framework)
 
@@ -208,6 +207,7 @@ class SubmissionPeriodEndExpectedRelease:
                 "identifier": submission_payload['submission']['candidates'][i]['identifier'],
                 "address": submission_payload['submission']['candidates'][i]['address'],
                 "contactPoint": submission_payload['submission']['candidates'][i]['contactPoint'],
+                "details": submission_payload['submission']['candidates'][i]['details'],
                 "roles": ["candidate"]
             }
 
