@@ -246,12 +246,12 @@ class TestCreateBid:
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
                 )
 
-            synchronous_result_of_sending_the_request = Requests().create_bid(
+            synchronous_result_of_sending_the_request = Requests().submit_bid(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFirstBid.access_token,
                 x_operation_id=GlobalClassCreateFirstBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateFirstBid.payload
             )
 
@@ -280,7 +280,7 @@ class TestCreateBid:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateFirstBid.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
                 try:
                     """
@@ -552,12 +552,12 @@ class TestCreateBid:
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release
                 )
 
-            synchronous_result_of_sending_the_request = Requests().create_bid(
+            synchronous_result_of_sending_the_request = Requests().submit_bid(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFirstBid.access_token,
                 x_operation_id=GlobalClassCreateFirstBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateFirstBid.payload
             )
 
@@ -586,7 +586,7 @@ class TestCreateBid:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateFirstBid.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
                 try:
                     """

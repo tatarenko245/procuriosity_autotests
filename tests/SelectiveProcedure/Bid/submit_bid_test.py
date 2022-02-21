@@ -15,14 +15,15 @@ from tests.utils.PayloadModel.SelectiveProcedure.QualificationDeclare.qualificat
 from tests.utils.PayloadModel.SelectiveProcedure.StartSecondStage.start_second_stage_prepared_payload import \
     StartSecondStagePreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.SubmitBid.bid_prepared_payload import BidPreparePayload
 from tests.utils.functions import time_bot, get_id_token_of_qualification_in_pending_awaiting_state
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
 
-class TestStartSecondStage:
-    @allure.title("Check TP and MS releases data after StartSecondStage creating "
+class TestSubmitBid:
+    @allure.title("Check TP and MS releases data after Submit bid"
                   "without optional fields. \n"
                   "------------------------------------------------\n"
                   "create Ei: obligatory data model without items array;\n"
@@ -35,7 +36,9 @@ class TestStartSecondStage:
                   "create QualificationConsideration: payload is not needed. \n"
                   "create Qualification: obligatory data model. \n"
                   "create QualificationProtocol: payload is not needed. \n"
-                  "startSecondStage: obligatory data model;\n")
+                  "startSecondStage: obligatory data model;\n"
+                  "submit bid by first tenderer: obligatory data model;\n"
+                  "submit bid by second tenderer: obligatory data model;\n")
     def test_check_tp_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database,
                                       queue_mapper):
         authorization = PlatformAuthorization(get_hosts[1])
@@ -447,10 +450,6 @@ class TestStartSecondStage:
                 tender_id=tp_id,
                 test_mode=True)
 
-        time.sleep(10)
-        actual_tp_release_before_start_second_stage_creation = requests.get(url=f"{pn_url}/{tp_id}").json()
-        actual_ms_release_before_start_second_stage_creation = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-
         step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: create StartSecondStage process.'):
             """
@@ -472,19 +471,58 @@ class TestStartSecondStage:
             start_second_stage_payload_class = copy.deepcopy(StartSecondStagePreparePayload(tender_period_interval=60))
             start_second_stage_payload = start_second_stage_payload_class.create_start_second_stage_data_model()
 
-            synchronous_result_of_sending_the_request = \
-                Requests().do_second_stage(
-                    host_of_request=get_hosts[1],
-                    access_token=create_start_second_stage_access_token,
-                    x_operation_id=create_start_second_stage_operation_id,
-                    pn_ocid=pn_ocid,
-                    pn_token=pn_token,
-                    tender_id=tp_id,
-                    test_mode=True,
-                    payload=start_second_stage_payload)
+            Requests().do_second_stage(
+                host_of_request=get_hosts[1],
+                access_token=create_start_second_stage_access_token,
+                x_operation_id=create_start_second_stage_operation_id,
+                pn_ocid=pn_ocid,
+                pn_token=pn_token,
+                tender_id=tp_id,
+                test_mode=True,
+                payload=start_second_stage_payload)
+
+        time.sleep(10)
+        actual_tp_release_before_submit_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
+        actual_ms_release_before_submit_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+
+        time_bot(expected_time=actual_tp_release_before_submit_bid['releases'][0]['tender']['enquiryPeriod']['endDate'])
 
         step_number += 1
-        with allure.step(f'# {step_number}. See result.'):
+        with allure.step(f'# {step_number}. Authorization platform one: SubmitBid process by first tenderer.'):
+            """
+            Tender platform authorization for SubmitBid process by first tenderer.
+            As result get Tender platform's access token and process operation-id.
+            """
+            submit_bid_access_token_for_first_invitation = authorization.get_access_token_for_platform_one()
+            submit_bid_operation_id_for_first_invitation = \
+                authorization.get_x_operation_id(create_start_second_stage_access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send request to create SubmitBid process by first tenderer.'):
+            """
+            Send api request on BPE host for SubmitBid process by first tenderer.
+            Save synchronous result of sending the request and asynchronous result of sending the request.
+            """
+            time.sleep(1)
+
+            submit_bid_payload_class = copy.deepcopy(BidPreparePayload(host_for_services=get_hosts[2]))
+            submit_bid_payload_for_first_invitation = submit_bid_payload_class.create_bid_obligatory_data_model(
+                based_stage_release=actual_tp_release_before_submit_bid,
+                submission_payload=create_submission_moldova_payload
+            )
+
+            synchronous_result_of_sending_the_request_by_first_tenderer = \
+                Requests().submit_bid(
+                    host_of_request=get_hosts[1],
+                    access_token=submit_bid_access_token_for_first_invitation,
+                    x_operation_id=submit_bid_operation_id_for_first_invitation,
+                    pn_ocid=pn_ocid,
+                    tender_id=tp_id,
+                    test_mode=True,
+                    payload=submit_bid_payload_for_first_invitation)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. See results for first tenderer.'):
             """
             Check the results of TestCase.
             """
@@ -496,25 +534,26 @@ class TestStartSecondStage:
 
                 with allure.step('Compare actual status code of sending the request and '
                                  'expected status code of sending request.'):
-                    allure.attach(str(synchronous_result_of_sending_the_request.status_code),
+                    allure.attach(str(synchronous_result_of_sending_the_request_by_first_tenderer.status_code),
                                   "Actual status code of sending the request.")
                     allure.attach(str(202), "Expected status code of sending request.")
-                    assert str(synchronous_result_of_sending_the_request.status_code) == str(202)
+                    assert str(synchronous_result_of_sending_the_request_by_first_tenderer.status_code) == str(202)
 
-            with allure.step(f'# {step_number}.2. Check message in feed point for StartSecondStage process.'):
+            with allure.step(f'# {step_number}.2. Check message in feed point.'):
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                kafka_message_class = KafkaMessage(create_start_second_stage_operation_id)
-                create_start_second_stage_feed_point_message = kafka_message_class.get_message_from_kafka()
-                allure.attach(str(create_start_second_stage_feed_point_message), 'Message in feed point.')
+                kafka_message_class = KafkaMessage(submit_bid_operation_id_for_first_invitation)
+                submit_bid_feed_point_message_by_first_tenderer = kafka_message_class.get_message_from_kafka()
+                allure.attach(str(submit_bid_feed_point_message_by_first_tenderer), 'Message in feed point.')
 
                 asynchronous_result_of_sending_the_request_was_checked = \
-                    kafka_message_class.start_second_stage_message_is_successful(
+                    kafka_message_class.create_bid_message_is_successful(
                         environment=environment,
-                        kafka_message=create_start_second_stage_feed_point_message,
+                        kafka_message=submit_bid_feed_point_message_by_first_tenderer,
                         pn_ocid=pn_ocid,
-                        tender_id=tp_id)
+                        tender_id=tp_id
+                    )
 
                 try:
                     """
@@ -524,7 +563,7 @@ class TestStartSecondStage:
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=create_qualification_protocol_operation_id)
+                                operation_id=submit_bid_operation_id_for_first_invitation)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
@@ -538,160 +577,235 @@ class TestStartSecondStage:
 
             with allure.step(f'# {step_number}.3. Check TP release'):
                 """
-                Compare actual Tp release before QualificationProtocol creating and
-                actual Tp release after QualificationProtocol creating.
+                Compare actual Tp release before SubmitBid creating and
+                actual Tp release after SubmitBid creating.
                 """
-                allure.attach(str(json.dumps(actual_tp_release_before_start_second_stage_creation)),
-                              "Actual TP release before StartSecondStage creation.")
+                allure.attach(str(json.dumps(actual_tp_release_before_submit_bid)),
+                              "Actual TP release before SubmitBid creation.")
 
-                actual_tp_release_after_start_second_stage_creation = requests.get(url=f"{pn_url}/{tp_id}").json()
-                allure.attach(str(json.dumps(actual_tp_release_after_start_second_stage_creation)),
-                              "Actual TP release after StartSecondStage creation.")
+                actual_tp_release_after_submit_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
+                allure.attach(str(json.dumps(actual_tp_release_after_submit_bid)),
+                              "Actual TP release after SubmitBid creation.")
 
                 compare_releases = dict(
-                    DeepDiff(actual_tp_release_before_start_second_stage_creation,
-                             actual_tp_release_after_start_second_stage_creation))
+                    DeepDiff(actual_tp_release_before_submit_bid,
+                             actual_tp_release_after_submit_bid))
 
-                dictionary_item_added_was_cleaned = \
-                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
-
-                new_releases_timestamp = actual_tp_release_after_start_second_stage_creation[
-                                             'releases'][0]['id'][46:59]
-                old_releases_timestamp = actual_tp_release_before_start_second_stage_creation[
-                                             'releases'][0]['id'][46:59]
-
-                expected_result = {
-                    "dictionary_item_added": "['releases'][0]['tender']['tenderPeriod'], "
-                                             "['releases'][0]['preQualification']['qualificationPeriod']['endDate']",
-                    "values_changed": {
-                        "root['releases'][0]['id']": {
-                            "new_value": f"{tp_id}-{new_releases_timestamp}",
-                            "old_value": f"{tp_id}-{old_releases_timestamp}"
-                        },
-                        "root['releases'][0]['date']": {
-                            "new_value": create_start_second_stage_feed_point_message['data']['operationDate'],
-                            "old_value": actual_tp_release_before_start_second_stage_creation['releases'][0]['date']
-                        },
-                        "root['releases'][0]['tender']['statusDetails']": {
-                            "new_value": "tendering",
-                            "old_value": "qualificationStandStill"
-                        },
-                        "root['releases'][0]['submissions']['details'][0]['status']": {
-                            "new_value": "valid",
-                            "old_value": "pending"
-                        },
-                        "root['releases'][0]['submissions']['details'][1]['status']": {
-                            "new_value": "valid",
-                            "old_value": "pending"
-                        },
-                        "root['releases'][0]['qualifications'][0]['status']": {
-                            "new_value": "active",
-                            "old_value": "pending"
-                        },
-                        "root['releases'][0]['qualifications'][0]['statusDetails']": {
-                            "new_value": "basedOnHumanDecision",
-                            "old_value": "active"
-                        },
-                        "root['releases'][0]['qualifications'][1]['status']": {
-                            "new_value": "active",
-                            "old_value": "pending"
-                        },
-                        "root['releases'][0]['qualifications'][1]['statusDetails']": {
-                            "new_value": "basedOnHumanDecision",
-                            "old_value": "active"
-                        },
-                        "root['releases'][0]['invitations'][0]['status']": {
-                            "new_value": "active",
-                            "old_value": "pending"
-                        },
-                        "root['releases'][0]['invitations'][1]['status']": {
-                            "new_value": "active",
-                            "old_value": "pending"
-                        }
-                    },
-                    "iterable_item_added": {
-                        "root['releases'][0]['parties'][0]['roles'][1]": "invitedTenderer",
-                        "root['releases'][0]['parties'][1]['roles'][1]": "invitedTenderer",
-                        "root['releases'][0]['parties'][2]['roles'][1]": "invitedTenderer"
-                    }
-                }
-
-                try:
-                    """
-                    Prepare expected tenderPeriod object.
-                    """
-                    final_tender_period_object = {
-                        "startDate": create_start_second_stage_feed_point_message['data']['operationDate'],
-                        "endDate": start_second_stage_payload['tender']['tenderPeriod']['endDate']
-                    }
-                except Exception:
-                    raise Exception("Impossible to prepare expected tenderPeriod object.")
+                expected_result = {}
 
                 try:
                     """
                         If compare_releases !=expected_result,
                         then return process steps by operation-id.
                         """
-                    if compare_releases == expected_result and \
-                            actual_tp_release_after_start_second_stage_creation[
-                                'releases'][0]['tender']['tenderPeriod'] == final_tender_period_object:
+                    if compare_releases == expected_result:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=create_start_second_stage_operation_id)
+                                operation_id=submit_bid_operation_id_for_first_invitation)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
                 with allure.step(
                         'Check a difference of comparing Tp release before '
-                        'StartSecondStage creation and Tp release after StartSecondStage creation.'):
+                        'SubmitBid creation and Tp release after SubmitBid creation.'):
                     allure.attach(json.dumps(compare_releases),
                                   "Actual result of comparing Tp releases.")
                     allure.attach(json.dumps(expected_result),
                                   "Expected result of comparing Tp releases.")
                     assert compare_releases == expected_result
 
-                with allure.step(
-                        'Compare actual tender.tenderPeriod object and expected tender.tenderPeriod object.'):
-                    allure.attach(json.dumps(
-                        actual_tp_release_after_start_second_stage_creation['releases'][0]['tender']['tenderPeriod']),
-                        "Actual tender.tenderPeriod object.")
-                    allure.attach(json.dumps(final_tender_period_object),
-                                  "Expected tender.tenderPeriod object.")
-                    assert actual_tp_release_after_start_second_stage_creation[
-                               'releases'][0]['tender']['tenderPeriod'] == final_tender_period_object
+            with allure.step(f'# {step_number}.3. Check MS release'):
+                """
+                Compare actual MS release before SubmitBid creating and
+                actual MS release after SubmitBid creating.
+                """
+                allure.attach(str(json.dumps(actual_ms_release_before_submit_bid)),
+                              "Actual MS release before SubmitBid creation.")
+
+                actual_ms_release_after_submit_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(str(json.dumps(actual_ms_release_after_submit_bid)),
+                              "Actual MS release after SubmitBid creation.")
+
+                compare_releases = dict(
+                    DeepDiff(actual_ms_release_before_submit_bid,
+                             actual_ms_release_after_submit_bid))
+
+                expected_result = {}
+
+                try:
+                    """
+                        If compare_releases !=expected_result,
+                        then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=submit_bid_operation_id_for_first_invitation)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
 
                 with allure.step(
-                        'Compare actual preQualification.qualificationPeriod.endDate attribute and '
-                        'expected preQualification.qualificationPeriod.endDate.'):
-                    allure.attach(json.dumps(
-                        actual_tp_release_after_start_second_stage_creation[
-                            'releases'][0]['preQualification']['qualificationPeriod']['endDate']),
-                        "Actual preQualification.qualificationPeriod.endDate attribute.")
-                    allure.attach(json.dumps(create_start_second_stage_feed_point_message['data']['operationDate']),
-                                  "Expected preQualification.qualificationPeriod.endDate attribute.")
-                    assert actual_tp_release_after_start_second_stage_creation[
-                            'releases'][0]['preQualification']['qualificationPeriod']['endDate'] == \
-                           create_start_second_stage_feed_point_message['data']['operationDate']
+                        'Check a difference of comparing Tp release before '
+                        'SubmitBid creation and Tp release after SubmitBid creation.'):
+                    allure.attach(json.dumps(compare_releases),
+                                  "Actual result of comparing Tp releases.")
+                    allure.attach(json.dumps(expected_result),
+                                  "Expected result of comparing Tp releases.")
+                    assert compare_releases == expected_result
+
+                actual_tp_release_before_submit_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
+                actual_ms_release_before_submit_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Authorization platform one: SubmitBid process by second tenderer.'):
+            """
+            Tender platform authorization for SubmitBid process by second tenderer.
+            As result get Tender platform's access token and process operation-id.
+            """
+            submit_bid_access_token_for_second_invitation = authorization.get_access_token_for_platform_one()
+            submit_bid_operation_id_for_second_invitation = \
+                authorization.get_x_operation_id(create_start_second_stage_access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send request to create SubmitBid process by second tenderer.'):
+            """
+            Send api request on BPE host for SubmitBid process by second tenderer.
+            Save synchronous result of sending the request and asynchronous result of sending the request.
+            """
+            time.sleep(1)
+
+            submit_bid_payload_for_second_invitation = submit_bid_payload_class.create_bid_obligatory_data_model(
+                based_stage_release=actual_tp_release_before_submit_bid,
+                submission_payload=create_submission_belarus_payload
+            )
+
+            synchronous_result_of_sending_the_request_by_second_tenderer = \
+                Requests().submit_bid(
+                    host_of_request=get_hosts[1],
+                    access_token=submit_bid_access_token_for_second_invitation,
+                    x_operation_id=submit_bid_operation_id_for_second_invitation,
+                    pn_ocid=pn_ocid,
+                    tender_id=tp_id,
+                    test_mode=True,
+                    payload=submit_bid_payload_for_second_invitation)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. See synchronous and asynchronous results for second tenderer.'):
+            """
+            Check the results of TestCase.
+            """
+
+            with allure.step(f'# {step_number}.1. Check status code'):
+                """
+                Check the synchronous_result_of_sending_the_request.
+                """
+
+                with allure.step('Compare actual status code of sending the request and '
+                                 'expected status code of sending request.'):
+                    allure.attach(str(synchronous_result_of_sending_the_request_by_second_tenderer.status_code),
+                                  "Actual status code of sending the request.")
+                    allure.attach(str(202), "Expected status code of sending request.")
+                    assert str(synchronous_result_of_sending_the_request_by_second_tenderer.status_code) == str(202)
+
+            with allure.step(f'# {step_number}.2. Check message in feed point.'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                kafka_message_class = KafkaMessage(submit_bid_operation_id_for_second_invitation)
+                submit_bid_feed_point_message_by_second_tenderer = kafka_message_class.get_message_from_kafka()
+                allure.attach(str(submit_bid_feed_point_message_by_second_tenderer), 'Message in feed point.')
+
+                asynchronous_result_of_sending_the_request_was_checked = \
+                    kafka_message_class.create_bid_message_is_successful(
+                        environment=environment,
+                        kafka_message=submit_bid_feed_point_message_by_second_tenderer,
+                        pn_ocid=pn_ocid,
+                        tender_id=tp_id
+                    )
+
+                try:
+                    """
+                    If asynchronous_result_of_sending_the_request was False,
+                    then return process steps by operation-id.
+                    """
+                    if asynchronous_result_of_sending_the_request_was_checked is False:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=submit_bid_operation_id_for_first_invitation)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                with allure.step('Compare actual asynchronous result of sending the request and '
+                                 'expected asynchronous result of sending request.'):
+                    allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
+                                  "Actual asynchronous result of sending the request.")
+                    allure.attach(str(True), "Expected asynchronous result of sending the request.")
+                    assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
+
+            with allure.step(f'# {step_number}.3. Check TP release'):
+                """
+                Compare actual Tp release before SubmitBid creating and
+                actual Tp release after SubmitBid creating.
+                """
+                allure.attach(str(json.dumps(actual_tp_release_before_submit_bid)),
+                              "Actual TP release before SubmitBid creation.")
+
+                actual_tp_release_after_submit_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
+                allure.attach(str(json.dumps(actual_tp_release_after_submit_bid)),
+                              "Actual TP release after SubmitBid creation.")
+
+                compare_releases = dict(
+                    DeepDiff(actual_tp_release_before_submit_bid,
+                             actual_tp_release_after_submit_bid))
+
+                expected_result = {}
+
+                try:
+                    """
+                        If compare_releases !=expected_result,
+                        then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=submit_bid_operation_id_for_first_invitation)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                with allure.step(
+                        'Check a difference of comparing Tp release before '
+                        'SubmitBid creation and Tp release after SubmitBid creation.'):
+                    allure.attach(json.dumps(compare_releases),
+                                  "Actual result of comparing Tp releases.")
+                    allure.attach(json.dumps(expected_result),
+                                  "Expected result of comparing Tp releases.")
+                    assert compare_releases == expected_result
 
             with allure.step(f'# {step_number}.4. Check MS release'):
                 """
                 Compare actual Ms release before StartSecondStage creating and
                 actual Ms release after StartSecondStage creating.
                 """
-                allure.attach(json.dumps(actual_ms_release_before_start_second_stage_creation),
-                              "Actual MS release before StartSecondSTage creation")
+                allure.attach(json.dumps(actual_ms_release_before_submit_bid),
+                              "Actual MS release before SubmitBid creation")
 
-                actual_ms_release_after_start_second_stage_creation = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-                allure.attach(json.dumps(actual_ms_release_after_start_second_stage_creation),
-                              "Actual MS release after StartSecondStage creation")
+                actual_ms_release_after_submit_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(json.dumps(actual_ms_release_after_submit_bid),
+                              "Actual MS release after SubmitBid creation")
 
                 compare_releases = dict(
-                    DeepDiff(actual_ms_release_before_start_second_stage_creation,
-                             actual_ms_release_after_start_second_stage_creation))
+                    DeepDiff(actual_ms_release_before_submit_bid,
+                             actual_ms_release_after_submit_bid))
 
                 expected_result = {}
 
@@ -736,13 +850,13 @@ class TestStartSecondStage:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=create_start_second_stage_operation_id)
+                                operation_id=submit_bid_operation_id_for_second_invitation)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
                 with allure.step('Check a difference of comparing Ms release before '
-                                 'QualificationProtocol creating and Ms release after QualificationProtocol creating.'):
+                                 'SubmitBid creating and Ms release after SubmitBid creating.'):
                     allure.attach(json.dumps(compare_releases),
                                   "Actual result of comparing MS releases.")
                     allure.attach(json.dumps(expected_result),
