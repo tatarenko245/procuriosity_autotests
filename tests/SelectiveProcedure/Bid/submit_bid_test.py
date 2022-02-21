@@ -424,6 +424,8 @@ class TestSubmitBid:
                     payload=create_qualification_payload,
                     test_mode=True)
 
+                step_number += 1
+
         with allure.step(f'# {step_number}. Authorization platform one: create QualificationProtocol process.'):
             """
             Tender platform authorization for create QualificationProtocol process.
@@ -696,7 +698,7 @@ class TestSubmitBid:
                     payload=submit_bid_payload_for_second_invitation)
 
         step_number += 1
-        with allure.step(f'# {step_number}. See synchronous and asynchronous results for second tenderer.'):
+        with allure.step(f'# {step_number}.  See results for second tenderer..'):
             """
             Check the results of TestCase.
             """
