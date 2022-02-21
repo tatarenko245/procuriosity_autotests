@@ -523,6 +523,11 @@ class TestCancelBid:
                 test_mode=True,
                 payload=submit_bid_payload_for_first_invitation)
 
+            kafka_message_class = KafkaMessage(submit_bid_operation_id_for_first_invitation)
+            submit_bid_feed_point_message_by_first_tenderer = kafka_message_class.get_message_from_kafka()
+            bid_id = submit_bid_feed_point_message_by_first_tenderer['data']['outcomes']['bids'][0]['id']
+            bid_token = submit_bid_feed_point_message_by_first_tenderer['data']['outcomes']['bids'][0]['X-TOKEN']
+
         time.sleep(10)
         actual_tp_release_before_cancel_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
         actual_ms_release_before_cancel_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
@@ -551,6 +556,8 @@ class TestCancelBid:
                     x_operation_id=cancel_bid_operation_id,
                     pn_ocid=pn_ocid,
                     tender_id=tp_id,
+                    bid_id=bid_id,
+                    bid_token=bid_token,
                     test_mode=True
                 )
 
