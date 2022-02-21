@@ -232,9 +232,10 @@ class Requests:
 
     @staticmethod
     @allure.step('Prepared request: withdraw Bid')
-    def withdraw_bid(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, bid_id, bid_token, test_mode=False):
+    def withdraw_bid(host_of_request, access_token, x_operation_id, pn_ocid, tender_id, bid_id, bid_token,
+                     test_mode=False):
         bid = requests.post(
-            url=host_of_request + f"/cancel/bid/{pn_ocid}/{ev_id}/{bid_id}",
+            url=host_of_request + f"/cancel/bid/{pn_ocid}/{tender_id}/{bid_id}",
             params={
                 'testMode': test_mode
             },

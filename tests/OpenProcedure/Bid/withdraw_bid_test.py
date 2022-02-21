@@ -288,7 +288,7 @@ class TestCreateBid:
                 access_token=GlobalClassWithdrawBid.access_token,
                 x_operation_id=GlobalClassWithdrawBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 bid_id=GlobalClassCreateFirstBid.bid_id,
                 bid_token=GlobalClassCreateFirstBid.bid_token
             )
@@ -633,7 +633,7 @@ class TestCreateBid:
                 access_token=GlobalClassWithdrawBid.access_token,
                 x_operation_id=GlobalClassWithdrawBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 bid_id=GlobalClassCreateFirstBid.bid_id,
                 bid_token=GlobalClassCreateFirstBid.bid_token
             )
