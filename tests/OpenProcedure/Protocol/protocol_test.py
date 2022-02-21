@@ -344,12 +344,12 @@ class TestProtocol:
                 bid_payload_class.create_first_bid_full_data_model_with_requirement_responses(
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release)
 
-            Requests().create_bid(
+            Requests().submit_bid(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFirstBid.access_token,
                 x_operation_id=GlobalClassCreateFirstBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateFirstBid.payload,
                 test_mode=True
             )
@@ -1202,12 +1202,12 @@ class TestProtocol:
                 bid_payload_class.create_first_bid_full_data_model_with_requirement_responses(
                     based_stage_release=GlobalClassCreateCnOnPn.actual_ev_release)
 
-            Requests().create_bid(
+            Requests().submit_bid(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFirstBid.access_token,
                 x_operation_id=GlobalClassCreateFirstBid.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 payload=GlobalClassCreateFirstBid.payload,
                 test_mode=True
             )

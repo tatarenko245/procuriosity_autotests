@@ -55,6 +55,7 @@ def metadata_budget_url(environment):
         metadata_budget_url = "http://public.eprocurement.systems/budgets"
     return metadata_budget_url
 
+
 @allure.step('Set up: Cassandra username')
 @pytest.fixture(scope="session")
 # @pytest.fixture(autouse=True)
@@ -354,4 +355,3 @@ class GlobalClassProtocol:
     feed_point_message = None
     actual_ms_release = None
     actual_ev_release = None
-

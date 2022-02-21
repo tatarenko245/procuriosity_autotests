@@ -214,9 +214,9 @@ class Requests:
 
     @staticmethod
     @allure.step('Prepared request: create Bid')
-    def create_bid(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, payload, test_mode=False):
+    def submit_bid(host_of_request, access_token, x_operation_id, pn_ocid, tender_id, payload, test_mode=False):
         bid = requests.post(
-            url=host_of_request + f"/do/bid/{pn_ocid}/{ev_id}",
+            url=host_of_request + f"/do/bid/{pn_ocid}/{tender_id}",
             params={
                 'testMode': test_mode
             },
