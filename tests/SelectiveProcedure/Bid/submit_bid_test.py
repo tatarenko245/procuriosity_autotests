@@ -369,7 +369,8 @@ class TestSubmitBid:
                 create_qualification_consideration_operation_id = authorization.get_x_operation_id(
                     create_qualification_consideration_access_token)
 
-            step_number += 1
+                step_number += 1
+
             with allure.step(f'# {step_number}. Send request to create '
                              f'QualificationConsideration for {queue_mapper[q]} qualification.'):
                 """
@@ -388,6 +389,7 @@ class TestSubmitBid:
                     qualification_token=qualification_list[q][1],
                     test_mode=True)
 
+                step_number += 1
         for q in range(len(qualification_list)):
             step_number += 1
             with allure.step(f'# {step_number}. Authorization platform one: create '
