@@ -989,7 +989,7 @@ class KafkaMessage:
             return False
 
     @staticmethod
-    def withdraw_bid_message_is_successful(environment, kafka_message, pn_ocid, ev_id):
+    def withdraw_bid_message_is_successful(environment, kafka_message, pn_ocid, tender_id):
         tender_url = None
         if environment == "dev":
             tender_url = "http://dev.public.eprocurement.systems/tenders"
@@ -1020,13 +1020,13 @@ class KafkaMessage:
             raise KeyError('KeyError: initiator')
         try:
             if "ocid" in kafka_message["data"]:
-                check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{ev_id}")
+                check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{tender_id}")
         except KeyError:
             raise KeyError('KeyError: ocid')
         try:
             if "url" in kafka_message["data"]:
                 check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
-                                            f"{tender_url}/{pn_ocid}/{ev_id}")
+                                            f"{tender_url}/{pn_ocid}/{tender_id}")
         except KeyError:
             raise KeyError('KeyError: url')
         try:

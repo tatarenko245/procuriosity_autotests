@@ -318,7 +318,7 @@ class TestCreateBid:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassWithdrawBid.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
                 try:
                     """
@@ -541,7 +541,8 @@ class TestCreateBid:
                     need_to_set_permanent_id_for_lots_array=False,
                     need_to_set_permanent_id_for_items_array=False,
                     need_to_set_permanent_id_for_documents_array=False,
-                    based_stage_release=GlobalClassCreatePn.actual_pn_release
+                    based_stage_release=GlobalClassCreatePn.actual_pn_release,
+                    pmd=GlobalClassMetadata.pmd
                 )
 
             Requests().create_cnonpn(
@@ -663,7 +664,7 @@ class TestCreateBid:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassWithdrawBid.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
                 try:
                     """
@@ -734,7 +735,8 @@ class TestCreateBid:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                assert compare_actual_result_and_expected_result(
-                    expected_result=True,
-                    actual_result=asynchronous_result_of_sending_the_request_was_checked
-                )
+                with allure.step('Check a difference of comparing status of bid into database'
+                                 'and expected status of bid.'):
+                    allure.attach(bid_status_from_database, "Cassandra DataBase: actual status of bid")
+                    allure.attach("withdrawn", "Expected status of bid.")
+                    assert bid_status_from_database == "withdrawn"

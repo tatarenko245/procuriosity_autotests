@@ -797,8 +797,8 @@ class TestSubmitBid:
 
             with allure.step(f'# {step_number}.4. Check MS release'):
                 """
-                Compare actual Ms release before StartSecondStage creating and
-                actual Ms release after StartSecondStage creating.
+                Compare actual Ms release before SubmitBid creating and
+                actual Ms release after SubmitBid creating.
                 """
                 allure.attach(json.dumps(actual_ms_release_before_submit_bid),
                               "Actual MS release before SubmitBid creation")
