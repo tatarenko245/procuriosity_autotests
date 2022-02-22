@@ -22,7 +22,7 @@ from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
 
-class TestSubmitBid:
+class TestWithdrawBid:
     @allure.title("Check TP and MS releases data after Submit bid"
                   "without optional fields. \n"
                   "------------------------------------------------\n"
@@ -38,7 +38,7 @@ class TestSubmitBid:
                   "create QualificationProtocol: payload is not needed. \n"
                   "startSecondStage: obligatory data model;\n"
                   "submit bid by first tenderer: obligatory data model;\n"
-                  "submit bid by second tenderer: obligatory data model;\n")
+                  "cancel bid: payload is not needed;\n")
     def test_check_tp_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database,
                                       queue_mapper):
         authorization = PlatformAuthorization(get_hosts[1])
@@ -487,7 +487,6 @@ class TestSubmitBid:
 
         time.sleep(10)
         actual_tp_release_before_submit_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
-        actual_ms_release_before_submit_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
 
         time_bot(expected_time=actual_tp_release_before_submit_bid['releases'][0]['tender']['enquiryPeriod']['endDate'])
 
@@ -515,189 +514,52 @@ class TestSubmitBid:
                 submission_payload=create_submission_moldova_payload
             )
 
-            synchronous_result_of_sending_the_request_by_first_tenderer = \
-                Requests().submit_bid(
-                    host_of_request=get_hosts[1],
-                    access_token=submit_bid_access_token_for_first_invitation,
-                    x_operation_id=submit_bid_operation_id_for_first_invitation,
-                    pn_ocid=pn_ocid,
-                    tender_id=tp_id,
-                    test_mode=True,
-                    payload=submit_bid_payload_for_first_invitation)
+            Requests().submit_bid(
+                host_of_request=get_hosts[1],
+                access_token=submit_bid_access_token_for_first_invitation,
+                x_operation_id=submit_bid_operation_id_for_first_invitation,
+                pn_ocid=pn_ocid,
+                tender_id=tp_id,
+                test_mode=True,
+                payload=submit_bid_payload_for_first_invitation)
+
+            kafka_message_class = KafkaMessage(submit_bid_operation_id_for_first_invitation)
+            submit_bid_feed_point_message_by_first_tenderer = kafka_message_class.get_message_from_kafka()
+            bid_id = submit_bid_feed_point_message_by_first_tenderer['data']['outcomes']['bids'][0]['id']
+            bid_token = submit_bid_feed_point_message_by_first_tenderer['data']['outcomes']['bids'][0]['X-TOKEN']
+
+        time.sleep(10)
+        actual_tp_release_before_cancel_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
+        actual_ms_release_before_cancel_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
 
         step_number += 1
-        with allure.step(f'# {step_number}. See results for first tenderer.'):
+        with allure.step(f'# {step_number}. Authorization platform one: CancelBid process.'):
             """
-            Check the results of TestCase.
-            """
-
-            with allure.step(f'# {step_number}.1. Check status code'):
-                """
-                Check the synchronous_result_of_sending_the_request.
-                """
-
-                with allure.step('Compare actual status code of sending the request and '
-                                 'expected status code of sending request.'):
-                    allure.attach(str(synchronous_result_of_sending_the_request_by_first_tenderer.status_code),
-                                  "Actual status code of sending the request.")
-                    allure.attach(str(202), "Expected status code of sending request.")
-                    assert str(synchronous_result_of_sending_the_request_by_first_tenderer.status_code) == str(202)
-
-            with allure.step(f'# {step_number}.2. Check message in feed point.'):
-                """
-                Check the asynchronous_result_of_sending_the_request.
-                """
-                kafka_message_class = KafkaMessage(submit_bid_operation_id_for_first_invitation)
-                submit_bid_feed_point_message_by_first_tenderer = kafka_message_class.get_message_from_kafka()
-                allure.attach(str(submit_bid_feed_point_message_by_first_tenderer), 'Message in feed point.')
-
-                asynchronous_result_of_sending_the_request_was_checked = \
-                    kafka_message_class.create_bid_message_is_successful(
-                        environment=environment,
-                        kafka_message=submit_bid_feed_point_message_by_first_tenderer,
-                        pn_ocid=pn_ocid,
-                        tender_id=tp_id
-                    )
-
-                try:
-                    """
-                    If asynchronous_result_of_sending_the_request was False,
-                    then return process steps by operation-id.
-                    """
-                    if asynchronous_result_of_sending_the_request_was_checked is False:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=submit_bid_operation_id_for_first_invitation)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-                except ValueError:
-                    raise ValueError("Can not return BPE operation step")
-
-                with allure.step('Compare actual asynchronous result of sending the request and '
-                                 'expected asynchronous result of sending request.'):
-                    allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
-                                  "Actual asynchronous result of sending the request.")
-                    allure.attach(str(True), "Expected asynchronous result of sending the request.")
-                    assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
-
-            with allure.step(f'# {step_number}.3. Check TP release'):
-                """
-                Compare actual Tp release before SubmitBid creating and
-                actual Tp release after SubmitBid creating.
-                """
-                allure.attach(str(json.dumps(actual_tp_release_before_submit_bid)),
-                              "Actual TP release before SubmitBid creation.")
-
-                actual_tp_release_after_submit_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
-                allure.attach(str(json.dumps(actual_tp_release_after_submit_bid)),
-                              "Actual TP release after SubmitBid creation.")
-
-                compare_releases = dict(
-                    DeepDiff(actual_tp_release_before_submit_bid,
-                             actual_tp_release_after_submit_bid))
-
-                expected_result = {}
-
-                try:
-                    """
-                        If compare_releases !=expected_result,
-                        then return process steps by operation-id.
-                        """
-                    if compare_releases == expected_result:
-                        pass
-                    else:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=submit_bid_operation_id_for_first_invitation)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-                except ValueError:
-                    raise ValueError("Can not return BPE operation step")
-
-                with allure.step(
-                        'Check a difference of comparing Tp release before '
-                        'SubmitBid creation and Tp release after SubmitBid creation.'):
-                    allure.attach(json.dumps(compare_releases),
-                                  "Actual result of comparing Tp releases.")
-                    allure.attach(json.dumps(expected_result),
-                                  "Expected result of comparing Tp releases.")
-                    assert compare_releases == expected_result
-
-            with allure.step(f'# {step_number}.3. Check MS release'):
-                """
-                Compare actual MS release before SubmitBid creating and
-                actual MS release after SubmitBid creating.
-                """
-                allure.attach(str(json.dumps(actual_ms_release_before_submit_bid)),
-                              "Actual MS release before SubmitBid creation.")
-
-                actual_ms_release_after_submit_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-                allure.attach(str(json.dumps(actual_ms_release_after_submit_bid)),
-                              "Actual MS release after SubmitBid creation.")
-
-                compare_releases = dict(
-                    DeepDiff(actual_ms_release_before_submit_bid,
-                             actual_ms_release_after_submit_bid))
-
-                expected_result = {}
-
-                try:
-                    """
-                        If compare_releases !=expected_result,
-                        then return process steps by operation-id.
-                        """
-                    if compare_releases == expected_result:
-                        pass
-                    else:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=submit_bid_operation_id_for_first_invitation)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-                except ValueError:
-                    raise ValueError("Can not return BPE operation step")
-
-                with allure.step(
-                        'Check a difference of comparing Tp release before '
-                        'SubmitBid creation and Tp release after SubmitBid creation.'):
-                    allure.attach(json.dumps(compare_releases),
-                                  "Actual result of comparing Tp releases.")
-                    allure.attach(json.dumps(expected_result),
-                                  "Expected result of comparing Tp releases.")
-                    assert compare_releases == expected_result
-
-                actual_tp_release_before_submit_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
-                actual_ms_release_before_submit_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-
-        step_number += 1
-        with allure.step(f'# {step_number}. Authorization platform one: SubmitBid process by second tenderer.'):
-            """
-            Tender platform authorization for SubmitBid process by second tenderer.
+            Tender platform authorization for CancelBid process.
             As result get Tender platform's access token and process operation-id.
             """
-            submit_bid_access_token_for_second_invitation = authorization.get_access_token_for_platform_one()
-            submit_bid_operation_id_for_second_invitation = \
-                authorization.get_x_operation_id(create_start_second_stage_access_token)
+            cancel_bid_access_token = authorization.get_access_token_for_platform_one()
+            cancel_bid_operation_id = authorization.get_x_operation_id(cancel_bid_access_token)
 
         step_number += 1
-        with allure.step(f'# {step_number}. Send request to create SubmitBid process by second tenderer.'):
+        with allure.step(f'# {step_number}. Send request to create CancelBid process.'):
             """
-            Send api request on BPE host for SubmitBid process by second tenderer.
+            Send api request on BPE host for CancelBid process.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
             time.sleep(1)
 
-            submit_bid_payload_for_second_invitation = submit_bid_payload_class.create_bid_obligatory_data_model(
-                based_stage_release=actual_tp_release_before_submit_bid,
-                submission_payload=create_submission_belarus_payload
-            )
-
-            synchronous_result_of_sending_the_request_by_second_tenderer = \
-                Requests().submit_bid(
+            synchronous_result_of_sending_the_request = \
+                Requests().withdraw_bid(
                     host_of_request=get_hosts[1],
-                    access_token=submit_bid_access_token_for_second_invitation,
-                    x_operation_id=submit_bid_operation_id_for_second_invitation,
+                    access_token=cancel_bid_access_token,
+                    x_operation_id=cancel_bid_operation_id,
                     pn_ocid=pn_ocid,
                     tender_id=tp_id,
-                    test_mode=True,
-                    payload=submit_bid_payload_for_second_invitation)
+                    bid_id=bid_id,
+                    bid_token=bid_token,
+                    test_mode=True
+                )
 
         step_number += 1
         with allure.step(f'# {step_number}.  See results for second tenderer..'):
@@ -712,23 +574,23 @@ class TestSubmitBid:
 
                 with allure.step('Compare actual status code of sending the request and '
                                  'expected status code of sending request.'):
-                    allure.attach(str(synchronous_result_of_sending_the_request_by_second_tenderer.status_code),
+                    allure.attach(str(synchronous_result_of_sending_the_request.status_code),
                                   "Actual status code of sending the request.")
                     allure.attach(str(202), "Expected status code of sending request.")
-                    assert str(synchronous_result_of_sending_the_request_by_second_tenderer.status_code) == str(202)
+                    assert str(synchronous_result_of_sending_the_request.status_code) == str(202)
 
             with allure.step(f'# {step_number}.2. Check message in feed point.'):
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                kafka_message_class = KafkaMessage(submit_bid_operation_id_for_second_invitation)
-                submit_bid_feed_point_message_by_second_tenderer = kafka_message_class.get_message_from_kafka()
-                allure.attach(str(submit_bid_feed_point_message_by_second_tenderer), 'Message in feed point.')
+                kafka_message_class = KafkaMessage(cancel_bid_operation_id)
+                cancel_bid_feed_point_message = kafka_message_class.get_message_from_kafka()
+                allure.attach(str(cancel_bid_feed_point_message), 'Message in feed point.')
 
                 asynchronous_result_of_sending_the_request_was_checked = \
-                    kafka_message_class.create_bid_message_is_successful(
+                    kafka_message_class.withdraw_bid_message_is_successful(
                         environment=environment,
-                        kafka_message=submit_bid_feed_point_message_by_second_tenderer,
+                        kafka_message=cancel_bid_feed_point_message,
                         pn_ocid=pn_ocid,
                         tender_id=tp_id
                     )
@@ -741,7 +603,7 @@ class TestSubmitBid:
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=submit_bid_operation_id_for_first_invitation)
+                                operation_id=cancel_bid_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
@@ -755,19 +617,19 @@ class TestSubmitBid:
 
             with allure.step(f'# {step_number}.3. Check TP release'):
                 """
-                Compare actual Tp release before SubmitBid creating and
-                actual Tp release after SubmitBid creating.
+                Compare actual Tp release before CancelBid creating and
+                actual Tp release after CancelBid creating.
                 """
-                allure.attach(str(json.dumps(actual_tp_release_before_submit_bid)),
-                              "Actual TP release before SubmitBid creation.")
+                allure.attach(str(json.dumps(actual_tp_release_before_cancel_bid)),
+                              "Actual TP release before CancelBid creation.")
 
-                actual_tp_release_after_submit_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
-                allure.attach(str(json.dumps(actual_tp_release_after_submit_bid)),
-                              "Actual TP release after SubmitBid creation.")
+                actual_tp_release_after_cancel_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
+                allure.attach(str(json.dumps(actual_tp_release_after_cancel_bid)),
+                              "Actual TP release after CancelBid creation.")
 
                 compare_releases = dict(
-                    DeepDiff(actual_tp_release_before_submit_bid,
-                             actual_tp_release_after_submit_bid))
+                    DeepDiff(actual_tp_release_before_cancel_bid,
+                             actual_tp_release_after_cancel_bid))
 
                 expected_result = {}
 
@@ -781,7 +643,7 @@ class TestSubmitBid:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=submit_bid_operation_id_for_first_invitation)
+                                operation_id=cancel_bid_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
@@ -797,21 +659,52 @@ class TestSubmitBid:
 
             with allure.step(f'# {step_number}.4. Check MS release'):
                 """
-                Compare actual Ms release before SubmitBid creating and
-                actual Ms release after SubmitBid creating.
+                Compare actual Ms release before CancelBid creating and
+                actual Ms release after CancelBid creating.
                 """
-                allure.attach(json.dumps(actual_ms_release_before_submit_bid),
-                              "Actual MS release before SubmitBid creation")
+                allure.attach(json.dumps(actual_ms_release_before_cancel_bid),
+                              "Actual MS release before CancelBid creation")
 
-                actual_ms_release_after_submit_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-                allure.attach(json.dumps(actual_ms_release_after_submit_bid),
-                              "Actual MS release after SubmitBid creation")
+                actual_ms_release_after_cancel_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(json.dumps(actual_ms_release_after_cancel_bid),
+                              "Actual MS release after CancelBid creation")
 
                 compare_releases = dict(
-                    DeepDiff(actual_ms_release_before_submit_bid,
-                             actual_ms_release_after_submit_bid))
+                    DeepDiff(actual_ms_release_before_cancel_bid,
+                             actual_ms_release_after_cancel_bid))
 
                 expected_result = {}
+
+                try:
+                    """
+                        If compare_releases !=expected_result,
+                        then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=cancel_bid_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                with allure.step('Check a difference of comparing Ms release before '
+                                 'SubmitBid creating and Ms release after SubmitBid creating.'):
+                    allure.attach(json.dumps(compare_releases),
+                                  "Actual result of comparing MS releases.")
+                    allure.attach(json.dumps(expected_result),
+                                  "Expected result of comparing Ms releases.")
+                    assert compare_releases == expected_result
+
+            with allure.step(f'# {step_number}.5. Check status of bid into database.'):
+                """
+                Check status into database by cpid into submission.bids.
+                """
+                bid_status_from_database = connection_to_database.get_bid_status_from_submission_bids_by_on_ocid(
+                    pn_ocid=pn_ocid
+                )
 
                 try:
                     """
@@ -854,15 +747,13 @@ class TestSubmitBid:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=submit_bid_operation_id_for_second_invitation)
+                                operation_id=cancel_bid_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Check a difference of comparing Ms release before '
-                                 'SubmitBid creating and Ms release after SubmitBid creating.'):
-                    allure.attach(json.dumps(compare_releases),
-                                  "Actual result of comparing MS releases.")
-                    allure.attach(json.dumps(expected_result),
-                                  "Expected result of comparing Ms releases.")
-                    assert compare_releases == expected_result
+                with allure.step('Check a difference of comparing status of bid into database'
+                                 'and expected status of bid.'):
+                    allure.attach(bid_status_from_database, "Cassandra DataBase: actual status of bid")
+                    allure.attach("withdrawn", "Expected status of bid.")
+                    assert bid_status_from_database == "withdrawn"
