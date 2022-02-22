@@ -58,7 +58,7 @@ class TestCreateAnswer:
             cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
 
     @allure.title('Check status code and message from Kafka topic after Answer creating')
-    def test_check_result_of_sending_the_request(self):
+    def test_check_result_of_sending_the_request(self, country, connection_to_database, pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -195,12 +195,32 @@ class TestCreateAnswer:
             Send api request on BPE host for contract notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
-            time.sleep(1)
+            try:
+                """
+                Get offset interval from clarification.rules and from submission.rules for this testcase
+                """
+                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                    country=country,
+                    pmd=pmd,
+                    operation_type='all',
+                    parameter='interval'
+                ))
+
+                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                    country=country,
+                    pmd=pmd,
+                    operation_type='all',
+                    parameter='interval'
+                ))
+            except Exception:
+                raise Exception("Impossible to get interval value from clarification.rules and from submission.rules")
+
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
-                    enquiry_interval=121,
-                    tender_interval=300,
+                    pmd=pmd,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreatePn.actual_pn_release,
@@ -387,7 +407,7 @@ class TestCreateAnswer:
                 )
 
     @allure.title('Check EV and MS releases data after Answer creating based on full data model')
-    def test_check_ev_ms_releases_three(self):
+    def test_check_ev_ms_releases_three(self, country, connection_to_database, pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -524,12 +544,32 @@ class TestCreateAnswer:
             Send api request on BPE host for contract notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
-            time.sleep(1)
+            try:
+                """
+                Get offset interval from clarification.rules and from submission.rules for this testcase
+                """
+                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                    country=country,
+                    pmd=pmd,
+                    operation_type='all',
+                    parameter='interval'
+                ))
+
+                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                    country=country,
+                    pmd=pmd,
+                    operation_type='all',
+                    parameter='interval'
+                ))
+            except Exception:
+                raise Exception("Impossible to get interval value from clarification.rules and from submission.rules")
+
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
-                    enquiry_interval=121,
-                    tender_interval=300,
+                    pmd=pmd,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreatePn.actual_pn_release,
@@ -830,7 +870,7 @@ class TestCreateAnswer:
                 )) == str(True)
 
     @allure.title('Check EV and MS releases data after Answer creating based on data model without optional fields')
-    def test_check_ev_ms_releases_two(self):
+    def test_check_ev_ms_releases_two(self, country, connection_to_database, pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -967,12 +1007,32 @@ class TestCreateAnswer:
             Send api request on BPE host for contract notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
-            time.sleep(1)
+            try:
+                """
+                Get offset interval from clarification.rules and from submission.rules for this testcase
+                """
+                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                    country=country,
+                    pmd=pmd,
+                    operation_type='all',
+                    parameter='interval'
+                ))
+
+                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                    country=country,
+                    pmd=pmd,
+                    operation_type='all',
+                    parameter='interval'
+                ))
+            except Exception:
+                raise Exception("Impossible to get interval value from clarification.rules and from submission.rules")
+
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
-                    enquiry_interval=121,
-                    tender_interval=300,
+                    pmd=pmd,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreatePn.actual_pn_release,
@@ -1271,7 +1331,7 @@ class TestCreateAnswer:
 
     @allure.title('Check EV and MS releases data after Answer creating based on data model without optional fields '
                   'if tender state is suspended')
-    def test_check_ev_ms_releases_four(self):
+    def test_check_ev_ms_releases_four(self, country, connection_to_database, pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -1408,12 +1468,32 @@ class TestCreateAnswer:
             Send api request on BPE host for contract notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
             """
-            time.sleep(1)
+            try:
+                """
+                Get offset interval from clarification.rules and from submission.rules for this testcase
+                """
+                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                    country=country,
+                    pmd=pmd,
+                    operation_type='all',
+                    parameter='interval'
+                ))
+
+                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
+                    country=country,
+                    pmd=pmd,
+                    operation_type='all',
+                    parameter='interval'
+                ))
+            except Exception:
+                raise Exception("Impossible to get interval value from clarification.rules and from submission.rules")
+
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
-                    enquiry_interval=121,
-                    tender_interval=300,
+                    pmd=pmd,
+                    enquiry_interval=interval_from_clarification_rules + 1,
+                    tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreatePn.actual_pn_release,
