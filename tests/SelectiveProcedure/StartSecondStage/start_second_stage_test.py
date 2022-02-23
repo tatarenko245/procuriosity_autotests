@@ -628,43 +628,23 @@ class TestStartSecondStage:
                 except Exception:
                     raise Exception("Impossible to prepare expected tenderPeriod object.")
 
-                try:
-                    """
-                        If compare_releases !=expected_result,
-                        then return process steps by operation-id.
-                        """
-                    if compare_releases == expected_result and \
-                            actual_tp_release_after_start_second_stage_creation[
-                                'releases'][0]['tender']['tenderPeriod'] == final_tender_period_object:
-                        pass
-                    else:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            allure.attach(json.dumps(compare_releases),
-                                          "Actual result of comparing Tp releases.")
-                            allure.attach(json.dumps(expected_result),
-                                          "Expected result of comparing Tp releases.")
-
-                            allure.attach(json.dumps(
-                                actual_tp_release_after_start_second_stage_creation['releases'][0]['tender'][
-                                    'tenderPeriod']),
-                                "Actual tender.tenderPeriod object.")
-                            allure.attach(json.dumps(final_tender_period_object),
-                                          "Expected tender.tenderPeriod object.")
-
-                            allure.attach(json.dumps(
-                                actual_tp_release_after_start_second_stage_creation[
-                                    'releases'][0]['preQualification']['qualificationPeriod']['endDate']),
-                                "Actual preQualification.qualificationPeriod.endDate attribute.")
-                            allure.attach(
-                                json.dumps(create_start_second_stage_feed_point_message['data']['operationDate']),
-                                "Expected preQualification.qualificationPeriod.endDate attribute.")
-
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=create_start_second_stage_operation_id)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-
-                except ValueError:
-                    raise ValueError("Can not return BPE operation step")
+                # try:
+                #     """
+                #         If compare_releases !=expected_result,
+                #         then return process steps by operation-id.
+                #         """
+                #     if compare_releases == expected_result and \
+                #             actual_tp_release_after_start_second_stage_creation[
+                #                 'releases'][0]['tender']['tenderPeriod'] == final_tender_period_object:
+                #         pass
+                #     else:
+                #         with allure.step('# Steps from Casandra DataBase'):
+                #             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                #                 operation_id=create_start_second_stage_operation_id)
+                #             allure.attach(steps, "Cassandra DataBase: steps of process")
+                #
+                # except ValueError:
+                #     raise ValueError("Can not return BPE operation step")
 
                 with allure.step(
                         'Check a difference of comparing Tp release before '
@@ -673,6 +653,12 @@ class TestStartSecondStage:
                                   "Actual result of comparing Tp releases.")
                     allure.attach(json.dumps(expected_result),
                                   "Expected result of comparing Tp releases.")
+
+                    if compare_releases != expected_result:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=create_start_second_stage_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
                     assert compare_releases == expected_result
 
                 with allure.step(
@@ -682,6 +668,13 @@ class TestStartSecondStage:
                         "Actual tender.tenderPeriod object.")
                     allure.attach(json.dumps(final_tender_period_object),
                                   "Expected tender.tenderPeriod object.")
+
+                    if actual_tp_release_after_start_second_stage_creation[
+                               'releases'][0]['tender']['tenderPeriod'] != final_tender_period_object:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=create_start_second_stage_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
                     assert actual_tp_release_after_start_second_stage_creation[
                                'releases'][0]['tender']['tenderPeriod'] == final_tender_period_object
 
@@ -694,6 +687,14 @@ class TestStartSecondStage:
                         "Actual preQualification.qualificationPeriod.endDate attribute.")
                     allure.attach(json.dumps(create_start_second_stage_feed_point_message['data']['operationDate']),
                                   "Expected preQualification.qualificationPeriod.endDate attribute.")
+
+                    if actual_tp_release_after_start_second_stage_creation[
+                            'releases'][0]['preQualification']['qualificationPeriod']['endDate'] != \
+                            create_start_second_stage_feed_point_message['data']['operationDate']:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=create_start_second_stage_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
                     assert actual_tp_release_after_start_second_stage_creation[
                             'releases'][0]['preQualification']['qualificationPeriod']['endDate'] == \
                            create_start_second_stage_feed_point_message['data']['operationDate']
@@ -753,18 +754,6 @@ class TestStartSecondStage:
 
                         connection_to_database.cleanup_steps_of_process_from_orchestrator(
                             pn_ocid=pn_ocid)
-
-                    else:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            allure.attach(json.dumps(compare_releases),
-                                          "Actual result of comparing MS releases.")
-                            allure.attach(json.dumps(expected_result),
-                                          "Expected result of comparing Ms releases.")
-
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=create_start_second_stage_operation_id)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
@@ -774,4 +763,10 @@ class TestStartSecondStage:
                                   "Actual result of comparing MS releases.")
                     allure.attach(json.dumps(expected_result),
                                   "Expected result of comparing Ms releases.")
+
+                    if compare_releases != expected_result:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=create_start_second_stage_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
                     assert compare_releases == expected_result
