@@ -639,28 +639,30 @@ class TestStartSecondStage:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
+                            allure.attach(json.dumps(compare_releases),
+                                          "Actual result of comparing Tp releases.")
+                            allure.attach(json.dumps(expected_result),
+                                          "Expected result of comparing Tp releases.")
+
+                            allure.attach(json.dumps(
+                                actual_tp_release_after_start_second_stage_creation['releases'][0]['tender'][
+                                    'tenderPeriod']),
+                                "Actual tender.tenderPeriod object.")
+                            allure.attach(json.dumps(final_tender_period_object),
+                                          "Expected tender.tenderPeriod object.")
+
+                            allure.attach(json.dumps(
+                                actual_tp_release_after_start_second_stage_creation[
+                                    'releases'][0]['preQualification']['qualificationPeriod']['endDate']),
+                                "Actual preQualification.qualificationPeriod.endDate attribute.")
+                            allure.attach(
+                                json.dumps(create_start_second_stage_feed_point_message['data']['operationDate']),
+                                "Expected preQualification.qualificationPeriod.endDate attribute.")
+
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=create_start_second_stage_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
 
-                        allure.attach(json.dumps(compare_releases),
-                                      "Actual result of comparing Tp releases.")
-                        allure.attach(json.dumps(expected_result),
-                                      "Expected result of comparing Tp releases.")
-
-                        allure.attach(json.dumps(
-                            actual_tp_release_after_start_second_stage_creation['releases'][0]['tender'][
-                                'tenderPeriod']),
-                            "Actual tender.tenderPeriod object.")
-                        allure.attach(json.dumps(final_tender_period_object),
-                                      "Expected tender.tenderPeriod object.")
-
-                        allure.attach(json.dumps(
-                            actual_tp_release_after_start_second_stage_creation[
-                                'releases'][0]['preQualification']['qualificationPeriod']['endDate']),
-                            "Actual preQualification.qualificationPeriod.endDate attribute.")
-                        allure.attach(json.dumps(create_start_second_stage_feed_point_message['data']['operationDate']),
-                                      "Expected preQualification.qualificationPeriod.endDate attribute.")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
@@ -754,14 +756,15 @@ class TestStartSecondStage:
 
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
+                            allure.attach(json.dumps(compare_releases),
+                                          "Actual result of comparing MS releases.")
+                            allure.attach(json.dumps(expected_result),
+                                          "Expected result of comparing Ms releases.")
+
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=create_start_second_stage_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
 
-                        allure.attach(json.dumps(compare_releases),
-                                      "Actual result of comparing MS releases.")
-                        allure.attach(json.dumps(expected_result),
-                                      "Expected result of comparing Ms releases.")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
