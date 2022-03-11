@@ -633,21 +633,6 @@ class TestWithdrawBid:
 
                 expected_result = {}
 
-                try:
-                    """
-                        If compare_releases !=expected_result,
-                        then return process steps by operation-id.
-                        """
-                    if compare_releases == expected_result:
-                        pass
-                    else:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=cancel_bid_operation_id)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-                except ValueError:
-                    raise ValueError("Can not return BPE operation step")
-
                 with allure.step(
                         'Check a difference of comparing Tp release before '
                         'SubmitBid creation and Tp release after SubmitBid creation.'):
@@ -655,6 +640,12 @@ class TestWithdrawBid:
                                   "Actual result of comparing Tp releases.")
                     allure.attach(json.dumps(expected_result),
                                   "Expected result of comparing Tp releases.")
+
+                    if compare_releases != expected_result:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=cancel_bid_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
                     assert compare_releases == expected_result
 
             with allure.step(f'# {step_number}.4. Check MS release'):
@@ -675,27 +666,18 @@ class TestWithdrawBid:
 
                 expected_result = {}
 
-                try:
-                    """
-                        If compare_releases !=expected_result,
-                        then return process steps by operation-id.
-                        """
-                    if compare_releases == expected_result:
-                        pass
-                    else:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=cancel_bid_operation_id)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-                except ValueError:
-                    raise ValueError("Can not return BPE operation step")
-
                 with allure.step('Check a difference of comparing Ms release before '
                                  'SubmitBid creating and Ms release after SubmitBid creating.'):
                     allure.attach(json.dumps(compare_releases),
                                   "Actual result of comparing MS releases.")
                     allure.attach(json.dumps(expected_result),
                                   "Expected result of comparing Ms releases.")
+
+                    if compare_releases != expected_result:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=cancel_bid_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
                     assert compare_releases == expected_result
 
             with allure.step(f'# {step_number}.5. Check status of bid into database.'):
@@ -743,12 +725,6 @@ class TestWithdrawBid:
 
                         connection_to_database.cleanup_steps_of_process_from_orchestrator(
                             pn_ocid=pn_ocid)
-
-                    else:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=cancel_bid_operation_id)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
@@ -756,4 +732,10 @@ class TestWithdrawBid:
                                  'and expected status of bid.'):
                     allure.attach(bid_status_from_database, "Cassandra DataBase: actual status of bid")
                     allure.attach("withdrawn", "Expected status of bid.")
+
+                    if compare_releases != expected_result:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=cancel_bid_operation_id)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
                     assert bid_status_from_database == "withdrawn"
