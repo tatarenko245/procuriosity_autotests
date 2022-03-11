@@ -13,7 +13,7 @@ class PnExpectedRelease:
         self.pn_payload = pn_payload
         self.metadata_tender_url = None
         self.procurement_method_details = None
-        self.mdm_class = MdmService(host=host_for_service)
+        self.mdm_class = MdmService(host_for_service=host_for_service)
 
         try:
             if pmd == "TEST_NP":

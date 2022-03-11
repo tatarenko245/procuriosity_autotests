@@ -7,9 +7,9 @@ from tests.utils.http_manager import HttpManager
 
 
 class MdmService:
-    def __init__(self, host):
+    def __init__(self, host_for_service):
         self.port = HttpManager().e_mdm_service()[0]
-        self.host = host
+        self.host = host_for_service
         print(self.host)
 
     def process_ei_data(self, country, language):
@@ -389,13 +389,3 @@ class MdmService:
                 'requirementGroupId': requirement_group_id
             }).json()
         return data
-
-
-mdm = MdmService(host='http://10.0.20.127')
-r = mdm.get_locality(
-    country="MD",
-    language='ro',
-    region="1700000",
-    locality="1701000"
-)
-print(r['data'])

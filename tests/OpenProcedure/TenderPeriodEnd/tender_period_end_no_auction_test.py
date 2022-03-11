@@ -254,7 +254,7 @@ class TestCreateBid:
                         environment=GlobalClassMetadata.environment,
                         kafka_message=GlobalClassTenderPeriodEndNoAuction.feed_point_message,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id
+                        tender_id=GlobalClassCreateCnOnPn.ev_id
                     )
 
                 try:
@@ -846,7 +846,7 @@ class TestCreateBid:
                         environment=GlobalClassMetadata.environment,
                         kafka_message=GlobalClassTenderPeriodEndNoAuction.feed_point_message,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id
+                        tender_id=GlobalClassCreateCnOnPn.ev_id
                     )
 
                 try:
@@ -1825,7 +1825,7 @@ class TestCreateBid:
                         environment=GlobalClassMetadata.environment,
                         kafka_message=GlobalClassTenderPeriodEndNoAuction.feed_point_message,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
-                        ev_id=GlobalClassCreateCnOnPn.ev_id
+                        tender_id=GlobalClassCreateCnOnPn.ev_id
                     )
 
                 try:

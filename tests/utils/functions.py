@@ -157,7 +157,7 @@ def generate_lots_array(quantity_of_object, lot_object):
     return new_array_lots
 
 
-def generate_criteria_array(quantity_of_criteria_object, criteria_object, quantity_of_groups_object,
+def generate_criteria_array(host_for_service, country, language, quantity_of_criteria_object, criteria_object, quantity_of_groups_object,
                             quantity_of_requirements_object, quantity_of_evidences_object, type_of_standard_criteria):
     copy.deepcopy(criteria_object)
     criteria_array = []
@@ -178,9 +178,9 @@ def generate_criteria_array(quantity_of_criteria_object, criteria_object, quanti
                     f"{criteria_json['requirementGroups'][j]['id']}-{y}"
         criteria_array.append(criteria_json)
 
-    standard_criteria = MdmService(host=GlobalClassMetadata.host_for_services).get_standard_criteria(
-        country=GlobalClassMetadata.country,
-        language=GlobalClassMetadata.language)
+    standard_criteria = MdmService(host_for_service=host_for_service).get_standard_criteria(
+        country=country,
+        language=language)
 
     new_array_criteria = []
     for quantity_of_object in range(quantity_of_criteria_object):

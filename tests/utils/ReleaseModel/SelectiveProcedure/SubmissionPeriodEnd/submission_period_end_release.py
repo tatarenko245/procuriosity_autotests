@@ -9,7 +9,7 @@ class SubmissionPeriodEndExpectedRelease:
         self.pmd = pmd
         self.phase = phase
         self.actual_tp_release = actual_tp_release
-        self.mdm_class = MdmService(host=host_for_service)
+        self.mdm_class = MdmService(host_for_service=host_for_service)
 
     def prepare_criteria_object_source_procuring_entity(self):
         expected_criteria_array_source_procuring_entity = {}
