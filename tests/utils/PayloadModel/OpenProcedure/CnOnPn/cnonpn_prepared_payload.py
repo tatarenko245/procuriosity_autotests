@@ -17,12 +17,15 @@ from tests.utils.services.e_mdm_service import MdmService
 
 
 class CnOnPnPreparePayload:
-    def __init__(self):
+    def __init__(self, get_hosts, country, language):
+        self.get_hosts = get_hosts
+        self.country = country
+        self.language = language
         self.constructor = copy.deepcopy(PayloadLibrary())
-        document_one = Document(host_for_services=GlobalClassMetadata.host_for_services, file_name="API.pdf")
+        document_one = Document(host_for_services=self.get_hosts[2], file_name="API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
         self.document_two_was_uploaded = document_one.uploading_document()
-        self.standard_criteria = MdmService(host=GlobalClassMetadata.host_for_services).get_standard_criteria(
+        self.standard_criteria = MdmService(host_for_service=self.get_hosts[2]).get_standard_criteria(
             country=GlobalClassMetadata.country,
             language=GlobalClassMetadata.language)
         self.contact_period = Date().contact_period()
@@ -580,6 +583,9 @@ class CnOnPnPreparePayload:
                 'relatedDocument']['id'] = self.document_two_was_uploaded[0]['data']['id']
 
             exclusion_criteria_array = generate_criteria_array(
+                host_for_service=self.get_hosts[2],
+                country=self.country,
+                language=self.language,
                 quantity_of_criteria_object=len(self.standard_criteria[1]),
                 criteria_object=exclusion_criteria_object,
                 quantity_of_groups_object=1,
@@ -631,6 +637,9 @@ class CnOnPnPreparePayload:
                 'relatedDocument']['id'] = self.document_two_was_uploaded[0]['data']['id']
 
             selection_criteria_array = generate_criteria_array(
+                host_for_service=self.get_hosts[2],
+                country=self.country,
+                language=self.language,
                 quantity_of_criteria_object=len(self.standard_criteria[2]),
                 criteria_object=selection_criteria_object,
                 quantity_of_groups_object=2,
@@ -681,6 +690,9 @@ class CnOnPnPreparePayload:
                 'relatedDocument']['id'] = self.document_two_was_uploaded[0]['data']['id']
 
             other_criteria_array = generate_criteria_array(
+                host_for_service=self.get_hosts[2],
+                country=self.country,
+                language=self.language,
                 quantity_of_criteria_object=len(self.standard_criteria[3]),
                 criteria_object=other_criteria_object,
                 quantity_of_groups_object=2,
@@ -1683,6 +1695,9 @@ class CnOnPnPreparePayload:
                 'relatedDocument']['id'] = self.document_two_was_uploaded[0]['data']['id']
 
             exclusion_criteria_array = generate_criteria_array(
+                host_for_service=self.get_hosts[2],
+                country=self.country,
+                language=self.language,
                 quantity_of_criteria_object=len(self.standard_criteria[1]),
                 criteria_object=exclusion_criteria_object,
                 quantity_of_groups_object=1,
@@ -1734,6 +1749,9 @@ class CnOnPnPreparePayload:
                 'relatedDocument']['id'] = self.document_two_was_uploaded[0]['data']['id']
 
             selection_criteria_array = generate_criteria_array(
+                host_for_service=self.get_hosts[2],
+                country=self.country,
+                language=self.language,
                 quantity_of_criteria_object=len(self.standard_criteria[2]),
                 criteria_object=selection_criteria_object,
                 quantity_of_groups_object=2,
@@ -1784,6 +1802,9 @@ class CnOnPnPreparePayload:
                 'relatedDocument']['id'] = self.document_two_was_uploaded[0]['data']['id']
 
             other_criteria_array = generate_criteria_array(
+                host_for_service=self.get_hosts[2],
+                country=self.country,
+                language=self.language,
                 quantity_of_criteria_object=len(self.standard_criteria[3]),
                 criteria_object=other_criteria_object,
                 quantity_of_groups_object=2,

@@ -293,7 +293,7 @@ class TestTenderPeriodEnd:
             if qu['status'] == "pending":
                 if qu['statusDetails'] == "awaiting":
                     for s in actual_tp_release_before_qualif_declaration_creation[
-                            'releases'][0]['submissions']['details']:
+                        'releases'][0]['submissions']['details']:
                         if s['id'] == qu['relatedSubmission']:
                             for cand in range(len(s['candidates'])):
                                 candidate_dictionary = {
@@ -564,110 +564,298 @@ class TestTenderPeriodEnd:
             'releases'][0]['tender']['tenderPeriod']['endDate']
                  )
 
-        kafka_message_class = KafkaMessage(ocid=tp_id,
-                                           initiation="bpe")
+        step_number += 1
+        with allure.step(f'# {step_number}.  See results if tender period end was expired.'):
+            """
+            Check the results of TestCase.
+            """
 
-        tender_period_end_feed_point_message = kafka_message_class.get_message_from_kafka_by_ocid_and_initiator()[1]
+            with allure.step(f'# {step_number}.1. Check message in feed point.'):
+                """
+                Check the asynchronous_result_of_sending_the_request.
+                """
+                kafka_message_class = KafkaMessage(ocid=tp_id,
+                                                   initiation="bpe")
 
-        print("tender_period_end_feed_point_message")
-        print(json.dumps(tender_period_end_feed_point_message))
-        # !!!===========
+                tender_period_end_feed_point_message = \
+                    kafka_message_class.get_message_from_kafka_by_ocid_and_initiator()[1]
 
-        # step_number += 1
-        # with allure.step(f'# {step_number}.  See results for second tenderer..'):
-        #     """
-        #     Check the results of TestCase.
-        #     """
-        #
-        #     with allure.step(f'# {step_number}.1. Check status code'):
-        #         """
-        #         Check the synchronous_result_of_sending_the_request.
-        #         """
-        #
-        #         with allure.step('Compare actual status code of sending the request and '
-        #                          'expected status code of sending request.'):
-        #             allure.attach(str(synchronous_result_of_sending_the_request_by_second_tenderer.status_code),
-        #                           "Actual status code of sending the request.")
-        #             allure.attach(str(202), "Expected status code of sending request.")
-        #             assert str(synchronous_result_of_sending_the_request_by_second_tenderer.status_code) == str(202)
-        #
-        #     with allure.step(f'# {step_number}.2. Check message in feed point.'):
-        #         """
-        #         Check the asynchronous_result_of_sending_the_request.
-        #         """
-        #         kafka_message_class = KafkaMessage(submit_bid_operation_id_for_second_invitation)
-        #         submit_bid_feed_point_message_by_second_tenderer = kafka_message_class.get_message_from_kafka()
-        #         allure.attach(str(submit_bid_feed_point_message_by_second_tenderer), 'Message in feed point.')
-        #
-        #         asynchronous_result_of_sending_the_request_was_checked = \
-        #             kafka_message_class.create_bid_message_is_successful(
-        #                 environment=environment,
-        #                 kafka_message=submit_bid_feed_point_message_by_second_tenderer,
-        #                 pn_ocid=pn_ocid,
-        #                 tender_id=tp_id
-        #             )
-        #
-        #         try:
-        #             """
-        #             If asynchronous_result_of_sending_the_request was False,
-        #             then return process steps by operation-id.
-        #             """
-        #             if asynchronous_result_of_sending_the_request_was_checked is False:
-        #                 with allure.step('# Steps from Casandra DataBase'):
-        #                     steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-        #                         operation_id=submit_bid_operation_id_for_first_invitation)
-        #                     allure.attach(steps, "Cassandra DataBase: steps of process")
-        #         except ValueError:
-        #             raise ValueError("Can not return BPE operation step")
-        #
-        #         with allure.step('Compare actual asynchronous result of sending the request and '
-        #                          'expected asynchronous result of sending request.'):
-        #             allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
-        #                           "Actual asynchronous result of sending the request.")
-        #             allure.attach(str(True), "Expected asynchronous result of sending the request.")
-        #             assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
-        #
-        #     with allure.step(f'# {step_number}.3. Check TP release'):
-        #         """
-        #         Compare actual Tp release before SubmitBid creating and
-        #         actual Tp release after SubmitBid creating.
-        #         """
-        #         allure.attach(str(json.dumps(actual_tp_release_before_submit_bid)),
-        #                       "Actual TP release before SubmitBid creation.")
-        #
-        #         actual_tp_release_after_submit_bid = requests.get(url=f"{pn_url}/{tp_id}").json()
-        #         allure.attach(str(json.dumps(actual_tp_release_after_submit_bid)),
-        #                       "Actual TP release after SubmitBid creation.")
-        #
-        #         compare_releases = dict(
-        #             DeepDiff(actual_tp_release_before_submit_bid,
-        #                      actual_tp_release_after_submit_bid))
-        #
-        #         expected_result = {}
-        #
-        #         try:
-        #             """
-        #                 If compare_releases !=expected_result,
-        #                 then return process steps by operation-id.
-        #                 """
-        #             if compare_releases == expected_result:
-        #                 pass
-        #             else:
-        #                 with allure.step('# Steps from Casandra DataBase'):
-        #                     steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-        #                         operation_id=submit_bid_operation_id_for_first_invitation)
-        #                     allure.attach(steps, "Cassandra DataBase: steps of process")
-        #         except ValueError:
-        #             raise ValueError("Can not return BPE operation step")
-        #
-        #         with allure.step(
-        #                 'Check a difference of comparing Tp release before '
-        #                 'SubmitBid creation and Tp release after SubmitBid creation.'):
-        #             allure.attach(json.dumps(compare_releases),
-        #                           "Actual result of comparing Tp releases.")
-        #             allure.attach(json.dumps(expected_result),
-        #                           "Expected result of comparing Tp releases.")
-        #             assert compare_releases == expected_result
+                allure.attach(str(tender_period_end_feed_point_message), 'Message in feed point.')
+
+                asynchronous_result_of_tender_period_end_was_checked = \
+                    kafka_message_class.tender_period_end_no_auction_message_is_successful(
+                        environment=environment,
+                        kafka_message=tender_period_end_feed_point_message,
+                        pn_ocid=pn_ocid,
+                        tender_id=tp_id
+                    )
+
+                try:
+                    """
+                    If asynchronous_result_of_sending_the_request was False,
+                    then return process steps by operation-id.
+                    """
+                    if asynchronous_result_of_tender_period_end_was_checked is False:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=tender_period_end_feed_point_message['X-OPERATION-ID'])
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                with allure.step('Compare actual asynchronous result of sending the request and '
+                                 'expected asynchronous result of sending request.'):
+                    allure.attach(str(asynchronous_result_of_tender_period_end_was_checked),
+                                  "Actual asynchronous result of sending the request.")
+                    allure.attach(str(True), "Expected asynchronous result of sending the request.")
+                    assert asynchronous_result_of_tender_period_end_was_checked is True
+
+            with allure.step(f'# {step_number}.2. Check TP release'):
+                """
+                Compare actual Tp release before TenderPeriodEnd expiring and
+                actual Tp release after TenderPeriodENd expiring.
+                """
+                allure.attach(str(json.dumps(actual_tp_release_before_tender_period_end_expired)),
+                              "Actual TP release before TenderPeriodEnd expiring.")
+
+                actual_tp_release_after_tender_period_end_expired = requests.get(url=f"{pn_url}/{tp_id}").json()
+                allure.attach(str(json.dumps(actual_tp_release_after_tender_period_end_expired)),
+                              "Actual TP release after TenderPeriodEnd expiring.")
+
+                compare_releases = dict(
+                    DeepDiff(actual_tp_release_before_tender_period_end_expired,
+                             actual_tp_release_after_tender_period_end_expired))
+
+                dictionary_item_added_was_cleaned = \
+                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+                compare_releases = dict(compare_releases)
+
+                expected_result = {
+                    "dictionary_item_added":
+                        "['releases'][0]['awards'], "
+                        "['releases'][0]['bids'], "
+                        "['releases'][0]['tender']['awardPeriod']",
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{tp_id}-"
+                                f"{actual_tp_release_after_tender_period_end_expired['releases'][0]['id'][46:59]}",
+                            "old_value":
+                                f"{tp_id}-"
+                                f"{actual_tp_release_before_tender_period_end_expired['releases'][0]['id'][46:59]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": tender_period_end_feed_point_message['data']['operationDate'],
+                            "old_value": actual_tp_release_before_tender_period_end_expired['releases'][0]['date']
+                        },
+                        "root['releases'][0]['tag'][0]": {
+                            "new_value": "award",
+                            "old_value": "tender"
+                        },
+                        "root['releases'][0]['tender']['statusDetails']": {
+                            "new_value": "awarding",
+                            "old_value": "tendering"
+                        }
+                    },
+                    "iterable_item_added": {
+                        "root['releases'][0]['parties'][0]['roles'][2]": "tenderer",
+                        "root['releases'][0]['parties'][0]['roles'][3]": "supplier",
+                        "root['releases'][0]['parties'][1]['roles'][2]": "tenderer",
+                        "root['releases'][0]['parties'][1]['roles'][3]": "supplier",
+                        "root['releases'][0]['parties'][2]['roles'][2]": "tenderer",
+                        "root['releases'][0]['parties'][2]['roles'][3]": "supplier"
+                    }
+                }
+
+                print("compare releasse")
+                print(json.dumps(compare_releases))
+
+                print("expected result")
+                print(json.dumps(expected_result))
+
+                print("-------")
+                print("actual awards")
+                print(json.dumps(actual_tp_release_after_tender_period_end_expired['releases'][0]['awards']))
+
+                try:
+                    """
+                    Prepare expected award array
+                    """
+                    final_expected_awards_array = list()
+
+                    list_of_awards_id_from_release = list()
+                    for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']:
+                        for i_1 in i:
+                            if i_1 == "id":
+                                list_of_awards_id_from_release.append(i['id'])
+                    quantity_of_object_into_list_of_awards_id_from_release = \
+                        len(list_of_awards_id_from_release)
+
+                    list_of_awards_suppliers_from_release = list()
+                    for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']:
+                        for i_1 in i:
+                            if i_1 == "suppliers":
+                                list_of_awards_suppliers_from_release.append(i['suppliers'])
+
+                    expected_awards_array_first = TenderPeriodExpectedChanges(
+                        environment=GlobalClassMetadata.environment,
+                        language=GlobalClassMetadata.language
+                    ).prepare_array_of_awards_mapper(bid_payload=GlobalClassCreateFirstBid.payload)
+
+                    expected_awards_array_second = TenderPeriodExpectedChanges(
+                        environment=GlobalClassMetadata.environment,
+                        language=GlobalClassMetadata.language
+                    ).prepare_array_of_awards_mapper(bid_payload=GlobalClassCreateSecondBid.payload)
+
+                    expected_awards_array = expected_awards_array_first + expected_awards_array_second
+
+                    list_of_awards_suppliers_from_expected_awards_array = list()
+                    for i in expected_awards_array:
+                        for i_1 in i:
+                            if i_1 == "suppliers":
+                                list_of_awards_suppliers_from_expected_awards_array.append(i['suppliers'])
+                    quantity_of_object_into_list_of_awards_suppliers_from_expected_awards_array = \
+                        len(list_of_awards_suppliers_from_expected_awards_array)
+
+                    if quantity_of_object_into_list_of_awards_id_from_release == \
+                            quantity_of_object_into_list_of_awards_suppliers_from_expected_awards_array:
+                        for q in range(quantity_of_object_into_list_of_awards_id_from_release):
+                            for q_1 in range(
+                                    quantity_of_object_into_list_of_awards_suppliers_from_expected_awards_array):
+                                if expected_awards_array[q_1]['suppliers'] == \
+                                        list_of_awards_suppliers_from_release[q]:
+                                    final_expected_awards_array.append(expected_awards_array[q_1]['value'])
+                    else:
+                        raise Exception("Error: quantity_of_object_into_list_of_awards_id_from_release !="
+                                        "quantity_of_object_into_list_of_awards_suppliers_from_expected_awards_array")
+                    try:
+                        """
+                        Check id into award array and set permanent id for 'final_expected_awards_array'.
+                        """
+                        for award in range(quantity_of_object_into_list_of_awards_id_from_release):
+                            try:
+                                """
+                                Check that actual_ev_release['releases'][0]['awards'][0]['id'] is uuid version 4
+                                """
+                                check_award_id = is_it_uuid(
+                                    uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                        'releases'][0]['awards'][award]['id'],
+                                    version=4
+                                )
+                                if check_award_id is True:
+                                    final_expected_awards_array[award]['id'] = \
+                                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                            'releases'][0]['awards'][award]['id']
+                                else:
+                                    raise Exception("actual_ev_release['releases'][0]['awards'][0]['id'] "
+                                                    "must be uuid version 4")
+                            except Exception:
+                                raise Exception("Impossible to check that actual_ev_release['releases'][0]"
+                                                "['awards'][0]['id'] is uuid version 4")
+                    except Exception:
+                        raise Exception("Impossible to check id into award array and set permanent id "
+                                        "for 'final_expected_awards_array'.")
+                    try:
+                        """
+                        Set 'statusDetails' for award, according with rule FReq-1.4.1.8.
+                        """
+                        if GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
+                            'awardCriteria'] == "ratedCriteria" or \
+                                GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
+                                    'awardCriteria'] == "qualityOnly" or \
+                                GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
+                                    'awardCriteria'] == "costOnly":
+                            weight_values_list = list()
+
+                            for award in range(quantity_of_object_into_list_of_awards_id_from_release):
+                                weight_values_list.append(final_expected_awards_array[award]['weightedValue'][
+                                                              'amount'])
+                            min_weight_value = min(weight_values_list)
+                            if final_expected_awards_array[award]['weightedValue']['amount'] == min_weight_value:
+                                final_expected_awards_array[award]['statusDetails'] = "awaiting"
+                            else:
+                                final_expected_awards_array[award]['statusDetails'] = "empty"
+                            awards_status_details_list = list()
+                            try:
+                                """
+                                Check how many awards have statusDetails 'awaiting'.
+                                """
+                                for award in range(quantity_of_object_into_list_of_awards_id_from_release):
+                                    if final_expected_awards_array[award]['statusDetails'] == "awaiting":
+                                        awards_status_details_list.append(
+                                            final_expected_awards_array[award]['relatedBid'])
+                            except Exception:
+                                raise Exception(
+                                    "Impossible to check how many awards have statusDetails 'awaiting'.")
+                            try:
+                                """
+                                Check 'statusDetails' into final_expected_awards_array.
+                                """
+                                if len(awards_status_details_list) > 1:
+                                    for award in range(quantity_of_object_into_list_of_awards_id_from_release):
+                                        if final_expected_awards_array[award]['relatedBid'] == \
+                                                GlobalClassCreateFirstBid.bid_id:
+                                            final_expected_awards_array[award]['statusDetails'] = "awaiting"
+                                        else:
+                                            final_expected_awards_array[award]['statusDetails'] = "empty"
+                            except Exception:
+                                raise Exception("Impossible to check 'statusDetails' into "
+                                                "final_expected_awards_array.")
+                        else:
+                            try:
+                                """
+                                Check 'statusDetails' into final_expected_awards_array.
+                                """
+                                for award in range(quantity_of_object_into_list_of_awards_id_from_release):
+                                    if final_expected_awards_array[award]['relatedBid'] == \
+                                            GlobalClassCreateFirstBid.bid_id:
+                                        final_expected_awards_array[award]['statusDetails'] = "awaiting"
+                                    else:
+                                        final_expected_awards_array[award]['statusDetails'] = "empty"
+                            except Exception:
+                                raise Exception("Impossible to check 'statusDetails' into "
+                                                "final_expected_awards_array.")
+                    except Exception:
+                        raise Exception("Impossible to set 'statusDetails' for award, "
+                                        "according with rule FReq-1.4.1.8.")
+                except Exception:
+                    raise Exception("Impossible to prepare expected awards array")
+
+                try:
+                    """
+                    Prepare expected awardPeriod object.
+                    """
+                    final_expected_award_period_object = {
+                        "startDate": actual_tp_release_after_tender_period_end_expired['releases'][0]['tender'][
+                            'tenderPeriod']['endDate']
+                    }
+                except Exception:
+                    raise Exception("Prepare expected awardPeriod object.")
+
+                try:
+                    """
+                        If compare_releases !=expected_result,
+                        then return process steps by operation-id.
+                        """
+                    if compare_releases == expected_result:
+                        pass
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=tender_period_end_feed_point_message['X-OPERATION-ID'])
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                with allure.step(
+                        'Check a difference of comparing Tp release before '
+                        'TenderPeriodEnd expiring and Tp release after TenderPeriodEnd expiring.'):
+                    allure.attach(json.dumps(compare_releases),
+                                  "Actual result of comparing Tp releases.")
+                    allure.attach(json.dumps(expected_result),
+                                  "Expected result of comparing Tp releases.")
+                    assert compare_releases == expected_result
         #
         #     with allure.step(f'# {step_number}.4. Check MS release'):
         #         """
