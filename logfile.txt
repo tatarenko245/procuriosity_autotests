@@ -1970,3 +1970,11 @@ Class = KafkaMessage ->
 Method = declare_non_conflict_interest_message_is_successful -> 
 Actual result: check_x_response_id = f7d4b174-50e1-4d94-b13e-a68fe87ae75a is not correct.
 Expected result: actual result must be UUID v.4
+
+2022-03-11 19:32:14.459594
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = get_message_from_kafka_by_ocid_and_initiator -> 
+Message: Could not get message: [].
+Check message into Kafka topic.
+Probably, there is an error.

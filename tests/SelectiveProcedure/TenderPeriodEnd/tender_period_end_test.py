@@ -16,7 +16,9 @@ from tests.utils.PayloadModel.SelectiveProcedure.StartSecondStage.start_second_s
     StartSecondStagePreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.SubmitBid.bid_prepared_payload import BidPreparePayload
-from tests.utils.functions import time_bot, get_id_token_of_qualification_in_pending_awaiting_state
+from tests.utils.ReleaseModel.SelectiveProcedure.TenderPeriodEnd.tender_period_end_release import \
+    TenderPeriodExpectedChanges
+from tests.utils.functions import time_bot, get_id_token_of_qualification_in_pending_awaiting_state, is_it_uuid
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -293,7 +295,7 @@ class TestTenderPeriodEnd:
             if qu['status'] == "pending":
                 if qu['statusDetails'] == "awaiting":
                     for s in actual_tp_release_before_qualif_declaration_creation[
-                        'releases'][0]['submissions']['details']:
+                            'releases'][0]['submissions']['details']:
                         if s['id'] == qu['relatedSubmission']:
                             for cand in range(len(s['candidates'])):
                                 candidate_dictionary = {
@@ -524,6 +526,10 @@ class TestTenderPeriodEnd:
                 payload=submit_bid_payload_for_first_invitation
             )
 
+            time.sleep(5)
+            kafka_message_class = KafkaMessage(submit_bid_operation_id_for_first_invitation)
+            submit_bid_feed_point_message_by_first_tenderer = kafka_message_class.get_message_from_kafka()
+
         step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: SubmitBid process by second tenderer.'):
             """
@@ -556,6 +562,9 @@ class TestTenderPeriodEnd:
                 test_mode=True,
                 payload=submit_bid_payload_for_second_invitation
             )
+
+            kafka_message_class = KafkaMessage(submit_bid_operation_id_for_second_invitation)
+            submit_bid_feed_point_message_by_second_tenderer = kafka_message_class.get_message_from_kafka()
 
         actual_tp_release_before_tender_period_end_expired = requests.get(url=f"{pn_url}/{tp_id}").json()
         actual_ms_release_before_tender_period_end_expired = requests.get(url=f"{pn_url}/{pn_ocid}").json()
@@ -613,7 +622,7 @@ class TestTenderPeriodEnd:
             with allure.step(f'# {step_number}.2. Check TP release'):
                 """
                 Compare actual Tp release before TenderPeriodEnd expiring and
-                actual Tp release after TenderPeriodENd expiring.
+                actual Tp release after TenderPeriodEnd expiring.
                 """
                 allure.attach(str(json.dumps(actual_tp_release_before_tender_period_end_expired)),
                               "Actual TP release before TenderPeriodEnd expiring.")
@@ -668,16 +677,6 @@ class TestTenderPeriodEnd:
                     }
                 }
 
-                print("compare releasse")
-                print(json.dumps(compare_releases))
-
-                print("expected result")
-                print(json.dumps(expected_result))
-
-                print("-------")
-                print("actual awards")
-                print(json.dumps(actual_tp_release_after_tender_period_end_expired['releases'][0]['awards']))
-
                 try:
                     """
                     Prepare expected award array
@@ -685,7 +684,7 @@ class TestTenderPeriodEnd:
                     final_expected_awards_array = list()
 
                     list_of_awards_id_from_release = list()
-                    for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']:
+                    for i in actual_tp_release_after_tender_period_end_expired['releases'][0]['awards']:
                         for i_1 in i:
                             if i_1 == "id":
                                 list_of_awards_id_from_release.append(i['id'])
@@ -693,20 +692,30 @@ class TestTenderPeriodEnd:
                         len(list_of_awards_id_from_release)
 
                     list_of_awards_suppliers_from_release = list()
-                    for i in GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards']:
+                    for i in actual_tp_release_after_tender_period_end_expired['releases'][0]['awards']:
                         for i_1 in i:
                             if i_1 == "suppliers":
                                 list_of_awards_suppliers_from_release.append(i['suppliers'])
 
                     expected_awards_array_first = TenderPeriodExpectedChanges(
-                        environment=GlobalClassMetadata.environment,
-                        language=GlobalClassMetadata.language
-                    ).prepare_array_of_awards_mapper(bid_payload=GlobalClassCreateFirstBid.payload)
+                        environment=environment,
+                        language=language,
+                        host_for_services=get_hosts[2]
+                    ).prepare_array_of_awards_mapper(
+                        bid_payload=submit_bid_payload_for_first_invitation,
+                        actual_tp_release_after_tender_period_end=actual_tp_release_after_tender_period_end_expired,
+                        tender_period_end_feed_point_message=tender_period_end_feed_point_message
+                    )
 
                     expected_awards_array_second = TenderPeriodExpectedChanges(
-                        environment=GlobalClassMetadata.environment,
-                        language=GlobalClassMetadata.language
-                    ).prepare_array_of_awards_mapper(bid_payload=GlobalClassCreateSecondBid.payload)
+                        environment=environment,
+                        language=language,
+                        host_for_services=get_hosts[2]
+                    ).prepare_array_of_awards_mapper(
+                        bid_payload=submit_bid_payload_for_second_invitation,
+                        actual_tp_release_after_tender_period_end=actual_tp_release_after_tender_period_end_expired,
+                        tender_period_end_feed_point_message=tender_period_end_feed_point_message
+                    )
 
                     expected_awards_array = expected_awards_array_first + expected_awards_array_second
 
@@ -739,13 +748,13 @@ class TestTenderPeriodEnd:
                                 Check that actual_ev_release['releases'][0]['awards'][0]['id'] is uuid version 4
                                 """
                                 check_award_id = is_it_uuid(
-                                    uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                    uuid_to_test=actual_tp_release_after_tender_period_end_expired[
                                         'releases'][0]['awards'][award]['id'],
                                     version=4
                                 )
                                 if check_award_id is True:
                                     final_expected_awards_array[award]['id'] = \
-                                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
+                                        actual_tp_release_after_tender_period_end_expired[
                                             'releases'][0]['awards'][award]['id']
                                 else:
                                     raise Exception("actual_ev_release['releases'][0]['awards'][0]['id'] "
@@ -760,11 +769,11 @@ class TestTenderPeriodEnd:
                         """
                         Set 'statusDetails' for award, according with rule FReq-1.4.1.8.
                         """
-                        if GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
+                        if actual_tp_release_after_tender_period_end_expired['releases'][0]['tender'][
                             'awardCriteria'] == "ratedCriteria" or \
-                                GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
+                                actual_tp_release_after_tender_period_end_expired['releases'][0]['tender'][
                                     'awardCriteria'] == "qualityOnly" or \
-                                GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
+                                actual_tp_release_after_tender_period_end_expired['releases'][0]['tender'][
                                     'awardCriteria'] == "costOnly":
                             weight_values_list = list()
 
@@ -795,7 +804,8 @@ class TestTenderPeriodEnd:
                                 if len(awards_status_details_list) > 1:
                                     for award in range(quantity_of_object_into_list_of_awards_id_from_release):
                                         if final_expected_awards_array[award]['relatedBid'] == \
-                                                GlobalClassCreateFirstBid.bid_id:
+                                                submit_bid_feed_point_message_by_first_tenderer['data']['outcomes'][
+                                                    'bids'][0]['id']:
                                             final_expected_awards_array[award]['statusDetails'] = "awaiting"
                                         else:
                                             final_expected_awards_array[award]['statusDetails'] = "empty"
@@ -809,7 +819,8 @@ class TestTenderPeriodEnd:
                                 """
                                 for award in range(quantity_of_object_into_list_of_awards_id_from_release):
                                     if final_expected_awards_array[award]['relatedBid'] == \
-                                            GlobalClassCreateFirstBid.bid_id:
+                                            submit_bid_feed_point_message_by_first_tenderer['data']['outcomes'][
+                                                'bids'][0]['id']:
                                         final_expected_awards_array[award]['statusDetails'] = "awaiting"
                                     else:
                                         final_expected_awards_array[award]['statusDetails'] = "empty"
@@ -821,6 +832,89 @@ class TestTenderPeriodEnd:
                                         "according with rule FReq-1.4.1.8.")
                 except Exception:
                     raise Exception("Impossible to prepare expected awards array")
+
+                try:
+                    """
+                    Prepare expected bid object
+                    """
+                    final_expected_bids_object = {"details": []}
+                    expected_bids_array = list()
+
+                    expected_bids_object_first = TenderPeriodExpectedChanges(
+                        environment=environment,
+                        language=language,
+                        host_for_services=get_hosts[2]
+                    ).prepare_bid_details_mapper(
+                        bid_payload=submit_bid_payload_for_first_invitation,
+                        bid_feed_point_message=submit_bid_feed_point_message_by_first_tenderer,
+                        actual_tp_release_after_tender_period_end=actual_tp_release_after_tender_period_end_expired,
+                        tender_period_end_feed_point_message=tender_period_end_feed_point_message
+                    )
+                    expected_bids_array.append(expected_bids_object_first)
+
+                    expected_bids_object_second = TenderPeriodExpectedChanges(
+                        environment=environment,
+                        language=language,
+                        host_for_services=get_hosts[2]
+                    ).prepare_bid_details_mapper(
+                        bid_payload=submit_bid_payload_for_second_invitation,
+                        bid_feed_point_message=submit_bid_feed_point_message_by_second_tenderer,
+                        actual_tp_release_after_tender_period_end=actual_tp_release_after_tender_period_end_expired,
+                        tender_period_end_feed_point_message=tender_period_end_feed_point_message
+                    )
+                    expected_bids_array.append(expected_bids_object_second)
+                    try:
+                        """
+                        Check how many quantity of object into expected_bids_array.
+                        """
+                        list_of_expected_bids_array_tenderers = list()
+                        for i in expected_bids_array:
+                            for i_1 in i:
+                                if i_1 == "tenderers":
+                                    list_of_expected_bids_array_tenderers.append(i_1)
+                        quantity_of_list_of_expected_bids_array_tenderers = len(list_of_expected_bids_array_tenderers)
+                    except Exception:
+                        raise Exception("Impossible to check how many quantity of object into expected_bids_array.")
+                    try:
+                        """
+                        Check how many quantity of object into
+                        GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]'bids']['details'].
+                        """
+                        list_of_releases_bids_details_tenderers = list()
+                        for i in \
+                                actual_tp_release_after_tender_period_end_expired['releases'][0]['bids']['details']:
+                            for i_1 in i:
+                                if i_1 == "tenderers":
+                                    list_of_releases_bids_details_tenderers.append(i['tenderers'])
+                        quantity_of_list_of_releases_bids_details_tenderers = \
+                            len(list_of_releases_bids_details_tenderers)
+                    except Exception:
+                        raise Exception("Impossible to calculate how many quantity of object into "
+                                        "expected_bids_array['details']['tenderers']")
+                    if quantity_of_list_of_expected_bids_array_tenderers == \
+                            quantity_of_list_of_releases_bids_details_tenderers:
+                        for q in range(quantity_of_list_of_releases_bids_details_tenderers):
+                            for q_1 in range(quantity_of_list_of_expected_bids_array_tenderers):
+                                if expected_bids_array[q_1]['tenderers'] == \
+                                        list_of_releases_bids_details_tenderers[q]:
+                                    final_expected_bids_object['details'].append(
+                                        expected_bids_array[q_1]['value'])
+                    else:
+                        raise Exception("Error: quantity_of_details_id_into_expected_bids !="
+                                        "quantity_of_details_id_into_releases_bids")
+                    try:
+                        """
+                        Set permanent id for 'details' into expected_bids_array['details'].
+                        """
+                        for d in range(quantity_of_list_of_expected_bids_array_tenderers):
+                            final_expected_bids_object['details'][d]['id'] = \
+                                actual_tp_release_after_tender_period_end_expired['releases'][0]['bids'][
+                                    'details'][d]['id']
+                    except Exception:
+                        raise Exception("Impossible to set permanent id for 'details', "
+                                        "'evidences', 'requirementResponses' into expected_bids_array['details'].")
+                except Exception:
+                    raise Exception("Impossible to prepare expected bids object")
 
                 try:
                     """
@@ -856,75 +950,105 @@ class TestTenderPeriodEnd:
                     allure.attach(json.dumps(expected_result),
                                   "Expected result of comparing Tp releases.")
                     assert compare_releases == expected_result
-        #
-        #     with allure.step(f'# {step_number}.4. Check MS release'):
-        #         """
-        #         Compare actual Ms release before SubmitBid creating and
-        #         actual Ms release after SubmitBid creating.
-        #         """
-        #         allure.attach(json.dumps(actual_ms_release_before_submit_bid),
-        #                       "Actual MS release before SubmitBid creation")
-        #
-        #         actual_ms_release_after_submit_bid = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-        #         allure.attach(json.dumps(actual_ms_release_after_submit_bid),
-        #                       "Actual MS release after SubmitBid creation")
-        #
-        #         compare_releases = dict(
-        #             DeepDiff(actual_ms_release_before_submit_bid,
-        #                      actual_ms_release_after_submit_bid))
-        #
-        #         expected_result = {}
-        #
-        #         try:
-        #             """
-        #             If TestCase was passed, then cLean up the database.
-        #             If TestCase was failed, then return process steps by operation-id.
-        #             """
-        #             if compare_releases == expected_result:
-        #
-        #                 connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-        #
-        #                 connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-        #
-        #                 connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.submission_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.qualification_declaration_process_cleanup_table_of_services(
-        #                     pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.qualification_consideration_process_cleanup_table_of_services(
-        #                     pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.qualification_protocol_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.qualification_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
-        #
-        #                 connection_to_database.cleanup_steps_of_process_from_orchestrator(
-        #                     pn_ocid=pn_ocid)
-        #
-        #             else:
-        #                 with allure.step('# Steps from Casandra DataBase'):
-        #                     steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-        #                         operation_id=submit_bid_operation_id_for_second_invitation)
-        #                     allure.attach(steps, "Cassandra DataBase: steps of process")
-        #         except ValueError:
-        #             raise ValueError("Can not return BPE operation step")
-        #
-        #         with allure.step('Check a difference of comparing Ms release before '
-        #                          'SubmitBid creating and Ms release after SubmitBid creating.'):
-        #             allure.attach(json.dumps(compare_releases),
-        #                           "Actual result of comparing MS releases.")
-        #             allure.attach(json.dumps(expected_result),
-        #                           "Expected result of comparing Ms releases.")
-        #             assert compare_releases == expected_result
+
+                with allure.step(
+                        'Check a difference of comparing actual awards array and '
+                        'expected awards array.'):
+                    allure.attach(json.dumps(actual_tp_release_after_tender_period_end_expired[
+                                                 'releases'][0]['awards']), "Actual awards array.")
+                    allure.attach(json.dumps(final_expected_awards_array),
+                                  "Expected awards array")
+                    assert actual_tp_release_after_tender_period_end_expired[
+                                                 'releases'][0]['awards'] == final_expected_awards_array
+
+                with allure.step(
+                        'Check a difference of comparing actual bids object and '
+                        'expected bids object.'):
+                    allure.attach(json.dumps(actual_tp_release_after_tender_period_end_expired[
+                                                 'releases'][0]['bids']), "Actual bids object.")
+                    allure.attach(json.dumps(final_expected_bids_object),
+                                  "Expected bids object")
+                    assert actual_tp_release_after_tender_period_end_expired[
+                                                 'releases'][0]['bids'] == final_expected_bids_object
+
+                with allure.step(
+                        'Check a difference of comparing actual awardPeriod object and '
+                        'expected awardPeriod object.'):
+                    allure.attach(json.dumps(actual_tp_release_after_tender_period_end_expired[
+                                                 'releases'][0]['tender']['awardPeriod']), "Actual awardPeriod object.")
+                    allure.attach(json.dumps(final_expected_award_period_object),
+                                  "Expected awardPeriod object")
+                    assert actual_tp_release_after_tender_period_end_expired[
+                               'releases'][0]['tender']['awardPeriod'] == final_expected_award_period_object
+
+            with allure.step(f'# {step_number}.3. Check MS release'):
+                """
+                Compare actual Tp release before TenderPeriodEnd expiring and
+                actual Tp release after TenderPeriodEnd expiring.
+                """
+                allure.attach(json.dumps(actual_ms_release_before_tender_period_end_expired),
+                              "Actual MS release before TenderPeriodEnd expiring")
+
+                actual_ms_release_after_tender_period_end_expired = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(json.dumps(actual_ms_release_after_tender_period_end_expired),
+                              "Actual MS release after TenderPeriodEnd expiring")
+
+                compare_releases = dict(
+                    DeepDiff(actual_ms_release_before_tender_period_end_expired,
+                             actual_ms_release_after_tender_period_end_expired))
+
+                expected_result = {}
+
+                try:
+                    """
+                    If TestCase was passed, then cLean up the database.
+                    If TestCase was failed, then return process steps by operation-id.
+                    """
+                    if compare_releases == expected_result:
+
+                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+
+                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+
+                        connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.submission_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.qualification_declaration_process_cleanup_table_of_services(
+                            pn_ocid=pn_ocid)
+
+                        connection_to_database.qualification_consideration_process_cleanup_table_of_services(
+                            pn_ocid=pn_ocid)
+
+                        connection_to_database.qualification_protocol_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.qualification_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
+
+                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
+                            pn_ocid=pn_ocid)
+
+                    else:
+                        with allure.step('# Steps from Casandra DataBase'):
+                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                operation_id=submit_bid_operation_id_for_second_invitation)
+                            allure.attach(steps, "Cassandra DataBase: steps of process")
+                except ValueError:
+                    raise ValueError("Can not return BPE operation step")
+
+                with allure.step('Check a difference of comparing Ms release before '
+                                 'TenderPeriodEnd expiring and Ms release after TenderPeriodEnd expiring.'):
+                    allure.attach(json.dumps(compare_releases),
+                                  "Actual result of comparing MS releases.")
+                    allure.attach(json.dumps(expected_result),
+                                  "Expected result of comparing Ms releases.")
+                    assert compare_releases == expected_result

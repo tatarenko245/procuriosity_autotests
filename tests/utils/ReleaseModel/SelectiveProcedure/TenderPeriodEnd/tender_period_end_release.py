@@ -93,7 +93,7 @@ class TenderPeriodExpectedChanges:
         return expected_awards_array
 
     def prepare_bid_details_mapper(
-            self, bid_payload, bid_feed_point_message, actual_tp_release_after_tender_period_end_expired,
+            self, bid_payload, bid_feed_point_message, actual_tp_release_after_tender_period_end,
             tender_period_end_feed_point_message):
         expected_bid_object = {}
         expected_bid_object.update(self.constructor.tp_release_bid_object())
@@ -112,13 +112,13 @@ class TenderPeriodExpectedChanges:
             raise Exception("Check payload['bid']['tenderers']['identifier']['id']")
         try:
             check = is_it_uuid(
-                uuid_to_test=actual_tp_release_after_tender_period_end_expired['releases'][0]['bids']['details'][0][
+                uuid_to_test=actual_tp_release_after_tender_period_end['releases'][0]['bids']['details'][0][
                     'id'],
                 version=4
             )
             if check is True:
                 expected_bid_object['details'][0]['id'] = \
-                    actual_tp_release_after_tender_period_end_expired['releases'][0]['bids']['details'][0]['id']
+                    actual_tp_release_after_tender_period_end['releases'][0]['bids']['details'][0]['id']
             else:
                 raise ValueError("businessFunctions.id in release must be uuid version 4")
         except Exception:
@@ -134,39 +134,6 @@ class TenderPeriodExpectedChanges:
             expected_bid_object['details'][0]['tenderers'][q]['name'] = bid_payload['bid']['tenderers'][q]['name']
         expected_bid_object['details'][0]['value']['amount'] = bid_payload['bid']['value']['amount']
         expected_bid_object['details'][0]['value']['currency'] = bid_payload['bid']['value']['currency']
-        try:
-            """
-            Check how many quantity of object into payload['bid']['documents'].
-            """
-            list_of_payload_bid_documents_id = list()
-            for i in bid_payload['bid']['documents']:
-                for i_1 in i:
-                    if i_1 == "id":
-                        list_of_payload_bid_documents_id.append(i_1)
-            quantity_of_bid_documents_into_payload = len(list_of_payload_bid_documents_id)
-        except Exception:
-            raise Exception("Check payload['bid']['documents']['id']")
-        for q_one in range(quantity_of_bid_documents_into_payload):
-            if actual_tp_release_after_tender_period_end_expired['releases'][0]['tender'][
-                'awardCriteriaDetails'] == "automated" and \
-                    bid_payload['bid']['documents'][q_one]['documentType'] == "submissionDocuments" or \
-                    actual_tp_release_after_tender_period_end_expired['releases'][0]['tender'][
-                        'awardCriteriaDetails'] == "automated" and \
-                    bid_payload['bid']['documents'][q_one]['documentType'] == "x_eligibilityDocuments" or \
-                    actual_tp_release_after_tender_period_end_expired['releases'][0]['tender'][
-                        'awardCriteriaDetails'] == "manual":
-                some_document = list()
-                some_document.append(self.constructor.tp_release_bid_details_document_object())
-                some_document[0]['id'] = bid_payload['bid']['documents'][q_one]['id']
-                some_document[0]['documentType'] = bid_payload['bid']['documents'][q_one]['documentType']
-                some_document[0]['title'] = bid_payload['bid']['documents'][q_one]['title']
-                some_document[0]['description'] = bid_payload['bid']['documents'][q_one]['description']
-                some_document[0]['url'] = f"{self.metadata_document_url}/" + bid_payload['bid'][
-                    'documents'][q_one]['id']
-                some_document[0]['datePublished'] = \
-                    tender_period_end_feed_point_message['data']['operationDate']
-                some_document[0]['relatedLots'] = bid_payload['bid']['documents'][q_one]['relatedLots']
-                expected_bid_object['details'][0]['documents'].append(some_document[0])
 
         expected_bid_object['details'][0]['relatedLots'] = bid_payload['bid']['relatedLots']
 
@@ -190,7 +157,7 @@ class TenderPeriodExpectedChanges:
                 """
                 list_of_release_requirement_responses_id = list()
                 for i in \
-                        actual_tp_release_after_tender_period_end_expired['releases'][0]['bids']['details'][0][
+                        actual_tp_release_after_tender_period_end['releases'][0]['bids']['details'][0][
                             'requirementResponses']:
                     for i_1 in i:
                         if i_1 == "id":
@@ -221,13 +188,13 @@ class TenderPeriodExpectedChanges:
                 )
                 try:
                     check = is_it_uuid(
-                        uuid_to_test=actual_tp_release_after_tender_period_end_expired['releases'][0]['bids'][
+                        uuid_to_test=actual_tp_release_after_tender_period_end['releases'][0]['bids'][
                             'details'][0]['requirementResponses'][q_two]['id'],
                         version=4
                     )
                     if check is True:
                         expected_bid_object['details'][0]['requirementResponses'][q_two]['id'] = \
-                            actual_tp_release_after_tender_period_end_expired['releases'][0]['bids']['details'][0][
+                            actual_tp_release_after_tender_period_end['releases'][0]['bids']['details'][0][
                                 'requirementResponses'][q_two]['id']
                     else:
                         raise ValueError("requirementResponses.id in release must be uuid version 4")
@@ -271,7 +238,7 @@ class TenderPeriodExpectedChanges:
                     """
                     list_of_release_requirement_responses_evidences_id = list()
                     for i in \
-                            actual_tp_release_after_tender_period_end_expired['releases'][0]['bids']['details'][0][
+                            actual_tp_release_after_tender_period_end['releases'][0]['bids']['details'][0][
                                 'requirementResponses'][q_two]['evidences']:
                         for i_1 in i:
                             if i_1 == "id":
@@ -303,14 +270,14 @@ class TenderPeriodExpectedChanges:
                     )
                     try:
                         check = is_it_uuid(
-                            uuid_to_test=actual_tp_release_after_tender_period_end_expired['releases'][0]['bids'][
+                            uuid_to_test=actual_tp_release_after_tender_period_end['releases'][0]['bids'][
                                 'details'][0]['requirementResponses'][q_two]['evidences'][q_three]['id'],
                             version=4
                         )
                         if check is True:
                             expected_bid_object['details'][0]['requirementResponses'][q_two][
                                 'evidences'][q_three]['id'] = \
-                                actual_tp_release_after_tender_period_end_expired['releases'][0]['bids'][
+                                actual_tp_release_after_tender_period_end['releases'][0]['bids'][
                                     'details'][0]['requirementResponses'][q_two]['evidences'][q_three]['id']
                         else:
                             raise ValueError("requirementResponses.id in release must be uuid version 4")
@@ -336,7 +303,7 @@ class TenderPeriodExpectedChanges:
         }
         return expected_bid_object_mapper
 
-    def prepare_array_of_awards_mapper(self, bid_payload, actual_tp_release_after_tender_period_end_expired,
+    def prepare_array_of_awards_mapper(self, bid_payload, actual_tp_release_after_tender_period_end,
                                        tender_period_end_feed_point_message):
         expected_array_of_awards_mapper = list()
         try:
@@ -354,7 +321,7 @@ class TenderPeriodExpectedChanges:
             lots_have_active_status = list()
             lots_have_unsuccessful_or_cancelled_status = list()
             for bl in related_lots_array:
-                for li in actual_tp_release_after_tender_period_end_expired['releases'][0]['tender']['lots']:
+                for li in actual_tp_release_after_tender_period_end['releases'][0]['tender']['lots']:
                     if li['id'] == bl:
                         if li['status'] == "active":
                             lots_have_active_status.append(li['id'])
@@ -409,21 +376,21 @@ class TenderPeriodExpectedChanges:
                     Set 'relatedBid' into successful_award_array[al]['relatedLots'].
                     """
                     for detail in \
-                            actual_tp_release_after_tender_period_end_expired['releases'][0]['bids']['details']:
+                            actual_tp_release_after_tender_period_end['releases'][0]['bids']['details']:
                         if detail['tenderers'] == successful_award_object['suppliers']:
                             successful_award_object['relatedBid'] = detail['id']
                 except Exception:
                     raise Exception("Impossible to set 'relatedBid' into successful_award_array[al]['relatedLots'].")
 
-                if "criteria" in actual_tp_release_after_tender_period_end_expired['releases'][0]['tender']:
+                if "criteria" in actual_tp_release_after_tender_period_end['releases'][0]['tender']:
                     try:
                         """
                         Check 'awardCriteria' & 'awardCriteriaDetails' into 
                         GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['awardCriteria'].
                         """
-                        award_criteria = actual_tp_release_after_tender_period_end_expired['releases'][0]['tender'][
+                        award_criteria = actual_tp_release_after_tender_period_end['releases'][0]['tender'][
                             'awardCriteria']
-                        award_criteria_details = actual_tp_release_after_tender_period_end_expired['releases'][0][
+                        award_criteria_details = actual_tp_release_after_tender_period_end['releases'][0][
                             'tender']['awardCriteriaDetails']
 
                         if award_criteria == "priceOnly" and award_criteria_details == "automated":
@@ -453,7 +420,7 @@ class TenderPeriodExpectedChanges:
                                 """
                                 for rs in list_of_payload_requirement_id:
                                     for cr in \
-                                            actual_tp_release_after_tender_period_end_expired['releases'][0][
+                                            actual_tp_release_after_tender_period_end['releases'][0][
                                                 'tender']['criteria']:
                                         if cr['classification']['id'][:20] == "CRITERION.SELECTION." and \
                                                 cr['relatesTo'] == "tenderer" or \
@@ -467,7 +434,7 @@ class TenderPeriodExpectedChanges:
                                                 for cr_2 in cr_1['requirements']:
                                                     if rs == cr_2['id']:
                                                         for con in \
-                                                                actual_tp_release_after_tender_period_end_expired[
+                                                                actual_tp_release_after_tender_period_end[
                                                                     'releases'][0]['tender']['conversions']:
                                                             if con['relatedItem'] == rs:
                                                                 coefficient_mapper = {
@@ -488,7 +455,7 @@ class TenderPeriodExpectedChanges:
                                                 for cr_2 in cr_1['requirements']:
                                                     if rs == cr_2['id']:
                                                         for con in \
-                                                                actual_tp_release_after_tender_period_end_expired[
+                                                                actual_tp_release_after_tender_period_end[
                                                                     'releases'][0]['tender']['conversions']:
                                                             if con['relatedItem'] == rs:
                                                                 coefficient_mapper = {
@@ -532,7 +499,7 @@ class TenderPeriodExpectedChanges:
                     Set permanent id for successful_award_array[al]['id'].
                     """
                     successful_award_object['id'] = \
-                        actual_tp_release_after_tender_period_end_expired['releases'][0]['awards'][al]['id']
+                        actual_tp_release_after_tender_period_end['releases'][0]['awards'][al]['id']
                 except Exception:
                     raise Exception("Impossible to check how many quantity of object into "
                                     "GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['awards'].")
