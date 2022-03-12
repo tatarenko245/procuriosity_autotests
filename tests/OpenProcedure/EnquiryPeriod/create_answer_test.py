@@ -218,9 +218,8 @@ class TestCreateAnswer:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
-                    pmd=pmd,
-                    enquiry_interval=interval_from_clarification_rules + 1,
-                    tender_interval=interval_from_submission_rules + 1,
+                    enquiry_interval=interval_from_clarification_rules + 60,
+                    tender_interval=interval_from_submission_rules + 60,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreatePn.actual_pn_release,
@@ -567,9 +566,8 @@ class TestCreateAnswer:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
-                    pmd=pmd,
-                    enquiry_interval=interval_from_clarification_rules + 1,
-                    tender_interval=interval_from_submission_rules + 1,
+                    enquiry_interval=interval_from_clarification_rules + 60,
+                    tender_interval=interval_from_submission_rules + 60,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreatePn.actual_pn_release,
@@ -1030,9 +1028,8 @@ class TestCreateAnswer:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
-                    pmd=pmd,
-                    enquiry_interval=interval_from_clarification_rules + 1,
-                    tender_interval=interval_from_submission_rules + 1,
+                    enquiry_interval=interval_from_clarification_rules + 60,
+                    tender_interval=interval_from_submission_rules + 60,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreatePn.actual_pn_release,
@@ -1491,9 +1488,8 @@ class TestCreateAnswer:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_full_data_model_with_lots_items_documents_criteria_conv_auction(
-                    pmd=pmd,
-                    enquiry_interval=interval_from_clarification_rules + 1,
-                    tender_interval=interval_from_submission_rules + 1,
+                    enquiry_interval=interval_from_clarification_rules + 60,
+                    tender_interval=interval_from_submission_rules + 60,
                     quantity_of_lots_object=2,
                     quantity_of_items_object=2,
                     based_stage_release=GlobalClassCreatePn.actual_pn_release,
