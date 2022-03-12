@@ -500,12 +500,12 @@ class TestAwardEvaluation:
             """
             time.sleep(1)
 
-            Requests().create_award_consideration(
+            Requests().do_award_consideration(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassAwardConsideration.access_token,
                 x_operation_id=GlobalClassAwardConsideration.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 award_id=GlobalClassCreateDeclareNonConflict.award_id,
                 award_token=GlobalClassCreateDeclareNonConflict.award_token,
                 test_mode=True
@@ -1317,12 +1317,12 @@ class TestAwardEvaluation:
             """
             time.sleep(1)
 
-            Requests().create_award_consideration(
+            Requests().do_award_consideration(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassAwardConsideration.access_token,
                 x_operation_id=GlobalClassAwardConsideration.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 award_id=GlobalClassCreateDeclareNonConflict.award_id,
                 award_token=GlobalClassCreateDeclareNonConflict.award_token,
                 test_mode=True
@@ -2218,12 +2218,12 @@ class TestAwardEvaluation:
             """
             time.sleep(1)
 
-            Requests().create_award_consideration(
+            Requests().do_award_consideration(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassAwardConsideration.access_token,
                 x_operation_id=GlobalClassAwardConsideration.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 award_id=GlobalClassCreateDeclareNonConflict.award_id,
                 award_token=GlobalClassCreateDeclareNonConflict.award_token,
                 test_mode=True
