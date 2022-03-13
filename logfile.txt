@@ -1,0 +1,7 @@
+
+2022-03-13 13:05:20.940235
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = declare_non_conflict_interest_message_is_successful -> 
+Actual result: check_x_response_id = 793d4560-a2bd-11ec-9ce2-e54c8e6ce434 is not correct.
+Expected result: actual result must be UUID v.4

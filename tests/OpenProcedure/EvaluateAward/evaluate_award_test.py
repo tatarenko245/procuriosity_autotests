@@ -548,12 +548,12 @@ class TestAwardEvaluation:
                     based_stage_release=GlobalClassAwardConsideration.actual_ev_release
                 )
 
-            Requests().create_award_evaluation(
+            Requests().do_award_evaluation(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEvaluateAward.access_token,
                 x_operation_id=GlobalClassCreateEvaluateAward.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 award_id=GlobalClassCreateDeclareNonConflict.award_id,
                 award_token=GlobalClassCreateDeclareNonConflict.award_token,
                 payload=GlobalClassCreateEvaluateAward.payload,
@@ -580,7 +580,7 @@ class TestAwardEvaluation:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
 
                 try:
@@ -1364,12 +1364,12 @@ class TestAwardEvaluation:
                     award_status_details="unsuccessful"
                 )
 
-            Requests().create_award_evaluation(
+            Requests().do_award_evaluation(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEvaluateAward.access_token,
                 x_operation_id=GlobalClassCreateEvaluateAward.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 award_id=GlobalClassCreateDeclareNonConflict.award_id,
                 award_token=GlobalClassCreateDeclareNonConflict.award_token,
                 payload=GlobalClassCreateEvaluateAward.payload,
@@ -1396,7 +1396,7 @@ class TestAwardEvaluation:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
 
                 try:
@@ -2265,12 +2265,12 @@ class TestAwardEvaluation:
                     award_status_details="unsuccessful"
                 )
 
-            Requests().create_award_evaluation(
+            Requests().do_award_evaluation(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEvaluateAward.access_token,
                 x_operation_id=GlobalClassCreateEvaluateAward.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 award_id=GlobalClassCreateDeclareNonConflict.award_id,
                 award_token=GlobalClassCreateDeclareNonConflict.award_token,
                 payload=GlobalClassCreateEvaluateAward.payload,
@@ -2297,7 +2297,7 @@ class TestAwardEvaluation:
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
-                    ev_id=GlobalClassCreateCnOnPn.ev_id
+                    tender_id=GlobalClassCreateCnOnPn.ev_id
                 )
 
                 try:
