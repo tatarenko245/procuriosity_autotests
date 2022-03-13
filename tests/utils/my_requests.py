@@ -289,10 +289,10 @@ class Requests:
 
     @staticmethod
     @allure.step('Prepared request: award consideration')
-    def create_award_evaluation(host_of_request, access_token, x_operation_id, pn_ocid, ev_id, award_id,
-                                award_token, payload, test_mode=False):
+    def do_award_evaluation(host_of_request, access_token, x_operation_id, pn_ocid, tender_id, award_id,
+                            award_token, payload, test_mode=False):
         consideration = requests.post(
-            url=host_of_request + f"/do/award/{pn_ocid}/{ev_id}/{award_id}",
+            url=host_of_request + f"/do/award/{pn_ocid}/{tender_id}/{award_id}",
             params={
                 'testMode': test_mode
             },

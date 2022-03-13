@@ -7,6 +7,8 @@ from deepdiff import DeepDiff
 from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
+from tests.utils.PayloadModel.SelectiveProcedure.EvaluateAward.evaluate_award_prepared_payload import \
+    EvaluateAwardPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Qualification.qualification_prepared_payload import \
     QualificationPreparePayload
@@ -22,7 +24,7 @@ from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
 
-class TestAwardConsideration:
+class TestEvaluateAward:
     @allure.title("Check TP and MS releases data after AwardConsideration process.\n"
                   "------------------------------------------------\n"
                   "create Ei: obligatory data model without items array;\n"
@@ -39,7 +41,8 @@ class TestAwardConsideration:
                   "submit bid by first tenderer: obligatory data model;\n"
                   "submit bid by second tenderer: obligatory data model;\n"
                   "tender period end: payload is not needed\n"
-                  "award consideration: payload is not needed\n")
+                  "award consideration: payload is not needed\n"
+                  "evaluate award: obligatory data model\n")
     def test_check_tp_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database,
                                       queue_mapper):
         authorization = PlatformAuthorization(get_hosts[1])
@@ -574,8 +577,6 @@ class TestAwardConsideration:
             expected_time=actual_tp_release_before_award_consideration['releases'][0][
                 'tender']['awardPeriod']['startDate'])
 
-        actual_ms_release_before_award_consideration = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-
         award_id_in_pending_awaiting = None
         award_token_in_pending_awaiting = None
         for award in actual_tp_release_before_award_consideration['releases'][0]['awards']:
@@ -605,7 +606,7 @@ class TestAwardConsideration:
             """
             time.sleep(1)
 
-            synchronous_result_of_sending_the_request = Requests().do_award_consideration(
+            Requests().do_award_consideration(
                 host_of_request=get_hosts[1],
                 access_token=award_consideration_access_token,
                 x_operation_id=award_consideration_operation_id,
@@ -615,6 +616,54 @@ class TestAwardConsideration:
                 award_token=award_token_in_pending_awaiting,
                 test_mode=True
             )
+        time.sleep(15)
+        actual_tp_release_before_evaluate_award = requests.get(url=f"{pn_url}/{tp_id}").json()
+        actual_ms_release_before_evaluate_award = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+        award_id_in_pending_consideration = None
+        award_token_in_pending_consideration = None
+        for award in actual_tp_release_before_evaluate_award['releases'][0]['awards']:
+            if award['status'] == "pending" and award['statusDetails'] == "consideration":
+                award_id_in_pending_consideration = award['id']
+
+        for i in range(len(tender_period_end_feed_point_message['data']['outcomes']['awards'])):
+            if tender_period_end_feed_point_message['data']['outcomes']['awards'][i]['id'] == \
+                    award_id_in_pending_consideration:
+                award_token_in_pending_consideration = \
+                    tender_period_end_feed_point_message['data']['outcomes']['awards'][i]['X-TOKEN']
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Authorization platform one: EvaluateAward process.'):
+            """
+            Tender platform authorization for EvaluateAward process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            evaluate_award_access_token = authorization.get_access_token_for_platform_one()
+            evaluate_award_operation_id = authorization.get_x_operation_id(evaluate_award_access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send request to create EvaluateAward process.'):
+            """
+            Send api request on BPE host for EvaluateAward process.
+            Save synchronous result of sending the request and asynchronous result of sending the request.
+            """
+            time.sleep(1)
+
+            evaluate_award_payload = EvaluateAwardPreparePayload(
+                host_for_services=get_hosts[2]
+            ).create_evaluate_award_obligatory_data_model(
+                award_status_details="active"
+            )
+
+            synchronous_result_of_sending_the_request = Requests().do_award_evaluation(
+                host_of_request=get_hosts[1],
+                access_token=evaluate_award_access_token,
+                x_operation_id=evaluate_award_operation_id,
+                pn_ocid=pn_ocid,
+                tender_id=tp_id,
+                award_id=award_id_in_pending_consideration,
+                award_token=award_token_in_pending_consideration,
+                payload=evaluate_award_payload,
+                test_mode=True)
 
         step_number += 1
         with allure.step(f'# {step_number}.  See results after AwardConsideration process.'):
@@ -637,15 +686,15 @@ class TestAwardConsideration:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                award_consideration_feed_point_message = KafkaMessage(
-                    award_consideration_operation_id).get_message_from_kafka()
+                evaluate_award_feed_point_message = KafkaMessage(
+                    evaluate_award_operation_id).get_message_from_kafka()
 
-                allure.attach(str(award_consideration_feed_point_message), 'Message in feed point.')
+                allure.attach(str(evaluate_award_feed_point_message), 'Message in feed point.')
 
                 asynchronous_result_of_tender_period_end_was_checked = \
-                    kafka_message_class.award_or_qualification_consideration_message_is_successful(
+                    kafka_message_class.award_evaluating_message_is_successful(
                         environment=environment,
-                        kafka_message=award_consideration_feed_point_message,
+                        kafka_message=evaluate_award_feed_point_message,
                         pn_ocid=pn_ocid,
                         tender_id=tp_id
                     )
@@ -657,7 +706,7 @@ class TestAwardConsideration:
                     if asynchronous_result_of_tender_period_end_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=award_consideration_operation_id)
+                                operation_id=evaluate_award_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
@@ -671,19 +720,19 @@ class TestAwardConsideration:
 
             with allure.step(f'# {step_number}.3. Check TP release'):
                 """
-                Compare actual Tp release before AwardConsideration process and
-                actual Tp release after AwardConsideration process.
+                Compare actual Tp release before EvaluateAward process and
+                actual Tp release after EvaluateAward process.
                 """
-                allure.attach(str(json.dumps(actual_tp_release_before_award_consideration)),
-                              "Actual TP release before AwardConsideration process.")
+                allure.attach(str(json.dumps(actual_tp_release_before_evaluate_award)),
+                              "Actual TP release before EvaluateAward process.")
 
-                actual_tp_release_after_award_consideration = requests.get(url=f"{pn_url}/{tp_id}").json()
-                allure.attach(str(json.dumps(actual_tp_release_before_award_consideration)),
-                              "Actual TP release after AwardConsideration process.")
+                actual_tp_release_after_evaluate_award = requests.get(url=f"{pn_url}/{tp_id}").json()
+                allure.attach(str(json.dumps(actual_tp_release_after_evaluate_award)),
+                              "Actual TP release after EvaluateAward process.")
 
                 compare_releases = dict(
-                    DeepDiff(actual_tp_release_before_award_consideration,
-                             actual_tp_release_after_award_consideration)
+                    DeepDiff(actual_tp_release_before_evaluate_award,
+                             actual_tp_release_after_evaluate_award)
                 )
 
                 expected_result = {
@@ -691,18 +740,26 @@ class TestAwardConsideration:
                         "root['releases'][0]['id']": {
                             "new_value":
                                 f"{tp_id}-"
-                                f"{actual_tp_release_after_award_consideration['releases'][0]['id'][46:59]}",
+                                f"{actual_tp_release_after_evaluate_award['releases'][0]['id'][46:59]}",
                             "old_value":
                                 f"{tp_id}-"
-                                f"{actual_tp_release_before_award_consideration['releases'][0]['id'][46:59]}"
+                                f"{actual_tp_release_before_evaluate_award['releases'][0]['id'][46:59]}"
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": award_consideration_feed_point_message['data']['operationDate'],
-                            "old_value": actual_tp_release_before_award_consideration['releases'][0]['date']
+                            "new_value": evaluate_award_feed_point_message['data']['operationDate'],
+                            "old_value": actual_tp_release_before_evaluate_award['releases'][0]['date']
+                        },
+                        "root['releases'][0]['tag'][0]": {
+                            "new_value": "awardUpdate",
+                            "old_value": "award"
                         },
                         "root['releases'][0]['awards'][0]['statusDetails']": {
-                            'new_value': 'consideration',
-                            'old_value': 'awaiting'
+                            "new_value": "active",
+                            "old_value": "consideration"
+                        },
+                        "root['releases'][0]['awards'][0]['date']": {
+                            "new_value": evaluate_award_feed_point_message['data']['operationDate'],
+                            "old_value": actual_tp_release_before_evaluate_award['releases'][0]['awards'][0]['date']
                         }
                     }
                 }
@@ -717,14 +774,14 @@ class TestAwardConsideration:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=award_consideration_operation_id)
+                                operation_id=evaluate_award_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
                 with allure.step(
                         'Check a difference of comparing Tp release before '
-                        'AwardConsideration process and Tp release after AwardConsideration process.'):
+                        'EvaluateAward process and Tp release after EvaluateAward.'):
                     allure.attach(json.dumps(compare_releases),
                                   "Actual result of comparing Tp releases.")
                     allure.attach(json.dumps(expected_result),
@@ -733,19 +790,19 @@ class TestAwardConsideration:
 
             with allure.step(f'# {step_number}.4. Check MS release'):
                 """
-                Compare actual Tp release before AwardConsideration process and
-                actual Tp release after AwardConsideration process.
+                Compare actual Tp release before EvaluateAward process and
+                actual Tp release after EvaluateAward process.
                 """
-                allure.attach(json.dumps(actual_ms_release_before_award_consideration),
-                              "Actual MS release before AwardConsideration process.")
+                allure.attach(json.dumps(actual_ms_release_before_evaluate_award),
+                              "Actual MS release before EvaluateAward process.")
 
-                actual_ms_release_after_award_consideration = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-                allure.attach(json.dumps(actual_ms_release_after_award_consideration),
-                              "Actual MS release after AwardConsideration process.")
+                actual_ms_release_after_evaluate_award = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(json.dumps(actual_ms_release_after_evaluate_award),
+                              "Actual MS release after EvaluateAward process.")
 
                 compare_releases = dict(
-                    DeepDiff(actual_ms_release_before_award_consideration,
-                             actual_ms_release_after_award_consideration)
+                    DeepDiff(actual_ms_release_before_evaluate_award,
+                             actual_ms_release_after_evaluate_award)
                 )
 
                 expected_result = {}
@@ -791,13 +848,13 @@ class TestAwardConsideration:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=award_consideration_operation_id)
+                                operation_id=evaluate_award_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
                 with allure.step('Check a difference of comparing Ms release before '
-                                 'AwardConsideration process and Ms release after AwardConsideration process.'):
+                                 'EvaluateAward process and Ms release after EvaluateAward process.'):
                     allure.attach(json.dumps(compare_releases),
                                   "Actual result of comparing MS releases.")
                     allure.attach(json.dumps(expected_result),
