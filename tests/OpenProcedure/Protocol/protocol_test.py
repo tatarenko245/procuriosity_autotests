@@ -592,13 +592,13 @@ class TestProtocol:
             """
             time.sleep(1)
 
-            Requests().create_protocol(
+            Requests().do_protocol(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassProtocol.access_token,
                 x_operation_id=GlobalClassProtocol.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
                 pn_token=GlobalClassCreatePn.pn_token,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 lot_id=GlobalClassCreateEvaluateAward.actual_ev_release['releases'][0]['tender']['lots'][0]['id'],
                 test_mode=True
             )
@@ -1451,13 +1451,13 @@ class TestProtocol:
             """
             time.sleep(1)
 
-            Requests().create_protocol(
+            Requests().do_protocol(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassProtocol.access_token,
                 x_operation_id=GlobalClassProtocol.operation_id,
                 pn_ocid=GlobalClassCreatePn.pn_ocid,
                 pn_token=GlobalClassCreatePn.pn_token,
-                ev_id=GlobalClassCreateCnOnPn.ev_id,
+                tender_id=GlobalClassCreateCnOnPn.ev_id,
                 lot_id=GlobalClassCreateEvaluateAward.actual_ev_release['releases'][0]['tender']['lots'][0]['id'],
                 test_mode=True
             )

@@ -308,11 +308,11 @@ class Requests:
         return consideration
 
     @staticmethod
-    @allure.step('Prepared request: award consideration')
-    def create_protocol(host_of_request, access_token, x_operation_id, pn_ocid, pn_token, ev_id, lot_id,
-                        test_mode=False):
+    @allure.step('Prepared request: protocol')
+    def do_protocol(host_of_request, access_token, x_operation_id, pn_ocid, pn_token, tender_id, lot_id,
+                    test_mode=False):
         protocol = requests.post(
-            url=host_of_request + f"/do/protocol/{pn_ocid}/{ev_id}/{lot_id}",
+            url=host_of_request + f"/do/protocol/{pn_ocid}/{tender_id}/{lot_id}",
             params={
                 'testMode': test_mode
             },

@@ -18,14 +18,15 @@ from tests.utils.PayloadModel.SelectiveProcedure.StartSecondStage.start_second_s
     StartSecondStagePreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.SubmitBid.bid_prepared_payload import BidPreparePayload
+from tests.utils.ReleaseModel.SelectiveProcedure.Protocol.protocol_prepared_release import ProtocolRelease
 from tests.utils.functions import time_bot, get_id_token_of_qualification_in_pending_awaiting_state
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
 
-class TestEvaluateAward:
-    @allure.title("Check TP and MS releases data after EvaluateAward process.\n"
+class TestProtocol:
+    @allure.title("Check TP and MS releases data after Protocol process.\n"
                   "------------------------------------------------\n"
                   "create Ei: obligatory data model without items array;\n"
                   "create Fs: obligatory data model, treasury money;\n"
@@ -42,7 +43,8 @@ class TestEvaluateAward:
                   "submit bid by second tenderer: obligatory data model;\n"
                   "tender period end: payload is not needed\n"
                   "award consideration: payload is not needed\n"
-                  "evaluate award: obligatory data model\n")
+                  "evaluate award: obligatory data model\n"
+                  "protocol: payload is not needed\n")
     def test_check_tp_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database,
                                       queue_mapper):
         authorization = PlatformAuthorization(get_hosts[1])
@@ -618,7 +620,7 @@ class TestEvaluateAward:
             )
         time.sleep(15)
         actual_tp_release_before_evaluate_award = requests.get(url=f"{pn_url}/{tp_id}").json()
-        actual_ms_release_before_evaluate_award = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+
         award_id_in_pending_consideration = None
         award_token_in_pending_consideration = None
         for award in actual_tp_release_before_evaluate_award['releases'][0]['awards']:
@@ -654,7 +656,7 @@ class TestEvaluateAward:
                 award_status_details="active"
             )
 
-            synchronous_result_of_sending_the_request = Requests().do_award_evaluation(
+            Requests().do_award_evaluation(
                 host_of_request=get_hosts[1],
                 access_token=evaluate_award_access_token,
                 x_operation_id=evaluate_award_operation_id,
@@ -664,6 +666,46 @@ class TestEvaluateAward:
                 award_token=award_token_in_pending_consideration,
                 payload=evaluate_award_payload,
                 test_mode=True)
+
+        time.sleep(15)
+        actual_tp_release_before_protocol = requests.get(url=f"{pn_url}/{tp_id}").json()
+        actual_ms_release_before_protocol = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+
+        lot_id = None
+        award_id_in_pending_active = None
+
+        for award in actual_tp_release_before_protocol['releases'][0]['awards']:
+            if award['status'] == "pending" and award['statusDetails'] == "active":
+                award_id_in_pending_active = award['id']
+                lot_id = award['relatedLots'][0]
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Authorization platform one: Protocol process.'):
+            """
+            Tender platform authorization for Protocol process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            protocol_access_token = authorization.get_access_token_for_platform_one()
+            protocol_operation_id = authorization.get_x_operation_id(protocol_access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send request to create Protocol process.'):
+            """
+            Send api request on BPE host for Protocol process.
+            Save synchronous result of sending the request and asynchronous result of sending the request.
+            """
+            time.sleep(1)
+
+            synchronous_result_of_sending_the_request = Requests().do_protocol(
+                host_of_request=get_hosts[1],
+                access_token=protocol_access_token,
+                x_operation_id=protocol_operation_id,
+                pn_ocid=pn_ocid,
+                pn_token=pn_token,
+                tender_id=tp_id,
+                lot_id=lot_id,
+                test_mode=True
+            )
 
         step_number += 1
         with allure.step(f'# {step_number}.  See results after AwardConsideration process.'):
@@ -686,15 +728,14 @@ class TestEvaluateAward:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                evaluate_award_feed_point_message = KafkaMessage(
-                    evaluate_award_operation_id).get_message_from_kafka()
+                protocol_feed_point_message = KafkaMessage(protocol_operation_id).get_message_from_kafka()
 
-                allure.attach(str(evaluate_award_feed_point_message), 'Message in feed point.')
+                allure.attach(str(protocol_feed_point_message), 'Message in feed point.')
 
                 asynchronous_result_of_tender_period_end_was_checked = \
-                    kafka_message_class.award_evaluating_message_is_successful(
+                    kafka_message_class.protocol_message_is_successful(
                         environment=environment,
-                        kafka_message=evaluate_award_feed_point_message,
+                        kafka_message=protocol_feed_point_message,
                         pn_ocid=pn_ocid,
                         tender_id=tp_id
                     )
@@ -706,7 +747,7 @@ class TestEvaluateAward:
                     if asynchronous_result_of_tender_period_end_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=evaluate_award_operation_id)
+                                operation_id=protocol_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
@@ -720,89 +761,138 @@ class TestEvaluateAward:
 
             with allure.step(f'# {step_number}.3. Check TP release'):
                 """
-                Compare actual Tp release before EvaluateAward process and
-                actual Tp release after EvaluateAward process.
+                Compare actual Tp release before Protocol process and
+                actual Tp release after Protocol process.
                 """
-                allure.attach(str(json.dumps(actual_tp_release_before_evaluate_award)),
-                              "Actual TP release before EvaluateAward process.")
+                allure.attach(str(json.dumps(actual_tp_release_before_protocol)),
+                              "Actual TP release before Protocol process.")
 
-                actual_tp_release_after_evaluate_award = requests.get(url=f"{pn_url}/{tp_id}").json()
-                allure.attach(str(json.dumps(actual_tp_release_after_evaluate_award)),
-                              "Actual TP release after EvaluateAward process.")
+                actual_tp_release_after_protocol = requests.get(url=f"{pn_url}/{tp_id}").json()
+                allure.attach(str(json.dumps(actual_tp_release_after_protocol)),
+                              "Actual TP release after Protocol process.")
 
                 compare_releases = dict(
-                    DeepDiff(actual_tp_release_before_evaluate_award,
-                             actual_tp_release_after_evaluate_award)
+                    DeepDiff(actual_tp_release_before_protocol,
+                             actual_tp_release_after_protocol)
                 )
 
-                expected_result = {
-                    'values_changed': {
-                        "root['releases'][0]['id']": {
-                            "new_value":
-                                f"{tp_id}-"
-                                f"{actual_tp_release_after_evaluate_award['releases'][0]['id'][46:59]}",
-                            "old_value":
-                                f"{tp_id}-"
-                                f"{actual_tp_release_before_evaluate_award['releases'][0]['id'][46:59]}"
-                        },
-                        "root['releases'][0]['date']": {
-                            "new_value": evaluate_award_feed_point_message['data']['operationDate'],
-                            "old_value": actual_tp_release_before_evaluate_award['releases'][0]['date']
-                        },
-                        "root['releases'][0]['tag'][0]": {
-                            "new_value": "awardUpdate",
-                            "old_value": "award"
-                        },
-                        "root['releases'][0]['awards'][0]['statusDetails']": {
-                            "new_value": "active",
-                            "old_value": "consideration"
-                        },
-                        "root['releases'][0]['awards'][0]['date']": {
-                            "new_value": evaluate_award_feed_point_message['data']['operationDate'],
-                            "old_value": actual_tp_release_before_evaluate_award['releases'][0]['awards'][0]['date']
+                dictionary_item_added_was_cleaned = \
+                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
+                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+
+                for a in actual_tp_release_after_protocol['releases'][0]['awards']:
+                    if a['id'] == award_id_in_pending_active:
+                        related_bid_id = a['relatedBid']
+
+                for i in range(len(actual_tp_release_after_protocol['releases'][0]['bids']['details'])):
+                    if actual_tp_release_after_protocol['releases'][0]['bids']['details'][i]['relatedLots'][0] == \
+                            lot_id and \
+                            actual_tp_release_after_protocol['releases'][0]['bids']['details'][i]['id'] == \
+                            related_bid_id:
+
+                        expected_result = {
+                            "dictionary_item_added":
+                                "['releases'][0]['contracts'], "
+                                f"['releases'][0]['bids']['details'][{i}]['statusDetails']",
+                            "values_changed": {
+                                "root['releases'][0]['id']": {
+                                    "new_value":
+                                        f"{tp_id}-"
+                                        f"{actual_tp_release_after_protocol['releases'][0]['id'][46:59]}",
+                                    "old_value":
+                                        f"{tp_id}-"
+                                        f"{actual_tp_release_before_protocol['releases'][0]['id'][46:59]}"
+                                },
+                                "root['releases'][0]['date']": {
+                                    "new_value": protocol_feed_point_message['data']['operationDate'],
+                                    "old_value": actual_tp_release_before_protocol['releases'][0]['date']
+                                },
+                                "root['releases'][0]['tender']['lots'][0]['statusDetails']": {
+                                    "new_value": "awarded",
+                                    "old_value": "empty"
+                                }
+                            }
                         }
-                    }
-                }
 
-                try:
-                    """
-                        If compare_releases !=expected_result,
-                        then return process steps by operation-id.
-                        """
-                    if compare_releases == expected_result:
-                        pass
-                    else:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=evaluate_award_operation_id)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-                except ValueError:
-                    raise ValueError("Can not return BPE operation step")
+                        try:
+                            """
+                            Prepare expected contracts array
+                            """
+                            expected_award_evaluation_release_class = ProtocolRelease(
+                                environment=environment,
+                                language=language)
 
-                with allure.step(
-                        'Check a difference of comparing Tp release before '
-                        'EvaluateAward process and Tp release after EvaluateAward.'):
-                    allure.attach(json.dumps(compare_releases),
-                                  "Actual result of comparing Tp releases.")
-                    allure.attach(json.dumps(expected_result),
-                                  "Expected result of comparing Tp releases.")
-                    assert compare_releases == expected_result
+                            final_expected_contracts_array = expected_award_evaluation_release_class.\
+                                iterable_item_added_contracts_array_as_contract_project(
+                                    actual_ev_release=actual_tp_release_after_protocol,
+                                    protocol_feed_point_message=protocol_feed_point_message,
+                                    award_id=award_id_in_pending_active,
+                                    lot_id=lot_id
+                                )
+                        except Exception:
+                            raise Exception("Impossible to prepare expected contracts array")
+
+                        try:
+                            """
+                                If compare_releases !=expected_result,
+                                then return process steps by operation-id.
+                                """
+                            if compare_releases == expected_result and \
+                                    actual_tp_release_after_protocol['releases'][0]['contracts'] == \
+                                    final_expected_contracts_array:
+                                pass
+                            else:
+                                with allure.step('# Steps from Casandra DataBase'):
+                                    steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                                        operation_id=protocol_operation_id)
+                                    allure.attach(steps, "Cassandra DataBase: steps of process")
+                        except ValueError:
+                            raise ValueError("Can not return BPE operation step")
+
+                        with allure.step(
+                                'Check a difference of comparing Tp release before '
+                                'Protocol process and Tp release after Protocol.'):
+                            allure.attach(json.dumps(compare_releases),
+                                          "Actual result of comparing Tp releases.")
+                            allure.attach(json.dumps(expected_result),
+                                          "Expected result of comparing Tp releases.")
+                            assert compare_releases == expected_result
+
+                        with allure.step(
+                                'Check the actual contracts array and expected contracts array.'):
+                            allure.attach(json.dumps(actual_tp_release_after_protocol['releases'][0]['contracts']),
+                                          "Actual contracts array.")
+                            allure.attach(json.dumps(final_expected_contracts_array),
+                                          "Expected contracts array.")
+                            assert actual_tp_release_after_protocol['releases'][0]['contracts'] == \
+                                   final_expected_contracts_array
+
+                        with allure.step(
+                                'Check the actual value of bids.details[1].statusDetails and '
+                                'expected value of bids.details[1].statusDetails.'):
+                            allure.attach(json.dumps(actual_tp_release_after_protocol[
+                                                         'releases'][0]['bids']['details'][i]['statusDetails']),
+                                          "Actual value of bids.details[1].statusDetails.")
+                            allure.attach(json.dumps("valid"),
+                                          "Expected value of bids.details[1].statusDetails.")
+                            assert actual_tp_release_after_protocol[
+                                'releases'][0]['bids']['details'][i]['statusDetails'] == "valid"
 
             with allure.step(f'# {step_number}.4. Check MS release'):
                 """
-                Compare actual Tp release before EvaluateAward process and
-                actual Tp release after EvaluateAward process.
+                Compare actual Tp release before Protocol process and
+                actual Tp release after Protocol process.
                 """
-                allure.attach(json.dumps(actual_ms_release_before_evaluate_award),
-                              "Actual MS release before EvaluateAward process.")
+                allure.attach(json.dumps(actual_ms_release_before_protocol),
+                              "Actual MS release before Protocol process.")
 
-                actual_ms_release_after_evaluate_award = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-                allure.attach(json.dumps(actual_ms_release_after_evaluate_award),
-                              "Actual MS release after EvaluateAward process.")
+                actual_ms_release_after_protocol = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(json.dumps(actual_ms_release_after_protocol),
+                              "Actual MS release after Protocol process.")
 
                 compare_releases = dict(
-                    DeepDiff(actual_ms_release_before_evaluate_award,
-                             actual_ms_release_after_evaluate_award)
+                    DeepDiff(actual_ms_release_before_protocol,
+                             actual_ms_release_after_protocol)
                 )
 
                 expected_result = {}
@@ -854,7 +944,7 @@ class TestEvaluateAward:
                     raise ValueError("Can not return BPE operation step")
 
                 with allure.step('Check a difference of comparing Ms release before '
-                                 'EvaluateAward process and Ms release after EvaluateAward process.'):
+                                 'Protocol process and Ms release after Protocol process.'):
                     allure.attach(json.dumps(compare_releases),
                                   "Actual result of comparing MS releases.")
                     allure.attach(json.dumps(expected_result),
