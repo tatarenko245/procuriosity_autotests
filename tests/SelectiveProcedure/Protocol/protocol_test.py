@@ -708,7 +708,7 @@ class TestProtocol:
             )
 
         step_number += 1
-        with allure.step(f'# {step_number}.  See results after AwardConsideration process.'):
+        with allure.step(f'# {step_number}.  See results after Protocol process.'):
             """
             Check the results of TestCase.
             """
