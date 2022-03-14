@@ -1,6 +1,5 @@
 import copy
-
-from tests.utils.ReleaseModel.OpenProcedure.Protocol.protocol_library import ReleaseLibrary
+from tests.utils.ReleaseModel.SelectiveProcedure.Protocol.protocol_library import ReleaseLibrary
 
 
 class ProtocolRelease:
