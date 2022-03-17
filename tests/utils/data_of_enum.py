@@ -55,6 +55,20 @@ documentType = ("tenderNotice",
                 "contractArrangements",
                 "contractGuarantees",)
 
+documentType_for_create_award_of_limited_procedure = (
+    "awardNotice",
+    "evaluationReports",
+    "contractDraft",
+    "winningBid",
+    "complaints",
+    "bidders",
+    "conflictOfInterest",
+    "cancellationDetails",
+    "submissionDocuments",
+    "contractArrangements",
+    "contractSchedule",
+    "shortlistedFirms",)
+
 scale = ("micro",
          "sme",
          "large",)

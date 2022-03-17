@@ -15,7 +15,7 @@ from tests.utils.PayloadModel.OpenProcedure.Pn.pn_prepared_payload import PnPrep
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.functions import compare_actual_result_and_expected_result, get_value_from_region_csv, \
-    get_value_from_locality_csv, is_it_uuid, get_value_from_country_csv, \
+    get_value_from_locality_csv, check_uuid_version, get_value_from_country_csv, \
     get_value_from_classification_cpv_dictionary_xls, get_value_from_classification_unit_dictionary_csv
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -1304,7 +1304,7 @@ class TestCreatePn:
                     """
                     Check on 'releases.tender.lots.id' is uuid.
                     """
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=actual_pn_release_after_updating['releases'][0]['tender']['lots'][0]['id'],
                         version=1
                     )
@@ -1317,7 +1317,7 @@ class TestCreatePn:
                     """
                     Check on 'releases.tender.items.id' is uuid.
                     """
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=actual_pn_release_after_updating['releases'][0]['tender']['items'][0]['id'],
                         version=1
                     )

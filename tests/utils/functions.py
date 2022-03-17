@@ -31,13 +31,20 @@ def compare_actual_result_and_expected_result(expected_result, actual_result):
         return False
 
 
-def is_it_uuid(uuid_to_test, version):
+def check_uuid_version(uuid_to_test, version):
     try:
         uuid_obj = UUID(uuid_to_test, version=version)
     except ValueError:
         return False
     return str(uuid_obj) == uuid_to_test
 
+
+def is_it_uuid(uuid_to_test):
+    try:
+        uuid_obj = UUID(uuid_to_test)
+    except ValueError:
+        return False
+    return str(uuid_obj) == uuid_to_test
 
 def get_value_from_classification_cpv_dictionary_xls(cpv, language):
     path = get_project_root()

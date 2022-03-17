@@ -242,7 +242,7 @@ class TestUpdatePn:
                         },
                         "root['releases'][0]['date']": {
                             "new_value": update_pn_feed_point_message['data']['operationDate'],
-                            "old_value": create_pn_feed_point_message['data']['operationDate']
+                            "old_value": actual_pn_release_before_pn_updating['releases'][0]['date']
                         },
                         "root['releases'][0]['tag'][0]": {
                             'new_value': 'planningUpdate',
@@ -297,7 +297,7 @@ class TestUpdatePn:
                         },
                         "root['releases'][0]['date']": {
                             "new_value": update_pn_feed_point_message['data']['operationDate'],
-                            "old_value": create_pn_feed_point_message['data']['operationDate']
+                            "old_value": actual_ms_release_before_pn_updating['releases'][0]['date']
                         }
                     }
                 }
@@ -334,7 +334,8 @@ class TestUpdatePn:
                               "Actual Ei release after pn updating")
 
                 compare_releases = dict(
-                    DeepDiff(actual_ei_release_after_pn_creation, actual_ei_release_after_pn_updateing))
+                    DeepDiff(actual_ei_release_after_pn_creation,
+                             actual_ei_release_after_pn_updateing))
 
                 expected_result = {}
 
@@ -371,7 +372,8 @@ class TestUpdatePn:
                               "Actual Fs release after pn updating")
 
                 compare_releases = dict(
-                    DeepDiff(actual_fs_release_after_pn_creation, actual_fs_release_after_pn_updatting))
+                    DeepDiff(actual_fs_release_after_pn_creation,
+                             actual_fs_release_after_pn_updatting))
 
                 expected_result = {}
 

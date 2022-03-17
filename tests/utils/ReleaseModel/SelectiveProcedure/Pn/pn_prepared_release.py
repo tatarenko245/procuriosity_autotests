@@ -1,4 +1,4 @@
-from tests.utils.functions import is_it_uuid, get_value_from_classification_cpv_dictionary_xls, \
+from tests.utils.functions import check_uuid_version, get_value_from_classification_cpv_dictionary_xls, \
     get_value_from_country_csv, get_value_from_region_csv, \
     get_value_from_locality_csv
 
@@ -49,7 +49,7 @@ class PnExpectedRelease:
 
     def pn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs(self, actual_pn_release):
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=actual_pn_release['releases'][0]['tender']['id'],
                 version=4
             )
@@ -57,7 +57,7 @@ class PnExpectedRelease:
             raise ValueError("Check your actual_pn_release['releases'][0]['tender']['id']: "
                              "id must be uuid version 4")
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=actual_pn_release['releases'][0]['relatedProcesses'][0]['id'],
                 version=1
             )
@@ -131,7 +131,7 @@ class PnExpectedRelease:
     def ms_release_obligatory_data_model_without_lots_and_items_based_on_one_fs(
             self, actual_ms_release, actual_fs_release, actual_ei_release, ei_ocid, fs_id):
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=actual_ms_release['releases'][0]['tender']['id'],
                 version=4
             )
@@ -143,7 +143,7 @@ class PnExpectedRelease:
             for r in actual_ms_release['releases'][0]['relatedProcesses']:
                 for r_1 in r:
                     if r_1 == "id":
-                        is_it_uuid(
+                        check_uuid_version(
                             uuid_to_test=r['id'],
                             version=1)
         except ValueError:

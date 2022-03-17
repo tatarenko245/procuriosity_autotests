@@ -9,7 +9,7 @@ from deepdiff import DeepDiff
 from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
 from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
 from tests.utils.ReleaseModel.Budget.Fs.fs_prepared_release import FsExpectedRelease
-from tests.utils.functions import is_it_uuid
+from tests.utils.functions import check_uuid_version
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 
@@ -359,7 +359,7 @@ class TestCreateFs:
                     then pass.
                     ELSE return exception.
                     """
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses'][0]['id'],
                         version=1
                     )
@@ -636,7 +636,7 @@ class TestCreateFs:
                     then pass.
                     ELSE return exception.
                     """
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses'][0]['id'],
                         version=1
                     )
@@ -913,7 +913,7 @@ class TestCreateFs:
                     then pass.
                     ELSE return exception.
                     """
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses'][0]['id'],
                         version=1
                     )
@@ -1192,7 +1192,7 @@ class TestCreateFs:
                     then pass.
                     ELSE return exception.
                     """
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses'][0]['id'],
                         version=1
                     )

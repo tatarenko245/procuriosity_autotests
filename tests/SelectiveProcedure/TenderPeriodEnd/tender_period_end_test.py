@@ -18,7 +18,7 @@ from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_
 from tests.utils.PayloadModel.SelectiveProcedure.SubmitBid.bid_prepared_payload import BidPreparePayload
 from tests.utils.ReleaseModel.SelectiveProcedure.TenderPeriodEnd.tender_period_end_release import \
     TenderPeriodExpectedChanges
-from tests.utils.functions import time_bot, get_id_token_of_qualification_in_pending_awaiting_state, is_it_uuid
+from tests.utils.functions import time_bot, get_id_token_of_qualification_in_pending_awaiting_state, check_uuid_version
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -747,7 +747,7 @@ class TestTenderPeriodEnd:
                                 """
                                 Check that actual_ev_release['releases'][0]['awards'][0]['id'] is uuid version 4
                                 """
-                                check_award_id = is_it_uuid(
+                                check_award_id = check_uuid_version(
                                     uuid_to_test=actual_tp_release_after_tender_period_end_expired[
                                         'releases'][0]['awards'][award]['id'],
                                     version=4

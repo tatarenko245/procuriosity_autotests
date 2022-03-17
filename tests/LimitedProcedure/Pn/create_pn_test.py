@@ -10,7 +10,7 @@ from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayl
 from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
 from tests.utils.PayloadModel.LimitedProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.ReleaseModel.LimitedProcedure.Pn.pn_prepared_release import PnExpectedRelease
-from tests.utils.functions import is_it_uuid
+from tests.utils.functions import check_uuid_version
 
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
@@ -303,7 +303,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             'new_value': pn_feed_point_message['data']['operationDate'],
-                            'old_value': fs_feed_point_message['data']['operationDate']
+                            'old_value': actual_ei_release_after_fs_creation['releases'][0]['date']
                         }
                     },
                     'iterable_item_added': {
@@ -318,7 +318,7 @@ class TestCreatePn:
                 }
 
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=actual_ei_release_after_pn_creation['releases'][0][
                             'relatedProcesses'][1]['id'],
                         version=4
@@ -375,7 +375,7 @@ class TestCreatePn:
                         },
                         "root['releases'][0]['date']": {
                             "new_value": pn_feed_point_message['data']['operationDate'],
-                            "old_value": fs_feed_point_message['data']['operationDate']
+                            "old_value": actual_fs_release_before_pn_creation['releases'][0]['date']
                         },
                         "root['releases'][0]['tag'][0]": {
                             "new_value": "planningUpdate",
@@ -394,7 +394,7 @@ class TestCreatePn:
                 }
 
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=actual_fs_release_after_pn_creation['releases'][0][
                             'relatedProcesses'][1]['id'],
                         version=4

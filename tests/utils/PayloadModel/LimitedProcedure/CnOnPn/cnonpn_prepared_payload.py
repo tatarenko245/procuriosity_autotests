@@ -113,7 +113,7 @@ class CnOnPnPreparePayload:
         }
         return payload
 
-    def update_cnonpn_obligatory_data_model(self, actual_ei_release, pre_qualification_period_end,
+    def update_cnonpn_obligatory_data_model(self, actual_ei_release,
                                             actual_tp_release, need_to_set_permanent_id_for_lots_array=False,
                                             quantity_of_items_object=1, quantity_of_lots_object=1,
                                             need_to_set_permanent_id_for_documents_array=False,

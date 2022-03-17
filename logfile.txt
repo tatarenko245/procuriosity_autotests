@@ -5,3 +5,30 @@ Class = KafkaMessage ->
 Method = declare_non_conflict_interest_message_is_successful -> 
 Actual result: check_x_response_id = 793d4560-a2bd-11ec-9ce2-e54c8e6ce434 is not correct.
 Expected result: actual result must be UUID v.4
+
+2022-03-16 13:59:52.715707
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+Actual result: check_x_operation_id = 9cb62e3c-53dd-4aba-9d21-4f819ff9b93b is not correct.
+Expected result: actual result must be UUID v.1
+
+2022-03-16 14:03:18.278224
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+Actual result: X-RESPONSE-ID = 5debcccf-8acf-4c67-bc18-b7b4840584f7 is not correct.
+Expected result: actual result must be UUID v.1
+
+2022-03-16 15:19:25.565529
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+Actual result: initiator = platform is not correct.
+Expected result: bpe
+
+2022-03-17 14:59:59.387366
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid

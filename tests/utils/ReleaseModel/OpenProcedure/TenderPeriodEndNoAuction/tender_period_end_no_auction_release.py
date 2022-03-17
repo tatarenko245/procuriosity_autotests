@@ -4,7 +4,7 @@ from tests.conftest import GlobalClassMetadata, GlobalClassTenderPeriodEndNoAuct
     GlobalClassCreateCnOnPn
 from tests.utils.ReleaseModel.OpenProcedure.TenderPeriodEndNoAuction.tender_period_end_no_auction_release_library import \
     ReleaseLibrary
-from tests.utils.functions import is_it_uuid
+from tests.utils.functions import check_uuid_version
 from tests.utils.services.e_mdm_service import MdmService
 
 
@@ -113,7 +113,7 @@ class TenderPeriodExpectedChanges:
         except Exception:
             raise Exception("Check payload['bid']['tenderers']['identifier']['id']")
         try:
-            check = is_it_uuid(
+            check = check_uuid_version(
                 uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids']['details'][0][
                     'id'],
                 version=4
@@ -222,7 +222,7 @@ class TenderPeriodExpectedChanges:
                     self.constructor.ev_release_bid_details_requirement_response_object()
                 )
                 try:
-                    check = is_it_uuid(
+                    check = check_uuid_version(
                         uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'][
                             'details'][0]['requirementResponses'][q_two]['id'],
                         version=4
@@ -304,7 +304,7 @@ class TenderPeriodExpectedChanges:
                         self.constructor.ev_release_bid_details_requirement_response_evidences_object()
                     )
                     try:
-                        check = is_it_uuid(
+                        check = check_uuid_version(
                             uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['bids'][
                                 'details'][0]['requirementResponses'][q_two]['evidences'][q_three]['id'],
                             version=4
@@ -362,7 +362,7 @@ class TenderPeriodExpectedChanges:
             Check 'id', 'requirementGroups.id', 'requirements.id' into 
             GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender']['criteria'][*].
             """
-            check_criteria_id = is_it_uuid(
+            check_criteria_id = check_uuid_version(
                 uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release['releases'][0]['tender'][
                     'criteria'][quantity_of_criteria_object_into_release]['id'],
                 version=4
@@ -372,7 +372,7 @@ class TenderPeriodExpectedChanges:
             else:
                 raise ValueError("The 'id' into GlobalClassTenderPeriodEndNoAuction.actual_ev_release["
                                  "'releases'][0]['tender']['criteria'][*] must be uuid version 4")
-            check_criteria_requirement_groups_id = is_it_uuid(
+            check_criteria_requirement_groups_id = check_uuid_version(
                 uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                     'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
                     'requirementGroups'][0]['id'],
@@ -384,7 +384,7 @@ class TenderPeriodExpectedChanges:
                 raise ValueError("The 'requirementGroups.id' into "
                                  "GlobalClassTenderPeriodEndNoAuction.actual_ev_release["
                                  "'releases'][0]['tender']['criteria'][*] must be uuid version 4")
-            check_criteria_requirement_groups_requirements_id = is_it_uuid(
+            check_criteria_requirement_groups_requirements_id = check_uuid_version(
                 uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                     'releases'][0]['tender']['criteria'][quantity_of_criteria_object_into_release][
                     'requirementGroups'][0]['requirements'][0]['id'],

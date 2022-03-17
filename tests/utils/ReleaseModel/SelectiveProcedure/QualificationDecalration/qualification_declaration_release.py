@@ -1,4 +1,4 @@
-from tests.utils.functions import is_it_uuid
+from tests.utils.functions import check_uuid_version
 
 
 class QualificationDeclarationRelease:
@@ -15,7 +15,7 @@ class QualificationDeclarationRelease:
                     if response['relatedTenderer']['id'] == self.tenderer_id:
 
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=response['id'],
                                 version=4
                             )
@@ -64,7 +64,7 @@ class QualificationDeclarationRelease:
                         if p_1['id'] == person_object_id:
                             if "businessFunctions" in p_1:
                                 for p_2 in p_1['businessFunctions']:
-                                    check = is_it_uuid(
+                                    check = check_uuid_version(
                                         uuid_to_test=p_2['id'],
                                         version=4
                                     )
