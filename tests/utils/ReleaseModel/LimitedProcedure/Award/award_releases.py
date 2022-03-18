@@ -5,11 +5,17 @@ from tests.utils.functions import get_value_from_country_csv, get_value_from_reg
 
 
 class AwardReleases:
-    def __init__(self, language, award_payload, actual_award_release):
+    def __init__(self, environment, language, award_payload, awardFeedPointMessage, actual_award_release):
         self.constructor = copy.deepcopy(ReleaseLibrary())
         self.language = language
         self.payload = award_payload
+        self.awardFeedPointMessage = awardFeedPointMessage
         self.np_release = actual_award_release
+
+        if environment == "dev":
+            self.metadata_document_url = "https://dev.bpe.eprocurement.systems/api/v1/storage/get"
+        elif environment == "sandbox":
+            self.metadata_document_url = "http://storage.eprocurement.systems/get"
 
     def parties_array(self, actual_parties_array):
 
@@ -134,11 +140,11 @@ class AwardReleases:
                 if "additionalIdentifiers" in self.payload['award']['suppliers'][supplier]:
                     party_object['additionalIdentifiers'] = list()
 
-                    party_object['additionalIdentifiers'].append(
-                        self.constructor.np_release_parties_additionalIdentifiers_object())
-
                     for additionalIdentifier in range(
                             len(self.payload['award']['suppliers'][supplier]['additionalIdentifiers'])):
+
+                        party_object['additionalIdentifiers'].append(
+                            self.constructor.np_release_parties_additionalIdentifiers_object())
 
                         party_object['additionalIdentifiers'][additionalIdentifier]['id'] = \
                             self.payload['award']['suppliers'][supplier]['additionalIdentifiers'][
@@ -171,18 +177,116 @@ class AwardReleases:
                     del party_object['address']['postalCode']
 
                 if "persones" in self.payload['award']['suppliers'][supplier]:
-
+                    party_object['persones'] = list()
                     for persone in range(len(self.payload['award']['suppliers'][supplier]['persones'])):
+                        party_object['persones'].append(self.constructor.np_release_parties_persones_object())
 
+                        persone_scheme = \
+                            self.payload['award']['suppliers'][supplier]['persones'][persone]['identifier']['scheme']
+
+                        persone_id = \
+                            self.payload['award']['suppliers'][supplier]['persones'][persone]['identifier']['id']
+
+                        party_object['persones'][persone]['id'] = f"{persone_scheme}-{persone_id}"
+
+                        party_object['persones'][persone]['title'] = \
+                            self.payload['award']['suppliers'][supplier]['persones'][persone]['title']
+
+                        party_object['persones'][persone]['name'] = \
+                            self.payload['award']['suppliers'][supplier]['persones'][persone]['name']
+
+                        party_object['persones'][persone]['identifier']['scheme'] = \
+                            self.payload['award']['suppliers'][supplier]['persones'][persone]['identifier']['scheme']
+
+                        party_object['persones'][persone]['identifier']['id'] = \
+                            self.payload['award']['suppliers'][supplier]['persones'][persone]['identifier']['id']
+
+                        if "uri" in self.payload['award']['suppliers'][supplier]['persones'][persone]['identifier']:
+
+                            party_object['persones'][persone]['identifier']['uri'] = \
+                                self.payload['award']['suppliers'][supplier]['persones'][persone]['identifier']['uri']
+
+                        else:
+                            del party_object['persones'][persone]['identifier']['uri']
+
+                        party_object['persones'][persone]['businessFunctions'] = list()
                         for businessFunction in range(len(self.payload['award']['suppliers'][supplier][
-                                                              'persones'][persone]['businessFinctions'])):
+                                                              'persones'][persone]['businessFunctions'])):
+
+                            party_object['persones'][persone]['businessFunctions'].append(
+                                self.constructor.np_release_parties_persones_businessFunctions_object()
+                            )
+
+                            party_object['persones'][persone]['businessFunctions'][businessFunction]['id'] = \
+                                self.payload['award']['suppliers'][supplier]['persones'][persone][
+                                    'businessFunctions'][businessFunction]['id']
+
+                            party_object['persones'][persone]['businessFunctions'][businessFunction]['type'] = \
+                                self.payload['award']['suppliers'][supplier]['persones'][persone][
+                                    'businessFunctions'][businessFunction]['type']
+
+                            party_object['persones'][persone]['businessFunctions'][businessFunction]['jobTitle'] = \
+                                self.payload['award']['suppliers'][supplier]['persones'][persone][
+                                    'businessFunctions'][businessFunction]['jobTitle']
+
+                            party_object['persones'][persone]['businessFunctions'][businessFunction]['period'][
+                                'startDate'] = \
+                                self.payload['award']['suppliers'][supplier]['persones'][persone][
+                                    'businessFunctions'][businessFunction]['period']['startDate']
 
                             if "documents" in self.payload['award']['suppliers'][supplier][
-                                    'persones'][persone]['businessFinctions'][businessFunction]:
+                                    'persones'][persone]['businessFunctions'][businessFunction]:
 
-                                party_object['persones'][persone]['businessFunctions'][businessFunction]['documents'] \
-                                    = self.payload['award']['suppliers'][supplier]['persones'][persone][
-                                    'businessFunctions'][businessFunction]['documents']
+                                party_object['persones'][persone]['businessFunctions'][businessFunction][
+                                    'documents'] = list()
+
+                                for document in range(len(self.payload['award']['suppliers'][supplier][
+                                        'persones'][persone]['businessFunctions'][businessFunction]['documents'])):
+
+                                    party_object['persones'][persone][
+                                        'businessFunctions'][businessFunction]['documents'].append(
+                                        self.constructor.
+                                            np_release_parties_persones_businessFunctions_documents_object())
+
+                                    party_object['persones'][persone]['businessFunctions'][businessFunction][
+                                        'documents'][document]['documentType'] = \
+                                        self.payload['award']['suppliers'][supplier]['persones'][persone][
+                                        'businessFunctions'][businessFunction]['documents'][document]['documentType']
+
+                                    party_object['persones'][persone]['businessFunctions'][businessFunction][
+                                        'documents'][document]['id'] = \
+                                        self.payload['award']['suppliers'][supplier]['persones'][persone][
+                                            'businessFunctions'][businessFunction]['documents'][document]['id']
+
+                                    party_object['persones'][persone]['businessFunctions'][businessFunction][
+                                        'documents'][document]['title'] = \
+                                        self.payload['award']['suppliers'][supplier]['persones'][persone][
+                                            'businessFunctions'][businessFunction]['documents'][document]['title']
+
+                                    document_id = \
+                                        self.payload['award']['suppliers'][supplier]['persones'][persone][
+                                            'businessFunctions'][businessFunction]['documents'][document]['id']
+
+                                    party_object['persones'][persone]['businessFunctions'][businessFunction][
+                                        'documents'][document]['url'] = f"{self.metadata_document_url}/{document_id}"
+
+                                    party_object['persones'][persone]['businessFunctions'][businessFunction][
+                                        'documents'][document]['datePublished'] = \
+                                        self.awardFeedPointMessage['data']['operationDate']
+
+                                    if "description" in self.payload['award']['suppliers'][supplier][
+                                        'persones'][persone]['businessFunctions'][businessFunction][
+                                            'documents'][document]:
+
+                                        party_object['persones'][persone]['businessFunctions'][businessFunction][
+                                            'documents'][document]['description'] = \
+                                            self.payload['award']['suppliers'][supplier]['persones'][persone][
+                                                'businessFunctions'][businessFunction]['documents'][document][
+                                                'description']
+
+                                    else:
+                                        del party_object['persones'][persone]['businessFunctions'][businessFunction][
+                                            'documents'][document]['description']
                             else:
                                 del party_object['persones'][persone]['businessFunctions'][businessFunction][
                                     'documents']
@@ -325,13 +429,13 @@ class AwardReleases:
                                         'bankAccounts'][bank]['address']['addressDetails']['locality']['description']
                                 }
 
-                            party_object['details']['bankAccounts'][bank]['addressDetails'][
+                            party_object['details']['bankAccounts'][bank]['address']['addressDetails'][
                                 'country'] = bank_country_object
 
-                            party_object['details']['bankAccounts'][bank]['addressDetails'][
+                            party_object['details']['bankAccounts'][bank]['address']['addressDetails'][
                                 'region'] = bank_region_object
 
-                            party_object['details']['bankAccounts'][bank]['addressDetails'][
+                            party_object['details']['bankAccounts'][bank]['address']['addressDetails'][
                                 'locality'] = bank_locality_object
                         except Exception:
                             raise Exception("Impossible to enrich party object framework by value: "
@@ -392,14 +496,14 @@ class AwardReleases:
 
                         party_object['details']['permits'][permit]['permitDetails']['validityPeriod']['startDate'] = \
                             self.payload['award']['suppliers'][supplier]['details']['permits'][permit][
-                                'validityPeriod']['startDate']
+                                'permitDetails']['validityPeriod']['startDate']
 
                         if "endDate" in self.payload['award']['suppliers'][supplier]['details']['permits'][permit][
-                                'validityPeriod']:
+                                'permitDetails']['validityPeriod']:
 
                             party_object['details']['permits'][permit]['permitDetails']['validityPeriod']['endDate'] = \
                                 self.payload['award']['suppliers'][supplier]['details']['permits'][permit][
-                                    'validityPeriod']['endDate']
+                                    'permitDetails']['validityPeriod']['endDate']
                         else:
                             del party_object['details']['permits'][permit]['permitDetails']['validityPeriod']['endDate']
                 else:
@@ -434,5 +538,9 @@ class AwardReleases:
             }
             expected_array_of_parties_mapper.append(mapper)
 
-            # Тут написати код, який буде сортувати об"єкти по їх id
-        return expected_array_of_parties_mapper
+        final_expected_parties_array = list()
+        for actual in range(len(actual_parties_array)):
+            for expected in range(len(expected_array_of_parties_mapper)):
+                if expected_array_of_parties_mapper[expected]['id'] == actual_parties_array[actual]['id']:
+                    final_expected_parties_array.append(expected_array_of_parties_mapper[expected]['value'])
+        return final_expected_parties_array

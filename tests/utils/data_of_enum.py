@@ -95,7 +95,7 @@ documentType_for_evaluate_award = (
     "shortlistedFirms",)
 
 person_title = ("Mr.", "Ms.", "Mrs.",)
-business_function_type = ("authority", "contactPoint",)
+business_function_type = ("contactPoint",)
 business_function_type_for_declare = (
     "chairman",
     "procurementOfficer",

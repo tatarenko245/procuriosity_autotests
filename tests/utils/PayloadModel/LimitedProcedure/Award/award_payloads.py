@@ -183,7 +183,7 @@ class AwardPayloads:
                             f"create award: award.suppliers{supplier}.persones{person}." \
                             f"businessFunctions{businessFunction}.documents{businessFunction_document}.description"
 
-            payload['award']['suppliers'][0]['details']['typeOfSupplier'] = f"{random.choice(type_of_supplier)}"
+            payload['award']['suppliers'][supplier]['details']['typeOfSupplier'] = f"{random.choice(type_of_supplier)}"
 
             payload['award']['suppliers'][supplier]['details']['mainEconomicActivities'] = list()
             for mainEconomicActivity in range(quantity_of_suppliers_details_mainEconomicActivities_objects):

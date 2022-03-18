@@ -203,7 +203,18 @@ class TestCreateAward:
                 host_for_services=get_hosts[2],
                 currency=create_cn_payload['tender']['lots'][0]['value']['currency'])
             )
-            create_award_payload = award_payload_class.obligatory_data_model(quantity_of_suppliers_objects=2)
+            create_award_payload = award_payload_class.full_data_model(
+                quantity_of_suppliers_objects=3,
+                quantity_of_suppliers_additionalIdentifiers_objects=3,
+                quantity_of_suppliers_persones_objects=3,
+                quantity_of_suppliers_persones_businessFunctions_objects=3,
+                quantity_of_suppliers_persones_businessFunctions_documents_objects=3,
+                quantity_of_suppliers_details_mainEconomicActivities_objects=3,
+                quantity_of_suppliers_details_permits=3,
+                quantity_of_suppliers_details_bankAccounts_objects=3,
+                quantity_of_suppliers_details_bankAccounts_additionalAccountIdentifiers_objects=3,
+                quantity_of_documents_objects=3
+            )
 
             synchronous_result_of_sending_the_request = Requests().do_award_for_limited_procedure(
                 host_of_request=get_hosts[1],
@@ -312,28 +323,29 @@ class TestCreateAward:
                         }
                     }
                 }
-                print("actual parties array")
-                print(json.dumps(actual_np_release_after_award_creating['releases'][0]['parties']))
-                print("award payload")
-                print(json.dumps(create_award_payload))
 
                 try:
                     """
                     Prepare expected parties array.
                     """
-                    final_expected_parties_array = list()
                     expected_award_release_class = AwardReleases(
+                        environment=environment,
                         language=language,
                         award_payload=create_award_payload,
+                        awardFeedPointMessage=create_award_feed_point_message,
                         actual_award_release=actual_np_release_after_award_creating
                     )
 
-                    expected_parties_array = expected_award_release_class.parties_array()
-                except:
+                    final_expected_parties_array = expected_award_release_class.parties_array(
+                        actual_parties_array=actual_np_release_after_award_creating['releases'][0]['parties']
+                    )
+
+                except Exception:
                     raise Exception("Impossible to prepare expected parties array")
 
-                print("expected_parties_array")
-                print(json.dumps(expected_parties_array))
+                print("actual awards array")
+                print(json.dumps(actual_np_release_after_award_creating['releases'][0]['awards']))
+
                 #
                 # try:
                 #     """
