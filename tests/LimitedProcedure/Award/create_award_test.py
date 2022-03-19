@@ -218,11 +218,6 @@ class TestCreateAward:
                 payload=create_award_payload,
                 test_mode=True)
 
-        steps = connection_to_database.get_bpe_operation_step_by_operation_id_from_orchestrator(
-            operation_id=create_award_operation_id)
-        print("steps")
-        print(steps)
-
         step_number += 1
         with allure.step(f'# {step_number}. See result'):
             """
@@ -375,7 +370,9 @@ class TestCreateAward:
 
                     assert str(actual_np_release_after_award_creating['releases'][0]['parties']) == \
                            str(final_expected_parties_array), allure.attach(
-                        steps, "Cassandra DataBase: steps of process")
+                        f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                        f"process_id = '{create_award_operation_id}' ALLOW FILTERING;",
+                        "Cassandra DataBase: steps of process")
 
 
                 # with allure.step('Check a difference of comparing actual awards array and expected awards array.'):
