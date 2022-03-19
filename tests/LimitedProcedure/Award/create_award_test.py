@@ -218,8 +218,10 @@ class TestCreateAward:
                 payload=create_award_payload,
                 test_mode=True)
 
-        steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+        steps = connection_to_database.get_bpe_operation_step_by_operation_id_from_orchestrator(
             operation_id=create_award_operation_id)
+        print("steps")
+        print(steps)
 
         step_number += 1
         with allure.step(f'# {step_number}. See result'):
