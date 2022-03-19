@@ -1,6 +1,6 @@
 import copy
 from tests.utils.ReleaseModel.Budget.Fs.fs_release_library import ReleaseLibrary
-from tests.utils.functions import is_it_uuid, get_value_from_country_csv, get_value_from_region_csv, \
+from tests.utils.functions import check_uuid_version, get_value_from_country_csv, get_value_from_region_csv, \
     get_value_from_locality_csv
 
 
@@ -57,7 +57,7 @@ class FsExpectedRelease:
         release['releases'][0]['relatedProcesses'][0].update(self.constructor.release_related_processes_section())
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -65,7 +65,7 @@ class FsExpectedRelease:
             raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -73,7 +73,7 @@ class FsExpectedRelease:
             raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id,
                 version=1
             )
@@ -333,7 +333,7 @@ class FsExpectedRelease:
         release['releases'][0]['relatedProcesses'][0].update(self.constructor.release_related_processes_section())
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -341,7 +341,7 @@ class FsExpectedRelease:
             raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -349,7 +349,7 @@ class FsExpectedRelease:
             raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id,
                 version=1
             )
@@ -555,7 +555,7 @@ class FsExpectedRelease:
         del release['releases'][0]['planning']['rationale']
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -563,7 +563,7 @@ class FsExpectedRelease:
             raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -571,7 +571,7 @@ class FsExpectedRelease:
             raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id,
                 version=1
             )
@@ -810,7 +810,7 @@ class FsExpectedRelease:
         del release['releases'][0]['planning']['rationale']
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -818,7 +818,7 @@ class FsExpectedRelease:
             raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -826,7 +826,7 @@ class FsExpectedRelease:
             raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id,
                 version=1
             )

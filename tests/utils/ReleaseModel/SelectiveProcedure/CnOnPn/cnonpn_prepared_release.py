@@ -1,5 +1,5 @@
 from tests.utils.date_class import Date
-from tests.utils.functions import is_it_uuid, get_value_from_classification_cpv_dictionary_xls, \
+from tests.utils.functions import check_uuid_version, get_value_from_classification_cpv_dictionary_xls, \
     get_value_from_country_csv, get_value_from_region_csv, \
     get_value_from_locality_csv, get_value_from_classification_unit_dictionary_csv
 
@@ -56,7 +56,7 @@ class CnOnPnExpectedRelease:
 
     def cn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs(self):
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=self.actual_tp_release['releases'][0]['tender']['id'],
                 version=4
             )
@@ -67,7 +67,7 @@ class CnOnPnExpectedRelease:
             for n in self.actual_tp_release['releases'][0]['relatedProcesses']:
                 for n_1 in n:
                     if n_1 == "id":
-                        is_it_uuid(
+                        check_uuid_version(
                             uuid_to_test=n['id'],
                             version=1
                         )
@@ -86,7 +86,7 @@ class CnOnPnExpectedRelease:
                     if i == "id":
                         list_of_release_lot_id.append(lot_object['id'])
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=lot_object['id'],
                                 version=4
                             )
@@ -108,7 +108,7 @@ class CnOnPnExpectedRelease:
                     if i == "id":
                         list_of_release_item_id.append(item_object['id'])
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=item_object['id'],
                                 version=4
                             )
@@ -359,7 +359,7 @@ class CnOnPnExpectedRelease:
 
     def update_cn_amendments_array(self):
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=self.actual_tp_release['releases'][0]['tender']['amendments'][0]['id'],
                 version=4
             )

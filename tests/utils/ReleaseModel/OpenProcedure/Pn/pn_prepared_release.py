@@ -3,7 +3,7 @@ import copy
 from tests.conftest import GlobalClassMetadata, GlobalClassCreatePn, GlobalClassCreateEi, GlobalClassCreateFs
 from tests.utils.ReleaseModel.OpenProcedure.Pn.pn_release_library import ReleaseLibrary
 
-from tests.utils.functions import is_it_uuid, get_value_from_country_csv, get_value_from_region_csv, \
+from tests.utils.functions import check_uuid_version, get_value_from_country_csv, get_value_from_region_csv, \
     get_value_from_locality_csv, get_value_from_cpvs_dictionary_csv, get_value_from_classification_cpv_dictionary_xls, \
     get_value_from_classification_unit_dictionary_csv, get_contract_period_for_ms_release, \
     generate_tender_classification_id, get_sum_of_lot
@@ -67,7 +67,7 @@ class PnExpectedRelease:
                     if i == "id":
                         list_of_release_lot_id.append(i)
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=lot_object['id'],
                                 version=4
                             )
@@ -253,7 +253,7 @@ class PnExpectedRelease:
                     if i == "id":
                         list_of_release_item_id.append(i)
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=item_object['id'],
                                 version=4
                             )
@@ -377,7 +377,7 @@ class PnExpectedRelease:
                     if i == "id":
                         list_of_release_document_id.append(i)
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=document_object['id'][0:36],
                                 version=4
                             )
@@ -475,7 +475,7 @@ class PnExpectedRelease:
         release['releases'][0]['relatedProcesses'][0].update(self.constructor.release_related_processes_section())
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -483,7 +483,7 @@ class PnExpectedRelease:
             raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -491,7 +491,7 @@ class PnExpectedRelease:
             raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id,
                 version=1
             )
@@ -578,7 +578,7 @@ class PnExpectedRelease:
         release['releases'][0]['relatedProcesses'][2].update(self.constructor.release_related_processes_section())
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -586,7 +586,7 @@ class PnExpectedRelease:
             raise ValueError("Check your tender_id in MS release: tender_id in MS release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -594,7 +594,7 @@ class PnExpectedRelease:
             raise ValueError("Check your release_id in MS release: release_id in MS release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_first,
                 version=1
             )
@@ -602,7 +602,7 @@ class PnExpectedRelease:
             raise ValueError("Check your related_processes_id[0] in MS release: "
                              "tender_id in MS release must be uuid version 1")
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_second,
                 version=1
             )
@@ -611,7 +611,7 @@ class PnExpectedRelease:
                              "tender_id in MS release must be uuid version 1")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_third,
                 version=1
             )
@@ -854,7 +854,7 @@ class PnExpectedRelease:
         del release['releases'][0]['tender']['documents']
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -862,7 +862,7 @@ class PnExpectedRelease:
             raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -870,7 +870,7 @@ class PnExpectedRelease:
             raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id,
                 version=1
             )
@@ -959,7 +959,7 @@ class PnExpectedRelease:
         del release['releases'][0]['parties'][3]['additionalIdentifiers']
         del release['releases'][0]['parties'][3]['address']['postalCode']
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -967,7 +967,7 @@ class PnExpectedRelease:
             raise ValueError("Check your tender_id in MS release: tender_id in MS release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -975,7 +975,7 @@ class PnExpectedRelease:
             raise ValueError("Check your release_id in MS release: release_id in MS release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_first,
                 version=1
             )
@@ -983,7 +983,7 @@ class PnExpectedRelease:
             raise ValueError("Check your related_processes_id[0] in MS release: "
                              "tender_id in MS release must be uuid version 1")
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_second,
                 version=1
             )
@@ -992,7 +992,7 @@ class PnExpectedRelease:
                              "tender_id in MS release must be uuid version 1")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_third,
                 version=1
             )
@@ -1226,7 +1226,7 @@ class PnExpectedRelease:
         del release['releases'][0]['tender']['lots']
         del release['releases'][0]['tender']['items']
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -1234,7 +1234,7 @@ class PnExpectedRelease:
             raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -1242,7 +1242,7 @@ class PnExpectedRelease:
             raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id,
                 version=1
             )
@@ -1326,7 +1326,7 @@ class PnExpectedRelease:
         del release['releases'][0]['parties'][2]['additionalIdentifiers']
         del release['releases'][0]['parties'][2]['address']['postalCode']
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -1334,7 +1334,7 @@ class PnExpectedRelease:
             raise ValueError("Check your tender_id in MS release: tender_id in MS release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -1342,7 +1342,7 @@ class PnExpectedRelease:
             raise ValueError("Check your release_id in MS release: release_id in MS release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_first,
                 version=1
             )
@@ -1350,7 +1350,7 @@ class PnExpectedRelease:
             raise ValueError("Check your related_processes_id[0] in MS release: "
                              "tender_id in MS release must be uuid version 1")
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_second,
                 version=1
             )
@@ -1359,7 +1359,7 @@ class PnExpectedRelease:
                              "tender_id in MS release must be uuid version 1")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_third,
                 version=1
             )

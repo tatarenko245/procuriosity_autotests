@@ -13,7 +13,7 @@ from tests.utils.PayloadModel.OpenProcedure.Pn.pn_prepared_payload import PnPrep
 from tests.utils.ReleaseModel.OpenProcedure.Pn.pn_prepared_release import PnExpectedRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.functions import compare_actual_result_and_expected_result, is_it_uuid
+from tests.utils.functions import compare_actual_result_and_expected_result, check_uuid_version
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.my_requests import Requests
@@ -509,7 +509,7 @@ class TestCreatePn:
                     }
                 }
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=GlobalClassCreatePn.actual_ei_release['releases'][0][
                             'relatedProcesses'][1]['id'],
                         version=4
@@ -583,7 +583,7 @@ class TestCreatePn:
                 }
 
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=GlobalClassCreatePn.actual_fs_release['releases'][0][
                             'relatedProcesses'][1]['id'],
                         version=4
@@ -930,7 +930,7 @@ class TestCreatePn:
                     }
                 }
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=GlobalClassCreatePn.actual_ei_release['releases'][0][
                             'relatedProcesses'][1]['id'],
                         version=4
@@ -1004,7 +1004,7 @@ class TestCreatePn:
                 }
 
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=GlobalClassCreatePn.actual_fs_release['releases'][0][
                             'relatedProcesses'][1]['id'],
                         version=4
@@ -1350,7 +1350,7 @@ class TestCreatePn:
                     }
                 }
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=GlobalClassCreatePn.actual_ei_release['releases'][0][
                             'relatedProcesses'][1]['id'],
                         version=4
@@ -1424,7 +1424,7 @@ class TestCreatePn:
                 }
 
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=GlobalClassCreatePn.actual_fs_release['releases'][0][
                             'relatedProcesses'][1]['id'],
                         version=4

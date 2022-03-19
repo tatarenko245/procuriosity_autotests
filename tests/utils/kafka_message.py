@@ -3,7 +3,7 @@ import fnmatch
 import time
 import allure
 import requests
-from tests.utils.functions import is_it_uuid, get_project_root
+from tests.utils.functions import get_project_root, is_it_uuid
 
 
 class KafkaMessage:
@@ -154,14 +154,14 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
 
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -205,7 +205,7 @@ class KafkaMessage:
             raise KeyError('KeyError: id')
         try:
             if "X-TOKEN" in kafka_message["data"]["outcomes"]["ei"][0]:
-                check_ei_token = is_it_uuid(kafka_message["data"]["outcomes"]["ei"][0]["X-TOKEN"], 4)
+                check_ei_token = is_it_uuid(kafka_message["data"]["outcomes"]["ei"][0]["X-TOKEN"])
         except KeyError:
             raise KeyError('KeyError: X-TOKEN')
 
@@ -232,13 +232,13 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -292,13 +292,13 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -336,7 +336,7 @@ class KafkaMessage:
             raise KeyError('KeyError: id')
         try:
             if "X-TOKEN" in kafka_message["data"]["outcomes"]["fs"][0]:
-                check_fs_token = is_it_uuid(kafka_message["data"]["outcomes"]["fs"][0]["X-TOKEN"], 4)
+                check_fs_token = is_it_uuid(kafka_message["data"]["outcomes"]["fs"][0]["X-TOKEN"])
         except KeyError:
             raise KeyError('KeyError: X-TOKEN')
 
@@ -364,13 +364,13 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -414,7 +414,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -425,7 +425,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -491,7 +491,7 @@ class KafkaMessage:
                             raise Exception("check_pn_id is False")
 
                     if i_1 == "X-TOKEN":
-                        check_pn_token = is_it_uuid(i["X-TOKEN"], 4)
+                        check_pn_token = is_it_uuid(i["X-TOKEN"])
                         if check_pn_token is True:
                             pass
                         else:
@@ -522,13 +522,13 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -576,13 +576,13 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -631,13 +631,13 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -671,7 +671,7 @@ class KafkaMessage:
                     check_ev_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["tp"][0]["id"],
                                                   f"{kafka_message['data']['ocid']}-TP-*")
             elif pmd == "TEST_CD" or pmd == "TEST_DC" or pmd == "CD" or pmd == "DC" or pmd == "IP" or pmd == "TEST_IP" \
-                    or pmd == "NP" or pmd == "TEST_NP":
+                    or pmd == "NP" or pmd == "TEST_NP" or pmd == "TEST_DA" or pmd == "DA":
                 if "id" in kafka_message["data"]["outcomes"]["np"][0]:
                     check_ev_id = fnmatch.fnmatch(kafka_message["data"]["outcomes"]["np"][0]["id"],
                                                   f"{kafka_message['data']['ocid']}-NP-*")
@@ -704,13 +704,13 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -736,7 +736,7 @@ class KafkaMessage:
             raise KeyError('KeyError: operationDate')
         try:
             if "id" in kafka_message["data"]["outcomes"]["amendments"][0]:
-                check_id = is_it_uuid(kafka_message["data"]["outcomes"]["amendments"][0]["id"], 4)
+                check_id = is_it_uuid(kafka_message["data"]["outcomes"]["amendments"][0]["id"])
         except KeyError:
             raise KeyError('KeyError: id')
 
@@ -764,13 +764,13 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -797,7 +797,7 @@ class KafkaMessage:
             raise KeyError('KeyError: operationDate')
         try:
             if "id" in kafka_message["data"]["outcomes"]["enquiries"][0]:
-                check_id = is_it_uuid(kafka_message["data"]["outcomes"]["enquiries"][0]["id"], 4)
+                check_id = is_it_uuid(kafka_message["data"]["outcomes"]["enquiries"][0]["id"])
         except KeyError:
             raise KeyError('KeyError: id')
 
@@ -825,13 +825,13 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -857,7 +857,7 @@ class KafkaMessage:
             raise KeyError('KeyError: operationDate')
         try:
             if "id" in kafka_message["data"]["outcomes"]["enquiries"][0]:
-                check_id = is_it_uuid(kafka_message["data"]["outcomes"]["enquiries"][0]["id"], 4)
+                check_id = is_it_uuid(kafka_message["data"]["outcomes"]["enquiries"][0]["id"])
         except KeyError:
             raise KeyError('KeyError: id')
 
@@ -884,13 +884,13 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -940,13 +940,13 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -972,12 +972,12 @@ class KafkaMessage:
             raise KeyError('KeyError: operationDate')
         try:
             if "id" in kafka_message["data"]["outcomes"]["bids"][0]:
-                check_bid_id = is_it_uuid(kafka_message["data"]["outcomes"]["bids"][0]["id"], 4)
+                check_bid_id = is_it_uuid(kafka_message["data"]["outcomes"]["bids"][0]["id"])
         except KeyError:
             raise KeyError('KeyError: id')
         try:
             if "X-TOKEN" in kafka_message["data"]["outcomes"]["bids"][0]:
-                check_bid_token = is_it_uuid(kafka_message["data"]["outcomes"]["bids"][0]["X-TOKEN"], 4)
+                check_bid_token = is_it_uuid(kafka_message["data"]["outcomes"]["bids"][0]["X-TOKEN"])
         except KeyError:
             raise KeyError('KeyError: token')
 
@@ -1005,12 +1005,12 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
             raise KeyError('KeyError: X-OPERATION-ID')
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -1056,7 +1056,8 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 1)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
+
             if check_x_operation_id is True:
                 pass
             else:
@@ -1084,7 +1085,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -1230,7 +1231,7 @@ class KafkaMessage:
             for i in kafka_message["data"]["outcomes"]["awards"]:
                 for i_1 in i:
                     if i_1 == "id":
-                        check_award_id = is_it_uuid(i["id"], 4)
+                        check_award_id = is_it_uuid(i["id"])
                         if check_award_id is True:
                             pass
                         else:
@@ -1246,7 +1247,7 @@ class KafkaMessage:
                             return "check_award_id is False"
 
                     if i_1 == "X-TOKEN":
-                        check_award_token = is_it_uuid(i["X-TOKEN"], 4)
+                        check_award_token = is_it_uuid(i["X-TOKEN"])
                         if check_award_token is True:
                             pass
                         else:
@@ -1307,7 +1308,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 1)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -1335,7 +1336,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -1484,7 +1485,7 @@ class KafkaMessage:
                     for i in kafka_message['data']['outcomes']['links']:
                         for i_1 in i:
                             if i_1 == "relatedBid":
-                                check_link_id = is_it_uuid(i["relatedBid"], 4)
+                                check_link_id = is_it_uuid(i["relatedBid"])
                                 if check_link_id is True:
                                     pass
                                 else:
@@ -1519,7 +1520,7 @@ class KafkaMessage:
                                     return False
 
                                 check_url_second_part = \
-                                    is_it_uuid(url[91:127], 4)
+                                    is_it_uuid(url[91:127])
                                 if check_url_second_part is True:
                                     pass
                                 else:
@@ -1582,7 +1583,7 @@ class KafkaMessage:
                                         logfile.write(log_msg_one)
                                     return False
 
-                                check_url_sixth_part = is_it_uuid(url[177:213], 4)
+                                check_url_sixth_part = is_it_uuid(url[177:213])
                                 if check_url_sixth_part is True:
                                     pass
                                 else:
@@ -1609,7 +1610,7 @@ class KafkaMessage:
                     for i in kafka_message['data']['outcomes']['awards']:
                         for i_1 in i:
                             if i_1 == "id":
-                                check_award_id = is_it_uuid(i["id"], 4)
+                                check_award_id = is_it_uuid(i["id"])
                                 if check_award_id is True:
                                     pass
                                 else:
@@ -1624,7 +1625,7 @@ class KafkaMessage:
                                     return False
 
                             if i_1 == "X-TOKEN":
-                                check_award_token = is_it_uuid(i["X-TOKEN"], 4)
+                                check_award_token = is_it_uuid(i["X-TOKEN"])
                                 if check_award_token is True:
                                     pass
                                 else:
@@ -1652,7 +1653,7 @@ class KafkaMessage:
                     for i in kafka_message['data']['outcomes']['links']:
                         for i_1 in i:
                             if i_1 == "relatedBid":
-                                check_link_id = is_it_uuid(i["relatedBid"], 4)
+                                check_link_id = is_it_uuid(i["relatedBid"])
                                 if check_link_id is True:
                                     pass
                                 else:
@@ -1685,8 +1686,7 @@ class KafkaMessage:
                                         logfile.write(log_msg_one)
                                     return False
 
-                                check_url_second_part = \
-                                    is_it_uuid(url[93:129], 4)
+                                check_url_second_part = is_it_uuid(url[93:129])
                                 if check_url_second_part is True:
                                     pass
                                 else:
@@ -1749,7 +1749,7 @@ class KafkaMessage:
                                         logfile.write(log_msg_one)
                                     return False
 
-                                check_url_sixth_part = is_it_uuid(url[179:215], 4)
+                                check_url_sixth_part = is_it_uuid(url[179:215])
                                 if check_url_sixth_part is True:
                                     pass
                                 else:
@@ -1776,7 +1776,7 @@ class KafkaMessage:
                     for i in kafka_message['data']['outcomes']['awards']:
                         for i_1 in i:
                             if i_1 == "id":
-                                check_award_id = is_it_uuid(i["id"], 4)
+                                check_award_id = is_it_uuid(i["id"])
                                 if check_award_id is True:
                                     pass
                                 else:
@@ -1791,7 +1791,7 @@ class KafkaMessage:
                                     return False
 
                             if i_1 == "X-TOKEN":
-                                check_award_token = is_it_uuid(i["X-TOKEN"], 4)
+                                check_award_token = is_it_uuid(i["X-TOKEN"])
                                 if check_award_token is True:
                                     pass
                                 else:
@@ -1850,7 +1850,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -1878,7 +1878,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -2032,7 +2032,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -2060,9 +2060,9 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is False:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
 
             if check_x_response_id is True:
                 pass
@@ -2217,7 +2217,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -2229,7 +2229,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -2306,7 +2306,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -2318,7 +2318,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 1)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -2379,14 +2379,14 @@ class KafkaMessage:
             for i in kafka_message['data']['outcomes']['cans']:
                 for i_1 in i:
                     if i_1 == "id":
-                        check_can_id = is_it_uuid(i["id"], 4)
+                        check_can_id = is_it_uuid(i["id"])
                         if check_can_id is True:
                             pass
                         else:
                             return False
 
                     if i_1 == "X-TOKEN":
-                        check_can_token = is_it_uuid(i["X-TOKEN"], 4)
+                        check_can_token = is_it_uuid(i["X-TOKEN"])
                         if check_can_token is True:
                             pass
                         else:
@@ -2417,14 +2417,14 @@ class KafkaMessage:
 
         try:
             if "X-OPERATION-ID" in kafka_message:
-                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+                check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
         except KeyError:
 
             raise KeyError('KeyError: X-OPERATION-ID')
 
         try:
             if "X-RESPONSE-ID" in kafka_message:
-                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+                check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
         except KeyError:
             raise KeyError('KeyError: X-RESPONSE-ID')
         try:
@@ -2452,12 +2452,12 @@ class KafkaMessage:
             raise KeyError('KeyError: operationDate')
         try:
             if "id" in kafka_message["data"]["outcomes"]["submissions"][0]:
-                check_submission_id = is_it_uuid(kafka_message["data"]["outcomes"]["submissions"][0]["id"], 4)
+                check_submission_id = is_it_uuid(kafka_message["data"]["outcomes"]["submissions"][0]["id"])
         except KeyError:
             raise KeyError('KeyError: id')
         try:
             if "X-TOKEN" in kafka_message["data"]["outcomes"]["submissions"][0]:
-                check_submission_token = is_it_uuid(kafka_message["data"]["outcomes"]["submissions"][0]["X-TOKEN"], 4)
+                check_submission_token = is_it_uuid(kafka_message["data"]["outcomes"]["submissions"][0]["X-TOKEN"])
         except KeyError:
             raise KeyError('KeyError: X-TOKEN')
 
@@ -2483,7 +2483,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -2495,7 +2495,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -2565,14 +2565,14 @@ class KafkaMessage:
             for i in kafka_message["data"]["outcomes"]["qualifications"]:
                 for i_1 in i:
                     if i_1 == "id":
-                        check_qualification_id = is_it_uuid(i["id"], 4)
+                        check_qualification_id = is_it_uuid(i["id"])
                         if check_qualification_id is True:
                             pass
                         else:
                             raise Exception("check_qualification_id is False")
 
                     if i_1 == "X-TOKEN":
-                        check_qualification_token = is_it_uuid(i["X-TOKEN"], 4)
+                        check_qualification_token = is_it_uuid(i["X-TOKEN"])
                         if check_qualification_token is True:
                             pass
                         else:
@@ -2598,7 +2598,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -2610,7 +2610,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -2686,7 +2686,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -2698,7 +2698,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -2774,7 +2774,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -2786,7 +2786,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -2862,7 +2862,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -2874,7 +2874,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -2950,7 +2950,7 @@ class KafkaMessage:
             """
             Check X-OPERATION-ID into message from feed point.
             """
-            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"], 4)
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
             if check_x_operation_id is True:
                 pass
             else:
@@ -2962,7 +2962,7 @@ class KafkaMessage:
             """
             Check X-RESPONSE-ID into message from feed point.
             """
-            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"], 4)
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
             if check_x_response_id is True:
                 pass
             else:
@@ -3024,3 +3024,245 @@ class KafkaMessage:
             return True
         else:
             return False
+
+    @staticmethod
+    def award_for_limited_procedure_message_is_successful(environment, kafka_message, pn_ocid, tender_id):
+        tender_url = None
+        if environment == "dev":
+            tender_url = "http://dev.public.eprocurement.systems/tenders"
+        if environment == "sandbox":
+            tender_url = "http://public.eprocurement.systems/tenders"
+
+        check_award_id = None
+        check_award_token = None
+
+        try:
+            """
+            Check X-OPERATION-ID into message from feed point.
+            """
+            check_x_operation_id = is_it_uuid(kafka_message["X-OPERATION-ID"])
+
+            if check_x_operation_id is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                              f"Actual result: check_x_operation_id = {kafka_message['X-OPERATION-ID']} " \
+                              f"is not correct.\n" \
+                              f"Expected result: actual result must be UUID v.1\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "check_x_operation_id is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                          f"KeyError: X-OPERATION-ID\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: X-OPERATION-ID')
+
+        try:
+            """
+            Check X-RESPONSE-ID into message from feed point.
+            """
+            check_x_response_id = is_it_uuid(kafka_message["X-RESPONSE-ID"])
+            if check_x_response_id is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                              f"Actual result: X-RESPONSE-ID = {kafka_message['X-RESPONSE-ID']} is not correct.\n" \
+                              f"Expected result: actual result must be UUID v.1\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "check_x_response_id is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                          f"KeyError: X-RESPONSE-ID\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: X-RESPONSE-ID')
+
+        try:
+            """
+            Check initiator into message from feed point.
+            """
+            check_initiator = fnmatch.fnmatch(kafka_message["initiator"], "platform")
+            if check_initiator is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                              f"Actual result: initiator = {kafka_message['initiator']} is not correct.\n" \
+                              f"Expected result: bpe\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "initiator is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                          f"KeyError: initiator\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: initiator')
+
+        try:
+            """
+            Check data.ocid into message from feed point.
+            """
+            check_oc_id = fnmatch.fnmatch(kafka_message["data"]["ocid"], f"{tender_id}")
+            if check_oc_id is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                              f"Actual result: data.ocid  = {kafka_message['data']['ocid']} is not correct.\n" \
+                              f"Expected result: {tender_id}\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "check_oc_id is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                          f"KeyError: data.ocid\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: data.ocid')
+
+        try:
+            """
+            Check data.url into message from feed point.
+            """
+            check_url = fnmatch.fnmatch(kafka_message["data"]["url"],
+                                        f"{tender_url}/{pn_ocid}/{tender_id}")
+            if check_url is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                              f"Actual result: data.url = {kafka_message['data']['url']} is not correct.\n" \
+                              f"Expected result: {tender_url}/{pn_ocid}/{tender_id}\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "check_url is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                          f"KeyError: data.url\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: data.url')
+
+        try:
+            """
+            Check data.operationDate into message from feed point.
+            """
+            check_operation_date = fnmatch.fnmatch(kafka_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
+            if check_operation_date is True:
+                pass
+            else:
+                log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                              f"File = kafka_message.py -> \n" \
+                              f"Class = KafkaMessage -> \n" \
+                              f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                              f"Actual result: data.operationDate = {kafka_message['data']['operationDate']} " \
+                              f"is not correct.\n" \
+                              f"Expected result: actual  result must be compared with 202*-*-*T*:*:*\n"
+                with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                    logfile.write(log_msg_one)
+                return "check_operation_date is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                          f"KeyError: data.operationDate\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: data.operationDate')
+
+        if check_x_operation_id is True and check_x_response_id is True and check_initiator is True and \
+                check_oc_id is True and check_url is True and check_operation_date is True:
+            pass
+        else:
+            return False
+
+        try:
+            """
+            Check data.outcomes.awards into message from feed point.
+            """
+            for i in kafka_message["data"]["outcomes"]["awards"]:
+                for i_1 in i:
+                    if i_1 == "id":
+                        check_award_id = is_it_uuid(i["id"])
+                        if check_award_id is True:
+                            pass
+                        else:
+                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                          f"File = kafka_message.py -> \n" \
+                                          f"Class = KafkaMessage -> \n" \
+                                          f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                                          f"Actual result: data.outcomes.awards.id = {i['id']} " \
+                                          f"is not correct.\n" \
+                                          f"Expected result: actual  result must be UUID v.4\n"
+                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                logfile.write(log_msg_one)
+                            return "check_award_id is False"
+
+                    if i_1 == "X-TOKEN":
+                        check_award_token = is_it_uuid(i["X-TOKEN"])
+                        if check_award_token is True:
+                            pass
+                        else:
+                            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                                          f"File = kafka_message.py -> \n" \
+                                          f"Class = KafkaMessage -> \n" \
+                                          f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                                          f"Actual result: data.outcomes.awards.token = {i['token']} " \
+                                          f"is not correct.\n" \
+                                          f"Expected result: actual  result must be UUID v.4\n"
+                            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                                logfile.write(log_msg_one)
+                            return "check_award_token is False"
+        except KeyError:
+            log_msg_one = f"\n{datetime.datetime.now()}\n" \
+                          f"File = kafka_message.py -> \n" \
+                          f"Class = KafkaMessage -> \n" \
+                          f"Method = tender_period_end_no_auction_message_is_successful -> \n" \
+                          f"KeyError: data.outcomes.awards\n"
+            with open(f'{get_project_root()}/logfile.txt', 'a') as logfile:
+                logfile.write(log_msg_one)
+            raise KeyError('KeyError: data.outcomes.awards')
+
+        if check_award_token is not None:
+            if check_award_id is True and check_award_token is True:
+                pass
+            else:
+                return False
+        elif check_award_token is None:
+            if check_award_id is True:
+                pass
+            else:
+                return False
+        return True

@@ -76,7 +76,7 @@ class Date:
     @staticmethod
     def duration_period():
         date = datetime.datetime.now()
-        duration_date_start = date + datetime.timedelta(days=180)
+        duration_date_start = date + datetime.timedelta(days=0)
         start_date = duration_date_start.strftime('%Y-%m-%dT%H:%M:%SZ')
         duration_date_end = date + datetime.timedelta(days=20)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')

@@ -3,7 +3,7 @@ import fnmatch
 
 from tests.conftest import GlobalClassMetadata, GlobalClassCreatePn, GlobalClassCreateCnOnPn
 from tests.utils.ReleaseModel.OpenProcedure.CnOnPn.cnonpn_release_library import ReleaseLibrary
-from tests.utils.functions import is_it_uuid, get_value_from_country_csv, get_value_from_region_csv, \
+from tests.utils.functions import check_uuid_version, get_value_from_country_csv, get_value_from_region_csv, \
     get_value_from_locality_csv, get_value_from_classification_cpv_dictionary_xls, get_value_from_cpvs_dictionary_csv, \
     get_value_from_classification_unit_dictionary_csv, get_temporary_requirements_id_and_permanent_requirements_id, \
     get_temporary_lots_id_and_permanent_lots_id
@@ -71,7 +71,7 @@ class CnOnPnExpectedRelease:
                     if i == "id":
                         list_of_release_lot_id.append(i)
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=lot_object['id'],
                                 version=4
                             )
@@ -257,7 +257,7 @@ class CnOnPnExpectedRelease:
                     if i == "id":
                         list_of_release_item_id.append(i)
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=item_object['id'],
                                 version=4
                             )
@@ -393,7 +393,7 @@ class CnOnPnExpectedRelease:
                     if i == "id":
                         list_of_release_document_id.append(i)
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=document_object['id'][0:36],
                                 version=4
                             )
@@ -512,7 +512,7 @@ class CnOnPnExpectedRelease:
                     if i == "id":
                         list_of_release_criteria_id.append(i)
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=criteria_object['id'],
                                 version=4
                             )
@@ -597,7 +597,7 @@ class CnOnPnExpectedRelease:
                             if i == "id":
                                 list_of_release_criteria_requirement_groups_id.append(i)
                                 try:
-                                    is_it_uuid(
+                                    check_uuid_version(
                                         uuid_to_test=requirement_group_object['id'],
                                         version=4
                                     )
@@ -654,7 +654,7 @@ class CnOnPnExpectedRelease:
                                 if i == "id":
                                     list_of_release_criteria_requirement_groups_requirements_id.append(i)
                                     try:
-                                        is_it_uuid(
+                                        check_uuid_version(
                                             uuid_to_test=requirement_object['id'],
                                             version=4
                                         )
@@ -753,7 +753,7 @@ class CnOnPnExpectedRelease:
                     if i == "id":
                         list_of_release_conversions_id.append(conversion_object['id'])
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=conversion_object['id'],
                                 version=4
                             )
@@ -770,7 +770,7 @@ class CnOnPnExpectedRelease:
                                     if o == "id":
                                         list_of_release_conversions_coefficients_id.append(coefficient_object[o])
                                         try:
-                                            is_it_uuid(
+                                            check_uuid_version(
                                                 uuid_to_test=coefficient_object[o],
                                                 version=4
                                             )
@@ -898,7 +898,7 @@ class CnOnPnExpectedRelease:
                     if i == "id":
                         list_of_release_electronic_auction_details_id.append(i)
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=electronic_auction_details_object['id'],
                                 version=4
                             )
@@ -1005,7 +1005,7 @@ class CnOnPnExpectedRelease:
         release['releases'][0]['relatedProcesses'][1].update(self.constructor.release_related_processes_section())
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -1013,7 +1013,7 @@ class CnOnPnExpectedRelease:
             raise ValueError("Check your tender_id in EV release: tender_id in EV release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -1021,7 +1021,7 @@ class CnOnPnExpectedRelease:
             raise ValueError("Check your release_id in EV release: release_id in EV release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_first,
                 version=1
             )
@@ -1030,7 +1030,7 @@ class CnOnPnExpectedRelease:
                              "tender_id in EV release must be uuid version 1")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_second,
                 version=1
             )
@@ -1165,7 +1165,7 @@ class CnOnPnExpectedRelease:
         del release['releases'][0]['tender']['procurementMethodModalities']
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -1173,7 +1173,7 @@ class CnOnPnExpectedRelease:
             raise ValueError("Check your tender_id in EV release: tender_id in EV release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -1181,7 +1181,7 @@ class CnOnPnExpectedRelease:
             raise ValueError("Check your release_id in EV release: release_id in EV release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_first,
                 version=1
             )
@@ -1190,7 +1190,7 @@ class CnOnPnExpectedRelease:
                              "tender_id in EV release must be uuid version 1")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=related_processes_id_second,
                 version=1
             )

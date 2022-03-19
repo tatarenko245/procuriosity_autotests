@@ -16,7 +16,7 @@ from tests.utils.ReleaseModel.OpenProcedure.TenderPeriodEndAuction.tender_period
     TenderPeriodExpectedChanges
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.functions import time_bot, is_it_uuid, get_project_root
+from tests.utils.functions import time_bot, check_uuid_version, get_project_root
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -353,7 +353,7 @@ class TestTenderPeriodEndAuction:
                     for a in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
                         for a_1 in a:
                             if a_1 == "id":
-                                check_awards_id_first = is_it_uuid(
+                                check_awards_id_first = check_uuid_version(
                                     uuid_to_test=a['id'],
                                     version=4
                                 )
@@ -931,7 +931,7 @@ class TestTenderPeriodEndAuction:
                     for a in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
                         for a_1 in a:
                             if a_1 == "id":
-                                check_awards_id_first = is_it_uuid(
+                                check_awards_id_first = check_uuid_version(
                                     uuid_to_test=a['id'],
                                     version=4
                                 )
@@ -1073,7 +1073,7 @@ class TestTenderPeriodEndAuction:
                                     business_function_id = GlobalClassTenderPeriodEndAuction.actual_ev_release[
                                         'releases'][0]['parties'][pa]['persones'][p]['businessFunctions'][bf][
                                         'id']
-                                    check = is_it_uuid(
+                                    check = check_uuid_version(
                                         uuid_to_test=business_function_id,
                                         version=4
                                     )
@@ -1160,7 +1160,7 @@ class TestTenderPeriodEndAuction:
                         for a in GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards']:
                             for a_1 in a:
                                 if a_1 == "id":
-                                    check_awards_id_first = is_it_uuid(
+                                    check_awards_id_first = check_uuid_version(
                                         uuid_to_test=a['id'],
                                         version=4
                                     )
@@ -2143,7 +2143,7 @@ class TestTenderPeriodEndAuction:
                                                 "final_expected_parties_array['persones']['businessFunctions'].")
                             for bf in range(quantity_of_business_functions_into_final):
                                 try:
-                                    check = is_it_uuid(
+                                    check = check_uuid_version(
                                         uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release[
                                             'releases'][0]['parties'][pa]['persones'][p]['businessFunctions'][bf][
                                             'id'],
@@ -2245,7 +2245,7 @@ class TestTenderPeriodEndAuction:
                                 """
                                 award_id = GlobalClassTenderPeriodEndAuction.actual_ev_release[
                                     'releases'][0]['awards'][award]['id']
-                                check_award_id = is_it_uuid(
+                                check_award_id = check_uuid_version(
                                     uuid_to_test=award_id,
                                     version=4
                                 )
@@ -3378,7 +3378,7 @@ class TestTenderPeriodEndAuction:
                                                 "final_expected_parties_array['persones']['businessFunctions'].")
                             for bf in range(quantity_of_business_functions_into_final):
                                 try:
-                                    check = is_it_uuid(
+                                    check = check_uuid_version(
                                         uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release[
                                             'releases'][0]['parties'][pa]['persones'][p]['businessFunctions'][bf][
                                             'id'],
@@ -3487,7 +3487,7 @@ class TestTenderPeriodEndAuction:
                                 """
                                 award_id = GlobalClassTenderPeriodEndAuction.actual_ev_release[
                                     'releases'][0]['awards'][award]['id']
-                                check_award_id = is_it_uuid(
+                                check_award_id = check_uuid_version(
                                     uuid_to_test=award_id,
                                     version=4
                                 )
@@ -4760,7 +4760,7 @@ class TestTenderPeriodEndAuction:
                                                 "final_expected_parties_array['persones']['businessFunctions'].")
                             for bf in range(quantity_of_business_functions_into_final):
                                 try:
-                                    check = is_it_uuid(
+                                    check = check_uuid_version(
                                         uuid_to_test=GlobalClassTenderPeriodEndAuction.actual_ev_release[
                                             'releases'][0]['parties'][pa]['persones'][p]['businessFunctions'][bf][
                                             'id'],
@@ -4889,7 +4889,7 @@ class TestTenderPeriodEndAuction:
                                 """
                                 award_id = GlobalClassTenderPeriodEndAuction.actual_ev_release[
                                     'releases'][0]['awards'][award]['id']
-                                check_award_id = is_it_uuid(
+                                check_award_id = check_uuid_version(
                                     uuid_to_test=award_id,
                                     version=4
                                 )
@@ -6210,7 +6210,7 @@ class TestTenderPeriodEndAuction:
                                 """
                                 award_id = GlobalClassTenderPeriodEndAuction.actual_ev_release[
                                     'releases'][0]['awards'][award]['id']
-                                check_award_id = is_it_uuid(
+                                check_award_id = check_uuid_version(
                                     uuid_to_test=award_id,
                                     version=4
                                 )

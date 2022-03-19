@@ -1,7 +1,7 @@
 import copy
 
 from tests.utils.ReleaseModel.SelectiveProcedure.TenderPeriodEnd.tender_period_end_release_library import ReleaseLibrary
-from tests.utils.functions import is_it_uuid
+from tests.utils.functions import check_uuid_version
 from tests.utils.services.e_mdm_service import MdmService
 
 
@@ -111,7 +111,7 @@ class TenderPeriodExpectedChanges:
         except Exception:
             raise Exception("Check payload['bid']['tenderers']['identifier']['id']")
         try:
-            check = is_it_uuid(
+            check = check_uuid_version(
                 uuid_to_test=actual_tp_release_after_tender_period_end['releases'][0]['bids']['details'][0][
                     'id'],
                 version=4
@@ -187,7 +187,7 @@ class TenderPeriodExpectedChanges:
                     self.constructor.tp_release_bid_details_requirement_response_object()
                 )
                 try:
-                    check = is_it_uuid(
+                    check = check_uuid_version(
                         uuid_to_test=actual_tp_release_after_tender_period_end['releases'][0]['bids'][
                             'details'][0]['requirementResponses'][q_two]['id'],
                         version=4
@@ -269,7 +269,7 @@ class TenderPeriodExpectedChanges:
                         self.constructor.tp_release_bid_details_requirement_response_evidences_object()
                     )
                     try:
-                        check = is_it_uuid(
+                        check = check_uuid_version(
                             uuid_to_test=actual_tp_release_after_tender_period_end['releases'][0]['bids'][
                                 'details'][0]['requirementResponses'][q_two]['evidences'][q_three]['id'],
                             version=4

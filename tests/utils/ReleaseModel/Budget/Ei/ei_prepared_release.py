@@ -1,7 +1,7 @@
 import copy
 
 from tests.utils.ReleaseModel.Budget.Ei.ei_release_library import ReleaseLibrary
-from tests.utils.functions import is_it_uuid, get_value_from_cpvs_dictionary_csv, get_value_from_country_csv, \
+from tests.utils.functions import check_uuid_version, get_value_from_cpvs_dictionary_csv, get_value_from_country_csv, \
     get_value_from_region_csv, get_value_from_locality_csv, get_value_from_classification_cpv_dictionary_xls, \
     get_value_from_classification_unit_dictionary_csv
 
@@ -65,7 +65,7 @@ class EiExpectedRelease:
                     if i == "id":
                         list_of_release_item_id.append(i)
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=item_object['id'],
                                 version=4
                             )
@@ -251,7 +251,7 @@ class EiExpectedRelease:
         release['releases'][0]['planning'].update(self.constructor.release_planning_section())
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -259,7 +259,7 @@ class EiExpectedRelease:
             raise ValueError("Check your tender_id in Ei release: tender_id in Ei release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )
@@ -442,7 +442,7 @@ class EiExpectedRelease:
         del release['releases'][0]['planning']['rationale']
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=tender_id,
                 version=4
             )
@@ -450,7 +450,7 @@ class EiExpectedRelease:
             raise ValueError("Check your tender_id in Ei release: tender_id in Ei release must be uuid version 4")
 
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=release_id,
                 version=4
             )

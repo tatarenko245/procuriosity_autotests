@@ -1,6 +1,6 @@
-from tests.utils.functions import is_it_uuid, get_value_from_classification_cpv_dictionary_xls,\
+from tests.utils.functions import check_uuid_version, get_value_from_classification_cpv_dictionary_xls, \
     get_value_from_region_csv, \
-    get_value_from_locality_csv
+    get_value_from_locality_csv, get_value_from_country_csv
 from tests.utils.services.e_mdm_service import MdmService
 
 
@@ -75,7 +75,7 @@ class PnExpectedRelease:
 
     def pn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs(self, actual_pn_release):
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=actual_pn_release['releases'][0]['tender']['id'],
                 version=4
             )
@@ -83,7 +83,7 @@ class PnExpectedRelease:
             raise ValueError("Check your actual_pn_release['releases'][0]['tender']['id']: "
                              "id must be uuid version 4")
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=actual_pn_release['releases'][0]['relatedProcesses'][0]['id'],
                 version=1
             )
@@ -157,7 +157,7 @@ class PnExpectedRelease:
     def ms_release_obligatory_data_model_without_lots_and_items_based_on_one_fs(
             self, actual_ms_release, actual_fs_release, actual_ei_release, ei_ocid, fs_id):
         try:
-            is_it_uuid(
+            check_uuid_version(
                 uuid_to_test=actual_ms_release['releases'][0]['tender']['id'],
                 version=4
             )
@@ -169,7 +169,7 @@ class PnExpectedRelease:
             for r in actual_ms_release['releases'][0]['relatedProcesses']:
                 for r_1 in r:
                     if r_1 == "id":
-                        is_it_uuid(
+                        check_uuid_version(
                             uuid_to_test=r['id'],
                             version=1)
         except ValueError:
@@ -195,36 +195,36 @@ class PnExpectedRelease:
         )
 
         try:
-            procuring_entity_country_data = self.mdm_class.get_country(
+            procuring_entity_country_data = get_value_from_country_csv(
                 country=self.pn_payload['tender']['procuringEntity']['address'][
                     'addressDetails']['country']['id'],
                 language=self.language
             )
             procuring_entity_country_object = {
-                "scheme": procuring_entity_country_data['data']['scheme'],
+                "scheme": procuring_entity_country_data[2],
                 "id": self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['country'][
                     'id'],
-                "description": procuring_entity_country_data['data']['description'],
-                "uri": procuring_entity_country_data['data']['uri']
+                "description": procuring_entity_country_data[1],
+                "uri": procuring_entity_country_data[3]
             }
 
-            procuring_entity_region_data = self.mdm_class.get_region(
+            procuring_entity_region_data = get_value_from_region_csv(
                 region=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
                 country=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'],
                 language=self.language
             )
 
             procuring_entity_region_object = {
-                "scheme": procuring_entity_region_data['data']['scheme'],
+                "scheme": procuring_entity_region_data[2],
                 "id": self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
-                "description": procuring_entity_region_data['data']['description'],
-                "uri": procuring_entity_region_data['data']['uri']
+                "description": procuring_entity_region_data[1],
+                "uri": procuring_entity_region_data[3]
             }
 
             if \
                     self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
                         'scheme'] == "CUATM":
-                procuring_entity_locality_data = self.mdm_class.get_locality(
+                procuring_entity_locality_data = get_value_from_locality_csv(
                     locality=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality'][
                         'id'],
                     region=self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'],
@@ -232,10 +232,10 @@ class PnExpectedRelease:
                     language=self.language
                 )
                 procuring_entity_locality_object = {
-                    "scheme": procuring_entity_locality_data['data']['scheme'],
+                    "scheme": procuring_entity_locality_data[2],
                     "id": self.pn_payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'],
-                    "description": procuring_entity_locality_data['data']['description'],
-                    "uri": procuring_entity_locality_data['data']['uri']
+                    "description": procuring_entity_locality_data[1],
+                    "uri": procuring_entity_locality_data[3]
                 }
             else:
                 procuring_entity_locality_object = {

@@ -11,7 +11,7 @@ from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayl
 from tests.utils.PayloadModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.EnquiryPeriod.enquiry_prepared_payload import EnquiryPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
-from tests.utils.functions import is_it_uuid
+from tests.utils.functions import check_uuid_version
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -336,7 +336,7 @@ class TestCreateEnquiry:
                 }
 
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=actual_tp_release_after_enquiry_creating['releases'][0]['tender'][
                             'enquiries'][0]['id'],
                         version=4

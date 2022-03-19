@@ -10,7 +10,7 @@ from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayl
 from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.ReleaseModel.SelectiveProcedure.Pn.pn_prepared_release import PnExpectedRelease
-from tests.utils.functions import is_it_uuid
+from tests.utils.functions import check_uuid_version
 
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
@@ -316,7 +316,7 @@ class TestCreatePn:
                 }
 
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=actual_ei_release_after_pn_creation['releases'][0][
                             'relatedProcesses'][1]['id'],
                         version=4
@@ -392,7 +392,7 @@ class TestCreatePn:
                 }
 
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=actual_fs_release_after_pn_creation['releases'][0][
                             'relatedProcesses'][1]['id'],
                         version=4

@@ -16,7 +16,7 @@ from tests.utils.ReleaseModel.OpenProcedure.TenderPeriodEndNoAuction.tender_peri
     TenderPeriodExpectedChanges
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.functions import time_bot, is_it_uuid
+from tests.utils.functions import time_bot, check_uuid_version
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.my_requests import Requests
@@ -336,7 +336,7 @@ class TestCreateBid:
                     """
                     Check that actual_ev_release['releases'][0]['awards'][0]['id'] is uuid version 4
                     """
-                    check_awards_zero_id = is_it_uuid(
+                    check_awards_zero_id = check_uuid_version(
                         uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                             'releases'][0]['awards'][0]['id'],
                         version=4
@@ -352,7 +352,7 @@ class TestCreateBid:
                     """
                     Check that actual_ev_release['releases'][0]['awards'][1]['id'] is uuid version 4
                     """
-                    check_awards_one_id = is_it_uuid(
+                    check_awards_one_id = check_uuid_version(
                         uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                             'releases'][0]['awards'][1]['id'],
                         version=4
@@ -1007,7 +1007,7 @@ class TestCreateBid:
                                                 "into final_expected_parties_array['persones']['businessFunctions'].")
                             for bf in range(quantity_of_business_functions_into_final):
                                 try:
-                                    check = is_it_uuid(
+                                    check = check_uuid_version(
                                         uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                                             'releases'][0]['parties'][pa]['persones'][p]['businessFunctions'][bf]['id'],
                                         version=4
@@ -1083,7 +1083,7 @@ class TestCreateBid:
                                 """
                                 Check that actual_ev_release['releases'][0]['awards'][0]['id'] is uuid version 4
                                 """
-                                check_award_id = is_it_uuid(
+                                check_award_id = check_uuid_version(
                                     uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                                         'releases'][0]['awards'][award]['id'],
                                     version=4
@@ -1978,7 +1978,7 @@ class TestCreateBid:
                                                 "into final_expected_parties_array['persones']['businessFunctions'].")
                             for bf in range(quantity_of_business_functions_into_final):
                                 try:
-                                    check = is_it_uuid(
+                                    check = check_uuid_version(
                                         uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                                             'releases'][0]['parties'][pa]['persones'][p]['businessFunctions'][bf]['id'],
                                         version=4
@@ -2054,7 +2054,7 @@ class TestCreateBid:
                                 """
                                 Check that actual_ev_release['releases'][0]['awards'][0]['id'] is uuid version 4
                                 """
-                                check_award_id = is_it_uuid(
+                                check_award_id = check_uuid_version(
                                     uuid_to_test=GlobalClassTenderPeriodEndNoAuction.actual_ev_release[
                                         'releases'][0]['awards'][award]['id'],
                                     version=4

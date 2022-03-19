@@ -475,3 +475,24 @@ class Requests:
             })
         allure.attach(host_of_request + f"/apply/protocol", 'URL')
         return protocol
+
+    @staticmethod
+    @allure.step('Prepared request: award consideration')
+    def do_award_for_limited_procedure(host_of_request, access_token, x_operation_id, pn_ocid, pn_token, tender_id,
+                                       lot_id, payload, test_mode=False):
+        award = requests.post(
+            url=host_of_request + f"/do/award/{pn_ocid}/{tender_id}",
+            params={
+                'lotId': lot_id,
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': pn_token
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/award", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return award

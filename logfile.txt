@@ -5,3 +5,216 @@ Class = KafkaMessage ->
 Method = declare_non_conflict_interest_message_is_successful -> 
 Actual result: check_x_response_id = 793d4560-a2bd-11ec-9ce2-e54c8e6ce434 is not correct.
 Expected result: actual result must be UUID v.4
+
+2022-03-16 13:59:52.715707
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+Actual result: check_x_operation_id = 9cb62e3c-53dd-4aba-9d21-4f819ff9b93b is not correct.
+Expected result: actual result must be UUID v.1
+
+2022-03-16 14:03:18.278224
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+Actual result: X-RESPONSE-ID = 5debcccf-8acf-4c67-bc18-b7b4840584f7 is not correct.
+Expected result: actual result must be UUID v.1
+
+2022-03-16 15:19:25.565529
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+Actual result: initiator = platform is not correct.
+Expected result: bpe
+
+2022-03-17 14:59:59.387366
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 15:45:25.970665
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:02:39.693344
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:29:43.012254
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:41:57.513737
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:43:10.545573
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:43:42.508714
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:45:08.198895
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:46:34.751984
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:53:30.733411
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:55:30.250945
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:55:51.034061
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:56:46.466355
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:57:10.436638
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:57:34.342285
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:58:30.506223
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 16:58:46.565591
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:21:50.417648
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:23:36.170278
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:23:54.060394
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:29:02.065109
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:30:57.907300
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:31:18.556798
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:31:36.990612
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:52:24.543263
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:52:42.755359
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:54:34.659377
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:55:13.734750
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:55:37.956262
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:56:22.143903
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 17:56:41.944067
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid
+
+2022-03-18 19:53:10.858746
+File = kafka_message.py -> 
+Class = KafkaMessage -> 
+Method = tender_period_end_no_auction_message_is_successful -> 
+KeyError: data.ocid

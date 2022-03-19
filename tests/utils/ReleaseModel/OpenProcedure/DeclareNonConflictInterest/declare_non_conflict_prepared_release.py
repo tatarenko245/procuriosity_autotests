@@ -2,7 +2,7 @@ import copy
 import datetime
 
 from tests.utils.ReleaseModel.OpenProcedure.DeclareNonConflictInterest.declare_non_conflict_release_library import ReleaseLibrary
-from tests.utils.functions import is_it_uuid, get_project_root
+from tests.utils.functions import check_uuid_version, get_project_root
 
 
 class DeclareExpectedRelease:
@@ -64,7 +64,7 @@ class DeclareExpectedRelease:
                     """
                     Check that id into actual_awards_requirement_responses_array is uuid v.4
                     """
-                    check = is_it_uuid(
+                    check = check_uuid_version(
                         uuid_to_test=actual_awards_requirement_responses_id[x],
                         version=4
                     )

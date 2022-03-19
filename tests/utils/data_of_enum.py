@@ -55,6 +55,20 @@ documentType = ("tenderNotice",
                 "contractArrangements",
                 "contractGuarantees",)
 
+documentType_for_create_award_of_limited_procedure = (
+    "awardNotice",
+    "evaluationReports",
+    "contractDraft",
+    "winningBid",
+    "complaints",
+    "bidders",
+    "conflictOfInterest",
+    "cancellationDetails",
+    "submissionDocuments",
+    "contractArrangements",
+    "contractSchedule",
+    "shortlistedFirms",)
+
 scale = ("micro",
          "sme",
          "large",)
@@ -81,7 +95,7 @@ documentType_for_evaluate_award = (
     "shortlistedFirms",)
 
 person_title = ("Mr.", "Ms.", "Mrs.",)
-business_function_type = ("authority", "contactPoint",)
+business_function_type = ("contactPoint",)
 business_function_type_for_declare = (
     "chairman",
     "procurementOfficer",

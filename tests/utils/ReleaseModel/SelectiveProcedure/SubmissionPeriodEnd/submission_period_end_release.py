@@ -1,4 +1,4 @@
-from tests.utils.functions import is_it_uuid
+from tests.utils.functions import check_uuid_version
 from tests.utils.services.e_mdm_service import MdmService
 
 
@@ -114,7 +114,7 @@ class SubmissionPeriodEndExpectedRelease:
         for i in self.actual_tp_release['releases'][0]['submissions']['details']:
             if i['date'] == create_submission_feed_point_message['data']['operationDate']:
                 try:
-                    is_it_uuid(
+                    check_uuid_version(
                         uuid_to_test=i['id'],
                         version=4
                     )
@@ -176,7 +176,7 @@ class SubmissionPeriodEndExpectedRelease:
                 if i_1 == "relatedSubmission":
                     if i['relatedSubmission'] == submission_id:
                         try:
-                            is_it_uuid(
+                            check_uuid_version(
                                 uuid_to_test=i['id'],
                                 version=4
                             )

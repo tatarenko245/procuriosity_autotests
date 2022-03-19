@@ -16,7 +16,7 @@ from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.functions import compare_actual_result_and_expected_result, \
     get_value_from_classification_unit_dictionary_csv, get_value_from_region_csv, get_value_from_locality_csv, \
-    get_contract_period_for_ms_release, get_value_from_cpvs_dictionary_csv, is_it_uuid
+    get_contract_period_for_ms_release, get_value_from_cpvs_dictionary_csv, check_uuid_version
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.my_requests import Requests
@@ -673,7 +673,7 @@ class TestCreateCnOnPn:
                             'releases'][0]['tender']['electronicAuctions']['details']:
                         for n_1 in n:
                             if n_1 == "id":
-                                is_it_uuid(
+                                check_uuid_version(
                                     uuid_to_test=n['id'],
                                     version=4
                                 )
@@ -1425,7 +1425,7 @@ class TestCreateCnOnPn:
                         Check releases.tender.electronicAuctions.details.id
                         """
                         for i in range(1):
-                            check_electronic_auction_details_id = is_it_uuid(
+                            check_electronic_auction_details_id = check_uuid_version(
                                 uuid_to_test=GlobalClassUpdateCnOnPn.actual_ev_release[
                                     'releases'][0]['tender']['electronicAuctions']['details'][i]['id'],
                                 version=4
@@ -2125,7 +2125,7 @@ class TestCreateCnOnPn:
                         Check releases.tender.electronicAuctions.details.id
                         """
                         for i in range(2):
-                            check_electronic_auction_details_id = is_it_uuid(
+                            check_electronic_auction_details_id = check_uuid_version(
                                 uuid_to_test=GlobalClassUpdateCnOnPn.actual_ev_release[
                                     'releases'][0]['tender']['electronicAuctions']['details'][i]['id'],
                                 version=4
@@ -3095,7 +3095,7 @@ class TestCreateCnOnPn:
                             'releases'][0]['tender']['electronicAuctions']['details']:
                         for n_1 in n:
                             if n_1 == "id":
-                                is_it_uuid(
+                                check_uuid_version(
                                     uuid_to_test=n['id'],
                                     version=4
                                 )
