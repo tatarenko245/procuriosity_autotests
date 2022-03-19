@@ -12,9 +12,6 @@ from tests.utils.PayloadModel.LimitedProcedure.Award.award_payloads import Award
 from tests.utils.PayloadModel.LimitedProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.LimitedProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.ReleaseModel.LimitedProcedure.Award.award_releases import AwardReleases
-from tests.utils.ReleaseModel.LimitedProcedure.CnOnPn.cnonpn_prepared_release import CnOnPnExpectedRelease
-from tests.utils.functions import get_value_from_classification_cpv_dictionary_xls, \
-    generate_tender_classification_id, get_contract_period_for_ms_release
 
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
@@ -250,25 +247,15 @@ class TestCreateAward:
                     tender_id=np_id
                 )
 
-                try:
-                    """
-                    If asynchronous_result_of_sending_the_request was False, then return process steps by
-                    operation-id.
-                    """
-                    if asynchronous_result_of_sending_the_request_was_checked is False:
-                        with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                                operation_id=create_award_operation_id)
-                            allure.attach(steps, "Cassandra DataBase: steps of process")
-                except ValueError:
-                    raise ValueError("Can not return BPE operation step")
-
                 with allure.step('Compare actual asynchronous result of sending the request and '
                                  'expected asynchronous result of sending request.'):
                     allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
                                   "Actual asynchronous result of sending the request.")
                     allure.attach(str(True), "Expected asynchronous result of sending the request.")
-                    assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
+                    assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True), allure.attach(
+                        f"SELECT * FROM orchestrator.steps WHERE "
+                        f"operation_id = '{create_award_operation_id}' ALLOW FILTERING;",
+                        "Cassandra DataBase: steps of process")
 
             with allure.step(f'# {step_number}.3. Check NP release'):
                 """
@@ -360,7 +347,10 @@ class TestCreateAward:
                                   "Actual result of comparing NP releases.")
                     allure.attach(str(expected_result),
                                   "Expected result of comparing NP releases.")
-                    assert str(compare_releases) == str(expected_result)
+                    assert str(compare_releases) == str(expected_result), allure.attach(
+                        f"SELECT * FROM orchestrator.steps WHERE "
+                        f"operation_id = '{create_award_operation_id}' ALLOW FILTERING;",
+                        "Cassandra DataBase: steps of process")
 
                 with allure.step('Check a difference of comparing actual parties array and expected parties array.'):
                     allure.attach(str(actual_np_release_after_award_creating['releases'][0]['parties']),
@@ -370,142 +360,87 @@ class TestCreateAward:
 
                     assert str(actual_np_release_after_award_creating['releases'][0]['parties']) == \
                            str(final_expected_parties_array), allure.attach(
+                        f"SELECT * FROM orchestrator.steps WHERE "
+                        f"operation_id = '{create_award_operation_id}' ALLOW FILTERING;",
+                        "Cassandra DataBase: steps of process")
+
+                with allure.step('Check a difference of comparing actual awards array and expected awards array.'):
+                    allure.attach(str(actual_np_release_after_award_creating['releases'][0]['awards']),
+                                  "Actual awards array.")
+                    allure.attach(str(final_expected_awards_array),
+                                  "Expected awards array")
+                    assert str(actual_np_release_after_award_creating['releases'][0]['awards']) == \
+                           str(final_expected_awards_array), allure.attach(
                         f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
                         f"process_id = '{create_award_operation_id}' ALLOW FILTERING;",
                         "Cassandra DataBase: steps of process")
 
+                with allure.step('Check a difference of comparing actual tender.awardPeriod object and '
+                                 'expected tender.awardPeriod object.'):
+                    allure.attach(str(actual_np_release_after_award_creating['releases'][0]['tender']['awardPeriod']),
+                                  "Actual tender.awardPeriod object.")
+                    allure.attach(str(final_expected_tender_awardPeriod_object),
+                                  "Expected tender.awardPeriod object.")
+                    assert str(actual_np_release_after_award_creating['releases'][0]['tender']['awardPeriod']) == \
+                           str(final_expected_tender_awardPeriod_object), allure.attach(
+                        f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                        f"process_id = '{create_award_operation_id}' ALLOW FILTERING;",
+                        "Cassandra DataBase: steps of process")
 
-                # with allure.step('Check a difference of comparing actual awards array and expected awards array.'):
-                #     allure.attach(str(actual_np_release_after_award_creating['releases'][0]['awards']),
-                #                   "Actual awards array.")
-                #     allure.attach(str(final_expected_awards_array),
-                #                   "Expected awards array")
-                #     assert str(actual_np_release_after_award_creating['releases'][0]['awards']) == \
-                #            str(final_expected_awards_array)
-                #
-                # with allure.step('Check a difference of comparing actual tender.awardPeriod object and '
-                #                  'expected tender.awardPeriod object.'):
-                #     allure.attach(str(actual_np_release_after_award_creating['releases'][0]['tender']['awardPeriod']),
-                #                   "Actual tender.awardPeriod object.")
-                #     allure.attach(str(final_expected_tender_awardPeriod_object),
-                #                   "Expected tender.awardPeriod object.")
-                #     assert str(actual_np_release_after_award_creating['releases'][0]['tender']['awardPeriod']) == \
-                #            str(final_expected_tender_awardPeriod_object)
-        #
-        #     with allure.step(f'# {step_number}.4. Check MS release'):
-        #         """
-        #         Compare actual multistage release before cn creating and actual multistage release after cn creating.
-        #         """
-        #         allure.attach(str(json.dumps(actual_ms_release_before_cn_creating)),
-        #                       "Actual Ms release before cn creating")
-        #
-        #         allure.attach(str(json.dumps(actual_ms_release_after_cn_creating)),
-        #                       "Actual Ms release after cn creating")
-        #
-        #         compare_releases = dict(DeepDiff(actual_ms_release_before_cn_creating,
-        #                                          actual_ms_release_after_cn_creating))
-        #
-        #         dictionary_item_added_was_cleaned = \
-        #             str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-        #         compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
-        #         compare_releases = dict(compare_releases)
-        #
-        #         expected_result = {
-        #             'dictionary_item_added': "['releases'][0]['tender']['contractPeriod']",
-        #             "values_changed": {
-        #                 "root['releases'][0]['id']": {
-        #                     "new_value": f"{pn_ocid}-"
-        #                                  f"{actual_ms_release_after_cn_creating['releases'][0]['id'][29:42]}",
-        #                     "old_value": f"{pn_ocid}-"
-        #                                  f"{actual_ms_release_before_cn_creating['releases'][0]['id'][29:42]}"
-        #                 },
-        #                 "root['releases'][0]['date']": {
-        #                     "new_value": cn_feed_point_message['data']['operationDate'],
-        #                     "old_value": pn_feed_point_message['data']['operationDate']
-        #                 },
-        #                 "root['releases'][0]['tender']['status']": {
-        #                     "new_value": "active",
-        #                     "old_value": "planning"
-        #                 },
-        #                 "root['releases'][0]['tender']['statusDetails']": {
-        #                     "new_value": "negotiation",
-        #                     "old_value": "planning"
-        #                 },
-        #                 "root['releases'][0]['tender']['classification']['id']": {
-        #                     "new_value": get_value_from_classification_cpv_dictionary_xls(
-        #                         cpv=generate_tender_classification_id(
-        #                             items_array=create_cn_payload['tender']['items']),
-        #                         language=language)[0],
-        #                     "old_value": create_ei_payload['tender']['classification']['id']
-        #                 },
-        #                 "root['releases'][0]['tender']['classification']['description']": {
-        #                     "new_value": get_value_from_classification_cpv_dictionary_xls(
-        #                         cpv=generate_tender_classification_id(
-        #                             items_array=create_cn_payload['tender']['items']), language=language)[1],
-        #                     "old_value": get_value_from_classification_cpv_dictionary_xls(
-        #                         cpv=create_ei_payload['tender']['classification']['id'], language=language)[1]
-        #                 }
-        #             },
-        #             'iterable_item_added': {
-        #                 "root['releases'][0]['relatedProcesses'][3]": {
-        #                     'id': actual_ms_release_after_cn_creating['releases'][0]['relatedProcesses'][3]['id'],
-        #                     'relationship': ['x_negotiation'],
-        #                     'scheme': 'ocid',
-        #                     'identifier': np_id,
-        #                     'uri': f"{self.metadata_tender_url}/{pn_ocid}/{np_id}"
-        #                 }
-        #             }
-        #         }
-        #
-        #         expected_contract_period_object = {
-        #             'startDate': get_contract_period_for_ms_release(
-        #                 lots_array=create_cn_payload['tender']['lots'])[0],
-        #             'endDate': get_contract_period_for_ms_release(
-        #                 lots_array=create_cn_payload['tender']['lots'])[1]
-        #         }
-        #
-        #         try:
-        #             """
-        #                 If TestCase was passed, then cLean up the database.
-        #                 If TestCase was failed, then return process steps by operation-id.
-        #                 """
-        #             if compare_releases == expected_result:
-        #                 connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-        #
-        #                 connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-        #
-        #                 connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
-        #
-        #                 connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
-        #             else:
-        #                 with allure.step('# Steps from Casandra DataBase'):
-        #                     steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-        #                         operation_id=create_cn_operation_id)
-        #                     allure.attach(steps, "Cassandra DataBase: steps of process")
-        #         except ValueError:
-        #             raise ValueError("Can not return BPE operation step")
-        #
-        #         with allure.step('Check a difference of comparing Ms release before cn creating and '
-        #                          'Ms release after cn creating.'):
-        #             allure.attach(str(compare_releases),
-        #                           "Actual result of comparing MS releases.")
-        #             allure.attach(str(expected_result),
-        #                           "Expected result of comparing Ms releases.")
-        #             assert str(compare_releases) == str(expected_result)
-        #
-        #         with allure.step('Check a difference of comparing contract period object before cn creating'
-        #                          ' and contract period object after cn creating.'):
-        #             allure.attach(str(actual_ms_release_after_cn_creating['releases'][0]['tender']['contractPeriod']),
-        #                           "Actual result of comparing contract period object.")
-        #             allure.attach(str(expected_contract_period_object),
-        #                           "Expected result of comparing contract period object.")
-        #             assert str(actual_ms_release_after_cn_creating['releases'][0]['tender']['contractPeriod']) == \
-        #                    str(expected_contract_period_object)
+            with allure.step(f'# {step_number}.4. Check MS release'):
+                """
+                Compare actual multistage release before CreateAward process and 
+                actual multistage release after CreateAward process.
+                """
+                allure.attach(str(json.dumps(actual_ms_release_before_award_creating)),
+                              "Actual Ms release before AwardCreate process.")
+
+                actual_ms_release_after_award_creating = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(str(json.dumps(actual_ms_release_after_award_creating)),
+                              "Actual Ms release after AwardCreate process")
+
+                compare_releases = dict(DeepDiff(actual_ms_release_before_award_creating,
+                                                 actual_ms_release_after_award_creating)
+                                        )
+                expected_result = {}
+
+                with allure.step('Check a difference of comparing Ms release before cn creating and '
+                                 'Ms release after cn creating.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing MS releases.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing Ms releases.")
+                    assert str(compare_releases) == str(expected_result), allure.attach(
+                        f"SELECT * FROM orchestrator.steps WHERE "
+                        f"operation_id = '{create_award_operation_id}' ALLOW FILTERING;",
+                        "Cassandra DataBase: steps of process")
+
+                    try:
+                        """
+                            If TestCase was passed, then cLean up the database.
+                            If TestCase was failed, then return process steps by operation-id.
+                            """
+                        if compare_releases == expected_result:
+                            connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+
+                            connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+
+                            connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                            connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                            connection_to_database.createAward_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
+                            connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
+
+                            connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
+
+                            connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
+
+                            connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
+
+                            connection_to_database.cleanup_steps_of_process_from_orchestrator(
+                                pn_ocid=pn_ocid)
+
+                    except ValueError:
+                        raise ValueError("Can not return BPE operation step")
