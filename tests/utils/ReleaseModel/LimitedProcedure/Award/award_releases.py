@@ -17,7 +17,7 @@ class AwardReleases:
         elif environment == "sandbox":
             self.metadata_document_url = "http://storage.eprocurement.systems/get"
 
-    def parties_array(self, actual_parties_array):
+    def create_parties_array(self, actual_parties_array):
 
         expected_array_of_parties_mapper = list()
 
@@ -241,7 +241,8 @@ class AwardReleases:
                                     'documents'] = list()
 
                                 for document in range(len(self.payload['award']['suppliers'][supplier][
-                                        'persones'][persone]['businessFunctions'][businessFunction]['documents'])):
+                                                              'persones'][persone]['businessFunctions'][
+                                                              businessFunction]['documents'])):
 
                                     party_object['persones'][persone][
                                         'businessFunctions'][businessFunction]['documents'].append(
@@ -251,7 +252,8 @@ class AwardReleases:
                                     party_object['persones'][persone]['businessFunctions'][businessFunction][
                                         'documents'][document]['documentType'] = \
                                         self.payload['award']['suppliers'][supplier]['persones'][persone][
-                                        'businessFunctions'][businessFunction]['documents'][document]['documentType']
+                                            'businessFunctions'][businessFunction]['documents'][document][
+                                            'documentType']
 
                                     party_object['persones'][persone]['businessFunctions'][businessFunction][
                                         'documents'][document]['id'] = \
@@ -306,7 +308,6 @@ class AwardReleases:
 
                     for mainEconomicActivity in range(len(
                             self.payload['award']['suppliers'][supplier]['details']['mainEconomicActivities'])):
-
                         party_object['details']['mainEconomicActivities'].append(
                             self.constructor.np_release_parties_details_mainEconomicActivity_object())
 
@@ -544,3 +545,108 @@ class AwardReleases:
                 if expected_array_of_parties_mapper[expected]['id'] == actual_parties_array[actual]['id']:
                     final_expected_parties_array.append(expected_array_of_parties_mapper[expected]['value'])
         return final_expected_parties_array
+
+    def create_awards_array(self, lot_id, actual_awards_array):
+        expected_array_of_awards_mapper = list()
+
+        for actual_award in range(len(actual_awards_array)):
+            try:
+                """
+                Prepare award object framework.
+                """
+                award_object = dict()
+                award_object.update(self.constructor.np_release_awards_object())
+            except Exception:
+                raise Exception("Impossible to build expected award object framework.")
+
+            if actual_awards_array[actual_award]['relatedLots'] == [lot_id]:
+
+                try:
+                    """
+                    Enrich award object framework by required value.
+                    """
+                    award_object['id'] = actual_awards_array[actual_award]['id']
+                    award_object['status'] = "pending"
+                    award_object['statusDetails'] = "empty"
+                    award_object['date'] = self.awardFeedPointMessage['data']['operationDate']
+                    award_object['value']['currency'] = self.payload['award']['value']['currency']
+
+                    award_object['suppliers'] = list()
+                    for supplier in range(len(self.payload['award']['suppliers'])):
+                        award_object['suppliers'].append(self.constructor.np_release_awards_suppliers_object())
+
+                        award_object['suppliers'][supplier]['id'] = \
+                            f"{self.payload['award']['suppliers'][supplier]['identifier']['scheme']}-" \
+                            f"{self.payload['award']['suppliers'][supplier]['identifier']['id']}"
+
+                        award_object['suppliers'][supplier]['name'] = \
+                            self.payload['award']['suppliers'][supplier]['name']
+
+                    award_object['relatedLots'] = [lot_id]
+
+                except Exception:
+                    raise Exception("Impossible to enrich award object framework by required value.")
+
+                try:
+                    """
+                    Enrich award object framework by optional value.
+                    """
+                    if "internalId" in self.payload['award']:
+                        award_object['internalId'] = self.payload['award']['internalId']
+                    else:
+                        del award_object['internalId']
+
+                    if "description" in self.payload['award']:
+                        award_object['description'] = self.payload['award']['description']
+                    else:
+                        del award_object['description']
+
+                    if "amount" in self.payload['award']['value']:
+                        award_object['value']['amount'] = self.payload['award']['value']['amount']
+                    else:
+                        del award_object['value']['amount']
+
+                    if "documents" in self.payload['award']:
+                        award_object['documents'] = list()
+
+                        for document in range(len(self.payload['award']['documents'])):
+
+                            award_object['documents'].append(self.constructor.np_release_awards_documents_object())
+
+                            award_object['documents'][document]['id'] = \
+                                self.payload['award']['documents'][document]['id']
+
+                            award_object['documents'][document]['documentType'] = \
+                                self.payload['award']['documents'][document]['documentType']
+
+                            award_object['documents'][document]['title'] = \
+                                self.payload['award']['documents'][document]['title']
+
+                            if "description" in self.payload['award']['documents'][document]:
+                                award_object['documents'][document]['description'] = \
+                                    self.payload['award']['documents'][document]['description']
+                            else:
+                                del award_object['documents'][document]['description']
+
+                            award_object['documents'][document]['url'] = \
+                                f"{self.metadata_document_url}/{self.payload['award']['documents'][document]['id']}"
+
+                            award_object['documents'][document]['datePublished'] = \
+                                self.awardFeedPointMessage['data']['operationDate']
+                    else:
+                        del award_object['documents']
+                except Exception:
+                    raise Exception("Impossible to enrich award object framework by optional value.")
+
+                mapper = {
+                    "id": award_object['id'],
+                    "value": award_object
+                }
+                expected_array_of_awards_mapper.append(mapper)
+
+        final_expected_awards_array = list()
+        for actual in range(len(actual_awards_array)):
+            for expected in range(len(expected_array_of_awards_mapper)):
+                if expected_array_of_awards_mapper[expected]['id'] == actual_awards_array[actual]['id']:
+                    final_expected_awards_array.append(expected_array_of_awards_mapper[expected]['value'])
+        return final_expected_awards_array

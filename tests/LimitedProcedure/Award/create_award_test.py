@@ -203,17 +203,8 @@ class TestCreateAward:
                 host_for_services=get_hosts[2],
                 currency=create_cn_payload['tender']['lots'][0]['value']['currency'])
             )
-            create_award_payload = award_payload_class.full_data_model(
-                quantity_of_suppliers_objects=3,
-                quantity_of_suppliers_additionalIdentifiers_objects=3,
-                quantity_of_suppliers_persones_objects=3,
-                quantity_of_suppliers_persones_businessFunctions_objects=3,
-                quantity_of_suppliers_persones_businessFunctions_documents_objects=3,
-                quantity_of_suppliers_details_mainEconomicActivities_objects=3,
-                quantity_of_suppliers_details_permits=3,
-                quantity_of_suppliers_details_bankAccounts_objects=3,
-                quantity_of_suppliers_details_bankAccounts_additionalAccountIdentifiers_objects=3,
-                quantity_of_documents_objects=3
+            create_award_payload = award_payload_class.create_obligatory_data_model(
+                quantity_of_suppliers_objects=1
             )
 
             synchronous_result_of_sending_the_request = Requests().do_award_for_limited_procedure(
@@ -226,6 +217,9 @@ class TestCreateAward:
                 lot_id=lot_id,
                 payload=create_award_payload,
                 test_mode=True)
+
+        steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+            operation_id=create_award_operation_id)
 
         step_number += 1
         with allure.step(f'# {step_number}. See result'):
@@ -248,13 +242,13 @@ class TestCreateAward:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                create_award_feed_point_message = KafkaMessage(create_award_operation_id).get_message_from_kafka()
-                allure.attach(str(create_award_feed_point_message), 'Message in feed point')
+                create_award_feedPoint_message = KafkaMessage(create_award_operation_id).get_message_from_kafka()
+                allure.attach(str(create_award_feedPoint_message), 'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     create_award_operation_id).award_for_limited_procedure_message_is_successful(
                     environment=environment,
-                    kafka_message=create_award_feed_point_message,
+                    kafka_message=create_award_feedPoint_message,
                     pn_ocid=pn_ocid,
                     tender_id=np_id
                 )
@@ -314,7 +308,7 @@ class TestCreateAward:
                                 f"{actual_np_release_before_award_creating['releases'][0]['id'][46:59]}"
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": create_award_feed_point_message['data']['operationDate'],
+                            "new_value": create_award_feedPoint_message['data']['operationDate'],
                             "old_value": actual_np_release_before_award_creating['releases'][0]['date']
                         },
                         "root['releases'][0]['tender']['statusDetails']": {
@@ -332,41 +326,72 @@ class TestCreateAward:
                         environment=environment,
                         language=language,
                         award_payload=create_award_payload,
-                        awardFeedPointMessage=create_award_feed_point_message,
+                        awardFeedPointMessage=create_award_feedPoint_message,
                         actual_award_release=actual_np_release_after_award_creating
                     )
 
-                    final_expected_parties_array = expected_award_release_class.parties_array(
+                    final_expected_parties_array = expected_award_release_class.create_parties_array(
                         actual_parties_array=actual_np_release_after_award_creating['releases'][0]['parties']
                     )
 
                 except Exception:
                     raise Exception("Impossible to prepare expected parties array")
 
-                print("actual awards array")
-                print(json.dumps(actual_np_release_after_award_creating['releases'][0]['awards']))
+                try:
+                    """
+                    Prepare expected awards array.
+                    """
+                    final_expected_awards_array = expected_award_release_class.create_awards_array(
+                        lot_id=lot_id,
+                        actual_awards_array=actual_np_release_after_award_creating['releases'][0]['awards']
+                    )
+                except Exception:
+                    raise Exception("Impossible to prepare expected awards array")
 
+                try:
+                    """
+                    Prepare expected tender.awardPeriod object.
+                    """
+                    final_expected_tender_awardPeriod_object = {
+                        "startDate": create_award_feedPoint_message['data']['operationDate']
+                    }
+                except Exception:
+                    raise Exception("Impossible to prepare expected tender.awardPeriod object")
+
+                with allure.step('Check a difference of comparing actual NP release and expected NP release.'):
+                    allure.attach(str(compare_releases),
+                                  "Actual result of comparing NP releases.")
+                    allure.attach(str(expected_result),
+                                  "Expected result of comparing NP releases.")
+                    assert str(compare_releases) == str(expected_result)
+
+                with allure.step('Check a difference of comparing actual parties array and expected parties array.'):
+                    allure.attach(str(actual_np_release_after_award_creating['releases'][0]['parties']),
+                                  "Actual parties array.")
+                    allure.attach(str(final_expected_parties_array),
+                                  "Expected parties array")
+
+                    assert str(actual_np_release_after_award_creating['releases'][0]['parties']) == \
+                           str(final_expected_parties_array), allure.attach(
+                        steps, "Cassandra DataBase: steps of process")
+
+
+                # with allure.step('Check a difference of comparing actual awards array and expected awards array.'):
+                #     allure.attach(str(actual_np_release_after_award_creating['releases'][0]['awards']),
+                #                   "Actual awards array.")
+                #     allure.attach(str(final_expected_awards_array),
+                #                   "Expected awards array")
+                #     assert str(actual_np_release_after_award_creating['releases'][0]['awards']) == \
+                #            str(final_expected_awards_array)
                 #
-                # try:
-                #     """
-                #         If compare_releases !=expected_result, then return process steps by operation-id.
-                #         """
-                #     if compare_releases == expected_result:
-                #         pass
-                #     else:
-                #         with allure.step('# Steps from Casandra DataBase'):
-                #             steps = connection_to_database.get_bpe_operation_step_by_operation_id(
-                #                 operation_id=create_cn_operation_id)
-                #             allure.attach(steps, "Cassandra DataBase: steps of process")
-                # except ValueError:
-                #     raise ValueError("Can not return BPE operation step")
-                #
-                # with allure.step('Check a difference of comparing actual NP release and expected NP release.'):
-                #     allure.attach(str(compare_releases),
-                #                   "Actual result of comparing NP releases.")
-                #     allure.attach(str(expected_result),
-                #                   "Expected result of comparing NP releases.")
-                #     assert str(compare_releases) == str(expected_result)
+                # with allure.step('Check a difference of comparing actual tender.awardPeriod object and '
+                #                  'expected tender.awardPeriod object.'):
+                #     allure.attach(str(actual_np_release_after_award_creating['releases'][0]['tender']['awardPeriod']),
+                #                   "Actual tender.awardPeriod object.")
+                #     allure.attach(str(final_expected_tender_awardPeriod_object),
+                #                   "Expected tender.awardPeriod object.")
+                #     assert str(actual_np_release_after_award_creating['releases'][0]['tender']['awardPeriod']) == \
+                #            str(final_expected_tender_awardPeriod_object)
         #
         #     with allure.step(f'# {step_number}.4. Check MS release'):
         #         """

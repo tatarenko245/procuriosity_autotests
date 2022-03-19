@@ -19,7 +19,7 @@ class AwardPayloads:
         self.duration_period = date_class.duration_period()
         self.currency = currency
 
-    def full_data_model(
+    def create_full_data_model(
             self, quantity_of_suppliers_objects=1,
             quantity_of_suppliers_additionalIdentifiers_objects=1,
             quantity_of_suppliers_persones_objects=1,
@@ -359,7 +359,7 @@ class AwardPayloads:
                 f"{random.choice(documentType_for_create_award_of_limited_procedure)}"
         return payload
 
-    def obligatory_data_model(self, quantity_of_suppliers_objects=1):
+    def create_obligatory_data_model(self, quantity_of_suppliers_objects=1):
         payload = self.constructor.award_object()
 
         del payload['award']['internalId']

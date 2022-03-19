@@ -193,30 +193,40 @@ class ReleaseLibrary:
         return documents
 
     @staticmethod
-    def np_release_successful_awards_object():
+    def np_release_awards_object():
         awards = {
             "id": str,
+            "internalId": str,
+            "description": str,
             "status": str,
             "statusDetails": str,
             "date": str,
             "value": {
-                "amount": str,
+                "amount": float,
                 "currency": str
             },
             "suppliers": list,
-            "relatedLots": list,
-            "relatedBid": str,
-            "weightedValue": {
-                "amount": str,
-                "currency": str
-            }
+            "documents": list,
+            "relatedLots": list
         }
         return awards
 
     @staticmethod
-    def np_release_successful_awards_suppliers_object():
+    def np_release_awards_suppliers_object():
         suppliers = {
             "id": str,
             "name": str
         }
         return suppliers
+
+    @staticmethod
+    def np_release_awards_documents_object():
+        documents = {
+            "id": str,
+            "documentType": str,
+            "title": str,
+            "description": str,
+            "url": str,
+            "datePublished": str
+        }
+        return documents
