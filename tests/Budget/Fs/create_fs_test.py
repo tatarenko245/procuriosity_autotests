@@ -50,7 +50,7 @@ class TestCreateFs:
             ei_payload_class = copy.deepcopy(EiPreparePayload())
             create_ei_payload = ei_payload_class.create_ei_obligatory_data_model()
 
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
@@ -80,7 +80,7 @@ class TestCreateFs:
             time.sleep(1)
             fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_full_data_model_own_money()
-            synchronous_result_of_sending_the_request = Requests().create_fs(
+            synchronous_result_of_sending_the_request = Requests().createFs(
                 host_of_request=get_hosts[1],
                 access_token=create_fs_access_token,
                 x_operation_id=create_fs_operation_id,
@@ -171,7 +171,7 @@ class TestCreateFs:
             ei_payload_class = copy.deepcopy(EiPreparePayload())
             create_ei_payload = ei_payload_class.create_ei_obligatory_data_model()
 
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
@@ -203,7 +203,7 @@ class TestCreateFs:
             time.sleep(1)
             fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_full_data_model_own_money()
-            synchronous_result_of_sending_the_request = Requests().create_fs(
+            synchronous_result_of_sending_the_request = Requests().createFs(
                 host_of_request=get_hosts[1],
                 access_token=create_fs_access_token,
                 x_operation_id=create_fs_operation_id,
@@ -448,7 +448,7 @@ class TestCreateFs:
             ei_payload_class = copy.deepcopy(EiPreparePayload())
             create_ei_payload = ei_payload_class.create_ei_full_data_model()
 
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
@@ -480,7 +480,7 @@ class TestCreateFs:
             time.sleep(1)
             fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_full_data_model_treasury_money()
-            synchronous_result_of_sending_the_request = Requests().create_fs(
+            synchronous_result_of_sending_the_request = Requests().createFs(
                 host_of_request=get_hosts[1],
                 access_token=create_fs_access_token,
                 x_operation_id=create_fs_operation_id,
@@ -725,7 +725,7 @@ class TestCreateFs:
             ei_payload_class = copy.deepcopy(EiPreparePayload())
             create_ei_payload = ei_payload_class.create_ei_full_data_model()
 
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
@@ -757,7 +757,7 @@ class TestCreateFs:
             time.sleep(1)
             fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_obligatory_data_model_own_money()
-            synchronous_result_of_sending_the_request = Requests().create_fs(
+            synchronous_result_of_sending_the_request = Requests().createFs(
                 host_of_request=get_hosts[1],
                 access_token=create_fs_access_token,
                 x_operation_id=create_fs_operation_id,
@@ -1002,7 +1002,7 @@ class TestCreateFs:
             ei_payload_class = copy.deepcopy(EiPreparePayload())
             create_ei_payload = ei_payload_class.create_ei_obligatory_data_model()
 
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
@@ -1035,7 +1035,7 @@ class TestCreateFs:
             fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=create_ei_payload)
-            synchronous_result_of_sending_the_request = Requests().create_fs(
+            synchronous_result_of_sending_the_request = Requests().createFs(
                 host_of_request=get_hosts[1],
                 access_token=create_fs_access_token,
                 x_operation_id=create_fs_operation_id,

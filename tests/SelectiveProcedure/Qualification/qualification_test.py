@@ -64,7 +64,7 @@ class TestQualification:
             ei_payload_class = copy.deepcopy(EiPreparePayload())
             create_ei_payload = ei_payload_class.create_ei_obligatory_data_model()
 
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
@@ -96,7 +96,7 @@ class TestQualification:
             create_fs_payload = fs_payload_class.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=create_ei_payload)
 
-            Requests().create_fs(
+            Requests().createFs(
                 host_of_request=get_hosts[1],
                 access_token=create_fs_access_token,
                 x_operation_id=create_fs_operation_id,
@@ -129,7 +129,7 @@ class TestQualification:
             create_pn_payload = \
                 pn_payload_class.create_pn_obligatory_data_model_without_lots_and_items_based_on_one_fs()
 
-            Requests().create_pn(
+            Requests().createPn(
                 host_of_request=get_hosts[1],
                 access_token=create_pn_access_token,
                 x_operation_id=create_pn_operation_id,
@@ -184,7 +184,7 @@ class TestQualification:
                     pre_qualification_period_end=min_submission_period_duration,
                     pn_payload=create_pn_payload)
 
-            Requests().create_cnonpn(
+            Requests().createCnOnPn(
                 host_of_request=get_hosts[1],
                 access_token=create_cn_access_token,
                 x_operation_id=create_cn_operation_id,

@@ -46,7 +46,7 @@ class TestUpdateEi:
             ei_payload_class = copy.deepcopy(EiPreparePayload())
             create_ei_payload = ei_payload_class.create_ei_obligatory_data_model()
 
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
@@ -167,7 +167,7 @@ class TestUpdateEi:
             ei_payload_class = copy.deepcopy(EiPreparePayload())
             create_ei_payload = ei_payload_class.create_ei_full_data_model(quantity_of_tender_item_object=3)
 
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
@@ -346,7 +346,7 @@ class TestUpdateEi:
             ei_payload_class = copy.deepcopy(EiPreparePayload())
             create_ei_payload = ei_payload_class.create_ei_obligatory_data_model()
 
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
@@ -559,7 +559,7 @@ class TestUpdateEi:
             ei_payload_class = copy.deepcopy(EiPreparePayload())
             create_ei_payload = ei_payload_class.create_ei_full_data_model(quantity_of_tender_item_object=1)
 
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,

@@ -176,7 +176,6 @@ class TestCreateAward:
             createCn_feedPoint_message = KafkaMessage(createCn_operationId).get_message_from_kafka()
             np_id = createCn_feedPoint_message['data']['outcomes']['np'][0]['id']
             actual_np_release_before_createAward = requests.get(url=f"{pn_url}/{np_id}").json()
-            actual_ms_release_before_createAward = requests.get(url=f"{pn_url}/{pn_ocid}").json()
             lot_id = actual_np_release_before_createAward['releases'][0]['tender']['lots'][0]['id']
 
         step_number += 1
@@ -204,7 +203,7 @@ class TestCreateAward:
                 quantity_of_suppliers_objects=1
             )
 
-            synchronous_result_of_sending_the_request = Requests().createAward_for_limitedProcedure(
+            Requests().createAward_for_limitedProcedure(
                 host_of_request=get_hosts[1],
                 access_token=createAward_accessToken,
                 x_operation_id=createAward_operationId,
@@ -213,7 +212,52 @@ class TestCreateAward:
                 tender_id=np_id,
                 lot_id=lot_id,
                 payload=createAward_payload,
-                test_mode=True)
+                test_mode=True
+            )
+
+        time.sleep(10)
+        createAward_feedPoint_message = KafkaMessage(createAward_operationId).get_message_from_kafka()
+        award_id = createAward_feedPoint_message['data']['outcomes']['awards'][0]['id']
+        award_token = createAward_feedPoint_message['data']['outcomes']['awards'][0]['X-TOKEN']
+        actual_np_release_before_evaluateAward = requests.get(url=f"{pn_url}/{np_id}").json()
+        actual_ms_release_before_evaluateAward = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Authorization platform one: evaluate Award'):
+            """
+            Tender platform authorization for evaluate award process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            evaluateAward_accessToken = authorization.get_access_token_for_platform_one()
+            evaluateAward_operationId = authorization.get_x_operation_id(evaluateAward_accessToken)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send request to evaluate Award'):
+            """
+            Send api request on BPE host for evaluate award process.
+            Save synchronous result of sending the request and asynchronous result of sending the request.
+            """
+            time.sleep(1)
+
+            award_payload_class = copy.deepcopy(AwardPayloads(
+                host_for_services=get_hosts[2],
+                currency=createCn_payload['tender']['lots'][0]['value']['currency'])
+            )
+            evaluateAward_payload = award_payload_class.evaluate_award_obligatory_data_model(
+                award_statusDetails="active"
+            )
+
+            synchronous_result_of_sending_the_request = Requests().evaluateAward_for_limitedProcedure(
+                host_of_request=get_hosts[1],
+                access_token=evaluateAward_accessToken,
+                x_operation_id=evaluateAward_operationId,
+                pn_ocid=pn_ocid,
+                tender_id=np_id,
+                award_id=award_id,
+                award_token=award_token,
+                payload=evaluateAward_payload,
+                test_mode=True
+            )
 
         step_number += 1
         with allure.step(f'# {step_number}. See result'):
@@ -236,15 +280,15 @@ class TestCreateAward:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                createAward_feedPoint_message = KafkaMessage(createAward_operationId).get_message_from_kafka()
-                allure.attach(str(createAward_feedPoint_message), 'Message in feed point')
+                evaluateAward_feedPoint_message = KafkaMessage(evaluateAward_operationId).get_message_from_kafka()
+                allure.attach(str(evaluateAward_feedPoint_message), 'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    createAward_operationId).award_for_limited_procedure_message_is_successful(
-                    environment=environment,
-                    kafka_message=createAward_feedPoint_message,
-                    pn_ocid=pn_ocid,
-                    tender_id=np_id
+                    createAward_operationId).award_evaluating_message_is_successful(
+                        environment=environment,
+                        kafka_message=evaluateAward_feedPoint_message,
+                        pn_ocid=pn_ocid,
+                        tender_id=np_id
                 )
 
                 with allure.step('Compare actual asynchronous result of sending the request and '
@@ -259,88 +303,48 @@ class TestCreateAward:
 
             with allure.step(f'# {step_number}.3. Check NP release'):
                 """
-                Compare actual NP release before CreateAward process and NP release after CreateAward process.
+                Compare actual NP release before EvaluateAward process and NP release after EvaluateAward process.
                 """
-                allure.attach(str(json.dumps(actual_np_release_before_createAward)),
-                              "Actual NP release before CreateAward process.")
+                allure.attach(str(json.dumps(actual_np_release_before_evaluateAward)),
+                              "Actual NP release before EvaluateAward process.")
 
-                actual_np_release_after_createAward = requests.get(url=f"{pn_url}/{np_id}").json()
-                allure.attach(str(json.dumps(actual_np_release_after_createAward)),
-                              "Actual NP release after CreateAward process.")
+                actual_np_release_after_evaluateAward = requests.get(url=f"{pn_url}/{np_id}").json()
+                allure.attach(str(json.dumps(actual_np_release_after_evaluateAward )),
+                              "Actual NP release after EvaluateAward process.")
 
                 compare_releases = dict(DeepDiff(
-                    actual_np_release_before_createAward,
-                    actual_np_release_after_createAward)
+                    actual_np_release_before_evaluateAward,
+                    actual_np_release_after_evaluateAward)
                 )
 
-                dictionary_item_added_was_cleaned = \
-                    str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
-
                 expected_result = {
-                    "dictionary_item_added":
-                        "['releases'][0]['parties'], "
-                        "['releases'][0]['awards'], "
-                        "['releases'][0]['tender']['awardPeriod']",
                     "values_changed": {
                         "root['releases'][0]['id']": {
                             "new_value":
                                 f"{np_id}-"
-                                f"{actual_np_release_after_createAward['releases'][0]['id'][46:59]}",
+                                f"{actual_np_release_after_evaluateAward['releases'][0]['id'][46:59]}",
                             "old_value":
                                 f"{np_id}-"
-                                f"{actual_np_release_before_createAward['releases'][0]['id'][46:59]}"
+                                f"{actual_np_release_before_evaluateAward['releases'][0]['id'][46:59]}"
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": createAward_feedPoint_message['data']['operationDate'],
-                            "old_value": actual_np_release_before_createAward['releases'][0]['date']
+                            "new_value": evaluateAward_feedPoint_message['data']['operationDate'],
+                            "old_value": actual_np_release_before_evaluateAward['releases'][0]['date']
                         },
-                        "root['releases'][0]['tender']['statusDetails']": {
-                            "new_value": "awarding",
-                            "old_value": "negotiation"
+                        "root['releases'][0]['tag'][0]": {
+                            "new_value": "awardUpdate",
+                            "old_value": "tender"
+                        },
+                        "root['releases'][0]['awards'][0]['statusDetails']": {
+                            "new_value": "active",
+                            "old_value": "empty"
+                        },
+                        "root['releases'][0]['awards'][0]['date']": {
+                            "new_value": evaluateAward_feedPoint_message['data']['operationDate'],
+                            "old_value": actual_np_release_before_evaluateAward['releases'][0]['awards'][0]['date']
                         }
                     }
                 }
-
-                try:
-                    """
-                    Prepare expected parties array.
-                    """
-                    expected_award_release_class = AwardReleases(
-                        environment=environment,
-                        language=language,
-                        award_payload=createAward_payload,
-                        awardFeedPointMessage=createAward_feedPoint_message,
-                        actual_award_release=actual_np_release_after_createAward
-                    )
-
-                    final_expected_parties_array = expected_award_release_class.create_parties_array(
-                        actual_parties_array=actual_np_release_after_createAward['releases'][0]['parties']
-                    )
-
-                except Exception:
-                    raise Exception("Impossible to prepare expected parties array")
-
-                try:
-                    """
-                    Prepare expected awards array.
-                    """
-                    final_expected_awards_array = expected_award_release_class.create_awards_array(
-                        lot_id=lot_id,
-                        actual_awards_array=actual_np_release_after_createAward['releases'][0]['awards']
-                    )
-                except Exception:
-                    raise Exception("Impossible to prepare expected awards array")
-
-                try:
-                    """
-                    Prepare expected tender.awardPeriod object.
-                    """
-                    final_expected_tender_awardPeriod_object = {
-                        "startDate": createAward_feedPoint_message['data']['operationDate']
-                    }
-                except Exception:
-                    raise Exception("Impossible to prepare expected tender.awardPeriod object")
 
                 with allure.step('Check a difference of comparing actual NP release and expected NP release.'):
                     allure.attach(str(compare_releases),
@@ -349,70 +353,36 @@ class TestCreateAward:
                                   "Expected result of comparing NP releases.")
                     assert str(compare_releases) == str(expected_result), allure.attach(
                         f"SELECT * FROM orchestrator.steps WHERE "
-                        f"operation_id = '{createAward_operationId}' ALLOW FILTERING;",
-                        "Cassandra DataBase: steps of process")
-
-                with allure.step('Check a difference of comparing actual parties array and expected parties array.'):
-                    allure.attach(str(actual_np_release_after_createAward['releases'][0]['parties']),
-                                  "Actual parties array.")
-                    allure.attach(str(final_expected_parties_array),
-                                  "Expected parties array")
-
-                    assert str(actual_np_release_after_createAward['releases'][0]['parties']) == \
-                           str(final_expected_parties_array), allure.attach(
-                        f"SELECT * FROM orchestrator.steps WHERE "
-                        f"operation_id = '{createAward_operationId}' ALLOW FILTERING;",
-                        "Cassandra DataBase: steps of process")
-
-                with allure.step('Check a difference of comparing actual awards array and expected awards array.'):
-                    allure.attach(str(actual_np_release_after_createAward['releases'][0]['awards']),
-                                  "Actual awards array.")
-                    allure.attach(str(final_expected_awards_array),
-                                  "Expected awards array")
-                    assert str(actual_np_release_after_createAward['releases'][0]['awards']) == \
-                           str(final_expected_awards_array), allure.attach(
-                        f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
-                        f"process_id = '{createAward_operationId}' ALLOW FILTERING;",
-                        "Cassandra DataBase: steps of process")
-
-                with allure.step('Check a difference of comparing actual tender.awardPeriod object and '
-                                 'expected tender.awardPeriod object.'):
-                    allure.attach(str(actual_np_release_after_createAward['releases'][0]['tender']['awardPeriod']),
-                                  "Actual tender.awardPeriod object.")
-                    allure.attach(str(final_expected_tender_awardPeriod_object),
-                                  "Expected tender.awardPeriod object.")
-                    assert str(actual_np_release_after_createAward['releases'][0]['tender']['awardPeriod']) == \
-                           str(final_expected_tender_awardPeriod_object), allure.attach(
-                        f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
-                        f"process_id = '{createAward_operationId}' ALLOW FILTERING;",
+                        f"operation_id = '{evaluateAward_operationId}' ALLOW FILTERING;",
                         "Cassandra DataBase: steps of process")
 
             with allure.step(f'# {step_number}.4. Check MS release'):
                 """
-                Compare actual multistage release before CreateAward process and 
-                actual multistage release after CreateAward process.
+                Compare actual multistage release before EvaluateAward process and
+                actual multistage release after EvaluateAward process.
                 """
-                allure.attach(str(json.dumps(actual_ms_release_before_createAward)),
-                              "Actual Ms release before AwardCreate process.")
+                allure.attach(str(json.dumps(actual_ms_release_before_evaluateAward)),
+                              "Actual Ms release before EvaluateAward process.")
 
-                actual_ms_release_after_createAward = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-                allure.attach(str(json.dumps(actual_ms_release_after_createAward)),
-                              "Actual Ms release after AwardCreate process")
+                actual_ms_release_after_evaluateAward = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+                allure.attach(str(json.dumps(actual_ms_release_after_evaluateAward)),
+                              "Actual Ms release after EvaluateAward process")
 
-                compare_releases = dict(DeepDiff(actual_ms_release_before_createAward,
-                                                 actual_ms_release_after_createAward)
+                compare_releases = dict(DeepDiff(actual_ms_release_before_evaluateAward,
+                                                 actual_ms_release_after_evaluateAward
+                                                 )
                                         )
                 expected_result = {}
 
-                with allure.step('Check a difference of comparing Ms release before cn creating and '
-                                 'Ms release after cn creating.'):
+                with allure.step('Check a difference of comparing Ms release before EvaluateAward and '
+                                 'Ms release after EvaluateAward.'):
                     allure.attach(str(compare_releases),
                                   "Actual result of comparing MS releases.")
                     allure.attach(str(expected_result),
                                   "Expected result of comparing Ms releases.")
                     assert str(compare_releases) == str(expected_result), allure.attach(
                         f"SELECT * FROM orchestrator.steps WHERE "
-                        f"operation_id = '{createAward_operationId}' ALLOW FILTERING;",
+                        f"operation_id = '{evaluateAward_operationId}' ALLOW FILTERING;",
                         "Cassandra DataBase: steps of process")
 
                     try:

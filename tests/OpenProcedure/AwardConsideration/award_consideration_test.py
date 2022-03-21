@@ -92,7 +92,7 @@ class TestAwardConsideration:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model(quantity_of_tender_item_object=2)
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
                 x_operation_id=GlobalClassCreateEi.operation_id,
@@ -130,7 +130,7 @@ class TestAwardConsideration:
             time.sleep(1)
             fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
-            Requests().create_fs(
+            Requests().createFs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFs.access_token,
                 x_operation_id=GlobalClassCreateFs.operation_id,
@@ -171,7 +171,7 @@ class TestAwardConsideration:
                     quantity_of_lot_object=1,
                     quantity_of_item_object=1)
 
-            Requests().create_pn(
+            Requests().createPn(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreatePn.access_token,
                 x_operation_id=GlobalClassCreatePn.operation_id,
@@ -231,7 +231,7 @@ class TestAwardConsideration:
                     based_stage_release=GlobalClassCreatePn.actual_pn_release
                 )
 
-            Requests().create_cnonpn(
+            Requests().createCnOnPn(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateCnOnPn.access_token,
                 x_operation_id=GlobalClassCreateCnOnPn.operation_id,
@@ -929,7 +929,7 @@ class TestAwardConsideration:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model(quantity_of_tender_item_object=2)
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
                 x_operation_id=GlobalClassCreateEi.operation_id,
@@ -967,7 +967,7 @@ class TestAwardConsideration:
             time.sleep(1)
             fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
-            Requests().create_fs(
+            Requests().createFs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFs.access_token,
                 x_operation_id=GlobalClassCreateFs.operation_id,
@@ -1008,7 +1008,7 @@ class TestAwardConsideration:
                     quantity_of_lot_object=1,
                     quantity_of_item_object=1)
 
-            Requests().create_pn(
+            Requests().createPn(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreatePn.access_token,
                 x_operation_id=GlobalClassCreatePn.operation_id,
@@ -1069,7 +1069,7 @@ class TestAwardConsideration:
                     award_criteria_details="manual"
                 )
 
-            Requests().create_cnonpn(
+            Requests().createCnOnPn(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateCnOnPn.access_token,
                 x_operation_id=GlobalClassCreateCnOnPn.operation_id,

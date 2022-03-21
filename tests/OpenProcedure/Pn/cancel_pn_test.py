@@ -69,7 +69,7 @@ class TestCreatePn:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model(quantity_of_tender_item_object=2)
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
                 x_operation_id=GlobalClassCreateEi.operation_id,
@@ -105,7 +105,7 @@ class TestCreatePn:
             time.sleep(1)
             fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
-            Requests().create_fs(
+            Requests().createFs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFs.access_token,
                 x_operation_id=GlobalClassCreateFs.operation_id,
@@ -146,7 +146,7 @@ class TestCreatePn:
                     quantity_of_lot_object=3,
                     quantity_of_item_object=3)
 
-            Requests().create_pn(
+            Requests().createPn(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreatePn.access_token,
                 x_operation_id=GlobalClassCreatePn.operation_id,
@@ -278,7 +278,7 @@ class TestCreatePn:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_full_data_model(quantity_of_tender_item_object=2)
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
                 x_operation_id=GlobalClassCreateEi.operation_id,
@@ -314,7 +314,7 @@ class TestCreatePn:
             time.sleep(1)
             fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
-            Requests().create_fs(
+            Requests().createFs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFs.access_token,
                 x_operation_id=GlobalClassCreateFs.operation_id,
@@ -355,7 +355,7 @@ class TestCreatePn:
                     quantity_of_lot_object=3,
                     quantity_of_item_object=3)
 
-            Requests().create_pn(
+            Requests().createPn(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreatePn.access_token,
                 x_operation_id=GlobalClassCreatePn.operation_id,
@@ -726,7 +726,7 @@ class TestCreatePn:
             """
             ei_payload = copy.deepcopy(EiPreparePayload())
             GlobalClassCreateEi.payload = ei_payload.create_ei_obligatory_data_model()
-            Requests().create_ei(
+            Requests().createEi(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateEi.access_token,
                 x_operation_id=GlobalClassCreateEi.operation_id,
@@ -764,7 +764,7 @@ class TestCreatePn:
             GlobalClassCreateFs.payload = fs_payload.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=GlobalClassCreateEi.payload
             )
-            Requests().create_fs(
+            Requests().createFs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreateFs.access_token,
                 x_operation_id=GlobalClassCreateFs.operation_id,
@@ -803,7 +803,7 @@ class TestCreatePn:
             GlobalClassCreatePn.payload = \
                 pn_payload.create_pn_obligatory_data_model_without_lots_and_items_based_on_one_fs()
 
-            Requests().create_pn(
+            Requests().createPn(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
                 access_token=GlobalClassCreatePn.access_token,
                 x_operation_id=GlobalClassCreatePn.operation_id,

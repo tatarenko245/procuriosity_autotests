@@ -1,7 +1,7 @@
 class PayloadLibrary:
 
     @staticmethod
-    def award_object():
+    def create_award_object():
         award = {
             "award": {
                 "internalId": str,
@@ -17,7 +17,7 @@ class PayloadLibrary:
         return award
 
     @staticmethod
-    def award_suppliers_object():
+    def create_award_suppliers_object():
         suppliers = {
             "name": str,
             "identifier": {
@@ -75,7 +75,7 @@ class PayloadLibrary:
         return suppliers
 
     @staticmethod
-    def award_suppliers_additionalIdentifiers_object():
+    def create_award_suppliers_additionalIdentifiers_object():
         additionalIdentifiers = {
             "id": str,
             "legalName": str,
@@ -85,7 +85,7 @@ class PayloadLibrary:
         return additionalIdentifiers
 
     @staticmethod
-    def award_suppliers_persones_object():
+    def create_award_suppliers_persones_object():
         persones = {
             "title": str,
             "name": str,
@@ -100,7 +100,7 @@ class PayloadLibrary:
         return persones
 
     @staticmethod
-    def award_suppliers_persones_businessFunctions_object():
+    def create_award_suppliers_persones_businessFunctions_object():
         businessFunctions = {
             "id": str,
             "type": str,
@@ -113,7 +113,7 @@ class PayloadLibrary:
         return businessFunctions
 
     @staticmethod
-    def award_suppliers_persones_businessFunctions_documents_object():
+    def create_award_suppliers_persones_businessFunctions_documents_object():
         documents = {
             "documentType": str,
             "id": str,
@@ -123,7 +123,7 @@ class PayloadLibrary:
         return documents
 
     @staticmethod
-    def award_suppliers_details_mainEconomicActivities_object():
+    def create_award_suppliers_details_mainEconomicActivities_object():
         mainEconomicActivities = {
             "id": str,
             "scheme": str,
@@ -133,7 +133,7 @@ class PayloadLibrary:
         return mainEconomicActivities
 
     @staticmethod
-    def award_suppliers_details_permits_object():
+    def create_award_suppliers_details_permits_object():
         permits = {
             "scheme": str,
             "id": str,
@@ -156,7 +156,7 @@ class PayloadLibrary:
         return permits
 
     @staticmethod
-    def award_suppliers_details_bankAccounts_object():
+    def create_award_suppliers_details_bankAccounts_object():
         bankAccounts = {
             "description": str,
             "bankName": str,
@@ -194,7 +194,7 @@ class PayloadLibrary:
         return bankAccounts
 
     @staticmethod
-    def award_suppliers_details_bankAccounts_additionalAccountIdentifiers_object():
+    def create_award_suppliers_details_bankAccounts_additionalAccountIdentifiers_object():
         additionalAccountIdentifiers = {
             "scheme": str,
             "id": str
@@ -202,11 +202,33 @@ class PayloadLibrary:
         return additionalAccountIdentifiers
 
     @staticmethod
-    def award_documents_object():
+    def create_award_documents_object():
         documents = {
             "id": str,
             "title": str,
             "description": str,
             "documentType": str
+        }
+        return documents
+
+    @staticmethod
+    def evaluate_award_object():
+        award = {
+            "award": {
+                "statusDetails": str,
+                "description": str,
+                "documents": list
+            }
+        }
+        return award
+
+    @staticmethod
+    def evaluate_award_documents_object():
+        documents = {
+            "id": str,
+            "title": str,
+            "description": str,
+            "documentType": str,
+            "relatedLots": list
         }
         return documents

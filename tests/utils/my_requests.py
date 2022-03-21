@@ -6,7 +6,7 @@ import requests
 class Requests:
     @staticmethod
     @allure.step('# Prepared request: create Ei')
-    def create_ei(host_of_request, access_token, x_operation_id, country, language, payload, test_mode=False):
+    def createEi(host_of_request, access_token, x_operation_id, country, language, payload, test_mode=False):
         ei = requests.post(
             url=host_of_request + "/do/ei",
             headers={
@@ -43,7 +43,7 @@ class Requests:
 
     @staticmethod
     @allure.step('Prepared request: create Fs')
-    def create_fs(host_of_request, ei_ocid, access_token, x_operation_id, payload, test_mode=False):
+    def createFs(host_of_request, ei_ocid, access_token, x_operation_id, payload, test_mode=False):
         fs = requests.post(
             url=host_of_request + f"/do/fs/{ei_ocid}",
             params={
@@ -78,8 +78,8 @@ class Requests:
 
     @staticmethod
     @allure.step('Prepared request: create Pn')
-    def create_pn(host_of_request, access_token, x_operation_id, country,
-                  language, pmd, payload, test_mode=False):
+    def createPn(host_of_request, access_token, x_operation_id, country,
+                 language, pmd, payload, test_mode=False):
         pn = requests.post(
             url=host_of_request + f"/do/pn",
             headers={
@@ -136,8 +136,8 @@ class Requests:
 
     @staticmethod
     @allure.step('Prepared request: create CnOnPn')
-    def create_cnonpn(host_of_request, access_token, x_operation_id, pn_ocid, pn_id, pn_token, payload,
-                      test_mode=False):
+    def createCnOnPn(host_of_request, access_token, x_operation_id, pn_ocid, pn_id, pn_token, payload,
+                     test_mode=False):
         cn = requests.post(
             url=host_of_request + f"/do/cn/{pn_ocid}/{pn_id}",
             params={
@@ -477,9 +477,9 @@ class Requests:
         return protocol
 
     @staticmethod
-    @allure.step('Prepared request: award consideration')
-    def do_award_for_limited_procedure(host_of_request, access_token, x_operation_id, pn_ocid, pn_token, tender_id,
-                                       lot_id, payload, test_mode=False):
+    @allure.step('Prepared request: createAward')
+    def createAward_for_limitedProcedure(host_of_request, access_token, x_operation_id, pn_ocid, pn_token, tender_id,
+                                         lot_id, payload, test_mode=False):
         award = requests.post(
             url=host_of_request + f"/do/award/{pn_ocid}/{tender_id}",
             params={
@@ -493,6 +493,26 @@ class Requests:
                 'X-TOKEN': pn_token
             },
             json=payload)
-        allure.attach(host_of_request + f"/do/award", 'URL')
+        allure.attach(host_of_request + f"/do/award/{pn_ocid}/{tender_id}", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return award
+
+    @staticmethod
+    @allure.step('Prepared request: evaluateAward')
+    def evaluateAward_for_limitedProcedure(host_of_request, access_token, x_operation_id, pn_ocid,
+                                           tender_id, award_id, award_token, payload, test_mode=False):
+        award = requests.post(
+            url=host_of_request + f"/do/award/{pn_ocid}/{tender_id}/{award_id}",
+            params={
+                'testMode': test_mode
+            },
+            headers={
+                'Authorization': 'Bearer ' + access_token,
+                'X-OPERATION-ID': x_operation_id,
+                'Content-Type': 'application/json',
+                'X-TOKEN': award_token
+            },
+            json=payload)
+        allure.attach(host_of_request + f"/do/award/{pn_ocid}/{tender_id}/{award_id}", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return award

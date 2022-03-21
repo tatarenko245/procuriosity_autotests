@@ -19,7 +19,7 @@ class AwardPayloads:
         self.duration_period = date_class.duration_period()
         self.currency = currency
 
-    def create_full_data_model(
+    def create_award_full_data_model(
             self, quantity_of_suppliers_objects=1,
             quantity_of_suppliers_additionalIdentifiers_objects=1,
             quantity_of_suppliers_persones_objects=1,
@@ -31,7 +31,7 @@ class AwardPayloads:
             quantity_of_suppliers_details_bankAccounts_additionalAccountIdentifiers_objects=1,
             quantity_of_documents_objects=1):
 
-        payload = self.constructor.award_object()
+        payload = self.constructor.create_award_object()
 
         payload['award']['internalId'] = "create award: internalId 1"
         payload['award']['description'] = "create award: description 1"
@@ -41,7 +41,7 @@ class AwardPayloads:
         payload['award']['suppliers'] = list()
         for supplier in range(quantity_of_suppliers_objects):
 
-            payload['award']['suppliers'].append(self.constructor.award_suppliers_object())
+            payload['award']['suppliers'].append(self.constructor.create_award_suppliers_object())
 
             payload['award']['suppliers'][supplier]['name'] = f"create award: award.suppliers{supplier}.name"
 
@@ -60,7 +60,7 @@ class AwardPayloads:
             for additionalIdentifier in range(quantity_of_suppliers_additionalIdentifiers_objects):
 
                 payload['award']['suppliers'][supplier]['additionalIdentifiers'].append(
-                    self.constructor.award_suppliers_additionalIdentifiers_object())
+                    self.constructor.create_award_suppliers_additionalIdentifiers_object())
 
                 payload['award']['suppliers'][supplier]['additionalIdentifiers'][additionalIdentifier]['id'] = \
                     f"create award: award.suppliers{supplier}.additionalIdentifiers{additionalIdentifier}.id"
@@ -117,7 +117,7 @@ class AwardPayloads:
             for person in range(quantity_of_suppliers_persones_objects):
 
                 payload['award']['suppliers'][supplier]['persones'].append(
-                    self.constructor.award_suppliers_persones_object())
+                    self.constructor.create_award_suppliers_persones_object())
 
                 payload['award']['suppliers'][supplier]['persones'][person]['title'] = f"{random.choice(person_title)}"
 
@@ -136,7 +136,7 @@ class AwardPayloads:
                 for businessFunction in range(quantity_of_suppliers_persones_businessFunctions_objects):
 
                     payload['award']['suppliers'][supplier]['persones'][person]['businessFunctions'].append(
-                        self.constructor.award_suppliers_persones_businessFunctions_object())
+                        self.constructor.create_award_suppliers_persones_businessFunctions_object())
 
                     payload['award']['suppliers'][supplier]['persones'][person][
                         'businessFunctions'][businessFunction]['id'] = \
@@ -163,7 +163,7 @@ class AwardPayloads:
 
                         payload['award']['suppliers'][supplier]['persones'][person]['businessFunctions'][
                             businessFunction]['documents'].append(
-                            self.constructor.award_suppliers_persones_businessFunctions_documents_object())
+                            self.constructor.create_award_suppliers_persones_businessFunctions_documents_object())
 
                         payload['award']['suppliers'][supplier]['persones'][person]['businessFunctions'][
                             businessFunction]['documents'][businessFunction_document]['documentType'] = \
@@ -189,7 +189,7 @@ class AwardPayloads:
             for mainEconomicActivity in range(quantity_of_suppliers_details_mainEconomicActivities_objects):
 
                 payload['award']['suppliers'][supplier]['details']['mainEconomicActivities'].append(
-                    self.constructor.award_suppliers_details_mainEconomicActivities_object())
+                    self.constructor.create_award_suppliers_details_mainEconomicActivities_object())
 
                 payload['award']['suppliers'][supplier]['details'][
                     'mainEconomicActivities'][mainEconomicActivity]['id'] = \
@@ -215,7 +215,7 @@ class AwardPayloads:
             for permit in range(quantity_of_suppliers_details_permits):
 
                 payload['award']['suppliers'][supplier]['details']['permits'].append(
-                    self.constructor.award_suppliers_details_permits_object())
+                    self.constructor.create_award_suppliers_details_permits_object())
 
                 payload['award']['suppliers'][supplier]['details']['permits'][permit]['scheme'] = \
                     f"create award: award.suppliers{supplier}.details.permits{permit}.scheme"
@@ -252,7 +252,7 @@ class AwardPayloads:
             for bankAccount in range(quantity_of_suppliers_details_bankAccounts_objects):
 
                 payload['award']['suppliers'][supplier]['details']['bankAccounts'].append(
-                    self.constructor.award_suppliers_details_bankAccounts_object())
+                    self.constructor.create_award_suppliers_details_bankAccounts_object())
 
                 payload['award']['suppliers'][supplier]['details']['bankAccounts'][bankAccount]['description'] = \
                     f"create award: award.suppliers{supplier}.details.bankAccounts{bankAccount}.description"
@@ -324,7 +324,7 @@ class AwardPayloads:
 
                     payload['award']['suppliers'][supplier]['details']['bankAccounts'][bankAccount][
                         'additionalAccountIdentifiers'].append(
-                        self.constructor.award_suppliers_details_bankAccounts_additionalAccountIdentifiers_object())
+                        self.constructor.create_award_suppliers_details_bankAccounts_additionalAccountIdentifiers_object())
 
                     payload['award']['suppliers'][supplier]['details']['bankAccounts'][bankAccount][
                         'additionalAccountIdentifiers'][additionalAccountIdentifier]['scheme'] = "fiscal"
@@ -348,7 +348,7 @@ class AwardPayloads:
         payload['award']['documents'] = list()
         for document in range(quantity_of_documents_objects):
             document_was_uploaded = self.document_class.uploading_document()
-            payload['award']['documents'].append(self.constructor.award_documents_object())
+            payload['award']['documents'].append(self.constructor.create_award_documents_object())
             payload['award']['documents'][document]['id'] = document_was_uploaded[0]['data']['id']
             payload['award']['documents'][document]['title'] = f"create award: award.documents{document}.title"
 
@@ -359,8 +359,8 @@ class AwardPayloads:
                 f"{random.choice(documentType_for_create_award_of_limited_procedure)}"
         return payload
 
-    def create_obligatory_data_model(self, quantity_of_suppliers_objects=1):
-        payload = self.constructor.award_object()
+    def create_award_obligatory_data_model(self, quantity_of_suppliers_objects=1):
+        payload = self.constructor.create_award_object()
 
         del payload['award']['internalId']
         del payload['award']['description']
@@ -371,7 +371,7 @@ class AwardPayloads:
 
         payload['award']['suppliers'] = list()
         for supplier in range(quantity_of_suppliers_objects):
-            payload['award']['suppliers'].append(self.constructor.award_suppliers_object())
+            payload['award']['suppliers'].append(self.constructor.create_award_suppliers_object())
 
             del payload['award']['suppliers'][supplier]['identifier']['uri']
             del payload['award']['suppliers'][supplier]['additionalIdentifiers']
@@ -416,3 +416,39 @@ class AwardPayloads:
 
             payload['award']['suppliers'][supplier]['details']['scale'] = f"{random.choice(scale)}"
         return payload
+
+    def evaluate_award_full_data_model(self, award_statusDetails, lot_id, quantity_of_documents_objects=1):
+        payload = self.constructor.evaluate_award_object()
+
+        payload['award']['statusDetails'] = award_statusDetails
+        payload['award']['description'] = "evaluate award: award.description"
+
+        payload['award']['documents'] = list()
+        for document in range(quantity_of_documents_objects):
+
+            document_was_uploaded = self.document_class.uploading_document()
+
+            payload['award']['documents'].append(self.constructor.evaluate_award_documents_object())
+
+            payload['award']['documents'][document]['documentType'] = \
+                f"{random.choice(documentType_for_create_award_of_limited_procedure)}"
+
+            payload['award']['documents'][document]['id'] = document_was_uploaded[0]['data']['id']
+            payload['award']['documents'][document]['title'] = f"evaluate award: award.documents{document}.title"
+
+            payload['award']['documents'][document]['description'] = \
+                f"evaluate award: award.documents{document}.description"
+
+            payload['award']['documents'][document]['relatedLots'] = [lot_id]
+            return payload
+
+    def evaluate_award_obligatory_data_model(self, award_statusDetails):
+        payload = self.constructor.evaluate_award_object()
+
+        del payload['award']['description']
+        del payload['award']['documents']
+
+        payload['award']['statusDetails'] = award_statusDetails
+        return payload
+
+
