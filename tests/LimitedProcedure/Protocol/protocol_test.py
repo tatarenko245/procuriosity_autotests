@@ -17,7 +17,7 @@ from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
 
-class TestEvaluateAward:
+class TestProtocol:
     @allure.title("Check Ev and MS releases data after CreateAward process without optional fields. \n"
                   "------------------------------------------------\n"
                   "CreateEi process: obligatory data model without items array;\n"
@@ -25,7 +25,8 @@ class TestEvaluateAward:
                   "СreatePn process: obligatory data model, without lots and items;\n"
                   "СreateCnOnPn process: obligatory data model, with lots and items;\n"
                   "СreateAward process: obligatory data model;\n"
-                  "EvaluateAward process: obligatory data model.\n")
+                  "EvaluateAward process: obligatory data model;\n"
+                  "Protocol process: payload is not needed.\n")
     def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
@@ -219,8 +220,6 @@ class TestEvaluateAward:
         createAward_feedPoint_message = KafkaMessage(createAward_operationId).get_message_from_kafka()
         award_id = createAward_feedPoint_message['data']['outcomes']['awards'][0]['id']
         award_token = createAward_feedPoint_message['data']['outcomes']['awards'][0]['X-TOKEN']
-        actual_np_release_before_evaluateAward = requests.get(url=f"{pn_url}/{np_id}").json()
-        actual_ms_release_before_evaluateAward = requests.get(url=f"{pn_url}/{pn_ocid}").json()
 
         step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: EvaluateAward process.'):
@@ -237,8 +236,6 @@ class TestEvaluateAward:
             Send api request to BPE host to create a CreateAward process.
             Save synchronous result of sending the request.
             """
-            time.sleep(1)
-
             award_payload_class = copy.deepcopy(AwardPayloads(
                 host_for_services=get_hosts[2],
                 currency=createCn_payload['tender']['lots'][0]['value']['currency'])
@@ -247,7 +244,7 @@ class TestEvaluateAward:
                 award_statusDetails="active"
             )
 
-            synchronous_result_of_sending_the_request = Requests().evaluateAward_for_limitedProcedure(
+            Requests().evaluateAward_for_limitedProcedure(
                 host_of_request=get_hosts[1],
                 access_token=evaluateAward_accessToken,
                 x_operation_id=evaluateAward_operationId,
@@ -256,6 +253,35 @@ class TestEvaluateAward:
                 award_id=award_id,
                 award_token=award_token,
                 payload=evaluateAward_payload,
+                test_mode=True
+            )
+        time.sleep(10)
+        actual_np_release_before_protocol = requests.get(url=f"{pn_url}/{np_id}").json()
+        actual_ms_release_before_protocol = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Authorization platform one: Protocol process.'):
+            """
+            Tender platform authorization for protocol process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            protocol_accessToken = authorization.get_access_token_for_platform_one()
+            protocol_operationId = authorization.get_x_operation_id(protocol_accessToken)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create a Protocol process.'):
+            """
+            Send api request to BPE host to create a Protocol process.
+            Save synchronous result of sending the request.
+            """
+            synchronous_result_of_sending_the_request = Requests().do_protocol(
+                host_of_request=get_hosts[1],
+                access_token=protocol_accessToken,
+                x_operation_id=protocol_operationId,
+                pn_ocid=pn_ocid,
+                pn_token=pn_token,
+                tender_id=np_id,
+                lot_id=lot_id,
                 test_mode=True
             )
 
@@ -280,13 +306,13 @@ class TestEvaluateAward:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                evaluateAward_feedPoint_message = KafkaMessage(evaluateAward_operationId).get_message_from_kafka()
-                allure.attach(str(evaluateAward_feedPoint_message), 'Message in feed point')
+                protocol_feedPoint_message = KafkaMessage(protocol_operationId).get_message_from_kafka()
+                allure.attach(str(protocol_feedPoint_message), 'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    createAward_operationId).award_evaluating_message_is_successful(
+                    protocol_operationId).protocol_message_is_successful(
                         environment=environment,
-                        kafka_message=evaluateAward_feedPoint_message,
+                        kafka_message=protocol_feedPoint_message,
                         pn_ocid=pn_ocid,
                         tender_id=np_id
                 )
@@ -298,119 +324,119 @@ class TestEvaluateAward:
                     allure.attach(str(True), "Expected asynchronous result of sending the request.")
                     assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True), allure.attach(
                         f"SELECT * FROM orchestrator.steps WHERE "
-                        f"operation_id = '{evaluateAward_operationId}' ALLOW FILTERING;",
+                        f"operation_id = '{protocol_operationId}' ALLOW FILTERING;",
                         "Cassandra DataBase: steps of process")
-
-            with allure.step(f'# {step_number}.3. Check NP release'):
-                """
-                Compare actual NP release before EvaluateAward process and NP release after EvaluateAward process.
-                """
-                allure.attach(str(json.dumps(actual_np_release_before_evaluateAward)),
-                              "Actual NP release before EvaluateAward process.")
-
-                actual_np_release_after_evaluateAward = requests.get(url=f"{pn_url}/{np_id}").json()
-                allure.attach(str(json.dumps(actual_np_release_after_evaluateAward)),
-                              "Actual NP release after EvaluateAward process.")
-
-                compare_releases = dict(DeepDiff(
-                    actual_np_release_before_evaluateAward,
-                    actual_np_release_after_evaluateAward)
-                )
-
-                expected_result = {
-                    "values_changed": {
-                        "root['releases'][0]['id']": {
-                            "new_value":
-                                f"{np_id}-"
-                                f"{actual_np_release_after_evaluateAward['releases'][0]['id'][46:59]}",
-                            "old_value":
-                                f"{np_id}-"
-                                f"{actual_np_release_before_evaluateAward['releases'][0]['id'][46:59]}"
-                        },
-                        "root['releases'][0]['date']": {
-                            "new_value": evaluateAward_feedPoint_message['data']['operationDate'],
-                            "old_value": actual_np_release_before_evaluateAward['releases'][0]['date']
-                        },
-                        "root['releases'][0]['tag'][0]": {
-                            "new_value": "awardUpdate",
-                            "old_value": "tender"
-                        },
-                        "root['releases'][0]['awards'][0]['statusDetails']": {
-                            "new_value": "active",
-                            "old_value": "empty"
-                        },
-                        "root['releases'][0]['awards'][0]['date']": {
-                            "new_value": evaluateAward_feedPoint_message['data']['operationDate'],
-                            "old_value": actual_np_release_before_evaluateAward['releases'][0]['awards'][0]['date']
-                        }
-                    }
-                }
-
-                with allure.step('Check a difference of comparing actual NP release and expected NP release.'):
-                    allure.attach(str(compare_releases),
-                                  "Actual result of comparing NP releases.")
-                    allure.attach(str(expected_result),
-                                  "Expected result of comparing NP releases.")
-                    assert str(compare_releases) == str(expected_result), allure.attach(
-                        f"SELECT * FROM orchestrator.steps WHERE "
-                        f"operation_id = '{evaluateAward_operationId}' ALLOW FILTERING;",
-                        "Cassandra DataBase: steps of process")
-
-            with allure.step(f'# {step_number}.4. Check MS release'):
-                """
-                Compare actual multistage release before EvaluateAward process and
-                actual multistage release after EvaluateAward process.
-                """
-                allure.attach(str(json.dumps(actual_ms_release_before_evaluateAward)),
-                              "Actual Ms release before EvaluateAward process.")
-
-                actual_ms_release_after_evaluateAward = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-                allure.attach(str(json.dumps(actual_ms_release_after_evaluateAward)),
-                              "Actual Ms release after EvaluateAward process")
-
-                compare_releases = dict(DeepDiff(actual_ms_release_before_evaluateAward,
-                                                 actual_ms_release_after_evaluateAward
-                                                 )
-                                        )
-                expected_result = {}
-
-                with allure.step('Check a difference of comparing Ms release before EvaluateAward and '
-                                 'Ms release after EvaluateAward.'):
-                    allure.attach(str(compare_releases),
-                                  "Actual result of comparing MS releases.")
-                    allure.attach(str(expected_result),
-                                  "Expected result of comparing Ms releases.")
-                    assert str(compare_releases) == str(expected_result), allure.attach(
-                        f"SELECT * FROM orchestrator.steps WHERE "
-                        f"operation_id = '{evaluateAward_operationId}' ALLOW FILTERING;",
-                        "Cassandra DataBase: steps of process")
-
-                    try:
-                        """
-                            If TestCase was passed, then cLean up the database.
-                            If TestCase was failed, then return process steps by operation-id.
-                            """
-                        if compare_releases == expected_result:
-                            connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-
-                            connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-
-                            connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-
-                            connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-
-                            connection_to_database.createAward_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-
-                            connection_to_database.cleanup_steps_of_process(operation_id=createEi_operationId)
-
-                            connection_to_database.cleanup_steps_of_process(operation_id=createFs_operationId)
-
-                            connection_to_database.cleanup_steps_of_process(operation_id=createPn_operationId)
-
-                            connection_to_database.cleanup_steps_of_process(operation_id=createCn_operationId)
-
-                            connection_to_database.cleanup_steps_of_process_from_orchestrator(
-                                pn_ocid=pn_ocid)
-
-                    except ValueError:
-                        raise ValueError("Can not return BPE operation step")
+        #
+        #     with allure.step(f'# {step_number}.3. Check NP release'):
+        #         """
+        #         Compare actual NP release before EvaluateAward process and NP release after EvaluateAward process.
+        #         """
+        #         allure.attach(str(json.dumps(actual_np_release_before_evaluateAward)),
+        #                       "Actual NP release before EvaluateAward process.")
+        #
+        #         actual_np_release_after_evaluateAward = requests.get(url=f"{pn_url}/{np_id}").json()
+        #         allure.attach(str(json.dumps(actual_np_release_after_evaluateAward)),
+        #                       "Actual NP release after EvaluateAward process.")
+        #
+        #         compare_releases = dict(DeepDiff(
+        #             actual_np_release_before_evaluateAward,
+        #             actual_np_release_after_evaluateAward)
+        #         )
+        #
+        #         expected_result = {
+        #             "values_changed": {
+        #                 "root['releases'][0]['id']": {
+        #                     "new_value":
+        #                         f"{np_id}-"
+        #                         f"{actual_np_release_after_evaluateAward['releases'][0]['id'][46:59]}",
+        #                     "old_value":
+        #                         f"{np_id}-"
+        #                         f"{actual_np_release_before_evaluateAward['releases'][0]['id'][46:59]}"
+        #                 },
+        #                 "root['releases'][0]['date']": {
+        #                     "new_value": evaluateAward_feedPoint_message['data']['operationDate'],
+        #                     "old_value": actual_np_release_before_evaluateAward['releases'][0]['date']
+        #                 },
+        #                 "root['releases'][0]['tag'][0]": {
+        #                     "new_value": "awardUpdate",
+        #                     "old_value": "tender"
+        #                 },
+        #                 "root['releases'][0]['awards'][0]['statusDetails']": {
+        #                     "new_value": "active",
+        #                     "old_value": "empty"
+        #                 },
+        #                 "root['releases'][0]['awards'][0]['date']": {
+        #                     "new_value": evaluateAward_feedPoint_message['data']['operationDate'],
+        #                     "old_value": actual_np_release_before_evaluateAward['releases'][0]['awards'][0]['date']
+        #                 }
+        #             }
+        #         }
+        #
+        #         with allure.step('Check a difference of comparing actual NP release and expected NP release.'):
+        #             allure.attach(str(compare_releases),
+        #                           "Actual result of comparing NP releases.")
+        #             allure.attach(str(expected_result),
+        #                           "Expected result of comparing NP releases.")
+        #             assert str(compare_releases) == str(expected_result), allure.attach(
+        #                 f"SELECT * FROM orchestrator.steps WHERE "
+        #                 f"operation_id = '{evaluateAward_operationId}' ALLOW FILTERING;",
+        #                 "Cassandra DataBase: steps of process")
+        #
+        #     with allure.step(f'# {step_number}.4. Check MS release'):
+        #         """
+        #         Compare actual multistage release before EvaluateAward process and
+        #         actual multistage release after EvaluateAward process.
+        #         """
+        #         allure.attach(str(json.dumps(actual_ms_release_before_evaluateAward)),
+        #                       "Actual Ms release before EvaluateAward process.")
+        #
+        #         actual_ms_release_after_evaluateAward = requests.get(url=f"{pn_url}/{pn_ocid}").json()
+        #         allure.attach(str(json.dumps(actual_ms_release_after_evaluateAward)),
+        #                       "Actual Ms release after EvaluateAward process")
+        #
+        #         compare_releases = dict(DeepDiff(actual_ms_release_before_evaluateAward,
+        #                                          actual_ms_release_after_evaluateAward
+        #                                          )
+        #                                 )
+        #         expected_result = {}
+        #
+        #         with allure.step('Check a difference of comparing Ms release before EvaluateAward and '
+        #                          'Ms release after EvaluateAward.'):
+        #             allure.attach(str(compare_releases),
+        #                           "Actual result of comparing MS releases.")
+        #             allure.attach(str(expected_result),
+        #                           "Expected result of comparing Ms releases.")
+        #             assert str(compare_releases) == str(expected_result), allure.attach(
+        #                 f"SELECT * FROM orchestrator.steps WHERE "
+        #                 f"operation_id = '{evaluateAward_operationId}' ALLOW FILTERING;",
+        #                 "Cassandra DataBase: steps of process")
+        #
+        #             try:
+        #                 """
+        #                     If TestCase was passed, then cLean up the database.
+        #                     If TestCase was failed, then return process steps by operation-id.
+        #                     """
+        #                 if compare_releases == expected_result:
+        #                     connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+        #
+        #                     connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+        #
+        #                     connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+        #
+        #                     connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+        #
+        #                     connection_to_database.createAward_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+        #
+        #                     connection_to_database.cleanup_steps_of_process(operation_id=createEi_operationId)
+        #
+        #                     connection_to_database.cleanup_steps_of_process(operation_id=createFs_operationId)
+        #
+        #                     connection_to_database.cleanup_steps_of_process(operation_id=createPn_operationId)
+        #
+        #                     connection_to_database.cleanup_steps_of_process(operation_id=createCn_operationId)
+        #
+        #                     connection_to_database.cleanup_steps_of_process_from_orchestrator(
+        #                         pn_ocid=pn_ocid)
+        #
+        #             except ValueError:
+        #                 raise ValueError("Can not return BPE operation step")

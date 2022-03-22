@@ -21,11 +21,11 @@ from tests.utils.platform_authorization import PlatformAuthorization
 class TestCreateAward:
     @allure.title("Check Ev and MS releases data after CreateAward process without optional fields. \n"
                   "------------------------------------------------\n"
-                  "CreateEi: obligatory data model without items array;\n"
-                  "СreateFs: obligatory data model, treasury money;\n"
-                  "СreatePn: obligatory data model, without lots and items;\n"
-                  "СreateCnOnPn: obligatory data model, with lots and items;\n"
-                  "СreateAward: obligatory data model\n")
+                  "CreateEi process: obligatory data model without items array;\n"
+                  "СreateFs process: obligatory data model, treasury money;\n"
+                  "СreatePn process: obligatory data model, without lots and items;\n"
+                  "СreateCnOnPn process: obligatory data model, with lots and items;\n"
+                  "СreateAward process: obligatory data model.\n")
     def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
@@ -39,18 +39,18 @@ class TestCreateAward:
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: CreateEi process.'):
             """
-            Tender platform authorization for create expenditure item process.
+            Tender platform authorization for CreateEi process.
             As result get Tender platform's access token and process operation-id.
             """
             createEi_accessToken = authorization.get_access_token_for_platform_one()
             createEi_operationId = authorization.get_x_operation_id(createEi_accessToken)
 
         step_number += 1
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send a request to create a CreateEi process.'):
             """
-            Send api request on BPE host for expenditure item creation.
+            Send api request to BPE host to create a CreateEi process.
             And save in variable ei_ocid.
             """
             ei_payload_class = copy.deepcopy(EiPreparePayload())
@@ -69,9 +69,9 @@ class TestCreateAward:
             ei_ocid = createEi_feedPoint_message["data"]["outcomes"]["ei"][0]['id']
 
         step_number += 1
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: CreateFs process.'):
             """
-            Tender platform authorization for create financial source process.
+            Tender platform authorization for CreateFs process.
             As result get Tender platform's access token and process operation-id.
             """
             createFs_accessToken = authorization.get_access_token_for_platform_one()
@@ -79,9 +79,9 @@ class TestCreateAward:
             step_number += 1
 
         step_number += 1
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send a request to create a CreateFs process.'):
             """
-            Send api request on BPE host for financial source creating.
+            Send api request to BPE host to create a CreateFs process.
             And save in variable fs_id.
             """
             time.sleep(1)
@@ -100,19 +100,19 @@ class TestCreateAward:
             createFs_feedPoint_message = KafkaMessage(createFs_operationId).get_message_from_kafka()
 
         step_number += 1
-        with allure.step(f'# {step_number}. Authorization platform one: create Pn'):
+        with allure.step(f'# {step_number}. Authorization platform one: CreatePn process.'):
             """
-            Tender platform authorization for create planning notice process.
+            Tender platform authorization for CreatePn process.
             As result get Tender platform's access token and process operation-id.
             """
             createPn_accessToken = authorization.get_access_token_for_platform_one()
             createPn_operationId = authorization.get_x_operation_id(createPn_accessToken)
 
         step_number += 1
-        with allure.step(f'# {step_number}. Send request to create Pn'):
+        with allure.step(f'# {step_number}. Send a request to create a CreatePn process.'):
             """
-            Send api request on BPE host for planning notice creating.
-            Save synchronous result of sending the request and asynchronous result of sending the request.
+            Send api request to BPE host to create a CreatePn process.
+            Save synchronous result of sending the request.
             And save in variable pn_ocid, pn_id, pn_token.
             """
             time.sleep(1)
@@ -141,19 +141,19 @@ class TestCreateAward:
                 url=f"{createEi_feedPoint_message['data']['url']}/{ei_ocid}").json()
 
         step_number += 1
-        with allure.step(f'# {step_number}. Authorization platform one: create CnOnPn'):
+        with allure.step(f'# {step_number}. Authorization platform one: CreateCnOnPn process.'):
             """
-            Tender platform authorization for create tender phase process.
+            Tender platform authorization for CreateCnOnPn process.
             As result get Tender platform's access token and process operation-id.
             """
             createCn_accessToken = authorization.get_access_token_for_platform_one()
             createCn_operationId = authorization.get_x_operation_id(createCn_accessToken)
 
         step_number += 1
-        with allure.step(f'# {step_number}. Send request to create CnOnPn'):
+        with allure.step(f'# {step_number}. Send a request to create a CreateCnOnPn process.'):
             """
-            Send api request on BPE host for create tender phase process.
-            Save synchronous result of sending the request and asynchronous result of sending the request.
+            Send api request to BPE host to create a CreateCnOnPn process.
+            Save synchronous result of sending the request.
             """
             time.sleep(1)
 
@@ -180,19 +180,19 @@ class TestCreateAward:
             lot_id = actual_np_release_before_createAward['releases'][0]['tender']['lots'][0]['id']
 
         step_number += 1
-        with allure.step(f'# {step_number}. Authorization platform one: create Award'):
+        with allure.step(f'# {step_number}. Authorization platform one: CreateAward process.'):
             """
-            Tender platform authorization for create award process.
+            Tender platform authorization for CreateAward process.
             As result get Tender platform's access token and process operation-id.
             """
             createAward_accessToken = authorization.get_access_token_for_platform_one()
             createAward_operationId = authorization.get_x_operation_id(createAward_accessToken)
 
         step_number += 1
-        with allure.step(f'# {step_number}. Send request to create Award'):
+        with allure.step(f'# {step_number}. Send a request to create a CreateAward process.'):
             """
-            Send api request on BPE host for create award process.
-            Save synchronous result of sending the request and asynchronous result of sending the request.
+            Send api request to BPE host to create a CreateAward process.
+            Save synchronous result of sending the request.
             """
             time.sleep(1)
 
