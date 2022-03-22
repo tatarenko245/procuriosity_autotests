@@ -19,13 +19,13 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 class TestCreateAward:
-    @allure.title("Check Ev and MS releases data after CnOnPn creating without optional fields. \n"
+    @allure.title("Check Ev and MS releases data after CreateAward process without optional fields. \n"
                   "------------------------------------------------\n"
-                  "create Ei: obligatory data model without items array;\n"
-                  "create Fs: obligatory data model, treasury money;\n"
-                  "create Pn: obligatory data model, without lots and items;\n"
-                  "create CnOnPn: obligatory data model, with lots and items;\n"
-                  "create Award: obligatory data model\n")
+                  "CreateEi: obligatory data model without items array;\n"
+                  "СreateFs: obligatory data model, treasury money;\n"
+                  "СreatePn: obligatory data model, without lots and items;\n"
+                  "СreateCnOnPn: obligatory data model, with lots and items;\n"
+                  "СreateAward: obligatory data model\n")
     def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
@@ -404,8 +404,8 @@ class TestCreateAward:
                                         )
                 expected_result = {}
 
-                with allure.step('Check a difference of comparing Ms release before cn creating and '
-                                 'Ms release after cn creating.'):
+                with allure.step('Check a difference of comparing Ms release before CreateAward process and '
+                                 'Ms release after CreateAward process.'):
                     allure.attach(str(compare_releases),
                                   "Actual result of comparing MS releases.")
                     allure.attach(str(expected_result),

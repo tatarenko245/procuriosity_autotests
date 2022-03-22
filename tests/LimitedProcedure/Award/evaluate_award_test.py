@@ -11,7 +11,6 @@ from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayl
 from tests.utils.PayloadModel.LimitedProcedure.Award.award_payloads import AwardPayloads
 from tests.utils.PayloadModel.LimitedProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.LimitedProcedure.Pn.pn_prepared_payload import PnPreparePayload
-from tests.utils.ReleaseModel.LimitedProcedure.Award.award_releases import AwardReleases
 
 from tests.utils.kafka_message import KafkaMessage
 from tests.utils.my_requests import Requests
@@ -19,13 +18,14 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 class TestCreateAward:
-    @allure.title("Check Ev and MS releases data after CnOnPn creating without optional fields. \n"
+    @allure.title("Check Ev and MS releases data after EvaluateAward process without optional fields. \n"
                   "------------------------------------------------\n"
-                  "create Ei: obligatory data model without items array;\n"
-                  "create Fs: obligatory data model, treasury money;\n"
-                  "create Pn: obligatory data model, without lots and items;\n"
-                  "create CnOnPn: obligatory data model, with lots and items;\n"
-                  "create Award: obligatory data model\n")
+                  "CreateEi: obligatory data model without items array;\n"
+                  "СreateFs: obligatory data model, treasury money;\n"
+                  "СreatePn: obligatory data model, without lots and items;\n"
+                  "СreateCnOnPn: obligatory data model, with lots and items;\n"
+                  "СreateAward: obligatory data model\n"
+                  "EvaluateAward: obligatory data model\n")
     def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
@@ -309,7 +309,7 @@ class TestCreateAward:
                               "Actual NP release before EvaluateAward process.")
 
                 actual_np_release_after_evaluateAward = requests.get(url=f"{pn_url}/{np_id}").json()
-                allure.attach(str(json.dumps(actual_np_release_after_evaluateAward )),
+                allure.attach(str(json.dumps(actual_np_release_after_evaluateAward)),
                               "Actual NP release after EvaluateAward process.")
 
                 compare_releases = dict(DeepDiff(
