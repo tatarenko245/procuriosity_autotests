@@ -359,13 +359,17 @@ class AwardPayloads:
                 f"{random.choice(documentType_for_create_award_of_limited_procedure)}"
         return payload
 
-    def create_award_obligatory_data_model(self, quantity_of_suppliers_objects=1):
+    def create_award_obligatory_data_model(self, quantity_of_suppliers_objects=1, need_to_value_amount=False):
         payload = self.constructor.create_award_object()
 
         del payload['award']['internalId']
         del payload['award']['description']
-        del payload['award']['value']['amount']
         del payload['award']['documents']
+
+        if need_to_value_amount is False:
+            del payload['award']['value']['amount']
+        else:
+            payload['award']['value']['amount'] = 888.89
 
         payload['award']['value']['currency'] = self.currency
 

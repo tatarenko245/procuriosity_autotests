@@ -236,13 +236,13 @@ class TestCreateAward:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                createAward_feedPoint_message = KafkaMessage(createAward_operationId).get_message_from_kafka()
-                allure.attach(str(createAward_feedPoint_message), 'Message in feed point')
+                createAward_feedPointMessage = KafkaMessage(createAward_operationId).get_message_from_kafka()
+                allure.attach(str(createAward_feedPointMessage), 'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     createAward_operationId).award_for_limited_procedure_message_is_successful(
                     environment=environment,
-                    kafka_message=createAward_feedPoint_message,
+                    kafka_message=createAward_feedPointMessage,
                     pn_ocid=pn_ocid,
                     tender_id=np_id
                 )
@@ -292,7 +292,7 @@ class TestCreateAward:
                                 f"{actual_np_release_before_createAward['releases'][0]['id'][46:59]}"
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": createAward_feedPoint_message['data']['operationDate'],
+                            "new_value": createAward_feedPointMessage['data']['operationDate'],
                             "old_value": actual_np_release_before_createAward['releases'][0]['date']
                         },
                         "root['releases'][0]['tender']['statusDetails']": {
@@ -310,8 +310,7 @@ class TestCreateAward:
                         environment=environment,
                         language=language,
                         award_payload=createAward_payload,
-                        awardFeedPointMessage=createAward_feedPoint_message,
-                        actual_award_release=actual_np_release_after_createAward
+                        awardFeedPointMessage=createAward_feedPointMessage
                     )
 
                     final_expected_parties_array = expected_award_release_class.create_parties_array(
@@ -337,7 +336,7 @@ class TestCreateAward:
                     Prepare expected tender.awardPeriod object.
                     """
                     final_expected_tender_awardPeriod_object = {
-                        "startDate": createAward_feedPoint_message['data']['operationDate']
+                        "startDate": createAward_feedPointMessage['data']['operationDate']
                     }
                 except Exception:
                     raise Exception("Impossible to prepare expected tender.awardPeriod object")

@@ -5,12 +5,11 @@ from tests.utils.functions import get_value_from_country_csv, get_value_from_reg
 
 
 class AwardReleases:
-    def __init__(self, environment, language, award_payload, awardFeedPointMessage, actual_award_release):
+    def __init__(self, environment, language, award_payload, awardFeedPointMessage):
         self.constructor = copy.deepcopy(ReleaseLibrary())
         self.language = language
         self.payload = award_payload
         self.awardFeedPointMessage = awardFeedPointMessage
-        self.np_release = actual_award_release
 
         if environment == "dev":
             self.metadata_document_url = "https://dev.bpe.eprocurement.systems/api/v1/storage/get"

@@ -216,9 +216,9 @@ class TestEvaluateAward:
             )
 
         time.sleep(10)
-        createAward_feedPoint_message = KafkaMessage(createAward_operationId).get_message_from_kafka()
-        award_id = createAward_feedPoint_message['data']['outcomes']['awards'][0]['id']
-        award_token = createAward_feedPoint_message['data']['outcomes']['awards'][0]['X-TOKEN']
+        createAward_feedPointMessage = KafkaMessage(createAward_operationId).get_message_from_kafka()
+        award_id = createAward_feedPointMessage['data']['outcomes']['awards'][0]['id']
+        award_token = createAward_feedPointMessage['data']['outcomes']['awards'][0]['X-TOKEN']
         actual_np_release_before_evaluateAward = requests.get(url=f"{pn_url}/{np_id}").json()
         actual_ms_release_before_evaluateAward = requests.get(url=f"{pn_url}/{pn_ocid}").json()
 
@@ -280,13 +280,13 @@ class TestEvaluateAward:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                evaluateAward_feedPoint_message = KafkaMessage(evaluateAward_operationId).get_message_from_kafka()
-                allure.attach(str(evaluateAward_feedPoint_message), 'Message in feed point')
+                evaluateAward_feedPointMessage = KafkaMessage(evaluateAward_operationId).get_message_from_kafka()
+                allure.attach(str(evaluateAward_feedPointMessage), 'Message in feed point')
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     createAward_operationId).award_evaluating_message_is_successful(
                         environment=environment,
-                        kafka_message=evaluateAward_feedPoint_message,
+                        kafka_message=evaluateAward_feedPointMessage,
                         pn_ocid=pn_ocid,
                         tender_id=np_id
                 )
@@ -328,7 +328,7 @@ class TestEvaluateAward:
                                 f"{actual_np_release_before_evaluateAward['releases'][0]['id'][46:59]}"
                         },
                         "root['releases'][0]['date']": {
-                            "new_value": evaluateAward_feedPoint_message['data']['operationDate'],
+                            "new_value": evaluateAward_feedPointMessage['data']['operationDate'],
                             "old_value": actual_np_release_before_evaluateAward['releases'][0]['date']
                         },
                         "root['releases'][0]['tag'][0]": {
@@ -340,13 +340,14 @@ class TestEvaluateAward:
                             "old_value": "empty"
                         },
                         "root['releases'][0]['awards'][0]['date']": {
-                            "new_value": evaluateAward_feedPoint_message['data']['operationDate'],
+                            "new_value": evaluateAward_feedPointMessage['data']['operationDate'],
                             "old_value": actual_np_release_before_evaluateAward['releases'][0]['awards'][0]['date']
                         }
                     }
                 }
 
-                with allure.step('Check a difference of comparing actual NP release and expected NP release.'):
+                with allure.step('Check a difference of comparing actual NP release before EvaluateAward process and '
+                                 'expected NP release after EvaluateAward process.'):
                     allure.attach(str(compare_releases),
                                   "Actual result of comparing NP releases.")
                     allure.attach(str(expected_result),
@@ -401,6 +402,8 @@ class TestEvaluateAward:
 
                             connection_to_database.createAward_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
+                            connection_to_database.createAward_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+
                             connection_to_database.cleanup_steps_of_process(operation_id=createEi_operationId)
 
                             connection_to_database.cleanup_steps_of_process(operation_id=createFs_operationId)
@@ -411,6 +414,5 @@ class TestEvaluateAward:
 
                             connection_to_database.cleanup_steps_of_process_from_orchestrator(
                                 pn_ocid=pn_ocid)
-
                     except ValueError:
                         raise ValueError("Can not return BPE operation step")
