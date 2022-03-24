@@ -22,7 +22,7 @@ from tests.utils.my_requests import Requests
                  name='Google sheets: Create Ei')
 class TestCreateEi:
     @allure.title('Check status code and message from Kafka topic after Ei creation')
-    def test_check_result_of_sending_the_request(self, get_hosts, country, language, pmd, environment,
+    def test_check_result_of_sending_the_request(self, get_hosts, country, language, environment,
                                                  connection_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
@@ -111,7 +111,7 @@ class TestCreateEi:
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
     @allure.title('Check Ei release data after Ei creation based on full data model')
-    def test_check_ei_release_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_ei_release_one(self, get_hosts, country, language, environment, connection_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -242,7 +242,7 @@ class TestCreateEi:
                     assert compare_releases == expected_result
 
     @allure.title('Check Ei release after Ei creation on model without optional fields')
-    def test_check_ei_release_two(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_ei_release_two(self, get_hosts, country, language, environment, connection_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -374,7 +374,7 @@ class TestCreateEi:
                     assert compare_releases == expected_result
 
     @allure.title('Check Ei release data after Ei creation based on full data model with 3 items objects')
-    def test_check_ei_release_three(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_ei_release_three(self, get_hosts, country, language, environment, connection_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
