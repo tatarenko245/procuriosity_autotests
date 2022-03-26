@@ -7,7 +7,7 @@ import requests
 from deepdiff import DeepDiff
 from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
 from tests.utils.ReleaseModel.Budget.Ei.ei_prepared_release import EiExpectedRelease
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.platform_authorization import PlatformAuthorization
 
 from tests.utils.my_requests import Requests
@@ -55,7 +55,7 @@ class TestUpdateEi:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             ei_token = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
             step_number += 1
@@ -107,10 +107,10 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_ei_feed_point_message = KafkaMessage(update_ei_operation_id).get_message_from_kafka()
+                update_ei_feed_point_message = MessageForPlatform(update_ei_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_ei_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_ei_operation_id).update_ei_message_is_successful(
                     environment=environment,
                     kafka_message=update_ei_feed_point_message,
@@ -176,7 +176,7 @@ class TestUpdateEi:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             ei_token = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
             actual_ei_release_before_updating = requests.get(
@@ -229,10 +229,10 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_ei_feed_point_message = KafkaMessage(update_ei_operation_id).get_message_from_kafka()
+                update_ei_feed_point_message = MessageForPlatform(update_ei_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_ei_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_ei_operation_id).update_ei_message_is_successful(
                     environment=environment,
                     kafka_message=update_ei_feed_point_message,
@@ -355,7 +355,7 @@ class TestUpdateEi:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             ei_token = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
             actual_ei_release_before_updating = requests.get(
@@ -410,10 +410,10 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_ei_feed_point_message = KafkaMessage(update_ei_operation_id).get_message_from_kafka()
+                update_ei_feed_point_message = MessageForPlatform(update_ei_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_ei_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_ei_operation_id).update_ei_message_is_successful(
                     environment=environment,
                     kafka_message=update_ei_feed_point_message,
@@ -568,7 +568,7 @@ class TestUpdateEi:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             ei_token = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
             actual_ei_release_before_updating = requests.get(
@@ -623,10 +623,10 @@ class TestUpdateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_ei_feed_point_message = KafkaMessage(update_ei_operation_id).get_message_from_kafka()
+                update_ei_feed_point_message = MessageForPlatform(update_ei_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_ei_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_ei_operation_id).update_ei_message_is_successful(
                     environment=environment,
                     kafka_message=update_ei_feed_point_message,

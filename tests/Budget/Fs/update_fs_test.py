@@ -15,7 +15,7 @@ from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 
 from tests.utils.functions import compare_actual_result_and_expected_result
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.my_requests import Requests
 
@@ -61,7 +61,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -89,7 +89,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_fs_release_before_fs_updating = requests.get(
@@ -142,10 +142,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,
@@ -213,7 +213,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -243,7 +243,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_ei_release_before_fs_updating = requests.get(
@@ -298,10 +298,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,
@@ -485,7 +485,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -514,7 +514,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_ei_release_before_fs_updating = requests.get(
@@ -569,10 +569,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,
@@ -799,7 +799,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -829,7 +829,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_ei_release_before_fs_updating = requests.get(
@@ -884,10 +884,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,
@@ -1153,7 +1153,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -1182,7 +1182,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_ei_release_before_fs_updating = requests.get(
@@ -1237,10 +1237,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,
@@ -1442,7 +1442,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -1471,7 +1471,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_ei_release_before_fs_updating = requests.get(
@@ -1526,10 +1526,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,
@@ -1715,7 +1715,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -1744,7 +1744,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_ei_release_before_fs_updating = requests.get(
@@ -1799,10 +1799,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,
@@ -2024,7 +2024,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -2053,7 +2053,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_ei_release_before_fs_updating = requests.get(
@@ -2108,10 +2108,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,
@@ -2369,7 +2369,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -2398,7 +2398,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_ei_release_before_fs_updating = requests.get(
@@ -2453,10 +2453,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,
@@ -2657,7 +2657,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -2687,7 +2687,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_ei_release_before_fs_updating = requests.get(
@@ -2742,10 +2742,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,
@@ -3012,7 +3012,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -3041,7 +3041,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_ei_release_before_fs_updating = requests.get(
@@ -3096,10 +3096,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,
@@ -3357,7 +3357,7 @@ class TestUpdateFs:
                 language=language,
                 payload=create_ei_payload)
 
-            create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            create_ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -3386,7 +3386,7 @@ class TestUpdateFs:
                 ei_ocid=ei_ocid,
                 payload=create_fs_payload)
 
-            create_fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            create_fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             fs_id = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['id']
             fs_token = create_fs_feed_point_message["data"]["outcomes"]["fs"][0]['X-TOKEN']
             actual_ei_release_before_fs_updating = requests.get(
@@ -3441,10 +3441,10 @@ class TestUpdateFs:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                update_fs_feed_point_message = KafkaMessage(update_fs_operation_id).get_message_from_kafka()
+                update_fs_feed_point_message = MessageForPlatform(update_fs_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(update_fs_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_fs_operation_id).update_fs_message_is_successful(
                     environment=environment,
                     kafka_message=update_fs_feed_point_message,

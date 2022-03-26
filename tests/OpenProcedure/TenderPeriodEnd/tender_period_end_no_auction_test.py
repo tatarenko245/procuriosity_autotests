@@ -17,7 +17,7 @@ from tests.utils.ReleaseModel.OpenProcedure.TenderPeriodEndNoAuction.tender_peri
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.functions import time_bot, check_uuid_version
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.my_requests import Requests
 
@@ -86,7 +86,7 @@ class TestCreateBid:
                 payload=GlobalClassCreateEi.payload
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -120,7 +120,7 @@ class TestCreateBid:
                 payload=GlobalClassCreateFs.payload
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -162,7 +162,7 @@ class TestCreateBid:
                 payload=GlobalClassCreatePn.payload
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -220,7 +220,7 @@ class TestCreateBid:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -244,13 +244,13 @@ class TestCreateBid:
                 time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate'])
                 time.sleep(1)
                 GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
-                    KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()[0]
+                    MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                       initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()[0]
                 allure.attach(str(GlobalClassTenderPeriodEndNoAuction.feed_point_message), 'Message in feed point')
 
                 asynchronous_result_of_expired_tender_period_end = \
-                    KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").tender_period_end_no_auction_message_is_successful(
+                    MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                       initiation="bpe").tender_period_end_no_auction_message_is_successful(
                         environment=GlobalClassMetadata.environment,
                         kafka_message=GlobalClassTenderPeriodEndNoAuction.feed_point_message,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
@@ -537,7 +537,7 @@ class TestCreateBid:
                 payload=GlobalClassCreateEi.payload
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
@@ -570,7 +570,7 @@ class TestCreateBid:
                 payload=GlobalClassCreateFs.payload
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -612,7 +612,7 @@ class TestCreateBid:
                 payload=GlobalClassCreatePn.payload
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -670,7 +670,7 @@ class TestCreateBid:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -760,7 +760,7 @@ class TestCreateBid:
                 payload=GlobalClassCreateFirstBid.payload
             )
             GlobalClassCreateFirstBid.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFirstBid.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFirstBid.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFirstBid.bid_id = GlobalClassCreateFirstBid.feed_point_message['data']['outcomes'][
                 'bids'][0]['id']
@@ -819,7 +819,7 @@ class TestCreateBid:
                 payload=GlobalClassCreateSecondBid.payload
             )
             GlobalClassCreateSecondBid.feed_point_message = \
-                KafkaMessage(GlobalClassCreateSecondBid.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateSecondBid.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateSecondBid.bid_id = GlobalClassCreateSecondBid.feed_point_message['data']['outcomes'][
                 'bids'][0]['id']
@@ -835,14 +835,14 @@ class TestCreateBid:
                 time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate'])
                 time.sleep(1)
                 GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
-                    KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()[0]
+                    MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                       initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()[0]
 
                 allure.attach(str(GlobalClassTenderPeriodEndNoAuction.feed_point_message), 'Message in feed point')
 
                 asynchronous_result_of_expired_tender_period_end = \
-                    KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").tender_period_end_no_auction_message_is_successful(
+                    MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                       initiation="bpe").tender_period_end_no_auction_message_is_successful(
                         environment=GlobalClassMetadata.environment,
                         kafka_message=GlobalClassTenderPeriodEndNoAuction.feed_point_message,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,
@@ -1513,7 +1513,7 @@ class TestCreateBid:
                 payload=GlobalClassCreateEi.payload
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
 
@@ -1546,7 +1546,7 @@ class TestCreateBid:
                 payload=GlobalClassCreateFs.payload
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -1588,7 +1588,7 @@ class TestCreateBid:
                 payload=GlobalClassCreatePn.payload
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -1646,7 +1646,7 @@ class TestCreateBid:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -1737,7 +1737,7 @@ class TestCreateBid:
                 payload=GlobalClassCreateFirstBid.payload
             )
             GlobalClassCreateFirstBid.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFirstBid.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFirstBid.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFirstBid.bid_id = GlobalClassCreateFirstBid.feed_point_message['data']['outcomes'][
                 'bids'][0]['id']
@@ -1798,7 +1798,7 @@ class TestCreateBid:
                 payload=GlobalClassCreateSecondBid.payload
             )
             GlobalClassCreateSecondBid.feed_point_message = \
-                KafkaMessage(GlobalClassCreateSecondBid.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateSecondBid.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateSecondBid.bid_id = GlobalClassCreateSecondBid.feed_point_message['data']['outcomes'][
                 'bids'][0]['id']
@@ -1814,14 +1814,14 @@ class TestCreateBid:
                 time_bot(expected_time=GlobalClassCreateCnOnPn.payload['tender']['tenderPeriod']['endDate'])
                 time.sleep(1)
                 GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
-                    KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()[0]
+                    MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                       initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()[0]
 
                 allure.attach(str(GlobalClassTenderPeriodEndNoAuction.feed_point_message), 'Message in feed point')
 
                 asynchronous_result_of_expired_tender_period_end = \
-                    KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                 initiation="bpe").tender_period_end_no_auction_message_is_successful(
+                    MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                       initiation="bpe").tender_period_end_no_auction_message_is_successful(
                         environment=GlobalClassMetadata.environment,
                         kafka_message=GlobalClassTenderPeriodEndNoAuction.feed_point_message,
                         pn_ocid=GlobalClassCreatePn.pn_ocid,

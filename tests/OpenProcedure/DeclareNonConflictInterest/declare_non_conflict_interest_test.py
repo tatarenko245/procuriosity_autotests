@@ -22,7 +22,7 @@ from tests.utils.ReleaseModel.OpenProcedure.DeclareNonConflictInterest.declare_n
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.functions import get_project_root, time_bot, get_id_token_of_award_in_pending_awaiting_state
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
@@ -102,7 +102,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -139,7 +139,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -182,7 +182,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -243,7 +243,7 @@ class TestDeclareNonConflictInterest:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -370,8 +370,8 @@ class TestDeclareNonConflictInterest:
                     f"{GlobalClassCreatePn.pn_ocid}").json()
 
             GlobalClassTenderPeriodEndAuction.feed_point_message = \
-                KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                             initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+                MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                   initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
 
             GlobalClassCreateDeclareNonConflict.award_id = \
                 GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data']['outcomes']['awards'][0]['id']
@@ -469,7 +469,7 @@ class TestDeclareNonConflictInterest:
                         test_mode=True
                     )
                     GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                        KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                        MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                     step_number += 1
 
                 with allure.step(f'# {step_number}. See result: create declaration declaration with'
@@ -483,11 +483,11 @@ class TestDeclareNonConflictInterest:
                         """
                         time.sleep(1)
                         GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                            KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                            MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                         allure.attach(str(GlobalClassCreateDeclareNonConflict.feed_point_message),
                                       'Message in feed point')
 
-                        asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                        asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
@@ -857,7 +857,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -894,7 +894,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -937,7 +937,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -998,7 +998,7 @@ class TestDeclareNonConflictInterest:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -1216,8 +1216,8 @@ class TestDeclareNonConflictInterest:
                     f"{GlobalClassCreatePn.pn_ocid}").json()
 
             GlobalClassTenderPeriodEndAuction.feed_point_message = \
-                KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                             initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+                MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                   initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
 
             GlobalClassCreateDeclareNonConflict.award_id = get_id_token_of_award_in_pending_awaiting_state(
                 actual_awards_array=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards'],
@@ -1318,7 +1318,7 @@ class TestDeclareNonConflictInterest:
                         test_mode=True
                     )
                     GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                        KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                        MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                     step_number += 1
 
                 with allure.step(f'# {step_number}. See result: create declaration declaration with '
@@ -1332,11 +1332,11 @@ class TestDeclareNonConflictInterest:
                         """
                         time.sleep(1)
                         GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                            KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                            MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                         allure.attach(str(GlobalClassCreateDeclareNonConflict.feed_point_message),
                                       'Message in feed point')
 
-                        asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                        asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
@@ -1763,7 +1763,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -1800,7 +1800,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -1843,7 +1843,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -1904,7 +1904,7 @@ class TestDeclareNonConflictInterest:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -2122,8 +2122,8 @@ class TestDeclareNonConflictInterest:
                     f"{GlobalClassCreatePn.pn_ocid}").json()
 
             GlobalClassTenderPeriodEndAuction.feed_point_message = \
-                KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                             initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+                MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                   initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
 
             GlobalClassCreateDeclareNonConflict.award_id = get_id_token_of_award_in_pending_awaiting_state(
                 actual_awards_array=GlobalClassTenderPeriodEndAuction.actual_ev_release['releases'][0]['awards'],
@@ -2225,7 +2225,7 @@ class TestDeclareNonConflictInterest:
                         test_mode=True
                     )
                     GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                        KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                        MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                     step_number += 1
 
                 with allure.step(f'# {step_number}. See result: create declaration declaration with '
@@ -2239,11 +2239,11 @@ class TestDeclareNonConflictInterest:
                         """
                         time.sleep(1)
                         GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                            KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                            MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                         allure.attach(str(GlobalClassCreateDeclareNonConflict.feed_point_message),
                                       'Message in feed point')
 
-                        asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                        asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
@@ -2656,7 +2656,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -2693,7 +2693,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -2736,7 +2736,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -2797,7 +2797,7 @@ class TestDeclareNonConflictInterest:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -2921,8 +2921,8 @@ class TestDeclareNonConflictInterest:
                     f"{GlobalClassCreatePn.pn_ocid}").json()
 
             GlobalClassTenderPeriodEndAuction.feed_point_message = \
-                KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                             initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+                MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                   initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
 
             GlobalClassCreateDeclareNonConflict.award_id = \
                 GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data']['outcomes']['awards'][0]['id']
@@ -3020,7 +3020,7 @@ class TestDeclareNonConflictInterest:
                         test_mode=True
                     )
                     GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                        KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                        MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                     step_number += 1
 
                 with allure.step(f'# {step_number}. See result: create declaration declaration with '
@@ -3034,11 +3034,11 @@ class TestDeclareNonConflictInterest:
                         """
                         time.sleep(1)
                         GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                            KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                            MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                         allure.attach(str(GlobalClassCreateDeclareNonConflict.feed_point_message),
                                       'Message in feed point')
 
-                        asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                        asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
@@ -3299,7 +3299,7 @@ class TestDeclareNonConflictInterest:
                         test_mode=True
                     )
                     GlobalClassUpdateDeclareNonConflict.feed_point_message = \
-                        KafkaMessage(GlobalClassUpdateDeclareNonConflict.operation_id).get_message_from_kafka()
+                        MessageForPlatform(GlobalClassUpdateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                     step_number += 1
 
                 with allure.step(f'# {step_number}. See result: update declaration declaration with '
@@ -3313,11 +3313,11 @@ class TestDeclareNonConflictInterest:
                         """
                         time.sleep(1)
                         GlobalClassUpdateDeclareNonConflict.feed_point_message = \
-                            KafkaMessage(GlobalClassUpdateDeclareNonConflict.operation_id).get_message_from_kafka()
+                            MessageForPlatform(GlobalClassUpdateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                         allure.attach(str(GlobalClassUpdateDeclareNonConflict.feed_point_message),
                                       'Message in feed point')
 
-                        asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                        asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                             GlobalClassUpdateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassUpdateDeclareNonConflict.feed_point_message,
@@ -3503,7 +3503,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -3540,7 +3540,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True)
 
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -3583,7 +3583,7 @@ class TestDeclareNonConflictInterest:
                 test_mode=True
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -3644,7 +3644,7 @@ class TestDeclareNonConflictInterest:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -3768,8 +3768,8 @@ class TestDeclareNonConflictInterest:
                     f"{GlobalClassCreatePn.pn_ocid}").json()
 
             GlobalClassTenderPeriodEndAuction.feed_point_message = \
-                KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                             initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+                MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                   initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
 
             GlobalClassCreateDeclareNonConflict.award_id = \
                 GlobalClassTenderPeriodEndAuction.feed_point_message[0]['data']['outcomes']['awards'][0]['id']
@@ -3867,7 +3867,7 @@ class TestDeclareNonConflictInterest:
                         test_mode=True
                     )
                     GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                        KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                        MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                     step_number += 1
 
                 with allure.step(f'# {step_number}. See result: create declaration declaration with '
@@ -3881,11 +3881,11 @@ class TestDeclareNonConflictInterest:
                         """
                         time.sleep(1)
                         GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                            KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                            MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                         allure.attach(str(GlobalClassCreateDeclareNonConflict.feed_point_message),
                                       'Message in feed point')
 
-                        asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                        asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassCreateDeclareNonConflict.feed_point_message,
@@ -4284,7 +4284,7 @@ class TestDeclareNonConflictInterest:
                         test_mode=True
                     )
                     GlobalClassUpdateDeclareNonConflict.feed_point_message = \
-                        KafkaMessage(GlobalClassUpdateDeclareNonConflict.operation_id).get_message_from_kafka()
+                        MessageForPlatform(GlobalClassUpdateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                     step_number += 1
                 with allure.step(f'# {step_number}. See result: update declaration with '
                                  f'{y_mapper[y]} tenderer and {x_mapper[x]} requirement.'):
@@ -4297,11 +4297,11 @@ class TestDeclareNonConflictInterest:
                         """
                         time.sleep(1)
                         GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                            KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                            MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
                         allure.attach(str(GlobalClassCreateDeclareNonConflict.feed_point_message),
                                       'Message in feed point')
 
-                        asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                        asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                             GlobalClassCreateDeclareNonConflict.operation_id).declare_non_confl_message_is_successful(
                             environment=GlobalClassMetadata.environment,
                             kafka_message=GlobalClassUpdateDeclareNonConflict.feed_point_message,

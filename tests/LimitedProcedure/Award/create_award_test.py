@@ -13,7 +13,7 @@ from tests.utils.PayloadModel.LimitedProcedure.CnOnPn.cnonpn_prepared_payload im
 from tests.utils.PayloadModel.LimitedProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.ReleaseModel.LimitedProcedure.Award.award_releases import AwardReleases
 
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
@@ -65,7 +65,7 @@ class TestCreateAward:
                 payload=createEi_payload,
                 test_mode=True)
 
-            createEi_feedPoint_message = KafkaMessage(createEi_operationId).get_message_from_kafka()
+            createEi_feedPoint_message = MessageForPlatform(createEi_operationId).get_message_from_kafka_topic()
             ei_ocid = createEi_feedPoint_message["data"]["outcomes"]["ei"][0]['id']
 
         step_number += 1
@@ -97,7 +97,7 @@ class TestCreateAward:
                 payload=createFs_payload,
                 test_mode=True)
 
-            createFs_feedPoint_message = KafkaMessage(createFs_operationId).get_message_from_kafka()
+            createFs_feedPoint_message = MessageForPlatform(createFs_operationId).get_message_from_kafka_topic()
 
         step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: CreatePn process.'):
@@ -132,7 +132,7 @@ class TestCreateAward:
                 payload=createPn_payload,
                 test_mode=True)
 
-            createPn_feedPoint_message = KafkaMessage(createPn_operationId).get_message_from_kafka()
+            createPn_feedPoint_message = MessageForPlatform(createPn_operationId).get_message_from_kafka_topic()
             pn_ocid = createPn_feedPoint_message['data']['ocid']
             pn_id = createPn_feedPoint_message['data']['outcomes']['pn'][0]['id']
             pn_token = createPn_feedPoint_message['data']['outcomes']['pn'][0]['X-TOKEN']
@@ -173,7 +173,7 @@ class TestCreateAward:
                 payload=createCn_payload,
                 test_mode=True)
 
-            createCn_feedPoint_message = KafkaMessage(createCn_operationId).get_message_from_kafka()
+            createCn_feedPoint_message = MessageForPlatform(createCn_operationId).get_message_from_kafka_topic()
             np_id = createCn_feedPoint_message['data']['outcomes']['np'][0]['id']
             actual_np_release_before_createAward = requests.get(url=f"{pn_url}/{np_id}").json()
             actual_ms_release_before_createAward = requests.get(url=f"{pn_url}/{pn_ocid}").json()
@@ -236,10 +236,10 @@ class TestCreateAward:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                createAward_feedPointMessage = KafkaMessage(createAward_operationId).get_message_from_kafka()
+                createAward_feedPointMessage = MessageForPlatform(createAward_operationId).get_message_from_kafka_topic()
                 allure.attach(str(createAward_feedPointMessage), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     createAward_operationId).award_for_limited_procedure_message_is_successful(
                     environment=environment,
                     kafka_message=createAward_feedPointMessage,

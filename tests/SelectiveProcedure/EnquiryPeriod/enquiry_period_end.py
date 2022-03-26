@@ -12,7 +12,7 @@ from tests.utils.PayloadModel.SelectiveProcedure.EnquiryPeriod.enquiry_prepared_
 from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.date_class import Date
 from tests.utils.functions import time_bot
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
@@ -65,7 +65,7 @@ class TestCreateEnquiry:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            ei_feed_point_message = KafkaMessage(ei_operation_id).get_message_from_kafka()
+            ei_feed_point_message = MessageForPlatform(ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -96,7 +96,7 @@ class TestCreateEnquiry:
                 payload=create_fs_payload,
                 test_mode=True)
 
-            fs_feed_point_message = KafkaMessage(fs_operation_id).get_message_from_kafka()
+            fs_feed_point_message = MessageForPlatform(fs_operation_id).get_message_from_kafka_topic()
             step_number += 1
 
         with allure.step(f'# {step_number}. Authorization platform one: create Pn'):
@@ -131,7 +131,7 @@ class TestCreateEnquiry:
                 payload=create_pn_payload,
                 test_mode=True)
 
-            pn_feed_point_message = KafkaMessage(pn_operation_id).get_message_from_kafka()
+            pn_feed_point_message = MessageForPlatform(pn_operation_id).get_message_from_kafka_topic()
             pn_ocid = pn_feed_point_message['data']['ocid']
             pn_id = pn_feed_point_message['data']['outcomes']['pn'][0]['id']
             pn_token = pn_feed_point_message['data']['outcomes']['pn'][0]['X-TOKEN']
@@ -187,7 +187,7 @@ class TestCreateEnquiry:
                 payload=create_cn_payload,
                 test_mode=True)
 
-            create_cn_feed_point_message = KafkaMessage(create_cn_operation_id).get_message_from_kafka()
+            create_cn_feed_point_message = MessageForPlatform(create_cn_operation_id).get_message_from_kafka_topic()
             tp_id = create_cn_feed_point_message['data']['outcomes']['tp'][0]['id']
             step_number += 1
 
@@ -220,7 +220,7 @@ class TestCreateEnquiry:
                 payload=create_enquiry_payload,
                 test_mode=True)
 
-            create_enquiry_feed_point_message_bpe = KafkaMessage(create_enquiry_operation_id).get_message_from_kafka()
+            create_enquiry_feed_point_message_bpe = MessageForPlatform(create_enquiry_operation_id).get_message_from_kafka_topic()
             enquiry_id = create_enquiry_feed_point_message_bpe['data']['outcomes']['enquiries'][0]['id']
             enquiry_token = create_enquiry_feed_point_message_bpe['data']['outcomes']['enquiries'][0]['X-TOKEN']
             actual_tp_release_before_enquiry_period_end_expired = requests.get(url=f"{pn_url}/{tp_id}").json()
@@ -398,7 +398,7 @@ class TestCreateEnquiry:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            ei_feed_point_message = KafkaMessage(ei_operation_id).get_message_from_kafka()
+            ei_feed_point_message = MessageForPlatform(ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -429,7 +429,7 @@ class TestCreateEnquiry:
                 payload=create_fs_payload,
                 test_mode=True)
 
-            fs_feed_point_message = KafkaMessage(fs_operation_id).get_message_from_kafka()
+            fs_feed_point_message = MessageForPlatform(fs_operation_id).get_message_from_kafka_topic()
             step_number += 1
 
         with allure.step(f'# {step_number}. Authorization platform one: create Pn'):
@@ -464,7 +464,7 @@ class TestCreateEnquiry:
                 payload=create_pn_payload,
                 test_mode=True)
 
-            pn_feed_point_message = KafkaMessage(pn_operation_id).get_message_from_kafka()
+            pn_feed_point_message = MessageForPlatform(pn_operation_id).get_message_from_kafka_topic()
             pn_ocid = pn_feed_point_message['data']['ocid']
             pn_id = pn_feed_point_message['data']['outcomes']['pn'][0]['id']
             pn_token = pn_feed_point_message['data']['outcomes']['pn'][0]['X-TOKEN']
@@ -520,7 +520,7 @@ class TestCreateEnquiry:
                 payload=create_cn_payload,
                 test_mode=True)
 
-            create_cn_feed_point_message = KafkaMessage(create_cn_operation_id).get_message_from_kafka()
+            create_cn_feed_point_message = MessageForPlatform(create_cn_operation_id).get_message_from_kafka_topic()
             tp_id = create_cn_feed_point_message['data']['outcomes']['tp'][0]['id']
             step_number += 1
 
@@ -553,7 +553,7 @@ class TestCreateEnquiry:
                 payload=create_enquiry_payload,
                 test_mode=True)
 
-            create_enquiry_feed_point_message_bpe = KafkaMessage(create_enquiry_operation_id).get_message_from_kafka()
+            create_enquiry_feed_point_message_bpe = MessageForPlatform(create_enquiry_operation_id).get_message_from_kafka_topic()
             enquiry_id = create_enquiry_feed_point_message_bpe['data']['outcomes']['enquiries'][0]['id']
             enquiry_token = create_enquiry_feed_point_message_bpe['data']['outcomes']['enquiries'][0]['X-TOKEN']
             time_bot(expected_time=create_cn_payload['preQualification']['period']['endDate'])
@@ -613,11 +613,11 @@ class TestCreateEnquiry:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                create_answer_feed_point_message = KafkaMessage(create_answer_operation_id).get_message_from_kafka()
+                create_answer_feed_point_message = MessageForPlatform(create_answer_operation_id).get_message_from_kafka_topic()
 
                 allure.attach(str(create_answer_feed_point_message), 'Message in feed point where initiator bpe')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     create_answer_operation_id).create_answer_message_is_successful(
                     environment=environment,
                     kafka_message=create_answer_feed_point_message,

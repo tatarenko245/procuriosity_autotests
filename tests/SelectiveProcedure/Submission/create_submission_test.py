@@ -9,7 +9,7 @@ from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayl
 from tests.utils.PayloadModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
@@ -61,7 +61,7 @@ class TestCreateCn:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -92,7 +92,7 @@ class TestCreateCn:
                 payload=create_fs_payload,
                 test_mode=True)
 
-            fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             step_number += 1
 
         with allure.step(f'# {step_number}. Authorization platform one: create Pn'):
@@ -127,7 +127,7 @@ class TestCreateCn:
                 payload=create_pn_payload,
                 test_mode=True)
 
-            pn_feed_point_message = KafkaMessage(create_pn_operation_id).get_message_from_kafka()
+            pn_feed_point_message = MessageForPlatform(create_pn_operation_id).get_message_from_kafka_topic()
             pn_ocid = pn_feed_point_message['data']['ocid']
             pn_id = pn_feed_point_message['data']['outcomes']['pn'][0]['id']
             pn_token = pn_feed_point_message['data']['outcomes']['pn'][0]['X-TOKEN']
@@ -182,7 +182,7 @@ class TestCreateCn:
                 payload=create_cn_payload,
                 test_mode=True)
 
-            cn_feed_point_message = KafkaMessage(create_cn_operation_id).get_message_from_kafka()
+            cn_feed_point_message = MessageForPlatform(create_cn_operation_id).get_message_from_kafka_topic()
             tp_id = cn_feed_point_message['data']['outcomes']['tp'][0]['id']
             actual_tp_release_before_submission_creating = requests.get(url=f"{pn_url}/{tp_id}").json()
             actual_ms_release_before_submission_creating = requests.get(url=f"{pn_url}/{pn_ocid}").json()
@@ -238,12 +238,12 @@ class TestCreateCn:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                create_submission_feed_point_message = KafkaMessage(
-                    create_submission_operation_id).get_message_from_kafka()
+                create_submission_feed_point_message = MessageForPlatform(
+                    create_submission_operation_id).get_message_from_kafka_topic()
 
                 allure.attach(str(create_submission_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     create_submission_operation_id).create_submission_message_is_successful(
                     environment=environment,
                     kafka_message=create_submission_feed_point_message,

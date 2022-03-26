@@ -17,7 +17,7 @@ from tests.utils.environment import Environment
 from tests.utils.functions import compare_actual_result_and_expected_result, \
     get_value_from_classification_unit_dictionary_csv, get_value_from_region_csv, get_value_from_locality_csv, \
     get_contract_period_for_ms_release, get_value_from_cpvs_dictionary_csv, check_uuid_version
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.my_requests import Requests
 
@@ -84,7 +84,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreateEi.payload
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -118,7 +118,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreateFs.payload
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -160,7 +160,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreatePn.payload
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -237,7 +237,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreateCnOnPn.payload
             )
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -311,10 +311,10 @@ class TestCreateCnOnPn:
                 Check the asynchronous_result_of_sending_the_request.
                 """
                 GlobalClassUpdateCnOnPn.feed_point_message = \
-                    KafkaMessage(GlobalClassUpdateCnOnPn.operation_id).get_message_from_kafka()
+                    MessageForPlatform(GlobalClassUpdateCnOnPn.operation_id).get_message_from_kafka_topic()
                 allure.attach(str(GlobalClassUpdateCnOnPn.feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     GlobalClassUpdateCnOnPn.operation_id).update_cnonpn_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateCnOnPn.feed_point_message,
@@ -395,7 +395,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreateEi.payload
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -429,7 +429,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreateFs.payload
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -470,7 +470,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreatePn.payload
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -547,7 +547,7 @@ class TestCreateCnOnPn:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -615,10 +615,10 @@ class TestCreateCnOnPn:
                 Check the asynchronous_result_of_sending_the_request.
                 """
                 GlobalClassUpdateCnOnPn.feed_point_message = \
-                    KafkaMessage(GlobalClassUpdateCnOnPn.operation_id).get_message_from_kafka()
+                    MessageForPlatform(GlobalClassUpdateCnOnPn.operation_id).get_message_from_kafka_topic()
                 allure.attach(str(GlobalClassUpdateCnOnPn.feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     GlobalClassUpdateCnOnPn.operation_id).update_cnonpn_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateCnOnPn.feed_point_message,
@@ -1141,7 +1141,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreateEi.payload
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -1177,7 +1177,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreateFs.payload
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -1216,7 +1216,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreatePn.payload
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -1294,7 +1294,7 @@ class TestCreateCnOnPn:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -1363,10 +1363,10 @@ class TestCreateCnOnPn:
                 Check the asynchronous_result_of_sending_the_request.
                 """
                 GlobalClassUpdateCnOnPn.feed_point_message = \
-                    KafkaMessage(GlobalClassUpdateCnOnPn.operation_id).get_message_from_kafka()
+                    MessageForPlatform(GlobalClassUpdateCnOnPn.operation_id).get_message_from_kafka_topic()
                 allure.attach(str(GlobalClassUpdateCnOnPn.feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     GlobalClassUpdateCnOnPn.operation_id).update_cnonpn_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateCnOnPn.feed_point_message,
@@ -1841,7 +1841,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreateEi.payload
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -1877,7 +1877,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreateFs.payload
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -1916,7 +1916,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreatePn.payload
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -1994,7 +1994,7 @@ class TestCreateCnOnPn:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -2063,10 +2063,10 @@ class TestCreateCnOnPn:
                 Check the asynchronous_result_of_sending_the_request.
                 """
                 GlobalClassUpdateCnOnPn.feed_point_message = \
-                    KafkaMessage(GlobalClassUpdateCnOnPn.operation_id).get_message_from_kafka()
+                    MessageForPlatform(GlobalClassUpdateCnOnPn.operation_id).get_message_from_kafka_topic()
                 allure.attach(str(GlobalClassUpdateCnOnPn.feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     GlobalClassUpdateCnOnPn.operation_id).update_cnonpn_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateCnOnPn.feed_point_message,
@@ -2812,7 +2812,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreateEi.payload
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -2848,7 +2848,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreateFs.payload
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -2887,7 +2887,7 @@ class TestCreateCnOnPn:
                 payload=GlobalClassCreatePn.payload
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -2964,7 +2964,7 @@ class TestCreateCnOnPn:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -3033,10 +3033,10 @@ class TestCreateCnOnPn:
                 Check the asynchronous_result_of_sending_the_request.
                 """
                 GlobalClassUpdateCnOnPn.feed_point_message = \
-                    KafkaMessage(GlobalClassUpdateCnOnPn.operation_id).get_message_from_kafka()
+                    MessageForPlatform(GlobalClassUpdateCnOnPn.operation_id).get_message_from_kafka_topic()
                 allure.attach(str(GlobalClassUpdateCnOnPn.feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     GlobalClassUpdateCnOnPn.operation_id).update_cnonpn_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassUpdateCnOnPn.feed_point_message,

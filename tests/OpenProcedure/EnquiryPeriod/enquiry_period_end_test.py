@@ -17,7 +17,7 @@ from tests.utils.PayloadModel.OpenProcedure.Pn.pn_prepared_payload import PnPrep
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.functions import compare_actual_result_and_expected_result, time_bot
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.my_requests import Requests
 
@@ -84,7 +84,7 @@ class TestEnquiryPeriodEnd:
                 payload=GlobalClassCreateEi.payload
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -118,7 +118,7 @@ class TestEnquiryPeriodEnd:
                 payload=GlobalClassCreateFs.payload
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -160,7 +160,7 @@ class TestEnquiryPeriodEnd:
                 payload=GlobalClassCreatePn.payload
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -237,7 +237,7 @@ class TestEnquiryPeriodEnd:
                 payload=GlobalClassCreateCnOnPn.payload
             )
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -285,7 +285,7 @@ class TestEnquiryPeriodEnd:
             )
 
             GlobalClassCreateEnquiry.feed_point_message_bpe = \
-                KafkaMessage(GlobalClassCreateEnquiry.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEnquiry.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEnquiry.enquiry_id = \
                 GlobalClassCreateEnquiry.feed_point_message_bpe['data']['outcomes']['enquiries'][0]['id']
@@ -351,8 +351,8 @@ class TestEnquiryPeriodEnd:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             GlobalClassEnquiryPeriodEnd.feed_point_message_bpe = \
-                                KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                             initiation="bpe").get_message_from_kafka_by_ocid_and_initiator(
+                                MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                                   initiation="bpe").get_message_from_kafka_by_ocid_and_initiator(
                                 )
                             steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassEnquiryPeriodEnd.feed_point_message_bpe['X-OPERATION-ID'])
@@ -462,7 +462,7 @@ class TestEnquiryPeriodEnd:
                 payload=GlobalClassCreateEi.payload
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -496,7 +496,7 @@ class TestEnquiryPeriodEnd:
                 payload=GlobalClassCreateFs.payload
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -538,7 +538,7 @@ class TestEnquiryPeriodEnd:
                 payload=GlobalClassCreatePn.payload
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -615,7 +615,7 @@ class TestEnquiryPeriodEnd:
                 payload=GlobalClassCreateCnOnPn.payload
             )
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -663,7 +663,7 @@ class TestEnquiryPeriodEnd:
             )
 
             GlobalClassCreateEnquiry.feed_point_message_bpe = \
-                KafkaMessage(GlobalClassCreateEnquiry.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEnquiry.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEnquiry.enquiry_id = \
                 GlobalClassCreateEnquiry.feed_point_message_bpe['data']['outcomes']['enquiries'][0]['id']
@@ -704,7 +704,7 @@ class TestEnquiryPeriodEnd:
             )
 
             GlobalClassCreateAnswer.feed_point_message = \
-                KafkaMessage(GlobalClassCreateAnswer.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateAnswer.operation_id).get_message_from_kafka_topic()
 
             allure.attach(str(GlobalClassCreateAnswer.feed_point_message), 'Message in feed point')
 
@@ -767,8 +767,8 @@ class TestEnquiryPeriodEnd:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             GlobalClassEnquiryPeriodEnd.feed_point_message_bpe = \
-                                KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                                             initiation="bpe").get_message_from_kafka_by_ocid_and_initiator(
+                                MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                                   initiation="bpe").get_message_from_kafka_by_ocid_and_initiator(
                                 )
                             steps = GlobalClassMetadata.database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassEnquiryPeriodEnd.feed_point_message_bpe['X-OPERATION-ID'])

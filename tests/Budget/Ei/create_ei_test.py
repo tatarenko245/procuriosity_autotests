@@ -8,7 +8,7 @@ from deepdiff import DeepDiff
 from tests.conftest import GlobalClassCreateEi, GlobalClassMetadata
 from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
 from tests.utils.ReleaseModel.Budget.Ei.ei_prepared_release import EiExpectedRelease
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.platform_authorization import PlatformAuthorization
 
 from tests.utils.my_requests import Requests
@@ -75,11 +75,11 @@ class TestCreateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+                ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(ei_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    create_ei_operation_id).create_ei_message_is_successful(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
+                    create_ei_operation_id).is_message_of_create_ei_process_correct(
                     environment=environment,
                     kafka_message=ei_feed_point_message,
                     test_mode=True)
@@ -163,11 +163,11 @@ class TestCreateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+                ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(ei_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    create_ei_operation_id).create_ei_message_is_successful(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
+                    create_ei_operation_id).is_message_of_create_ei_process_correct(
                     environment=environment,
                     kafka_message=ei_feed_point_message,
                     test_mode=True)
@@ -294,11 +294,11 @@ class TestCreateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+                ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(ei_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    create_ei_operation_id).create_ei_message_is_successful(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
+                    create_ei_operation_id).is_message_of_create_ei_process_correct(
                     environment=environment,
                     kafka_message=ei_feed_point_message,
                     test_mode=True)
@@ -426,11 +426,11 @@ class TestCreateEi:
                 """
                 Check the asynchronous_result_of_sending_the_request.
                 """
-                ei_feed_point_message = KafkaMessage(ei_operation_id).get_message_from_kafka()
+                ei_feed_point_message = MessageForPlatform(ei_operation_id).get_message_from_kafka_topic()
                 allure.attach(str(ei_feed_point_message), 'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-                    ei_operation_id).create_ei_message_is_successful(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
+                    ei_operation_id).is_message_of_create_ei_process_correct(
                     environment=environment,
                     kafka_message=ei_feed_point_message,
                     test_mode=True)

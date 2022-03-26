@@ -10,7 +10,7 @@ from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayl
 from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
@@ -52,7 +52,7 @@ class TestCancelPn:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            ei_feed_point_message = KafkaMessage(ei_operation_id).get_message_from_kafka()
+            ei_feed_point_message = MessageForPlatform(ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -83,7 +83,7 @@ class TestCancelPn:
                 payload=create_fs_payload,
                 test_mode=True)
 
-            fs_feed_point_message = KafkaMessage(fs_operation_id).get_message_from_kafka()
+            fs_feed_point_message = MessageForPlatform(fs_operation_id).get_message_from_kafka_topic()
             fs_id = fs_feed_point_message['data']['outcomes']['fs'][0]['id']
             step_number += 1
 
@@ -119,7 +119,7 @@ class TestCancelPn:
                 payload=create_pn_payload,
                 test_mode=True)
 
-            create_pn_feed_point_message = KafkaMessage(create_pn_operation_id).get_message_from_kafka()
+            create_pn_feed_point_message = MessageForPlatform(create_pn_operation_id).get_message_from_kafka_topic()
             pn_ocid = create_pn_feed_point_message['data']['ocid']
             pn_url = create_pn_feed_point_message['data']['url']
             pn_id = create_pn_feed_point_message['data']['outcomes']['pn'][0]['id']
@@ -158,7 +158,7 @@ class TestCancelPn:
                 x_operation_id=cancel_pn_operation_id,
                 test_mode=True)
 
-            cancel_pn_feed_point_message = KafkaMessage(cancel_pn_operation_id).get_message_from_kafka()
+            cancel_pn_feed_point_message = MessageForPlatform(cancel_pn_operation_id).get_message_from_kafka_topic()
             actual_pn_release_after_pn_canceling = requests.get(url=f"{pn_url}/{pn_id}").json()
             actual_ms_release_after_pn_canceling = requests.get(url=f"{pn_url}/{pn_ocid}").json()
             actual_fs_release_after_pn_canceling = requests.get(
@@ -188,7 +188,7 @@ class TestCancelPn:
                 Check the asynchronous_result_of_sending_the_request.
                 """
                 allure.attach(str(cancel_pn_feed_point_message), 'Message in feed point')
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     cancel_pn_operation_id).cancel_pn_message_is_successful(
                     environment=environment,
                     kafka_message=cancel_pn_feed_point_message,

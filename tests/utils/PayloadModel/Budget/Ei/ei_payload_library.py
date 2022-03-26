@@ -1,120 +1,113 @@
 class PayloadLibrary:
     @staticmethod
-    def tender_object():
-        tender_object = {
-            "title": None,
-            "description": None,
-            "classification": {
-                "id": None
+    def payload_model():
+        payload = {
+            "tender": {
+                "title": str,
+                "description": str,
+                "classification": {
+                    "id": str
+                },
+                "items": list
             },
-            "items": None
+            "planning": {
+                "budget": {
+                    "period": {
+                        "startDate": str,
+                        "endDate": str
+                    }
+                },
+                "rationale": str
+            },
+            "buyer": {
+                "name": str,
+                "identifier": {
+                    "id": str,
+                    "scheme": str,
+                    "legalName": str,
+                    "uri": str
+                },
+                "address": {
+                    "streetAddress": str,
+                    "postalCode": str,
+                    "addressDetails": {
+                        "country": {
+                            "id": str
+                        },
+                        "region": {
+                            "id": str
+                        },
+                        "locality": {
+                            "scheme": str,
+                            "id": str,
+                            "description": str
+                        }
+                    }
+                },
+                "additionalIdentifiers": list,
+                "contactPoint": {
+                    "name": str,
+                    "email": str,
+                    "telephone": str,
+                    "faxNumber": str,
+                    "url": str
+                },
+                "details": {
+                    "typeOfBuyer": str,
+                    "mainGeneralActivity": str,
+                    "mainSectoralActivity": str
+
+                }
+            }
         }
-        return tender_object
 
     @staticmethod
-    def tender_item_object():
-        item_object = {
-            "id": "1",
-            "description": None,
+    def tender_items_object():
+        items_object = {
+            "id": str,
+            "description": str,
             "classification": {
-                "id": None
+                "id": str
             },
-            "additionalClassifications": None,
+            "additionalClassifications": list,
             "deliveryAddress": {
-                "streetAddress": None,
-                "postalCode": None,
+                "streetAddress": str,
+                "postalCode": str,
                 "addressDetails": {
                     "country": {
-                        "id": None
+                        "id": str
                     },
                     "region": {
-                        "id": None
+                        "id": str
                     },
                     "locality": {
-                        "id": None,
-                        "description": None,
-                        "scheme": None,
-                        "uri": None
+                        "id": str,
+                        "description": str,
+                        "scheme": str,
+                        "uri": str
                     }
                 }
             },
-            "quantity": None,
+            "quantity": float,
             "unit": {
-                "id": None
+                "id": str
             }
         }
-        return item_object
+        return items_object
 
     @staticmethod
-    def tender_item_additional_classifications():
+    def tender_items_additional_classifications_object():
         additional_classifications = {
-            "id": None
+            "id": str
         }
         return additional_classifications
 
     @staticmethod
-    def planning_object():
-        planning_obj = {
-            "budget": {
-                "period": {
-                    "startDate": None,
-                    "endDate": None
-                }
-            },
-            "rationale": None
-        }
-        return planning_obj
-
-    @staticmethod
-    def buyer_object():
-        buyer_obj = {
-            "name": None,
-            "identifier": {
-                "id": None,
-                "scheme": None,
-                "legalName": None,
-                "uri": None
-            },
-            "address": {
-                "streetAddress": None,
-                "postalCode": None,
-                "addressDetails": {
-                    "country": {
-                        "id": None
-                    },
-                    "region": {
-                        "id": None
-                    },
-                    "locality": {
-                        "scheme": None,
-                        "id": None,
-                        "description": None
-                    }
-                }
-            },
-            "additionalIdentifiers": None,
-            "contactPoint": {
-                "name": None,
-                "email": None,
-                "telephone": None,
-                "faxNumber": None,
-                "url": None
-            },
-            "details": {
-                "typeOfBuyer": None,
-                "mainGeneralActivity": None,
-                "mainSectoralActivity": None
-
-            }
-        }
-        return buyer_obj
-
-    @staticmethod
     def buyer_additional_identifiers_object():
         additional_identifiers = {
-            "id": None,
-            "scheme": None,
-            "legalName": None,
-            "uri": None
+            "id": str,
+            "scheme": str,
+            "legalName": str,
+            "uri": str
         }
         return additional_identifiers

@@ -24,7 +24,7 @@ from tests.utils.ReleaseModel.OpenProcedure.Protocol.protocol_release import Pro
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.functions import get_project_root, time_bot
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
@@ -106,7 +106,7 @@ class TestProtocol:
                 test_mode=True
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -143,7 +143,7 @@ class TestProtocol:
                 test_mode=True
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -186,7 +186,7 @@ class TestProtocol:
                 test_mode=True
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -247,7 +247,7 @@ class TestProtocol:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -371,8 +371,8 @@ class TestProtocol:
                     f"{GlobalClassCreatePn.pn_ocid}").json()
 
             GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
-                KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                             initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+                MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                   initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
 
             GlobalClassCreateDeclareNonConflict.award_id = \
                 GlobalClassTenderPeriodEndNoAuction.feed_point_message[0]['data']['outcomes']['awards'][0]['id']
@@ -470,7 +470,7 @@ class TestProtocol:
                         test_mode=True
                     )
                     GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                        KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                        MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
 
                     GlobalClassCreateDeclareNonConflict.actual_ev_release = requests.get(
                         url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
@@ -512,7 +512,7 @@ class TestProtocol:
                 test_mode=True
             )
             GlobalClassAwardConsideration.feed_point_message = \
-                KafkaMessage(GlobalClassAwardConsideration.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassAwardConsideration.operation_id).get_message_from_kafka_topic()
             step_number += 1
 
         with allure.step(f'# {step_number}.Authorization platform one: evaluate award.'):
@@ -561,7 +561,7 @@ class TestProtocol:
                 test_mode=True
             )
             GlobalClassCreateEvaluateAward.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEvaluateAward.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEvaluateAward.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEvaluateAward.actual_ev_release = requests.get(
                 url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
@@ -615,11 +615,11 @@ class TestProtocol:
                 """
                 time.sleep(1)
                 GlobalClassProtocol.feed_point_message = \
-                    KafkaMessage(GlobalClassProtocol.operation_id).get_message_from_kafka()
+                    MessageForPlatform(GlobalClassProtocol.operation_id).get_message_from_kafka_topic()
                 allure.attach(str(GlobalClassProtocol.feed_point_message),
                               'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     GlobalClassProtocol.operation_id).protocol_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassProtocol.feed_point_message,
@@ -964,7 +964,7 @@ class TestProtocol:
                 test_mode=True
             )
             GlobalClassCreateEi.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEi.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEi.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEi.ei_ocid = \
                 GlobalClassCreateEi.feed_point_message["data"]["outcomes"]["ei"][0]['id']
@@ -1001,7 +1001,7 @@ class TestProtocol:
                 test_mode=True
             )
             GlobalClassCreateFs.feed_point_message = \
-                KafkaMessage(GlobalClassCreateFs.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateFs.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateFs.fs_id = \
                 GlobalClassCreateFs.feed_point_message['data']['outcomes']['fs'][0]['id']
@@ -1044,7 +1044,7 @@ class TestProtocol:
                 test_mode=True
             )
             GlobalClassCreatePn.feed_point_message = \
-                KafkaMessage(GlobalClassCreatePn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreatePn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreatePn.pn_ocid = \
                 GlobalClassCreatePn.feed_point_message['data']['ocid']
@@ -1105,7 +1105,7 @@ class TestProtocol:
             )
 
             GlobalClassCreateCnOnPn.feed_point_message = \
-                KafkaMessage(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateCnOnPn.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateCnOnPn.ev_id = \
                 GlobalClassCreateCnOnPn.feed_point_message['data']['outcomes']['ev'][0]['id']
@@ -1230,8 +1230,8 @@ class TestProtocol:
                     f"{GlobalClassCreatePn.pn_ocid}").json()
 
             GlobalClassTenderPeriodEndNoAuction.feed_point_message = \
-                KafkaMessage(ocid=GlobalClassCreateCnOnPn.ev_id,
-                             initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
+                MessageForPlatform(ocid=GlobalClassCreateCnOnPn.ev_id,
+                                   initiation="bpe").get_message_from_kafka_by_ocid_and_initiator()
 
             GlobalClassCreateDeclareNonConflict.award_id = \
                 GlobalClassTenderPeriodEndNoAuction.feed_point_message[0]['data']['outcomes']['awards'][0]['id']
@@ -1329,7 +1329,7 @@ class TestProtocol:
                         test_mode=True
                     )
                     GlobalClassCreateDeclareNonConflict.feed_point_message = \
-                        KafkaMessage(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka()
+                        MessageForPlatform(GlobalClassCreateDeclareNonConflict.operation_id).get_message_from_kafka_topic()
 
                     GlobalClassCreateDeclareNonConflict.actual_ev_release = requests.get(
                         url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
@@ -1371,7 +1371,7 @@ class TestProtocol:
                 test_mode=True
             )
             GlobalClassAwardConsideration.feed_point_message = \
-                KafkaMessage(GlobalClassAwardConsideration.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassAwardConsideration.operation_id).get_message_from_kafka_topic()
             step_number += 1
 
         with allure.step(f'# {step_number}.Authorization platform one: evaluate award.'):
@@ -1420,7 +1420,7 @@ class TestProtocol:
                 test_mode=True
             )
             GlobalClassCreateEvaluateAward.feed_point_message = \
-                KafkaMessage(GlobalClassCreateEvaluateAward.operation_id).get_message_from_kafka()
+                MessageForPlatform(GlobalClassCreateEvaluateAward.operation_id).get_message_from_kafka_topic()
 
             GlobalClassCreateEvaluateAward.actual_ev_release = requests.get(
                 url=f"{GlobalClassCreateCnOnPn.feed_point_message['data']['url']}/"
@@ -1474,11 +1474,11 @@ class TestProtocol:
                 """
                 time.sleep(1)
                 GlobalClassProtocol.feed_point_message = \
-                    KafkaMessage(GlobalClassProtocol.operation_id).get_message_from_kafka()
+                    MessageForPlatform(GlobalClassProtocol.operation_id).get_message_from_kafka_topic()
                 allure.attach(str(GlobalClassProtocol.feed_point_message),
                               'Message in feed point')
 
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     GlobalClassProtocol.operation_id).protocol_message_is_successful(
                     environment=GlobalClassMetadata.environment,
                     kafka_message=GlobalClassProtocol.feed_point_message,

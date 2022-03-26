@@ -15,7 +15,7 @@ from tests.utils.date_class import Date
 from tests.utils.functions import get_value_from_region_csv, \
     get_value_from_classification_unit_dictionary_csv
 
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
@@ -67,7 +67,7 @@ class TestUpdateCn:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -98,7 +98,7 @@ class TestUpdateCn:
                 payload=create_fs_payload,
                 test_mode=True)
 
-            fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             step_number += 1
 
         with allure.step(f'# {step_number}. Authorization platform one: create Pn'):
@@ -133,7 +133,7 @@ class TestUpdateCn:
                 payload=create_pn_payload,
                 test_mode=True)
 
-            pn_feed_point_message = KafkaMessage(create_pn_operation_id).get_message_from_kafka()
+            pn_feed_point_message = MessageForPlatform(create_pn_operation_id).get_message_from_kafka_topic()
             pn_ocid = pn_feed_point_message['data']['ocid']
             pn_id = pn_feed_point_message['data']['outcomes']['pn'][0]['id']
             pn_token = pn_feed_point_message['data']['outcomes']['pn'][0]['X-TOKEN']
@@ -188,7 +188,7 @@ class TestUpdateCn:
                 payload=create_cn_payload,
                 test_mode=True)
 
-            create_cn_feed_point_message = KafkaMessage(create_cn_operation_id).get_message_from_kafka()
+            create_cn_feed_point_message = MessageForPlatform(create_cn_operation_id).get_message_from_kafka_topic()
             tp_id = create_cn_feed_point_message['data']['outcomes']['tp'][0]['id']
             actual_tp_release_before_cn_updating = requests.get(url=f"{pn_url}/{tp_id}").json()
             actual_ms_release_before_cn_updating = requests.get(url=f"{pn_url}/{pn_ocid}").json()
@@ -232,7 +232,7 @@ class TestUpdateCn:
                 payload=update_cn_payload,
                 test_mode=True)
 
-            update_cn_feed_point_message = KafkaMessage(update_cn_operation_id).get_message_from_kafka()
+            update_cn_feed_point_message = MessageForPlatform(update_cn_operation_id).get_message_from_kafka_topic()
             actual_tp_release_after_cn_updating = requests.get(url=f"{pn_url}/{tp_id}").json()
             actual_ms_release_after_cn_updating = requests.get(url=f"{pn_url}/{pn_ocid}").json()
             step_number += 1
@@ -258,7 +258,7 @@ class TestUpdateCn:
                 Check the asynchronous_result_of_sending_the_request.
                 """
                 allure.attach(str(update_cn_feed_point_message), 'Message in feed point')
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     update_cn_operation_id).update_cnonpn_message_is_successful(
                     environment=environment,
                     kafka_message=update_cn_feed_point_message,

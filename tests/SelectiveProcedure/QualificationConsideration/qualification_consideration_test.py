@@ -13,7 +13,7 @@ from tests.utils.PayloadModel.SelectiveProcedure.QualificationDeclare.qualificat
 from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload
 
 from tests.utils.functions import time_bot, get_id_token_of_qualification_in_pending_awaiting_state
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
@@ -70,7 +70,7 @@ class TestQualificationConsideration:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -101,7 +101,7 @@ class TestQualificationConsideration:
                 payload=create_fs_payload,
                 test_mode=True)
 
-            fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             step_number += 1
 
         with allure.step(f'# {step_number}. Authorization platform one: create Pn'):
@@ -136,7 +136,7 @@ class TestQualificationConsideration:
                 payload=create_pn_payload,
                 test_mode=True)
 
-            pn_feed_point_message = KafkaMessage(create_pn_operation_id).get_message_from_kafka()
+            pn_feed_point_message = MessageForPlatform(create_pn_operation_id).get_message_from_kafka_topic()
             pn_ocid = pn_feed_point_message['data']['ocid']
             pn_id = pn_feed_point_message['data']['outcomes']['pn'][0]['id']
             pn_token = pn_feed_point_message['data']['outcomes']['pn'][0]['X-TOKEN']
@@ -191,7 +191,7 @@ class TestQualificationConsideration:
                 payload=create_cn_payload,
                 test_mode=True)
 
-            cn_feed_point_message = KafkaMessage(create_cn_operation_id).get_message_from_kafka()
+            cn_feed_point_message = MessageForPlatform(create_cn_operation_id).get_message_from_kafka_topic()
             tp_id = cn_feed_point_message['data']['outcomes']['tp'][0]['id']
 
             step_number += 1
@@ -256,8 +256,8 @@ class TestQualificationConsideration:
                 test_mode=True)
 
         time_bot(expected_time=create_cn_payload['preQualification']['period']['endDate'])
-        kafka_message_class = KafkaMessage(ocid=tp_id,
-                                           initiation="bpe")
+        kafka_message_class = MessageForPlatform(ocid=tp_id,
+                                                 initiation="bpe")
         submission_period_end_feed_point_message = \
             kafka_message_class.get_message_from_kafka_by_ocid_and_initiator()[0]
 
@@ -377,7 +377,7 @@ class TestQualificationConsideration:
                 """
                 time.sleep(1)
 
-                kafka_message_class = KafkaMessage(create_qualification_consideration_operation_id)
+                kafka_message_class = MessageForPlatform(create_qualification_consideration_operation_id)
 
                 synchronous_result_of_sending_the_request = \
                     Requests().create_consideration_qualification(
@@ -414,7 +414,7 @@ class TestQualificationConsideration:
                     Check the asynchronous_result_of_sending_the_request.
                     """
                     create_qualification_consideration_feed_point_message = \
-                        kafka_message_class.get_message_from_kafka()
+                        kafka_message_class.get_message_from_kafka_topic()
                     allure.attach(str(create_qualification_consideration_feed_point_message), 'Message in feed point.')
 
                     asynchronous_result_of_sending_the_request_was_checked = \

@@ -14,7 +14,7 @@ from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_
 from tests.utils.ReleaseModel.SelectiveProcedure.QualificationDecalration.qualification_declaration_release import \
     QualificationDeclarationRelease
 from tests.utils.functions import time_bot, get_id_token_of_qualification_in_pending_awaiting_state
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
@@ -70,7 +70,7 @@ class TestQualificationDeclareNonConflictInterest:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
+            ei_feed_point_message = MessageForPlatform(create_ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
@@ -101,7 +101,7 @@ class TestQualificationDeclareNonConflictInterest:
                 payload=create_fs_payload,
                 test_mode=True)
 
-            fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
+            fs_feed_point_message = MessageForPlatform(create_fs_operation_id).get_message_from_kafka_topic()
             step_number += 1
 
         with allure.step(f'# {step_number}. Authorization platform one: create Pn'):
@@ -136,7 +136,7 @@ class TestQualificationDeclareNonConflictInterest:
                 payload=create_pn_payload,
                 test_mode=True)
 
-            pn_feed_point_message = KafkaMessage(create_pn_operation_id).get_message_from_kafka()
+            pn_feed_point_message = MessageForPlatform(create_pn_operation_id).get_message_from_kafka_topic()
             pn_ocid = pn_feed_point_message['data']['ocid']
             pn_id = pn_feed_point_message['data']['outcomes']['pn'][0]['id']
             pn_token = pn_feed_point_message['data']['outcomes']['pn'][0]['X-TOKEN']
@@ -191,7 +191,7 @@ class TestQualificationDeclareNonConflictInterest:
                 payload=create_cn_payload,
                 test_mode=True)
 
-            cn_feed_point_message = KafkaMessage(create_cn_operation_id).get_message_from_kafka()
+            cn_feed_point_message = MessageForPlatform(create_cn_operation_id).get_message_from_kafka_topic()
             tp_id = cn_feed_point_message['data']['outcomes']['tp'][0]['id']
 
             step_number += 1
@@ -258,8 +258,8 @@ class TestQualificationDeclareNonConflictInterest:
             step_number += 1
 
         time_bot(expected_time=create_cn_payload['preQualification']['period']['endDate'])
-        kafka_message_class = KafkaMessage(ocid=tp_id,
-                                           initiation="bpe")
+        kafka_message_class = MessageForPlatform(ocid=tp_id,
+                                                 initiation="bpe")
         submission_period_end_feed_point_message = \
             kafka_message_class.get_message_from_kafka_by_ocid_and_initiator()[0]
 
@@ -333,7 +333,7 @@ class TestQualificationDeclareNonConflictInterest:
                     qualification_declaration_payload_class = copy.deepcopy(DeclarePreparePayload(
                         host_for_services=get_hosts[2]))
 
-                    kafka_message_class = KafkaMessage(create_qualification_declaration_operation_id)
+                    kafka_message_class = MessageForPlatform(create_qualification_declaration_operation_id)
 
                     for q in range(len(qualification_list)):
                         if qualification_list[q][0] == candidates_list[y]['qualification_id']:
@@ -356,7 +356,7 @@ class TestQualificationDeclareNonConflictInterest:
                                     test_mode=True)
 
                             create_qualification_declaration_feed_point_message = \
-                                kafka_message_class.get_message_from_kafka()
+                                kafka_message_class.get_message_from_kafka_topic()
 
                             actual_tp_release_after_qualification_declaration_creation = \
                                 requests.get(url=f"{pn_url}/{tp_id}").json()

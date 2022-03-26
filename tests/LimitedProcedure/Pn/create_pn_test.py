@@ -12,7 +12,7 @@ from tests.utils.PayloadModel.LimitedProcedure.Pn.pn_prepared_payload import PnP
 from tests.utils.ReleaseModel.LimitedProcedure.Pn.pn_prepared_release import PnExpectedRelease
 from tests.utils.functions import check_uuid_version
 
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import MessageForPlatform
 from tests.utils.my_requests import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
@@ -61,7 +61,7 @@ class TestCreatePn:
                 payload=create_ei_payload,
                 test_mode=True)
 
-            ei_feed_point_message = KafkaMessage(ei_operation_id).get_message_from_kafka()
+            ei_feed_point_message = MessageForPlatform(ei_operation_id).get_message_from_kafka_topic()
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             actual_ei_release_before_fs_creation = requests.get(
                 url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
@@ -94,7 +94,7 @@ class TestCreatePn:
                 payload=create_fs_payload,
                 test_mode=True)
 
-            fs_feed_point_message = KafkaMessage(fs_operation_id).get_message_from_kafka()
+            fs_feed_point_message = MessageForPlatform(fs_operation_id).get_message_from_kafka_topic()
             fs_id = fs_feed_point_message['data']['outcomes']['fs'][0]['id']
             actual_fs_release_before_pn_creation = requests.get(
                 url=f"{fs_feed_point_message['data']['url']}/{fs_id}").json()
@@ -134,7 +134,7 @@ class TestCreatePn:
                 payload=create_pn_payload,
                 test_mode=True)
 
-            pn_feed_point_message = KafkaMessage(pn_operation_id).get_message_from_kafka()
+            pn_feed_point_message = MessageForPlatform(pn_operation_id).get_message_from_kafka_topic()
             pn_ocid = pn_feed_point_message['data']['ocid']
             pn_id = pn_feed_point_message['data']['outcomes']['pn'][0]['id']
             actual_pn_release = requests.get(url=f"{pn_feed_point_message['data']['url']}/{pn_id}").json()
@@ -166,7 +166,7 @@ class TestCreatePn:
                 Check the asynchronous_result_of_sending_the_request.
                 """
                 allure.attach(str(pn_feed_point_message), 'Message in feed point')
-                asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
+                asynchronous_result_of_sending_the_request_was_checked = MessageForPlatform(
                     pn_operation_id).create_pn_message_is_successful(
                     environment=environment,
                     kafka_message=pn_feed_point_message,
