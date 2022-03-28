@@ -2,7 +2,7 @@ import copy
 import datetime
 
 from tests.utils.ReleaseModel.OpenProcedure.DeclareNonConflictInterest.declare_non_conflict_release_library import ReleaseLibrary
-from tests.utils.functions import check_uuid_version, get_project_root
+from tests.utils.functions_collection import check_uuid_version, get_project_root
 
 
 class DeclareExpectedRelease:

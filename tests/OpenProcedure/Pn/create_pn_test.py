@@ -13,10 +13,10 @@ from tests.utils.PayloadModel.OpenProcedure.Pn.pn_prepared_payload import PnPrep
 from tests.utils.ReleaseModel.OpenProcedure.Pn.pn_prepared_release import PnExpectedRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.functions import compare_actual_result_and_expected_result, check_uuid_version
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.functions_collection import compare_actual_result_and_expected_result, check_uuid_version
+from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.my_requests import Requests
+from tests.utils.platform_query_library import Requests
 
 
 @allure.parent_suite('Planning')
@@ -27,27 +27,28 @@ from tests.utils.my_requests import Requests
                      'edit#gid=726248592',
                  name='Google sheets: Create Pn')
 class TestCreatePn:
-    def test_setup(self, environment, country, language, pmd, cassandra_username, cassandra_password):
+    def test_setup(self, parse_environment, parse_country, parse_language, parse_pmd, parse_cassandra_username,
+                   parse_cassandra_password):
         """
         Get 'country', 'language', 'cassandra_username', 'cassandra_password', 'environment' parameters
         from test run command.
         Then choose BPE host.
         Then choose host for Database connection.
         """
-        GlobalClassMetadata.country = country
-        GlobalClassMetadata.language = language
-        GlobalClassMetadata.pmd = pmd
-        GlobalClassMetadata.cassandra_username = cassandra_username
-        GlobalClassMetadata.cassandra_password = cassandra_password
-        GlobalClassMetadata.environment = environment
+        GlobalClassMetadata.country = parse_country
+        GlobalClassMetadata.language = parse_language
+        GlobalClassMetadata.pmd = parse_pmd
+        GlobalClassMetadata.cassandra_username = parse_cassandra_username
+        GlobalClassMetadata.cassandra_password = parse_cassandra_password
+        GlobalClassMetadata.environment = parse_environment
         GlobalClassMetadata.hosts = Environment().choose_environment(GlobalClassMetadata.environment)
         GlobalClassMetadata.host_for_bpe = GlobalClassMetadata.hosts[1]
         GlobalClassMetadata.host_for_services = GlobalClassMetadata.hosts[2]
         GlobalClassMetadata.cassandra_cluster = GlobalClassMetadata.hosts[0]
         GlobalClassMetadata.database = CassandraSession(
-            cassandra_username=GlobalClassMetadata.cassandra_username,
-            cassandra_password=GlobalClassMetadata.cassandra_password,
-            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+            username=GlobalClassMetadata.cassandra_username,
+            password=GlobalClassMetadata.cassandra_password,
+            host=GlobalClassMetadata.cassandra_cluster)
 
     @allure.title('Check status code and message from Kafka topic after Pn creating')
     def test_check_result_of_sending_the_request(self):
@@ -187,8 +188,8 @@ class TestCreatePn:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if asynchronous_result_of_sending_the_request_was_checked is True:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                            cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
@@ -196,13 +197,13 @@ class TestCreatePn:
                         GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreatePn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -219,7 +220,7 @@ class TestCreatePn:
 
     @allure.title('Check Pn and MS releases data after Pn creating with optional fields '
                   'and 3 lots, 3 items (full data model)')
-    def test_check_pn_ms_releases_one(self, pmd):
+    def test_check_pn_ms_releases_one(self, parse_pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -442,7 +443,7 @@ class TestCreatePn:
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ms_release_model = copy.deepcopy(
-                    expected_release_class.ms_release_full_data_model_with_four_parties_object_based_on_fs(pmd=pmd))
+                    expected_release_class.ms_release_full_data_model_with_four_parties_object_based_on_fs(pmd=parse_pmd))
 
                 allure.attach(str(json.dumps(expected_ms_release_model)), "Expected MS release")
 
@@ -612,19 +613,19 @@ class TestCreatePn:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                            cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreatePn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -641,7 +642,7 @@ class TestCreatePn:
 
     @allure.title('Check Pn and MS releases data after Pn creating without optional fields '
                   'and with lots and items (without optional fields).')
-    def test_check_pn_ms_releases_two(self, pmd):
+    def test_check_pn_ms_releases_two(self, parse_pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -862,7 +863,7 @@ class TestCreatePn:
                     language=GlobalClassMetadata.language))
                 expected_ms_release_model = copy.deepcopy(
                     expected_release_class.ms_release_obligatory_data_model_with_four_parties_object_based_on_fs_full(
-                        pmd=pmd
+                        pmd=parse_pmd
                     ))
 
                 allure.attach(str(json.dumps(expected_ms_release_model)), "Expected MS release")
@@ -1033,19 +1034,19 @@ class TestCreatePn:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                            cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreatePn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -1061,7 +1062,7 @@ class TestCreatePn:
                 )) == str(True)
 
     @allure.title('Check Pn and MS releases data after Pn creating without optional fields')
-    def test_check_pn_ms_releases_three(self, pmd):
+    def test_check_pn_ms_releases_three(self, parse_pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -1283,7 +1284,7 @@ class TestCreatePn:
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_ms_release_model = copy.deepcopy(
-                    expected_release_class.ms_release_obligatory_two(pmd=pmd))
+                    expected_release_class.ms_release_obligatory_two(pmd=parse_pmd))
 
                 allure.attach(str(json.dumps(expected_ms_release_model)), "Expected MS release")
 
@@ -1453,19 +1454,19 @@ class TestCreatePn:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                            cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreatePn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):

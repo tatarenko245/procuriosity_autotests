@@ -3,7 +3,7 @@ import fnmatch
 
 from tests.conftest import GlobalClassMetadata, GlobalClassCreatePn, GlobalClassCreateCnOnPn
 from tests.utils.ReleaseModel.OpenProcedure.CnOnPn.cnonpn_release_library import ReleaseLibrary
-from tests.utils.functions import check_uuid_version, get_value_from_country_csv, get_value_from_region_csv, \
+from tests.utils.functions_collection import check_uuid_version, get_value_from_country_csv, get_value_from_region_csv, \
     get_value_from_locality_csv, get_value_from_classification_cpv_dictionary_xls, get_value_from_cpvs_dictionary_csv, \
     get_value_from_classification_unit_dictionary_csv, get_temporary_requirements_id_and_permanent_requirements_id, \
     get_temporary_lots_id_and_permanent_lots_id

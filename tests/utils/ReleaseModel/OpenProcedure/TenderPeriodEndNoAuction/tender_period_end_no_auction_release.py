@@ -4,7 +4,7 @@ from tests.conftest import GlobalClassMetadata, GlobalClassTenderPeriodEndNoAuct
     GlobalClassCreateCnOnPn
 from tests.utils.ReleaseModel.OpenProcedure.TenderPeriodEndNoAuction.tender_period_end_no_auction_release_library import \
     ReleaseLibrary
-from tests.utils.functions import check_uuid_version
+from tests.utils.functions_collection import check_uuid_version
 from tests.utils.services.e_mdm_service import MdmService
 
 

@@ -1,7 +1,7 @@
 import copy
 
 from tests.utils.ReleaseModel.LimitedProcedure.Protocol.protocol_library import ReleaseLibrary
-from tests.utils.functions import is_it_uuid
+from tests.utils.functions_collection import is_it_uuid
 
 
 class ProtocolReleases:

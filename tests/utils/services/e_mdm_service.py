@@ -1,7 +1,6 @@
 import copy
 import uuid
 import requests
-from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassMetadata
 from tests.utils.date_class import Date
 from tests.utils.http_manager import HttpManager
 

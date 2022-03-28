@@ -1,5 +1,5 @@
 from tests.utils.date_class import Date
-from tests.utils.functions import check_uuid_version, get_value_from_classification_cpv_dictionary_xls, \
+from tests.utils.functions_collection import check_uuid_version, get_value_from_classification_cpv_dictionary_xls, \
     get_value_from_country_csv, get_value_from_region_csv, \
     get_value_from_locality_csv, get_value_from_classification_unit_dictionary_csv
 

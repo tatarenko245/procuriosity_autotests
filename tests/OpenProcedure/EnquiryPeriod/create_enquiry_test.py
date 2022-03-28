@@ -15,10 +15,10 @@ from tests.utils.PayloadModel.OpenProcedure.Pn.pn_prepared_payload import PnPrep
 
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.functions import compare_actual_result_and_expected_result, check_uuid_version
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.functions_collection import compare_actual_result_and_expected_result, check_uuid_version
+from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.my_requests import Requests
+from tests.utils.platform_query_library import Requests
 
 
 @allure.parent_suite('Clarification')
@@ -29,30 +29,31 @@ from tests.utils.my_requests import Requests
                      'edit#gid=118033600',
                  name='Google sheets: Create enquiry')
 class TestCreateEnquiry:
-    def test_setup(self, environment, country, language, pmd, cassandra_username, cassandra_password):
+    def test_setup(self, parse_environment, parse_country, parse_language, parse_pmd, parse_cassandra_username,
+                   parse_cassandra_password):
         """
         Get 'country', 'language', 'cassandra_username', 'cassandra_password', 'environment' parameters
         from test run command.
         Then choose BPE host.
         Then choose host for Database connection.
         """
-        GlobalClassMetadata.country = country
-        GlobalClassMetadata.language = language
-        GlobalClassMetadata.pmd = pmd
-        GlobalClassMetadata.cassandra_username = cassandra_username
-        GlobalClassMetadata.cassandra_password = cassandra_password
-        GlobalClassMetadata.environment = environment
+        GlobalClassMetadata.country = parse_country
+        GlobalClassMetadata.language = parse_language
+        GlobalClassMetadata.pmd = parse_pmd
+        GlobalClassMetadata.cassandra_username = parse_cassandra_username
+        GlobalClassMetadata.cassandra_password = parse_cassandra_password
+        GlobalClassMetadata.environment = parse_environment
         GlobalClassMetadata.hosts = Environment().choose_environment(GlobalClassMetadata.environment)
         GlobalClassMetadata.host_for_bpe = GlobalClassMetadata.hosts[1]
         GlobalClassMetadata.host_for_services = GlobalClassMetadata.hosts[2]
         GlobalClassMetadata.cassandra_cluster = GlobalClassMetadata.hosts[0]
-        if environment == "dev":
+        if parse_environment == "dev":
             GlobalClassMetadata.metadata_document_url = "https://dev.bpe.eprocurement.systems/api/v1/storage/get"
-        elif environment == "sandbox":
+        elif parse_environment == "sandbox":
             GlobalClassMetadata.metadata_document_url = "http://storage.eprocurement.systems/get"
 
     @allure.title('Check status code and message from Kafka topic after Enquiry creating')
-    def test_check_result_of_sending_the_request(self, country, pmd, connection_to_database):
+    def test_check_result_of_sending_the_request(self, parse_country, parse_pmd, connect_to_database):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -193,16 +194,16 @@ class TestCreateEnquiry:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -331,21 +332,21 @@ class TestCreateEnquiry:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                        username=GlobalClassMetadata.cassandra_username,
+                        password=GlobalClassMetadata.cassandra_password,
+                        host=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked_bpe_initiator is True \
                             and asynchronous_result_of_sending_the_request_was_checked_platform_initiator is True:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
+                        database.cleanup_table_of_services_for_expenditure_item(cp_id=GlobalClassCreateEi.ei_ocid)
                         database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
                         database.pn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
                         database.cnonpn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
                         database.enquiry_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateCnOnPn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEnquiry.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateEi.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateFs.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreatePn.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateCnOnPn.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateEnquiry.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = database.get_bpe_operation_step_by_operation_id(
@@ -365,7 +366,7 @@ class TestCreateEnquiry:
                 )
 
     @allure.title('Check EV and MS releases data after Enquiry creating with full data model')
-    def test_check_ev_ms_releases_one(self, country, pmd, connection_to_database):
+    def test_check_ev_ms_releases_one(self, parse_country, parse_pmd, connect_to_database):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -506,16 +507,16 @@ class TestCreateEnquiry:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -642,9 +643,9 @@ class TestCreateEnquiry:
                     operation-id.
                     """
                     database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                        username=GlobalClassMetadata.cassandra_username,
+                        password=GlobalClassMetadata.cassandra_password,
+                        host=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked_bpe_initiator is False \
                             or asynchronous_result_of_sending_the_request_was_checked_platform_initiator is False:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -737,9 +738,9 @@ class TestCreateEnquiry:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             database = CassandraSession(
-                                cassandra_username=GlobalClassMetadata.cassandra_username,
-                                cassandra_password=GlobalClassMetadata.cassandra_password,
-                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                                username=GlobalClassMetadata.cassandra_username,
+                                password=GlobalClassMetadata.cassandra_password,
+                                host=GlobalClassMetadata.cassandra_cluster)
                             steps = database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassCreateEnquiry.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
@@ -791,20 +792,20 @@ class TestCreateEnquiry:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                        username=GlobalClassMetadata.cassandra_username,
+                        password=GlobalClassMetadata.cassandra_password,
+                        host=GlobalClassMetadata.cassandra_cluster)
                     if compare_releases == expected_result:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
+                        database.cleanup_table_of_services_for_expenditure_item(cp_id=GlobalClassCreateEi.ei_ocid)
                         database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
                         database.pn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
                         database.cnonpn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
                         database.enquiry_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateCnOnPn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEnquiry.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateEi.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateFs.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreatePn.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateCnOnPn.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateEnquiry.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = database.get_bpe_operation_step_by_operation_id(
@@ -819,7 +820,7 @@ class TestCreateEnquiry:
                 )) == str(True)
 
     @allure.title('Check EV and MS releases data after Enquiry creating based on data model without optional fields')
-    def test_check_ev_ms_releases_two(self, country, pmd, connection_to_database):
+    def test_check_ev_ms_releases_two(self, parse_country, parse_pmd, connect_to_database):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -960,16 +961,16 @@ class TestCreateEnquiry:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -1094,9 +1095,9 @@ class TestCreateEnquiry:
                     operation-id.
                     """
                     database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                        username=GlobalClassMetadata.cassandra_username,
+                        password=GlobalClassMetadata.cassandra_password,
+                        host=GlobalClassMetadata.cassandra_cluster)
                     if asynchronous_result_of_sending_the_request_was_checked_bpe_initiator is False \
                             or asynchronous_result_of_sending_the_request_was_checked_platform_initiator is False:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -1188,9 +1189,9 @@ class TestCreateEnquiry:
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             database = CassandraSession(
-                                cassandra_username=GlobalClassMetadata.cassandra_username,
-                                cassandra_password=GlobalClassMetadata.cassandra_password,
-                                cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                                username=GlobalClassMetadata.cassandra_username,
+                                password=GlobalClassMetadata.cassandra_password,
+                                host=GlobalClassMetadata.cassandra_cluster)
                             steps = database.get_bpe_operation_step_by_operation_id(
                                 operation_id=GlobalClassCreateEnquiry.operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
@@ -1242,20 +1243,20 @@ class TestCreateEnquiry:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     database = CassandraSession(
-                        cassandra_username=GlobalClassMetadata.cassandra_username,
-                        cassandra_password=GlobalClassMetadata.cassandra_password,
-                        cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+                        username=GlobalClassMetadata.cassandra_username,
+                        password=GlobalClassMetadata.cassandra_password,
+                        host=GlobalClassMetadata.cassandra_cluster)
                     if compare_releases == expected_result:
-                        database.ei_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
+                        database.cleanup_table_of_services_for_expenditure_item(cp_id=GlobalClassCreateEi.ei_ocid)
                         database.fs_process_cleanup_table_of_services(ei_id=GlobalClassCreateEi.ei_ocid)
                         database.pn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
                         database.cnonpn_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
                         database.enquiry_process_cleanup_table_of_services(pn_ocid=GlobalClassCreatePn.pn_ocid)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEi.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateFs.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreatePn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateCnOnPn.operation_id)
-                        database.cleanup_steps_of_process(operation_id=GlobalClassCreateEnquiry.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateEi.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateFs.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreatePn.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateCnOnPn.operation_id)
+                        database.cleanup_orchestrator_operation_step_by_operationid(operation_id=GlobalClassCreateEnquiry.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = database.get_bpe_operation_step_by_operation_id(

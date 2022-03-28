@@ -51,3 +51,6 @@ class PlatformAuthorization:
         allure.attach(json.dumps(x_operation_id), 'Response from auth service')
         allure.attach(str(x_operation_id), 'X-OPERATION-ID')
         return x_operation_id
+
+    def __del__(self):
+        print(f"An instance of the class {__name__} has been deleted.")

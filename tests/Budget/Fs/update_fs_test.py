@@ -14,10 +14,10 @@ from tests.utils.ReleaseModel.Budget.Fs.fs_prepared_release import FsExpectedRel
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 
-from tests.utils.functions import compare_actual_result_and_expected_result
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.functions_collection import compare_actual_result_and_expected_result
+from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.my_requests import Requests
+from tests.utils.platform_query_library import Requests
 
 
 @allure.parent_suite('Budget')
@@ -32,8 +32,8 @@ class TestUpdateFs:
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
                   'Check status code and message from Kafka topic after Fs updating')
-    def test_check_result_of_sending_the_request(self, get_hosts, country, language, pmd, environment,
-                                                 connection_to_database):
+    def test_check_result_of_sending_the_request(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                                 connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
@@ -57,8 +57,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -147,7 +147,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -158,14 +158,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is True:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -184,7 +184,8 @@ class TestUpdateFs:
                   'Check Fs release data after Fs updating:'
                   'create fs: payload without optional fields treasury money,'
                   'update fs: payload without optional fields treasury money ')
-    def test_check_fs_release_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_fs_release_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                  connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -209,8 +210,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -303,7 +304,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -315,7 +316,7 @@ class TestUpdateFs:
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -376,7 +377,7 @@ class TestUpdateFs:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_feed_point_message)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -429,14 +430,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -456,7 +457,8 @@ class TestUpdateFs:
                   'Check Fs release data after Fs updating:'
                   'create fs: payload full data model treasury money, '
                   'update fs: payload full data model treasury money ')
-    def test_check_fs_release_two(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_fs_release_two(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                  connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -481,8 +483,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -574,7 +576,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -586,7 +588,7 @@ class TestUpdateFs:
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -690,7 +692,7 @@ class TestUpdateFs:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_feed_point_message)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -743,14 +745,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -770,7 +772,8 @@ class TestUpdateFs:
                   'Check Fs release data after Fs updating:'
                   'create fs: payload without optional fields treasury money, '
                   'update fs: payload full data model treasury money ')
-    def test_check_fs_release_three(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_fs_release_three(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                    connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -795,8 +798,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -889,7 +892,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -901,7 +904,7 @@ class TestUpdateFs:
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -979,7 +982,7 @@ class TestUpdateFs:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_feed_point_message)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1097,14 +1100,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1124,7 +1127,8 @@ class TestUpdateFs:
                   'Check Fs release data after Fs updating:'
                   'create fs: payload full data model treasury money, '
                   'update fs: payload without optional fields treasury money')
-    def test_check_fs_release_four(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_fs_release_four(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                   connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -1149,8 +1153,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -1242,7 +1246,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -1254,7 +1258,7 @@ class TestUpdateFs:
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1332,7 +1336,7 @@ class TestUpdateFs:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_feed_point_message)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1385,14 +1389,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1413,7 +1417,8 @@ class TestUpdateFs:
                   'Check Fs release data after Fs updating:'
                   'create fs: payload without optional fields own money,'
                   'update fs: payload without optional fields own money ')
-    def test_check_fs_release_five(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_fs_release_five(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                   connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -1438,8 +1443,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -1531,7 +1536,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -1543,7 +1548,7 @@ class TestUpdateFs:
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1605,7 +1610,7 @@ class TestUpdateFs:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_feed_point_message)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1658,14 +1663,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1686,7 +1691,8 @@ class TestUpdateFs:
                   'Check Fs release data after Fs updating:'
                   'create fs: payload full data model own money, '
                   'update fs: payload full data model own money ')
-    def test_check_fs_release_six(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_fs_release_six(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                  connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -1711,8 +1717,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -1804,7 +1810,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -1816,7 +1822,7 @@ class TestUpdateFs:
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1914,7 +1920,7 @@ class TestUpdateFs:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_feed_point_message)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1967,14 +1973,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -1995,7 +2001,8 @@ class TestUpdateFs:
                   'Check Fs release data after Fs updating:'
                   'create fs: payload without optional fields own money, '
                   'update fs: payload full data model own money ')
-    def test_check_fs_release_seven(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_fs_release_seven(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                    connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -2020,8 +2027,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -2113,7 +2120,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -2125,7 +2132,7 @@ class TestUpdateFs:
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -2202,7 +2209,7 @@ class TestUpdateFs:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_feed_point_message)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -2312,14 +2319,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -2340,7 +2347,8 @@ class TestUpdateFs:
                   'Check Fs release data after Fs updating:'
                   'create fs: payload full data model own money, '
                   'update fs: payload without optional fields own money')
-    def test_check_fs_release_eight(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_fs_release_eight(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                    connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -2365,8 +2373,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -2458,7 +2466,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -2470,7 +2478,7 @@ class TestUpdateFs:
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -2547,7 +2555,7 @@ class TestUpdateFs:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_feed_point_message)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -2600,14 +2608,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -2628,7 +2636,8 @@ class TestUpdateFs:
                   'Check Fs release data after Fs updating:'
                   'create fs: payload without optional fields treasury money, '
                   'update fs: payload full data model own money ')
-    def test_check_fs_release_nine(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_fs_release_nine(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                   connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -2653,8 +2662,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -2747,7 +2756,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -2759,7 +2768,7 @@ class TestUpdateFs:
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -2837,7 +2846,7 @@ class TestUpdateFs:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_feed_point_message)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -2955,14 +2964,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -2983,7 +2992,8 @@ class TestUpdateFs:
                   'Check Fs release data after Fs updating:'
                   'create fs: payload without optional fields own money, '
                   'update fs: payload full data modeltreasury money ')
-    def test_check_fs_release_ten(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_fs_release_ten(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                  connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -3008,8 +3018,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -3101,7 +3111,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -3113,7 +3123,7 @@ class TestUpdateFs:
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -3190,7 +3200,7 @@ class TestUpdateFs:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_feed_point_message)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -3300,14 +3310,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -3328,7 +3338,8 @@ class TestUpdateFs:
                   'Check Fs release data after Fs updating:'
                   ' create fs: payload full data model treasury money, '
                   'update fs: payload without optional fields own money')
-    def test_check_fs_release_eleven(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_fs_release_eleven(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                     connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
@@ -3353,8 +3364,8 @@ class TestUpdateFs:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload)
 
             create_ei_feed_point_message = KafkaMessage(create_ei_operation_id).get_message_from_kafka()
@@ -3446,7 +3457,7 @@ class TestUpdateFs:
 
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     update_fs_operation_id).update_fs_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=update_fs_feed_point_message,
                     ei_ocid=ei_ocid,
                     fs_id=fs_id)
@@ -3458,7 +3469,7 @@ class TestUpdateFs:
                         """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -3536,7 +3547,7 @@ class TestUpdateFs:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_feed_point_message)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -3589,14 +3600,14 @@ class TestUpdateFs:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
-                        connection_to_database.cleanup_steps_of_process(operation_id=update_fs_operation_id)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=update_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=update_fs_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:

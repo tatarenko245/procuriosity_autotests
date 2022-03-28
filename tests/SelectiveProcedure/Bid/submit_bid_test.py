@@ -16,9 +16,9 @@ from tests.utils.PayloadModel.SelectiveProcedure.StartSecondStage.start_second_s
     StartSecondStagePreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.SubmitBid.bid_prepared_payload import BidPreparePayload
-from tests.utils.functions import time_bot, get_id_token_of_qualification_in_pending_awaiting_state
-from tests.utils.kafka_message import KafkaMessage
-from tests.utils.my_requests import Requests
+from tests.utils.functions_collection import time_bot, get_id_token_of_qualification_in_pending_awaiting_state
+from tests.utils.message_for_platform import KafkaMessage
+from tests.utils.platform_query_library import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
 
@@ -39,16 +39,17 @@ class TestSubmitBid:
                   "startSecondStage: obligatory data model;\n"
                   "submit bid by first tenderer: obligatory data model;\n"
                   "submit bid by second tenderer: obligatory data model;\n")
-    def test_check_tp_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database,
+    def test_check_tp_ms_releases_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                      connect_to_database,
                                       queue_mapper):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
         try:
-            if environment == "dev":
+            if parse_environment == "dev":
                 self.metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
 
-            elif environment == "sandbox":
+            elif parse_environment == "sandbox":
                 self.metadata_tender_url = "http://public.eprocurement.systems/tenders"
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
@@ -74,8 +75,8 @@ class TestSubmitBid:
                 host_of_request=get_hosts[1],
                 access_token=create_ei_access_token,
                 x_operation_id=create_ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload,
                 test_mode=True)
 
@@ -139,9 +140,9 @@ class TestSubmitBid:
                 host_of_request=get_hosts[1],
                 access_token=create_pn_access_token,
                 x_operation_id=create_pn_operation_id,
-                country=country,
-                language=language,
-                pmd=pmd,
+                country=parse_country,
+                language=parse_language,
+                pmd=parse_pmd,
                 payload=create_pn_payload,
                 test_mode=True)
 
@@ -173,9 +174,9 @@ class TestSubmitBid:
                 """
                 Get minSubmissionPeriodDuration value from dossier.rules for this testcase
                 """
-                min_submission_period_duration = int(connection_to_database.get_min_submission_period_duration_rules(
-                    country=country,
-                    pmd=pmd,
+                min_submission_period_duration = int(connect_to_database.get_min_submission_period_duration_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='minSubmissionPeriodDuration'
                 ))
@@ -553,7 +554,7 @@ class TestSubmitBid:
 
                 asynchronous_result_of_sending_the_request_was_checked = \
                     kafka_message_class.create_bid_message_is_successful(
-                        environment=environment,
+                        environment=parse_environment,
                         kafka_message=submit_bid_feed_point_message_by_first_tenderer,
                         pn_ocid=pn_ocid,
                         tender_id=tp_id
@@ -566,7 +567,7 @@ class TestSubmitBid:
                     """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=submit_bid_operation_id_for_first_invitation)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -607,7 +608,7 @@ class TestSubmitBid:
 
                     if compare_releases != expected_result:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=submit_bid_operation_id_for_first_invitation)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                     assert compare_releases == expected_result
@@ -640,7 +641,7 @@ class TestSubmitBid:
 
                     if compare_releases != expected_result:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=submit_bid_operation_id_for_first_invitation)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                     assert compare_releases == expected_result
@@ -709,7 +710,7 @@ class TestSubmitBid:
 
                 asynchronous_result_of_sending_the_request_was_checked = \
                     kafka_message_class.create_bid_message_is_successful(
-                        environment=environment,
+                        environment=parse_environment,
                         kafka_message=submit_bid_feed_point_message_by_second_tenderer,
                         pn_ocid=pn_ocid,
                         tender_id=tp_id
@@ -722,7 +723,7 @@ class TestSubmitBid:
                     """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=submit_bid_operation_id_for_first_invitation)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -763,7 +764,7 @@ class TestSubmitBid:
 
                     if compare_releases != expected_result:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=submit_bid_operation_id_for_second_invitation)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                     assert compare_releases == expected_result
@@ -793,36 +794,36 @@ class TestSubmitBid:
                     """
                     if compare_releases == expected_result:
 
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
 
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                        connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                        connect_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                        connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                        connect_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                        connection_to_database.submission_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                        connect_to_database.submission_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                        connection_to_database.qualification_declaration_process_cleanup_table_of_services(
+                        connect_to_database.qualification_declaration_process_cleanup_table_of_services(
                             pn_ocid=pn_ocid)
 
-                        connection_to_database.qualification_consideration_process_cleanup_table_of_services(
+                        connect_to_database.qualification_consideration_process_cleanup_table_of_services(
                             pn_ocid=pn_ocid)
 
-                        connection_to_database.qualification_protocol_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                        connect_to_database.qualification_protocol_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                        connection_to_database.qualification_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                        connect_to_database.qualification_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_pn_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_pn_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_cn_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process_from_orchestrator(
-                            pn_ocid=pn_ocid)
+                        connect_to_database.cleanup_steps_by_cpid(
+                            cpid=pn_ocid)
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
@@ -835,7 +836,7 @@ class TestSubmitBid:
 
                     if compare_releases != expected_result:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=submit_bid_operation_id_for_second_invitation)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                     assert compare_releases == expected_result

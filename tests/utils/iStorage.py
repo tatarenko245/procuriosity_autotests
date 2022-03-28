@@ -3,7 +3,7 @@ import os
 import requests
 
 from tests.conftest import GlobalClassMetadata
-from tests.utils.functions import get_project_root
+from tests.utils.functions_collection import get_project_root
 
 
 class Document:

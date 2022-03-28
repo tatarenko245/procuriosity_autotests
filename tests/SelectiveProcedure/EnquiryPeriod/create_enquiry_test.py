@@ -11,9 +11,9 @@ from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayl
 from tests.utils.PayloadModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.EnquiryPeriod.enquiry_prepared_payload import EnquiryPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
-from tests.utils.functions import check_uuid_version
-from tests.utils.kafka_message import KafkaMessage
-from tests.utils.my_requests import Requests
+from tests.utils.functions_collection import check_uuid_version
+from tests.utils.message_for_platform import KafkaMessage
+from tests.utils.platform_query_library import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
 
@@ -25,15 +25,16 @@ class TestCreateEnquiry:
                   "create Pn: obligatory data model, without lots and items;\n"
                   "create CnOnPn: obligatory data model, with lots and items;\n"
                   "create Enquiry: obligatory data model;\n")
-    def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_pn_ms_releases_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                      connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
         try:
-            if environment == "dev":
+            if parse_environment == "dev":
                 self.metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
 
-            elif environment == "sandbox":
+            elif parse_environment == "sandbox":
                 self.metadata_tender_url = "http://public.eprocurement.systems/tenders"
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
@@ -59,8 +60,8 @@ class TestCreateEnquiry:
                 host_of_request=get_hosts[1],
                 access_token=ei_access_token,
                 x_operation_id=ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload,
                 test_mode=True)
 
@@ -124,9 +125,9 @@ class TestCreateEnquiry:
                 host_of_request=get_hosts[1],
                 access_token=pn_access_token,
                 x_operation_id=pn_operation_id,
-                country=country,
-                language=language,
-                pmd=pmd,
+                country=parse_country,
+                language=parse_language,
+                pmd=parse_pmd,
                 payload=create_pn_payload,
                 test_mode=True)
 
@@ -158,9 +159,9 @@ class TestCreateEnquiry:
                 """
                 Get minSubmissionPeriodDuration value from dossier.rules for this testcase
                 """
-                min_submission_period_duration = int(connection_to_database.get_min_submission_period_duration_rules(
-                    country=country,
-                    pmd=pmd,
+                min_submission_period_duration = int(connect_to_database.get_min_submission_period_duration_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='minSubmissionPeriodDuration'
                 ))
@@ -256,14 +257,14 @@ class TestCreateEnquiry:
 
                 asynchronous_result_of_sending_the_request_was_checked_bpe_initiator = KafkaMessage(
                     create_enquiry_operation_id).create_enquiry_message_initiator_bpe_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=create_enquiry_feed_point_message_bpe,
                     pn_ocid=pn_ocid,
                     ev_id=tp_id)
 
                 asynchronous_result_of_sending_the_request_was_checked_platform_initiator = KafkaMessage(
                     create_enquiry_operation_id).create_enquiry_message_initiator_platform_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=create_enquiry_feed_point_message_platform[0],
                     pn_ocid=pn_ocid,
                     ev_id=tp_id)
@@ -276,7 +277,7 @@ class TestCreateEnquiry:
                     if asynchronous_result_of_sending_the_request_was_checked_bpe_initiator is False \
                             or asynchronous_result_of_sending_the_request_was_checked_platform_initiator is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=create_enquiry_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -363,7 +364,7 @@ class TestCreateEnquiry:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=create_enquiry_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -426,28 +427,28 @@ class TestCreateEnquiry:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
 
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                        connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                        connect_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                        connection_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                        connect_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                        connection_to_database.enquiry_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                        connect_to_database.enquiry_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=ei_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=fs_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=pn_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=pn_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_cn_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_cn_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=create_enquiry_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_enquiry_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=create_cn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:

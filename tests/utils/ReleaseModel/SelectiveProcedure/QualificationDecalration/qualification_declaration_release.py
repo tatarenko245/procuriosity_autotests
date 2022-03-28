@@ -1,4 +1,4 @@
-from tests.utils.functions import check_uuid_version
+from tests.utils.functions_collection import check_uuid_version
 
 
 class QualificationDeclarationRelease:

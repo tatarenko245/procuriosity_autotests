@@ -9,7 +9,7 @@ from tests.utils.data_of_enum import cpv_goods_low_level_03, cpv_goods_low_level
     cpv_services_low_level_5, cpv_services_low_level_6, cpv_services_low_level_7, cpv_services_low_level_8, \
     cpv_services_low_level_92, cpv_services_low_level_98, documentType, person_title
 from tests.utils.date_class import Date
-from tests.utils.functions import generate_items_array, generate_lots_array, set_permanent_id, \
+from tests.utils.functions_collection import generate_items_array, generate_lots_array, set_permanent_id, \
     generate_criteria_array, set_eligibility_evidences_unique_temporary_id, \
     set_criteria_array_unique_temporary_id, generate_conversions_array, set_conversions_unique_temporary_id
 from tests.utils.iStorage import Document

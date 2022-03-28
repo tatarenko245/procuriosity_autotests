@@ -17,10 +17,10 @@ from tests.utils.PayloadModel.OpenProcedure.Pn.pn_prepared_payload import PnPrep
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.date_class import Date
 from tests.utils.environment import Environment
-from tests.utils.functions import compare_actual_result_and_expected_result, time_bot
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.functions_collection import compare_actual_result_and_expected_result, time_bot
+from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.my_requests import Requests
+from tests.utils.platform_query_library import Requests
 
 
 @allure.parent_suite('Clarification')
@@ -31,34 +31,35 @@ from tests.utils.my_requests import Requests
                      'edit#gid=716930442',
                  name='Google sheets: Create answer')
 class TestCreateAnswer:
-    def test_setup(self, environment, country, language, pmd, cassandra_username, cassandra_password):
+    def test_setup(self, parse_environment, parse_country, parse_language, parse_pmd, parse_cassandra_username,
+                   parse_cassandra_password):
         """
         Get 'country', 'language', 'cassandra_username', 'cassandra_password', 'environment' parameters
         from test run command.
         Then choose BPE host.
         Then choose host for Database connection.
         """
-        GlobalClassMetadata.country = country
-        GlobalClassMetadata.language = language
-        GlobalClassMetadata.pmd = pmd
-        GlobalClassMetadata.cassandra_username = cassandra_username
-        GlobalClassMetadata.cassandra_password = cassandra_password
-        GlobalClassMetadata.environment = environment
+        GlobalClassMetadata.country = parse_country
+        GlobalClassMetadata.language = parse_language
+        GlobalClassMetadata.pmd = parse_pmd
+        GlobalClassMetadata.cassandra_username = parse_cassandra_username
+        GlobalClassMetadata.cassandra_password = parse_cassandra_password
+        GlobalClassMetadata.environment = parse_environment
         GlobalClassMetadata.hosts = Environment().choose_environment(GlobalClassMetadata.environment)
         GlobalClassMetadata.host_for_bpe = GlobalClassMetadata.hosts[1]
         GlobalClassMetadata.host_for_services = GlobalClassMetadata.hosts[2]
         GlobalClassMetadata.cassandra_cluster = GlobalClassMetadata.hosts[0]
-        if environment == "dev":
+        if parse_environment == "dev":
             GlobalClassMetadata.metadata_document_url = "https://dev.bpe.eprocurement.systems/api/v1/storage/get"
-        elif environment == "sandbox":
+        elif parse_environment == "sandbox":
             GlobalClassMetadata.metadata_document_url = "http://storage.eprocurement.systems/get"
         GlobalClassMetadata.database = CassandraSession(
-            cassandra_username=GlobalClassMetadata.cassandra_username,
-            cassandra_password=GlobalClassMetadata.cassandra_password,
-            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+            username=GlobalClassMetadata.cassandra_username,
+            password=GlobalClassMetadata.cassandra_password,
+            host=GlobalClassMetadata.cassandra_cluster)
 
     @allure.title('Check status code and message from Kafka topic after Answer creating')
-    def test_check_result_of_sending_the_request(self, country, connection_to_database, pmd):
+    def test_check_result_of_sending_the_request(self, parse_country, connect_to_database, parse_pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -199,16 +200,16 @@ class TestCreateAnswer:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -363,8 +364,8 @@ class TestCreateAnswer:
                     """
 
                     if asynchronous_result_of_sending_the_request_was_checked is True:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                            cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
@@ -378,19 +379,19 @@ class TestCreateAnswer:
                         GlobalClassMetadata.database.enquiry_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreatePn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEnquiry.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -406,7 +407,7 @@ class TestCreateAnswer:
                 )
 
     @allure.title('Check EV and MS releases data after Answer creating based on full data model')
-    def test_check_ev_ms_releases_three(self, country, connection_to_database, pmd):
+    def test_check_ev_ms_releases_three(self, parse_country, connect_to_database, parse_pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -547,16 +548,16 @@ class TestCreateAnswer:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -822,8 +823,8 @@ class TestCreateAnswer:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                            cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
@@ -837,22 +838,22 @@ class TestCreateAnswer:
                         GlobalClassMetadata.database.enquiry_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreatePn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEnquiry.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateAnswer.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -868,7 +869,7 @@ class TestCreateAnswer:
                 )) == str(True)
 
     @allure.title('Check EV and MS releases data after Answer creating based on data model without optional fields')
-    def test_check_ev_ms_releases_two(self, country, connection_to_database, pmd):
+    def test_check_ev_ms_releases_two(self, parse_country, connect_to_database, parse_pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -1009,16 +1010,16 @@ class TestCreateAnswer:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -1281,8 +1282,8 @@ class TestCreateAnswer:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                            cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
@@ -1296,22 +1297,22 @@ class TestCreateAnswer:
                         GlobalClassMetadata.database.enquiry_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreatePn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEnquiry.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateAnswer.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -1328,7 +1329,7 @@ class TestCreateAnswer:
 
     @allure.title('Check EV and MS releases data after Answer creating based on data model without optional fields '
                   'if tender state is suspended')
-    def test_check_ev_ms_releases_four(self, country, connection_to_database, pmd):
+    def test_check_ev_ms_releases_four(self, parse_country, connect_to_database, parse_pmd):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -1469,16 +1470,16 @@ class TestCreateAnswer:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -1783,8 +1784,8 @@ class TestCreateAnswer:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                            cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
@@ -1798,22 +1799,22 @@ class TestCreateAnswer:
                         GlobalClassMetadata.database.enquiry_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreatePn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEnquiry.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateAnswer.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):

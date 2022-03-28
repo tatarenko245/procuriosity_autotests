@@ -1,7 +1,7 @@
 import copy
 
 from tests.utils.ReleaseModel.LimitedProcedure.Award.award_release_library import ReleaseLibrary
-from tests.utils.functions import get_value_from_country_csv, get_value_from_region_csv, get_value_from_locality_csv
+from tests.utils.functions_collection import get_value_from_country_csv, get_value_from_region_csv, get_value_from_locality_csv
 
 
 class AwardReleases:

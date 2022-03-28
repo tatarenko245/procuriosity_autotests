@@ -5,7 +5,7 @@ from tests.conftest import GlobalClassMetadata
 from tests.utils.PayloadModel.OpenProcedure.SubmitBid.bid_payload_library import PayloadLibrary
 from tests.utils.data_of_enum import scale, documentType_for_bid, person_title, type_of_supplier
 from tests.utils.date_class import Date
-from tests.utils.functions import generate_requirement_response_array
+from tests.utils.functions_collection import generate_requirement_response_array
 from tests.utils.iStorage import Document
 
 

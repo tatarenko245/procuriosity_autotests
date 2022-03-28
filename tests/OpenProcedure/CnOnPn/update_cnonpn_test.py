@@ -14,12 +14,12 @@ from tests.utils.PayloadModel.OpenProcedure.Pn.pn_prepared_payload import PnPrep
 
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
-from tests.utils.functions import compare_actual_result_and_expected_result, \
+from tests.utils.functions_collection import compare_actual_result_and_expected_result, \
     get_value_from_classification_unit_dictionary_csv, get_value_from_region_csv, get_value_from_locality_csv, \
     get_contract_period_for_ms_release, get_value_from_cpvs_dictionary_csv, check_uuid_version
-from tests.utils.kafka_message import KafkaMessage
+from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.my_requests import Requests
+from tests.utils.platform_query_library import Requests
 
 
 @allure.parent_suite('Tendering')
@@ -30,34 +30,35 @@ from tests.utils.my_requests import Requests
                      'edit#gid=1433017847',
                  name='Google sheets: Update CnOnPn')
 class TestCreateCnOnPn:
-    def test_setup(self, environment, country, language, pmd, cassandra_username, cassandra_password):
+    def test_setup(self, parse_environment, parse_country, parse_language, parse_pmd, parse_cassandra_username,
+                   parse_cassandra_password):
         """
         Get 'country', 'language', 'cassandra_username', 'cassandra_password', 'environment' parameters
         from test run command.
         Then choose BPE host.
         Then choose host for Database connection.
         """
-        GlobalClassMetadata.country = country
-        GlobalClassMetadata.language = language
-        GlobalClassMetadata.pmd = pmd
-        GlobalClassMetadata.cassandra_username = cassandra_username
-        GlobalClassMetadata.cassandra_password = cassandra_password
-        GlobalClassMetadata.environment = environment
+        GlobalClassMetadata.country = parse_country
+        GlobalClassMetadata.language = parse_language
+        GlobalClassMetadata.pmd = parse_pmd
+        GlobalClassMetadata.cassandra_username = parse_cassandra_username
+        GlobalClassMetadata.cassandra_password = parse_cassandra_password
+        GlobalClassMetadata.environment = parse_environment
         GlobalClassMetadata.hosts = Environment().choose_environment(GlobalClassMetadata.environment)
         GlobalClassMetadata.host_for_bpe = GlobalClassMetadata.hosts[1]
         GlobalClassMetadata.host_for_services = GlobalClassMetadata.hosts[2]
         GlobalClassMetadata.cassandra_cluster = GlobalClassMetadata.hosts[0]
-        if environment == "dev":
+        if parse_environment == "dev":
             GlobalClassMetadata.metadata_document_url = "https://dev.bpe.eprocurement.systems/api/v1/storage/get"
-        elif environment == "sandbox":
+        elif parse_environment == "sandbox":
             GlobalClassMetadata.metadata_document_url = "http://storage.eprocurement.systems/get"
         GlobalClassMetadata.database = CassandraSession(
-            cassandra_username=GlobalClassMetadata.cassandra_username,
-            cassandra_password=GlobalClassMetadata.cassandra_password,
-            cassandra_cluster=GlobalClassMetadata.cassandra_cluster)
+            username=GlobalClassMetadata.cassandra_username,
+            password=GlobalClassMetadata.cassandra_password,
+            host=GlobalClassMetadata.cassandra_cluster)
 
     @allure.title('Check status code and message from Kafka topic after CnOnPn creating')
-    def test_check_result_of_sending_the_request(self, pmd, country, connection_to_database):
+    def test_check_result_of_sending_the_request(self, parse_pmd, parse_country, connect_to_database):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -198,16 +199,16 @@ class TestCreateCnOnPn:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -327,8 +328,8 @@ class TestCreateCnOnPn:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if asynchronous_result_of_sending_the_request_was_checked is True:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                            cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
@@ -339,19 +340,19 @@ class TestCreateCnOnPn:
                         GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreatePn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassUpdateCnOnPn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -368,7 +369,7 @@ class TestCreateCnOnPn:
 
     @allure.title('Check EV and MS releases data after CnOnPn updating with full data model with 2 lots and 2 '
                   'items criteria, conversions, documents, auction')
-    def test_check_ev_ms_releases_one(self, pmd, country, connection_to_database):
+    def test_check_ev_ms_releases_one(self, parse_pmd, parse_country, connect_to_database):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -507,16 +508,16 @@ class TestCreateCnOnPn:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -1077,8 +1078,8 @@ class TestCreateCnOnPn:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                            cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
@@ -1089,15 +1090,15 @@ class TestCreateCnOnPn:
                         GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateFs.operation_id)
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreatePn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -1114,7 +1115,7 @@ class TestCreateCnOnPn:
 
     @allure.title('Check EV and MS releases data after CnOnPn updating with full data model with 2 lots and 2 '
                   'items criteria, conversions, documents, auction')
-    def test_check_ev_ms_releases_two(self, pmd, country, connection_to_database):
+    def test_check_ev_ms_releases_two(self, parse_pmd, parse_country, connect_to_database):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -1253,16 +1254,16 @@ class TestCreateCnOnPn:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -1272,7 +1273,7 @@ class TestCreateCnOnPn:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_obligatory_data_model_with_lots_items_documents(
-                    pmd=pmd,
+                    pmd=parse_pmd,
                     enquiry_interval=interval_from_clarification_rules + 1,
                     tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=1,
@@ -1325,7 +1326,7 @@ class TestCreateCnOnPn:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_obligatory_data_model_with_lots_items_documents_without_auction(
-                    pmd=pmd,
+                    pmd=parse_pmd,
                     enquiry_interval=interval_from_clarification_rules + 1,
                     tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=1,
@@ -1417,7 +1418,7 @@ class TestCreateCnOnPn:
                 compare_releases = dict(compare_releases)
 
                 # VR-1.0.1.7.7
-                if pmd == "SV" or pmd == "TEST_SV" and GlobalClassCreateCnOnPn.payload[
+                if parse_pmd == "SV" or parse_pmd == "TEST_SV" and GlobalClassCreateCnOnPn.payload[
                                                            'tender']['items'][0]['classification']['id'][0:3] != "451":
 
                     try:
@@ -1776,8 +1777,8 @@ class TestCreateCnOnPn:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                            ei_id=GlobalClassCreateEi.ei_ocid)
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                            cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
@@ -1788,16 +1789,16 @@ class TestCreateCnOnPn:
                         GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreatePn.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_steps_of_process(
+                        GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                             operation_id=GlobalClassCreateCnOnPn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -1814,7 +1815,7 @@ class TestCreateCnOnPn:
 
     @allure.title('Check EV and MS releases data after CnOnPn updating based on model without optional fields '
                   'for creating and full data model for updating')
-    def test_check_ev_ms_releases_three(self, pmd, country, connection_to_database):
+    def test_check_ev_ms_releases_three(self, parse_pmd, parse_country, connect_to_database):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -1953,16 +1954,16 @@ class TestCreateCnOnPn:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -1972,7 +1973,7 @@ class TestCreateCnOnPn:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassCreateCnOnPn.payload = \
                 cnonpn_payload_class.create_cnonpn_obligatory_data_model_with_lots_items_documents(
-                    pmd=pmd,
+                    pmd=parse_pmd,
                     enquiry_interval=interval_from_clarification_rules + 1,
                     tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
@@ -2025,7 +2026,7 @@ class TestCreateCnOnPn:
             cnonpn_payload_class = copy.deepcopy(CnOnPnPreparePayload())
             GlobalClassUpdateCnOnPn.payload = \
                 cnonpn_payload_class.update_cnonpn_full_data_model_with_lots_items_documents_without_auction(
-                    pmd=pmd,
+                    pmd=parse_pmd,
                     enquiry_interval=interval_from_clarification_rules + 1,
                     tender_interval=interval_from_submission_rules + 1,
                     quantity_of_lots_object=2,
@@ -2117,7 +2118,7 @@ class TestCreateCnOnPn:
                 compare_releases = dict(compare_releases)
 
                 # VR-1.0.1.7.7
-                if pmd == "SV" or pmd == "TEST_SV" and GlobalClassCreateCnOnPn.payload[
+                if parse_pmd == "SV" or parse_pmd == "TEST_SV" and GlobalClassCreateCnOnPn.payload[
                                                            'tender']['items'][0]['classification']['id'][0:3] != "451":
 
                     try:
@@ -2724,8 +2725,8 @@ class TestCreateCnOnPn:
                 If TestCase was failed, then return process steps by operation-id.
                 """
                 if compare_releases == expected_result:
-                    GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                        ei_id=GlobalClassCreateEi.ei_ocid)
+                    GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                        cp_id=GlobalClassCreateEi.ei_ocid)
 
                     GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                         ei_id=GlobalClassCreateEi.ei_ocid)
@@ -2736,16 +2737,16 @@ class TestCreateCnOnPn:
                     GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
                         pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                    GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                         operation_id=GlobalClassCreateEi.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                    GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                         operation_id=GlobalClassCreateFs.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                    GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                         operation_id=GlobalClassCreatePn.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                    GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                         operation_id=GlobalClassCreateCnOnPn.operation_id)
                 else:
                     with allure.step('# Steps from Casandra DataBase'):
@@ -2785,7 +2786,7 @@ class TestCreateCnOnPn:
 
     @allure.title('Check EV and MS releases data after CnOnPn updating based on full data model for creating and '
                   'model without optional fields for updating')
-    def test_check_ev_ms_releases_four(self, pmd, country, connection_to_database):
+    def test_check_ev_ms_releases_four(self, parse_pmd, parse_country, connect_to_database):
         with allure.step('# 1. Authorization platform one: create Ei'):
             """
             Tender platform authorization for create expenditure item process.
@@ -2924,16 +2925,16 @@ class TestCreateCnOnPn:
                 """
                 Get offset interval from clarification.rules and from submission.rules for this testcase
                 """
-                interval_from_clarification_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_clarification_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
 
-                interval_from_submission_rules = int(connection_to_database.get_offset_from_clarification_rules(
-                    country=country,
-                    pmd=pmd,
+                interval_from_submission_rules = int(connect_to_database.get_offset_from_clarification_rules(
+                    country=parse_country,
+                    pmd=parse_pmd,
                     operation_type='all',
                     parameter='interval'
                 ))
@@ -3424,8 +3425,8 @@ class TestCreateCnOnPn:
                 If TestCase was failed, then return process steps by operation-id.
                 """
                 if compare_releases == expected_result:
-                    GlobalClassMetadata.database.ei_process_cleanup_table_of_services(
-                        ei_id=GlobalClassCreateEi.ei_ocid)
+                    GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
+                        cp_id=GlobalClassCreateEi.ei_ocid)
 
                     GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                         ei_id=GlobalClassCreateEi.ei_ocid)
@@ -3436,16 +3437,16 @@ class TestCreateCnOnPn:
                     GlobalClassMetadata.database.cnonpn_process_cleanup_table_of_services(
                         pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                    GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                         operation_id=GlobalClassCreateEi.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                    GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                         operation_id=GlobalClassCreateFs.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                    GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                         operation_id=GlobalClassCreatePn.operation_id)
 
-                    GlobalClassMetadata.database.cleanup_steps_of_process(
+                    GlobalClassMetadata.database.cleanup_orchestrator_operation_step_by_operationid(
                         operation_id=GlobalClassCreateCnOnPn.operation_id)
                 else:
                     with allure.step('# Steps from Casandra DataBase'):

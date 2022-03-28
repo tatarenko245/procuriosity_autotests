@@ -10,10 +10,10 @@ from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayl
 from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.ReleaseModel.SelectiveProcedure.Pn.pn_prepared_release import PnExpectedRelease
-from tests.utils.functions import check_uuid_version
+from tests.utils.functions_collection import check_uuid_version
 
-from tests.utils.kafka_message import KafkaMessage
-from tests.utils.my_requests import Requests
+from tests.utils.message_for_platform import KafkaMessage
+from tests.utils.platform_query_library import Requests
 from tests.utils.platform_authorization import PlatformAuthorization
 
 
@@ -23,13 +23,14 @@ class TestCreatePn:
                   "create Ei: obligatory data model without items array;\n"
                   "create Fs: obligatory data model, treasury money;\n"
                   "create Pn: obligatory data model, without lots and items;\n")
-    def test_check_pn_ms_releases_one(self, get_hosts, country, language, pmd, environment, connection_to_database):
+    def test_check_pn_ms_releases_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                                      connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         metadata_tender_url = None
         try:
-            if environment == "dev":
+            if parse_environment == "dev":
                 metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
-            elif environment == "sandbox":
+            elif parse_environment == "sandbox":
                 metadata_tender_url = "http://public.eprocurement.systems/tenders"
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
@@ -56,8 +57,8 @@ class TestCreatePn:
                 host_of_request=get_hosts[1],
                 access_token=ei_access_token,
                 x_operation_id=ei_operation_id,
-                country=country,
-                language=language,
+                country=parse_country,
+                language=parse_language,
                 payload=create_ei_payload,
                 test_mode=True)
 
@@ -128,9 +129,9 @@ class TestCreatePn:
                 host_of_request=get_hosts[1],
                 access_token=pn_access_token,
                 x_operation_id=pn_operation_id,
-                country=country,
-                language=language,
-                pmd=pmd,
+                country=parse_country,
+                language=parse_language,
+                pmd=parse_pmd,
                 payload=create_pn_payload,
                 test_mode=True)
 
@@ -168,7 +169,7 @@ class TestCreatePn:
                 allure.attach(str(pn_feed_point_message), 'Message in feed point')
                 asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
                     pn_operation_id).create_pn_message_is_successful(
-                    environment=environment,
+                    environment=parse_environment,
                     kafka_message=pn_feed_point_message,
                     test_mode=True)
 
@@ -179,7 +180,7 @@ class TestCreatePn:
                     """
                     if asynchronous_result_of_sending_the_request_was_checked is False:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=pn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -199,11 +200,11 @@ class TestCreatePn:
                 allure.attach(str(json.dumps(actual_pn_release)), "Actual Pn release")
 
                 expected_release_class = copy.deepcopy(PnExpectedRelease(
-                    environment=environment,
-                    language=language,
+                    environment=parse_environment,
+                    language=parse_language,
                     pn_feed_point_message=pn_feed_point_message,
                     pn_payload=create_pn_payload,
-                    pmd=pmd))
+                    pmd=parse_pmd))
 
                 expected_pn_release_model = \
                     expected_release_class.pn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs(
@@ -222,7 +223,7 @@ class TestCreatePn:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=pn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -262,7 +263,7 @@ class TestCreatePn:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=pn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -334,7 +335,7 @@ class TestCreatePn:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=pn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -410,7 +411,7 @@ class TestCreatePn:
                         pass
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=pn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
@@ -422,20 +423,20 @@ class TestCreatePn:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        connection_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
 
-                        connection_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+                        connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
 
-                        connection_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+                        connect_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=ei_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=ei_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=fs_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=fs_operation_id)
 
-                        connection_to_database.cleanup_steps_of_process(operation_id=pn_operation_id)
+                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=pn_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
-                            steps = connection_to_database.get_bpe_operation_step_by_operation_id(
+                            steps = connect_to_database.get_bpe_operation_step_by_operation_id(
                                 operation_id=pn_operation_id)
                             allure.attach(steps, "Cassandra DataBase: steps of process")
                 except ValueError:
