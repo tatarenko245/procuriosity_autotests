@@ -1,11 +1,14 @@
 import copy
 import json
+import random
 
-import jmespath
 import allure
 
-from tests.utils.PayloadModel.Budget.Ei.ei_payload_library import ExpenditureItemPayload
+from tests.utils.PayloadModel.Budget.Fs.financial_source_payload import FinancialSourcePayload
+from tests.utils.data_of_enum import currency
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
+from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload import ExpenditureItemPayload
+
 
 from tests.utils.platform_query_library import PlatformQueryRequest
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -24,7 +27,6 @@ class TestCreatePn:
                   "СreateFs process: obligatory data model, treasury money;\n"
                   "СreatePn process: obligatory data model, without lots and items.\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment):
-        authorization = PlatformAuthorization(get_hosts[1])
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateEi process.'):
@@ -32,8 +34,9 @@ class TestCreatePn:
             Tender platform authorization for CreateEi process.
             As result get Tender platform's access token and process operation-id.
             """
-            access_token = authorization.get_access_token_for_platform_one()
-            operation_id = authorization.get_x_operation_id(access_token)
+            platform_one = PlatformAuthorization(get_hosts[1])
+            access_token = platform_one.get_access_token_for_platform_one()
+            operation_id = platform_one.get_x_operation_id(access_token)
 
         step_number += 1
         with allure.step(f'# {step_number}. Send a request to create a CreateEi process.'):
@@ -41,9 +44,9 @@ class TestCreatePn:
             Send api request to BPE host to create a CreateEi process.
             And save in variable ei_ocid.
             """
-            payload = copy.deepcopy(ExpenditureItemPayload())
+            ei_payload = copy.deepcopy(ExpenditureItemPayload())
 
-            payload.delete_optional_fields_into_tender_object(
+            ei_payload.delete_optional_fields(
                 "tender.description",
                 "tender.items",
                 "planning.rationale",
@@ -52,12 +55,10 @@ class TestCreatePn:
                 "buyer.additionalIdentifiers",
                 "buyer.contactPoint.faxNumber",
                 "buyer.contactPoint.url",
-                "buyer.details",
-                item_position=0,
-                buyer_additionalidentifiers_position=0
+                "buyer.details"
             )
 
-            payload = payload.build_expenditure_item_payload()
+            ei_payload = ei_payload.build_expenditure_item_payload()
 
             PlatformQueryRequest().create_ei_process(
                 host=get_hosts[1],
@@ -65,105 +66,122 @@ class TestCreatePn:
                 x_operation_id=operation_id,
                 country=parse_country,
                 language=parse_language,
-                payload=payload,
+                payload=ei_payload,
                 test_mode=True
             )
 
         message = get_message_for_platform(operation_id)
-        ei_ocid = message["data"]["outcomes"]["ei"][0]['id']
-        #
-        # step_number = 1
-        # with allure.step(f'# {step_number}. Authorization platform one: CreateFs process.'):
-        #     """
-        #     Tender platform authorization for CreateFs process.
-        #     As result get Tender platform's access token and process operation-id.
-        #     """
-        #     access_token = authorization.get_access_token_for_platform_one()
-        #     operation_id = authorization.get_x_operation_id(access_token)
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Send a request to create a CreateFS process.'):
-        #     """
-        #     Send api request to BPE host to create a CreateFs process.
-        #     And save in variable fs_ocid.
-        #     """
-        #     financial_source = copy.deepcopy(ExpenditureItemPayload())
-        #     payload = financial_source.create_expenditure_item()
-        #
-        #     PlatformQueryRequest().create_ei_process(
-        #         host=get_hosts[1],
-        #         access_token=access_token,
-        #         x_operation_id=operation_id,
-        #         country=parse_country,
-        #         language=parse_language,
-        #         payload=payload,
-        #         test_mode=True
-        #     )
-        #
-        #     message = get_message_for_platform(operation_id)
-        #     ei_ocid = message["data"]["outcomes"]["fs"][0]['id']
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Send a request to create a CreateFs process.'):
-        #     """
-        #     Send api request to BPE host to create a CreateFs process.
-        #     And save in variable fs_id.
-        #     """
-        #     time.sleep(1)
-        #     fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=createEi_payload))
-        #     createFs_payload = fs_payload_class.create_fs_obligatory_data_model_treasury_money(
-        #         ei_payload=createEi_payload)
-        #
-        #     Requests().createFs(
-        #         host_of_request=get_hosts[1],
-        #         access_token=createFs_accessToken,
-        #         x_operation_id=createFs_operationId,
-        #         ei_ocid=ei_ocid,
-        #         payload=createFs_payload,
-        #         test_mode=True)
-        #
-        #     createFs_feedPoint_message = KafkaMessage(createFs_operationId).get_message_from_kafka()
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Authorization platform one: CreatePn process.'):
-        #     """
-        #     Tender platform authorization for CreatePn process.
-        #     As result get Tender platform's access token and process operation-id.
-        #     """
-        #     createPn_accessToken = authorization.get_access_token_for_platform_one()
-        #     createPn_operationId = authorization.get_x_operation_id(createPn_accessToken)
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Send a request to create a CreatePn process.'):
-        #     """
-        #     Send api request to BPE host to create a CreatePn process.
-        #     Save synchronous result of sending the request.
-        #     And save in variable pn_ocid, pn_id, pn_token.
-        #     """
-        #     time.sleep(1)
-        #     pn_payload_class = copy.deepcopy(PnPreparePayload(
-        #         fs_payload=createFs_payload,
-        #         fs_feed_point_message=createFs_feedPoint_message))
-        #     createPn_payload = \
-        #         pn_payload_class.create_pn_obligatory_data_model_without_lots_and_items_based_on_one_fs()
-        #
-        #     Requests().createPn(
-        #         host_of_request=get_hosts[1],
-        #         access_token=createPn_accessToken,
-        #         x_operation_id=createPn_operationId,
-        #         country=parse_country,
-        #         language=parse_language,
-        #         pmd=parse_pmd,
-        #         payload=createPn_payload,
-        #         test_mode=True)
-        #
-        #     createPn_feedPoint_message = KafkaMessage(createPn_operationId).get_message_from_kafka()
-        #     pn_ocid = createPn_feedPoint_message['data']['ocid']
-        #     pn_id = createPn_feedPoint_message['data']['outcomes']['pn'][0]['id']
-        #     pn_token = createPn_feedPoint_message['data']['outcomes']['pn'][0]['X-TOKEN']
-        #     pn_url = createPn_feedPoint_message['data']['url']
-        #     actual_ei_release_before_createCnOnPn = requests.get(
-        #         url=f"{createEi_feedPoint_message['data']['url']}/{ei_ocid}").json()
+        ei_id = message["data"]["outcomes"]["ei"][0]['id']
+
+        step_number = 1
+        with allure.step(f'# {step_number}. Authorization platform one: CreateFs process.'):
+            """
+            Tender platform authorization for CreateFs process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            platform_one = PlatformAuthorization(get_hosts[1])
+            access_token = platform_one.get_access_token_for_platform_one()
+            operation_id = platform_one.get_x_operation_id(access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create a CreateFS process.'):
+            """
+            Send api request to BPE host to create a CreateFs process.
+            And save in variable cpid.
+            """
+            fs_payload = copy.deepcopy(FinancialSourcePayload(
+                ei_payload=ei_payload,
+                currency=f"{random.choice(currency)}")
+            )
+
+            fs_payload.delete_optional_fields(
+                "tender.procuringEntity.identifier.uri",
+                "tender.procuringEntity.address.postalCode",
+                "tender.procuringEntity.additionalIdentifiers",
+                "tender.procuringEntity.contactPoint.faxNumber",
+                "tender.procuringEntity.contactPoint.url",
+                "planning.budget.id",
+                "planning.budget.description",
+                "planning.budget.europeanUnionFunding",
+                "planning.budget.project",
+                "planning.budget.projectID",
+                "planning.budget.uri",
+                "planning.rationale",
+                "buyer.identifier.uri",
+                "buyer.address.postalCode",
+                "buyer.additionalIdentifiers",
+                "buyer.contactPoint.faxNumber",
+                "buyer.contactPoint.url"
+            )
+
+            fs_payload = fs_payload.build_financial_source_payload()
+
+            PlatformQueryRequest().create_fs_proces(
+                host=get_hosts[1],
+                ocid=ei_id,
+                access_token=access_token,
+                x_operation_id=operation_id,
+                payload=fs_payload,
+                test_mode=True
+            )
+
+            message = get_message_for_platform(operation_id)
+            fs_id = message["data"]["outcomes"]["fs"][0]['id']
+
+        step_number = 1
+        with allure.step(f'# {step_number}. Authorization platform one: CreatePn process.'):
+            """
+            Tender platform authorization for CreatePn process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            platform_one = PlatformAuthorization(get_hosts[1])
+            access_token = platform_one.get_access_token_for_platform_one()
+            operation_id = platform_one.get_x_operation_id(access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create a CreatePn process.'):
+            """
+            Send api request to BPE host to create a CreatePn process.
+            And save in variable ocid and token..
+            """
+            pn_payload = copy.deepcopy(FinancialSourcePayload(
+                ei_payload=ei_payload,
+                currency=f"{random.choice(currency)}")
+            )
+
+            fs_payload.delete_optional_fields(
+                "tender.procuringEntity.identifier.uri",
+                "tender.procuringEntity.address.postalCode",
+                "tender.procuringEntity.additionalIdentifiers",
+                "tender.procuringEntity.contactPoint.faxNumber",
+                "tender.procuringEntity.contactPoint.url",
+                "planning.budget.id",
+                "planning.budget.description",
+                "planning.budget.europeanUnionFunding",
+                "planning.budget.project",
+                "planning.budget.projectID",
+                "planning.budget.uri",
+                "planning.rationale",
+                "buyer.identifier.uri",
+                "buyer.address.postalCode",
+                "buyer.additionalIdentifiers",
+                "buyer.contactPoint.faxNumber",
+                "buyer.contactPoint.url"
+            )
+
+            fs_payload = fs_payload.build_financial_source_payload()
+
+            PlatformQueryRequest().create_fs_proces(
+                host=get_hosts[1],
+                ocid=ocid,
+                access_token=access_token,
+                x_operation_id=operation_id,
+                payload=fs_payload,
+                test_mode=True
+            )
+
+            message = get_message_for_platform(operation_id)
+            cpid = message["data"]["outcomes"]["fs"][0]['id']
         #
         # step_number += 1
         # with allure.step(f'# {step_number}. Authorization platform one: CreateCnOnPn process.'):

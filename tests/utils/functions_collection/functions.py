@@ -14,7 +14,7 @@ from tests.utils.PayloadModel.OpenProcedure.SubmitBid.bid_payload_library import
 from tests.utils.data_of_enum import cpv_goods_low_level_03, cpv_goods_low_level_1, cpv_goods_low_level_2, \
     cpv_goods_low_level_3, cpv_goods_low_level_44, cpv_goods_low_level_48, cpv_works_low_level_45, \
     cpv_services_low_level_5, cpv_services_low_level_6, cpv_services_low_level_7, cpv_services_low_level_8, \
-    cpv_services_low_level_92, cpv_services_low_level_98
+    cpv_services_low_level_92, cpv_services_low_level_98, locality_id
 from tests.utils.date_class import Date
 from tests.utils.services.e_mdm_service import MdmService
 import time
@@ -44,6 +44,7 @@ def is_it_uuid(uuid_to_test):
     except ValueError:
         return False
     return str(uuid_obj) == uuid_to_test
+
 
 def get_value_from_classification_cpv_dictionary_xls(cpv, language):
     path = get_project_root()
@@ -163,7 +164,8 @@ def generate_lots_array(quantity_of_object, lot_object):
     return new_array_lots
 
 
-def generate_criteria_array(host_for_service, country, language, quantity_of_criteria_object, criteria_object, quantity_of_groups_object,
+def generate_criteria_array(host_for_service, country, language, quantity_of_criteria_object, criteria_object,
+                            quantity_of_groups_object,
                             quantity_of_requirements_object, quantity_of_evidences_object, type_of_standard_criteria):
     copy.deepcopy(criteria_object)
     criteria_array = []
@@ -891,7 +893,7 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
             choose_the_requirement_group = random.randint(0, quantity_of_requirement_groups - 1)
 
             for y in ev_release_criteria_array[x]['requirementGroups'][choose_the_requirement_group][
-                    'requirements']:
+                'requirements']:
                 if "id" in y and "expectedValue" in y:
                     requirements_id_list.append(y['id'])
                     requirements_expected_value_was_chose.append(copy.deepcopy(
@@ -1111,3 +1113,10 @@ def get_id_token_of_qualification_in_pending_awaiting_state(actual_qualification
                 qualification_id = actual_qualification_id_list[q]
                 qualification_token = feed_point_message['data']['outcomes']['qualifications'][f]['X-TOKEN']
                 yield qualification_id, qualification_token
+
+
+def get_locality_id_according_wuth_region_id(region_id):
+    locality_id_tuple = locality_id
+    for i in locality_id_tuple:
+        if region_id[:3] == i[:3]:
+            return i

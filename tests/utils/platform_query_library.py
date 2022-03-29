@@ -23,40 +23,40 @@ class PlatformQueryRequest:
         allure.attach(json.dumps(payload), "Prepared payload")
         return request
 
-    @staticmethod
-    @allure.step('Prepared request: update Ei')
-    def update_ei(host_of_request, ei_ocid, ei_token, access_token, x_operation_id, payload, test_mode=False):
-        ei = requests.post(
-            url=host_of_request + f"/do/ei/{ei_ocid}",
-            params={
-                'testMode': test_mode
-            },
-            headers={
-                'Authorization': 'Bearer ' + access_token,
-                'X-OPERATION-ID': x_operation_id,
-                'X-TOKEN': ei_token,
-                'Content-Type': 'application/json'},
-            json=payload)
-        allure.attach(host_of_request + f"/do/ei{ei_ocid}", 'URL')
-        allure.attach(json.dumps(payload), 'Prepared payload')
-        return ei
-
     # @staticmethod
-    # @allure.step('Prepared request: create Fs')
-    # def createFs(host_of_request, ei_ocid, access_token, x_operation_id, payload, test_mode=False):
-    #     fs = requests.post(
-    #         url=host_of_request + f"/do/fs/{ei_ocid}",
+    # @allure.step('Prepared request: update Ei')
+    # def update_ei(host_of_request, ei_ocid, ei_token, access_token, x_operation_id, payload, test_mode=False):
+    #     ei = requests.post(
+    #         url=host_of_request + f"/do/ei/{ei_ocid}",
     #         params={
     #             'testMode': test_mode
     #         },
     #         headers={
     #             'Authorization': 'Bearer ' + access_token,
     #             'X-OPERATION-ID': x_operation_id,
+    #             'X-TOKEN': ei_token,
     #             'Content-Type': 'application/json'},
     #         json=payload)
-    #     allure.attach(host_of_request + f"/do/fs/{ei_ocid}", 'URL')
+    #     allure.attach(host_of_request + f"/do/ei{ei_ocid}", 'URL')
     #     allure.attach(json.dumps(payload), 'Prepared payload')
-    #     return fs
+    #     return ei
+
+    @staticmethod
+    @allure.step('# Prepared request: create Ei')
+    def create_fs_proces(host, ocid, access_token, x_operation_id, payload, test_mode=False):
+        request = requests.post(
+            url=f"{host}/do/fs/{ocid}",
+            params={
+                "testMode": test_mode
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "X-OPERATION-ID": x_operation_id,
+                "Content-Type": "application/json"},
+            json=payload)
+        allure.attach(f"{host}/do/fs/{ocid}", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return request
     #
     # @staticmethod
     # @allure.step('Prepared request: update Fs')

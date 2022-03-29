@@ -5,7 +5,7 @@ import time
 import allure
 import requests
 from deepdiff import DeepDiff
-from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload import EiPreparePayload
+from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
 from tests.utils.ReleaseModel.Budget.Ei.ei_prepared_release import EiExpectedRelease
 from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -21,7 +21,7 @@ from tests.utils.platform_query_library import Requests
                  name='Google sheets: Update Ei')
 class TestUpdateEi:
     @allure.title('Warning - payload of updating Ei contains THE CRUTCH '
-                  '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload.py ->'
+                  '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload__.py ->'
                   'def update_ei_full_data_model -> look at comments\n'
                   'Check status code and message from Kafka topic after Ei updating')
     def test_check_result_of_sending_the_request(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -143,7 +143,7 @@ class TestUpdateEi:
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
     @allure.title('Warning - payload of updating Ei contains THE CRUTCH '
-                  '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload.py ->'
+                  '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload__.py ->'
                   'def update_ei_obligatory_data_model -> look at comments\n'
                   'Check Ei release data after Ei updating with full data model')
     def test_check_ei_release_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -323,7 +323,7 @@ class TestUpdateEi:
                     assert compare_releases == expected_result
 
     @allure.title('Warning - payload of updating Ei contains THE CRUTCH '
-                  '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload.py ->'
+                  '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload__.py ->'
                   'def update_ei_full_data_model -> look at comments\n'
                   'Check Ei release after Ei updating on model without optional fields')
     def test_check_ei_release_two(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -537,7 +537,7 @@ class TestUpdateEi:
                            str(update_ei_payload['planning']['rationale'])
 
     @allure.title('Warning - payload of updating Ei contains THE CRUTCH '
-                  '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload.py ->'
+                  '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload__.py ->'
                   'def update_ei_full_data_model -> look at comments\n'
                   'Check Ei release data after Ei updating based on full data model with 3 items objects')
     def test_check_ei_release_three(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,

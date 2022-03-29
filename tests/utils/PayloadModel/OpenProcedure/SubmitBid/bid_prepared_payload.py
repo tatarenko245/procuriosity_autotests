@@ -12,7 +12,7 @@ from tests.utils.iStorage import Document
 class BidPreparePayload:
     def __init__(self):
         self.constructor = copy.deepcopy(PayloadLibrary())
-        document_one = Document(host_for_services=GlobalClassMetadata.host_for_services, file_name="API.pdf")
+        document_one = Document(host=GlobalClassMetadata.host_for_services, file_name="API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
         self.document_two_was_uploaded = document_one.uploading_document()
         self.document_three_was_uploaded = document_one.uploading_document()

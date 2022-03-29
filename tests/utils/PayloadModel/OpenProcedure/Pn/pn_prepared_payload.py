@@ -17,7 +17,7 @@ class PnPreparePayload:
     def __init__(self):
         self.constructor = copy.deepcopy(PayloadLibrary())
         self.pn_period = Date().planning_notice_period()
-        document_one = Document(host_for_services=GlobalClassMetadata.host_for_services, file_name="API.pdf")
+        document_one = Document(host=GlobalClassMetadata.host_for_services, file_name="API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
 
     def create_pn_obligatory_data_model_without_lots_and_items_based_on_one_fs(self):

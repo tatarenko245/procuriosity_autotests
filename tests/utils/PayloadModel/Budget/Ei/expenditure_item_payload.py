@@ -1,195 +1,232 @@
 import copy
-import json
 import random
 
-from tests.utils.PayloadModel.Budget.Ei.ei_payload_library import ExpenditureItemConstructorPayload
+from tests.utils.functions_collection.functions import generate_items_array, get_locality_id_according_wuth_region_id
 from tests.utils.data_of_enum import cpv_category, cpv_goods_high_level, cpv_works_high_level, \
-    cpv_services_high_level, typeOfBuyer, mainGeneralActivity, mainSectoralActivity, currency, locality_scheme
+    cpv_services_high_level, locality_scheme, typeOfBuyer, mainGeneralActivity, mainSectoralActivity, \
+    region_id, cpvs, unit_id
 from tests.utils.date_class import Date
 
 
 class ExpenditureItemPayload:
-    def __init__(
-            self, is_tender_description=False, is_tender_items_array=False, quantity_of_tender_items_objects=1,
-            is_tender_items_additionalclassifications_array=False,
-            quantity_of_tender_items_additionalclassifications_objects=1,
-            is_tender_items_deliveryaddress_postalcode=False,
-            is_tender_items_deliveryaddress_addressdetails_locality_uri=False,
-            is_planning_rationale=False, is_buyer_identifier_uri=False, is_buyer_address_postalcode=False,
-            is_buyer_address_addressdetails_locality_uri=False, is_buyer_additionalidentifiers_array=False,
-            quantity_of_buyer_additionalidentifiers_array=1, is_buyer_contactpoint_faxnumber=False,
-            is_buyer_contactpoint_url=False, is_buyer_details=False, is_buyer_details_typeofbuyer=False,
-            is_buyer_details_maingeneralactivity=False, is_buyer_details_mainsectoralactivity=False):
+    def __init__(self):
 
-        self.tender_description = is_tender_description
-        self.is_tender_items_array = is_tender_items_array
-        self.quantity_of_tender_items_objects = quantity_of_tender_items_objects
-        self.is_tender_items_additionalclassifications_array = is_tender_items_additionalclassifications_array
-
-        self.quantity_of_tender_items_additionalclassifications_objects = \
-            quantity_of_tender_items_additionalclassifications_objects
-
-        self.is_tender_items_deliveryaddress_postalcode = is_tender_items_deliveryaddress_postalcode
-        self.is_tender_items_addressdetails_locality_uri = is_tender_items_deliveryaddress_addressdetails_locality_uri
-        self.is_planning_rationale = is_planning_rationale
-        self.is_buyer_identifier_uri = is_buyer_identifier_uri
-        self.is_buyer_address_postalcode = is_buyer_address_postalcode
-        self.is_buyer_address_addressdetails_locality_uri = is_buyer_address_addressdetails_locality_uri
-        self.is_buyer_additionalidentifiers_array = is_buyer_additionalidentifiers_array
-        self.quantity_of_buyer_additionalidentifiers_array = quantity_of_buyer_additionalidentifiers_array
-        self.is_buyer_contactpoint_faxnumber = is_buyer_contactpoint_faxnumber
-        self.is_buyer_contactpoint_url = is_buyer_contactpoint_url
-        self.is_buyer_details = is_buyer_details
-        self.is_buyer_details_typeofbuyer = is_buyer_details_typeofbuyer
-        self.is_buyer_details_maingeneralactivity = is_buyer_details_maingeneralactivity
-        self.is_buyer_details_mainsectoralactivity = is_buyer_details_mainsectoralactivity
-
-        self.currency = f"{random.choice(currency)}"
-
-    def create_expenditure_item(self):
+        category = random.choice(cpv_category)
+        if category == "goods":
+            self.__tender_classification_id = random.choice(cpv_goods_high_level)
+        elif category == "works":
+            self.__tender_classification_id = random.choice(cpv_works_high_level)
+        elif category == "services":
+            self.__tender_classification_id = random.choice(cpv_services_high_level)
 
         ei_period = Date().expenditure_item_period()
 
+        self.__payload = {
+            "tender": {
+                "title": "create ei: tender.title",
+                "description": "create ei: tender.description",
+                "classification": {
+                    "id": self.__tender_classification_id
+                },
+                "items": [
+                    {
+                        "id": "0",
+                        "description": f"create ei: tender.items0.description",
+                        "classification": {
+                            "id": self.__tender_classification_id
+                        },
+                        "additionalClassifications": [
+                            {
+                                "id": "AA12-4"
+                            }
+                        ],
+                        "deliveryAddress": {
+                            "streetAddress": "create ei: tender.items0.deliveryAddress.streetAddress",
+                            "postalCode": "create ei: tender.items0.deliveryAddress.postalCode",
+                            "addressDetails": {
+                                "country": {
+                                    "id": "MD"
+                                },
+                                "region": {
+                                    "id": "3400000"
+                                },
+                                "locality": {
+                                    "id": "3401000",
+                                    "description":
+                                        "create ei: tender.items0.deliveryAddress.addressDetails.locality.uri",
+                                    "scheme": f"{random.choice(locality_scheme)}",
+                                    "uri": "create ei: tender.items0.deliveryAddress.addressDetails.locality.uri"
+                                }
+                            }
+                        },
+                        "quantity": "10",
+                        "unit": {
+                            "id": "10"
+                        }
+                    }
+                ]
+            },
+            "planning": {
+                "budget": {
+                    "period": {
+                        "startDate": ei_period[0],
+                        "endDate": ei_period[1]
+                    }
+                },
+                "rationale": "create ei: planning.rationale"
+            },
+            "buyer": {
+                "name": "create ei: buyer.name",
+                "identifier": {
+                    "id": "create ei: buyer.identifier.id",
+                    "scheme": "MD-IDNO",
+                    "legalName": "create ei: buyer.identifier.legalName",
+                    "uri": "create ei: buyer.identifier.uri"
+                },
+                "address": {
+                    "streetAddress": "create ei: buyer.address.streetAddress",
+                    "postalCode": "create ei: buyer.address.postalCode",
+                    "addressDetails": {
+                        "country": {
+                            "id": "MD"
+                        },
+                        "region": {
+                            "id": "1700000"
+                        },
+                        "locality": {
+                            "scheme": f"{random.choice(locality_scheme)}",
+                            "id": "1701000",
+                            "description": "create ei: buyer.address.addressDetails.locality.description"
+                        }
+                    }
+                },
+                "additionalIdentifiers": [
+                    {
+                        "id": "create ei buyer.additionalIdentifiers0.id",
+                        "scheme": "create ei buyer.additionalIdentifiers0.scheme",
+                        "legalName": "create ei buyer.additionalIdentifiers0.legalName",
+                        "uri": "create ei buyer.additionalIdentifiers0.uri"
+                    }
+                ],
+                "contactPoint": {
+                    "name": "create ei: buyer.contactPoint.name",
+                    "email": "create ei: buyer.contactPoint.email",
+                    "telephone": "create ei: buyer.contactPoint.telephone",
+                    "faxNumber": "create ei: buyer.contactPoint.faxNumber",
+                    "url": "create ei: buyer.contactPoint.url"
+                },
+                "details": {
+                    "typeOfBuyer": f"{random.choice(typeOfBuyer)}",
+                    "mainGeneralActivity": f"{random.choice(mainGeneralActivity)}",
+                    "mainSectoralActivity": f"{random.choice(mainSectoralActivity)}"
 
+                }
+            }
+        }
 
-        try:
-            """
-            Prepare payload with optional value.
-            """
-            if self.tender_description is True:
-                payload['tender']['description'] = "create ei: tender.description"
+    def build_expenditure_item_payload(self):
+        return self.__payload
+
+    def delete_optional_fields(self, *args, item_position=0, buyer_additionalidentifiers_position=0):
+        for a in args:
+            if a == "tender.description":
+                del self.__payload['tender']['description']
+            elif a == "tender.items":
+                del self.__payload['tender']['items']
+            elif a == "tender.items.additionalClassifications":
+                del self.__payload['tender']['items'][item_position]['additionalClassifications']
+            elif a == "tender.items.deliveryAddress.postalCode":
+                del self.__payload['tender']['items'][item_position]['deliveryAddress']['postalCode']
+            elif a == "tender.items.deliveryAddress.addressDetails.locality.uri":
+                del self.__payload['tender']['items'][item_position]['deliveryAddress']['addressDetails']['locality'][
+                    'uri']
+
+            elif a == "planning.rationale":
+                del self.__payload['planning']['rationale']
+
+            elif a == "buyer.identifier.uri":
+                del self.__payload['buyer']['identifier']['uri']
+            elif a == "buyer.address.postalCode":
+                del self.__payload['buyer']['address']['postalCode']
+            elif a == "buyer.additionalIdentifiers":
+                del self.__payload['buyer']['additionalIdentifiers']
+            elif a == "buyer.additionalIdentifiers.uri":
+                del self.__payload['buyer']['additionalIdentifiers'][buyer_additionalidentifiers_position]['uri']
+            elif a == "buyer.contactPoint.faxNumber":
+                del self.__payload['buyer']['contactPoint']['faxNumber']
+            elif a == "buyer.contactPoint.url":
+                del self.__payload['buyer']['contactPoint']['url']
+            elif a == "buyer.details":
+                del self.__payload['buyer']['details']
+            elif a == "buyer.details.typeOfBuyer":
+                del self.__payload['buyer']['details']['typeOfBuyer']
+            elif a == "buyer.details.mainGeneralActivity":
+                del self.__payload['buyer']['details']['mainGeneralActivity']
+            elif a == "buyer.details.mainSectoralActivity":
+                del self.__payload['buyer']['details']['mainSectoralActivity']
+
             else:
-                del payload['tender']['description']
+                raise KeyError(f"Impossible to delete attribute by path {a}.")
 
-            if self.is_tender_items_array is True:
-                payload['tender']['items'] = list()
-                for item in range(self.quantity_of_tender_items_objects):
-                    payload['tender']['items'].append(constructor.tender_items_object())
+    def customize_tender_items(self, quantity_of_items, quantity_of_items_additionalclassifications):
+        new_items_array = generate_items_array(
+            quantity_of_object=quantity_of_items,
+            item_object=copy.deepcopy(self.__payload['tender']['items'][0]),
+            tender_classification_id=self.__tender_classification_id
+        )
 
-                    payload['tender']['items'][item]['id'] = f"{item}"
-                    payload['tender']['items'][item]['description'] = f"create ei: tender.items{item}.description"
-                    payload['tender']['items'][item]['classification']['id'] = tender_classification_id
+        for q_0 in range(quantity_of_items):
 
-                    payload['tender']['items'][item]['deliveryAddress']['streetAddress'] = \
-                        f"create ei: tender.items{item}.deliveryAddress.streetAddress"
+            new_items_array[q_0]['description'] = f"create ei: tender.items{q_0}.description"
 
-                    payload['tender']['items'][item]['deliveryAddress']['addressDetails']['country']['id'] = "MD"
-                    payload['tender']['items'][item]['deliveryAddress']['addressDetails']['region']['id'] = "1700000"
+            new_items_array[q_0]['deliveryAddress']['streetAddress'] = \
+                f"create ei: tender.items{q_0}.deliveryAddress.streetAddress"
 
-                    payload['tender']['items'][item]['deliveryAddress']['addressDetails']['locality']['scheme'] = \
-                        f"{random.choice(locality_scheme)}"
+            new_items_array[q_0]['deliveryAddress']['postalCode'] = \
+                f"create ei: tender.items{q_0}.deliveryAddress.postalCode"
 
-                    payload['tender']['items'][item]['deliveryAddress']['addressDetails']['locality']['id'] = \
-                        "1701000"
+            new_items_array[q_0]['deliveryAddress']['addressDetails']['region']['id'] = \
+                f"{random.choice(region_id)}"
 
-                    payload['tender']['items'][item]['deliveryAddress']['addressDetails']['locality'][
-                        'description'] = \
-                        f"create ei: tender.items{item}.deliveryAddress.addressDetails.locality.description"
+            new_items_array[q_0]['deliveryAddress']['addressDetails']['locality']['id'] = \
+                get_locality_id_according_wuth_region_id(
+                    new_items_array[q_0]['deliveryAddress']['addressDetails']['region']['id'])
 
-                    payload['tender']['items'][item]['deliveryAddress']['addressDetails']['locality']['uri'] = \
-                        f"create ei: tender.items{item}.deliveryAddress.addressDetails.locality.uri"
+            new_items_array[q_0]['deliveryAddress']['addressDetails']['locality']['scheme'] = \
+                f"{random.choice(locality_scheme)}"
 
-                    payload['tender']['items'][item]['quantity'] = 10
-                    payload['tender']['items'][item]['unit']['id'] = "10"
+            new_items_array[q_0]['deliveryAddress']['addressDetails']['locality']['description'] = \
+                f"create ei: tender.items{q_0}.addressDetails.locality.description"
 
-                    if self.is_tender_items_additionalclassifications_array is True:
-                        payload['tender']['items'][item]['additionalClassifications'] = list()
-                        for classification in range(self.quantity_of_tender_items_additionalclassifications_objects):
-                            payload['tender']['items'][item]['additionalClassifications'].append(
-                                constructor.tender_items_additionalclassifications_object())
+            new_items_array[q_0]['unit']['id'] = f"{random.choice(unit_id)}"
 
-                            payload['tender']['items'][item]['additionalClassifications'][classification]['id'] = \
-                                "AA12-4"
-                    else:
-                        del payload['tender']['items'][item]['additionalClassifications']
+            list_of_additionalclassification_id = list()
+            for q_1 in range(quantity_of_items_additionalclassifications):
+                new_items_array[q_0]['additionalClassifications'].append(
+                    copy.deepcopy(self.__payload['tender']['items'][0]['additionalClassifications'][0]))
 
-                    if self.is_tender_items_deliveryaddress_postalcode is True:
+                while len(list_of_additionalclassification_id) < quantity_of_items_additionalclassifications:
+                    additionalclassification_id = f"{random.choice(cpvs)}"
+                    if additionalclassification_id not in list_of_additionalclassification_id:
+                        list_of_additionalclassification_id.append(additionalclassification_id)
 
-                        payload['tender']['items'][item]['deliveryAddress']['postalCode'] = \
-                            f"create ei: tender.items{item}.deliveryAddress.postalCode"
-                    else:
-                        del payload['tender']['items'][item]['deliveryAddress']['postalCode']
+            for q_1 in range(quantity_of_items_additionalclassifications):
 
-                    if self.is_buyer_address_addressdetails_locality_uri is True:
+                new_items_array[q_0]['additionalClassifications'][q_1]['id'] = \
+                    list_of_additionalclassification_id[q_1]
 
-                        payload['tender']['items'][item]['deliveryAddress']['addressDetails'][
-                            'locality']['uri'] = \
-                            f"create ei: tender.items{item}.deliveryAddress.addressDetails.locality.uri"
-                    else:
-                        del payload['tender']['items'][item]['deliveryAddress']['addressDetails'][
-                            'locality']['uri']
-            else:
-                del payload['tender']['items']
+        self.__payload['tender']['items'] = new_items_array
 
-            if self.is_planning_rationale is True:
-                payload['planning']['rationale'] = "create ei: planning.rationale"
-            else:
-                del payload['planning']['rationale']
+    def customize_buyer_additionalidentifiers(self, quantity_of_buyer_additionalidentifiers):
+        new_additionalidentifiers_array = list()
+        for q in range(quantity_of_buyer_additionalidentifiers):
+            new_additionalidentifiers_array.append(copy.deepcopy(self.__payload['buyer']['additionalIdentifiers'][0]))
+            new_additionalidentifiers_array[q]['id'] = f"create ei: buyer.additionalIdentifiers{q}.id"
+            new_additionalidentifiers_array[q]['scheme'] = f"create ei: buyer.additionalIdentifiers{q}.scheme"
+            new_additionalidentifiers_array[q]['legalName'] = f"create ei: buyer.additionalIdentifiers{q}.legalName"
+            new_additionalidentifiers_array[q]['uri'] = f"create ei: buyer.additionalIdentifiers{q}.uri"
 
-            if self.is_buyer_identifier_uri is True:
-                payload['buyer']['identifier']['uri'] = "create ei: buyer.identifier.uri"
-            else:
-                del payload['buyer']['identifier']['uri']
+        self.__payload['buyer']['additionalIdentifiers'] = new_additionalidentifiers_array
 
-            if self.is_buyer_address_postalcode is True:
-                payload['buyer']['address']['postalCode'] = "create ei: buyer.address.postalCode"
-            else:
-                del payload['buyer']['address']['postalCode']
-
-            if self.is_buyer_additionalidentifiers_array is True:
-                payload['buyer']['additionalIdentifiers'] = list()
-                for identifier in range(self.quantity_of_buyer_additionalidentifiers_array):
-
-                    payload['buyer']['additionalIdentifiers'].append(
-                        constructor.buyer_additionalidentifiers_object())
-
-                    payload['buyer']['additionalIdentifiers'][identifier]['id'] = \
-                        f"create ei buyer.additionalIdentifiers{identifier}.id"
-
-                    payload['buyer']['additionalIdentifiers'][identifier]['scheme'] = \
-                        f"create ei: buyer.additionalIdentifiers{identifier}.scheme"
-
-                    payload['buyer']['additionalIdentifiers'][identifier]['legalName'] = \
-                        f"create ei: buyer.additionalIdentifiers{identifier}.legalName"
-
-                    if self.is_tender_items_addressdetails_locality_uri is True:
-                        payload['buyer']['additionalIdentifiers'][identifier]['uri'] = \
-                            f"create ei: buyer.additionalIdentifiers{identifier}.uri"
-                    else:
-                        del payload['buyer']['additionalIdentifiers'][identifier]['uri']
-            else:
-                del payload['buyer']['additionalIdentifiers']
-
-            if self.is_buyer_contactpoint_faxnumber is True:
-                payload['buyer']['contactPoint']['faxNumber'] = "create ei: buyer.contactPoint.faxNumber"
-            else:
-                del payload['buyer']['contactPoint']['faxNumber']
-
-            if self.is_buyer_contactpoint_url is True:
-                payload['buyer']['contactPoint']['url'] = "create ei: buyer.contactPoint.url"
-            else:
-                del payload['buyer']['contactPoint']['url']
-
-            if self.is_buyer_details is True:
-                if self.is_buyer_details_typeofbuyer is True:
-                    payload['buyer']['details']['typeOfBuyer'] = f"{random.choice(typeOfBuyer)}"
-                else:
-                    del payload['buyer']['details']['typeOfBuyer']
-
-                if self.is_buyer_details_maingeneralactivity is True:
-                    payload['buyer']['details']['mainGeneralActivity'] = f"{random.choice(mainGeneralActivity)}"
-                else:
-                    del payload['buyer']['details']['mainGeneralActivity']
-
-                if self.is_buyer_details_mainsectoralactivity is True:
-
-                    payload['buyer']['details']['mainSectoralActivity'] = f"{random.choice(mainSectoralActivity)}"
-                else:
-                    del payload['buyer']['details']['mainSectoralActivity']
-
-                payload['buyer']['contactPoint']['url'] = "create ei: buyer.contactPoint.url"
-            else:
-                del payload['buyer']['details']
-        except KeyError:
-            raise KeyError("Impossible to prepare payload with optional value.")
-        return payload
+    def __del__(self):
+        print(f"The instance of class {__name__} was deleted.")

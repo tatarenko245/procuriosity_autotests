@@ -8,8 +8,8 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassMetadata, GlobalClassUpdateFs
-from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload import EiPreparePayload
-from tests.utils.PayloadModel.Budget.Fs.financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModel.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
 from tests.utils.ReleaseModel.Budget.Fs.fs_prepared_release import FsExpectedRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment

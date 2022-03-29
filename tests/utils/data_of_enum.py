@@ -7,7 +7,8 @@ mainSectoralActivity = ("AIRPORT_RELATED_ACTIVITIES", "ELECTRICITY", "EXPLORATIO
                         "EXPLORATION_EXTRACTION_GAS_OIL",
                         "PORT_RELATED_ACTIVITIES", "POSTAL_SERVICES", "PRODUCTION_TRANSPORT_DISTRIBUTION_GAS_HEAT",
                         "RAILWAY_SERVICES", "URBAN_RAILWAY_TRAMWAY_TROLLEYBUS_BUS_SERVICES", "WATER",)
-
+unit_id = ("10", "18", "19", "20", "21",)
+cpvs = ("AA01-1", "AA02-4", "AA05-3", "AA07-9","AA14-0",)
 cpv_category = ("goods", "works", "services",)
 cpv_goods_high_level = ("03100000-2", "14600000-7", "22100000-1", "30100000-0", "44400000-4", "48200000-0",)
 cpv_works_high_level = ("45100000-8",)
@@ -29,6 +30,8 @@ cpv_services_low_level_98 = ("98341110-9", "98341120-2", "98341130-5", "98341140
 
 cpv_works_low_level = ()
 cpv_service_low_level = ()
+region_id = ("1700000", "2500000", "2900000", "3400000", "4800000",)
+locality_id =("1701000","2501000", "2901000", "3401000", "4801000",)
 locality_scheme = ("CUATM", "other",)
 
 currency = ("USD", "EUR", "MDL",)

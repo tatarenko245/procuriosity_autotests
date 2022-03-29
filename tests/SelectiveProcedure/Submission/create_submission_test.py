@@ -4,8 +4,8 @@ import time
 import allure
 import requests
 from deepdiff import DeepDiff
-from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload import EiPreparePayload
-from tests.utils.PayloadModel.Budget.Fs.financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModel.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
 from tests.utils.PayloadModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload

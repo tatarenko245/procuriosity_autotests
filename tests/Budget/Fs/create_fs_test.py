@@ -6,8 +6,8 @@ import time
 import allure
 import requests
 from deepdiff import DeepDiff
-from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload import EiPreparePayload
-from tests.utils.PayloadModel.Budget.Fs.financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModel.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
 from tests.utils.ReleaseModel.Budget.Fs.fs_prepared_release import FsExpectedRelease
 from tests.utils.functions_collection import check_uuid_version
 from tests.utils.message_for_platform import KafkaMessage

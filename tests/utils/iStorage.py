@@ -7,14 +7,14 @@ from tests.utils.functions_collection import get_project_root
 
 
 class Document:
-    def __init__(self, host_for_services, file_name="API.pdf"):
+    def __init__(self, host, file_name="API.pdf"):
         # The 'get_project_root()' get root dir
         self.path = get_project_root() / file_name
         self.filename = file_name
         self.m = None
         self.weight = None
         self.doc_id = None
-        self.host_for_services = host_for_services
+        self.host_for_services = host
 
     def uploading_document(self):
         with open(self.path, 'rb') as f:

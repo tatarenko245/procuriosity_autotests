@@ -22,7 +22,7 @@ class CnOnPnPreparePayload:
         self.country = country
         self.language = language
         self.constructor = copy.deepcopy(PayloadLibrary())
-        document_one = Document(host_for_services=self.get_hosts[2], file_name="API.pdf")
+        document_one = Document(host=self.get_hosts[2], file_name="API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
         self.document_two_was_uploaded = document_one.uploading_document()
         self.standard_criteria = MdmService(host_for_service=self.get_hosts[2]).get_standard_criteria(

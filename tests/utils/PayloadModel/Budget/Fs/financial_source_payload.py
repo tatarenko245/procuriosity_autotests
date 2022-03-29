@@ -1,531 +1,210 @@
 import copy
 import random
-from tests.utils.PayloadModel.Budget.Fs.fs_payload_library import PayloadLibrary
-from tests.utils.data_of_enum import currency
-from tests.utils.date_class import Date
+
+from tests.utils.data_of_enum import locality_scheme
 
 
 class FinancialSourcePayload:
-    def __init__(self, ei_payload):
-        self.ei_payload = ei_payload
-        self.constructor = copy.deepcopy(PayloadLibrary())
-        self.currency = f"{random.choice(currency)}"
-
-    def create_fs_full_data_model_own_money(self):
-        payload = {
-            "tender": {},
-            "planning": {},
-            "buyer": {}
+    def __init__(self, ei_payload, currency):
+        self.__currency = currency
+        self.__payload = {
+            "tender": {
+                "procuringEntity": {
+                    "name": "create fs: procuringEntity.name",
+                    "identifier": {
+                        "id": "create fs: procuringEntity.identifier.id",
+                        "scheme": "MD-IDNO",
+                        "legalName": "create fs: procuringEntity.identifier.legalName",
+                        "uri": "create fs: procuringEntity.identifier.uri"
+                    },
+                    "address": {
+                        "streetAddress": "create fs: procuringEntity.address.streetAddress",
+                        "postalCode": "create fs: procuringEntity.address.postalCode",
+                        "addressDetails": {
+                            "country": {
+                                "id": "MD"
+                            },
+                            "region": {
+                                "id": "1700000"
+                            },
+                            "locality": {
+                                "scheme": f"{random.choice(locality_scheme)}",
+                                "id": "1701000",
+                                "description":
+                                    "create fs: tender.procuringEntity.address.addressDetails.locality.description"
+                            }
+                        }
+                    },
+                    "additionalIdentifiers": [{
+                        "id": "create fs: tender.procuringEntity.additionalIdentifiers.id",
+                        "scheme": "create fs: tender.procuringEntity.additionalIdentifiers.scheme",
+                        "legalName": "create fs: tender.procuringEntity.additionalIdentifiers.legalName",
+                        "uri": "create fs: tender.procuringEntity.additionalIdentifiers.uri"
+                    }],
+                    "contactPoint": {
+                        "name": "create fs: tender.procuringEntity.contactPoint.name",
+                        "email": "create fs: tender.procuringEntity.contactPoint.email",
+                        "telephone": "create fs: tender.procuringEntity.contactPoint.telephone",
+                        "faxNumber": "create fs: tender.procuringEntity.contactPoint.faxNumber",
+                        "url": "create fs: tender.procuringEntity.contactPoint.url"
+                    }
+                }
+            },
+            "planning": {
+                "budget": {
+                    "id": "create fs: planning.budget.id",
+                    "description": "create fs: planning.budget.description",
+                    "period": {
+                        "startDate": ei_payload['planning']['budget']['period']['startDate'],
+                        "endDate": ei_payload['planning']['budget']['period']['endDate']
+                    },
+                    "amount": {
+                        "amount": 88889.89,
+                        "currency": self.__currency,
+                    },
+                    "isEuropeanUnionFunded": True,
+                    "europeanUnionFunding": {
+                        "projectName": "create fs: planning.budget.europeanUnionFunding.projectName",
+                        "projectIdentifier": "create fs: planning.budget.europeanUnionFunding.projectIdentifier",
+                        "uri": "create fs: planning.budget.europeanUnionFunding.uri"
+                    },
+                    "project": "create fs: planning.budget.project",
+                    "projectID": "create fs: planning.budget.projectID",
+                    "uri": "create fs: planning.budget.uri"
+                },
+                "rationale": "create fs: planning.rationale"
+            },
+            "buyer": {
+                "name": "create fs: buyer.name",
+                "identifier": {
+                    "id": "create fs: buyer.identifier.id",
+                    "scheme": "MD-IDNO",
+                    "legalName": "create fs: buyer.identifier.legalName",
+                    "uri": "create fs: buyer.identifier.uri"
+                },
+                "address": {
+                    "streetAddress": "create fs: buyer.address.streetAddress",
+                    "postalCode": "create fs: buyer.address.postalCode",
+                    "addressDetails": {
+                        "country": {
+                            "id": "MD"
+                        },
+                        "region": {
+                            "id": "1700000"
+                        },
+                        "locality": {
+                            "scheme": f"{random.choice(locality_scheme)}",
+                            "id": "1701000",
+                            "description": "create fs: buyer.address.addressDetails.locality.description"
+                        }
+                    }
+                },
+                "additionalIdentifiers": [{
+                    "id": "create fs: buyer.additionalIdentifiers0.id",
+                    "scheme": "create fs: buyer.additionalIdentifiers0.scheme",
+                    "legalName": "create fs: buyer.additionalIdentifiers0.legalName",
+                    "uri": "create fs: buyer.additionalIdentifiers0.uri"
+                }],
+                "contactPoint": {
+                        "name": "create fs: buyer.contactPoint.name",
+                        "email": "create fs: buyer.contactPoint.email",
+                        "telephone": "create fs: buyer.contactPoint.telephone",
+                        "faxNumber": "create fs: buyer.contactPoint.faxNumber",
+                        "url": "create fs: buyer.contactPoint.url"
+                    }
+            }
         }
 
-        payload['tender'].update(self.constructor.tender_object())
-        payload['tender']['procuringEntity']['additionalIdentifiers'] = [{}]
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0].update(
-            self.constructor.additional_identifiers_object())
-        payload['planning'].update(self.constructor.planning_object())
-        payload['buyer'].update(self.constructor.buyer_object())
-        payload['buyer']['additionalIdentifiers'] = [{}]
-        payload['buyer']['additionalIdentifiers'][0].update(self.constructor.additional_identifiers_object())
+    def build_financial_source_payload(self):
+        return self.__payload
 
-        payload['buyer']['name'] = "create fs: buyer.name"
-        payload['buyer']['identifier']['id'] = "create fs: buyer.identifier.id"
-        payload['buyer']['identifier']['scheme'] = "MD-IDNO"
-        payload['buyer']['identifier']['legalName'] = "create fs: buyer.identifier.legalName"
-        payload['buyer']['identifier']['uri'] = "create fs: buyer.identifier.uri"
-        payload['buyer']['address']['streetAddress'] = "create fs: buyer.address.streetAddress"
-        payload['buyer']['address']['postalCode'] = "create fs: buyer.address.postalCode"
-        payload['buyer']['address']['addressDetails']['country']['id'] = "MD"
-        payload['buyer']['address']['addressDetails']['region']['id'] = "1700000"
-        payload['buyer']['address']['addressDetails']['locality']['id'] = "1701000"
-        payload['buyer']['address']['addressDetails']['locality']['description'] = \
-            "create fs: buyer.address.addressDetails.locality.description"
-        payload['buyer']['address']['addressDetails']['locality']['scheme'] = "CUATM"
-        payload['buyer']['additionalIdentifiers'][0]['id'] = "create fs: buyer.additionalIdentifiers.id"
-        payload['buyer']['additionalIdentifiers'][0]['scheme'] = "create fs: buyer.additionalIdentifiers.scheme"
-        payload['buyer']['additionalIdentifiers'][0]['legalName'] = "create fs: buyer.additionalIdentifiers.legalName"
-        payload['buyer']['additionalIdentifiers'][0]['uri'] = "create fs: buyer.additionalIdentifiers.uri"
-        payload['buyer']['contactPoint']['name'] = "create fs: buyer.contactPoint.name"
-        payload['buyer']['contactPoint']['email'] = "create fs: buyer.contactPoint.email"
-        payload['buyer']['contactPoint']['telephone'] = "create fs: buyer.contactPoint.telephone"
-        payload['buyer']['contactPoint']['faxNumber'] = "create fs: buyer.contactPoint.faxNumber"
-        payload['buyer']['contactPoint']['url'] = "create fs: buyer.contactPoint.url"
+    def delete_optional_fields(
+            self, *args, procuringentity_additionalidentifiers_positionn=0,
+            buyer_additionalidentifiers_position=0):
+        for a in args:
+            if a == "tender.procuringEntity.identifier.uri":
+                del self.__payload['tender']['procuringEntity']['identifier']['uri']
+            elif a == "tender.procuringEntity.address.postalCode":
+                del self.__payload['tender']['procuringEntity']['address']['postalCode']
+            elif a == "tender.procuringEntity.additionalIdentifiers":
+                del self.__payload['tender']['procuringEntity']['additionalIdentifiers']
+            elif a == "tender.procuringEntity.additionalIdentifiers.uri":
 
-        payload['tender']['procuringEntity']['name'] = "create fs: procuringEntity.name"
-        payload['tender']['procuringEntity']['identifier']['id'] = "create fs: procuringEntity.identifier.id"
-        payload['tender']['procuringEntity']['identifier']['scheme'] = "MD-IDNO"
-        payload['tender']['procuringEntity']['identifier']['legalName'] = \
-            "create fs: procuringEntity.identifier.legalName"
-        payload['tender']['procuringEntity']['identifier']['uri'] = "create fs: procuringEntity.identifier.uri"
-        payload['tender']['procuringEntity']['address']['streetAddress'] = \
-            "create fs: procuringEntity.address.streetAddress"
-        payload['tender']['procuringEntity']['address']['postalCode'] = "create fs: procuringEntity.address.postalCode"
-        payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'] = "MD"
-        payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'] = "1700000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'] = "1701000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['scheme'] = "CUATM"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['description'] = \
-            "create fs: procuringEntity.address.addressDetails.locality.description"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['id'] = \
-            "create fs: tender.procuringEntity.additionalIdentifiers.id"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['scheme'] = \
-            "create fs: tender.procuringEntity.additionalIdentifiers.scheme"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['legalName'] = \
-            "create fs: tender.procuringEntity.additionalIdentifiers.legalName"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['uri'] = \
-            "create fs: tender.procuringEntity.additionalIdentifiers.uri"
-        payload['tender']['procuringEntity']['contactPoint']['name'] = \
-            "create fs: tender.procuringEntity.contactPoint.name"
-        payload['tender']['procuringEntity']['contactPoint']['email'] = \
-            "create fs: tender.procuringEntity.contactPoint.email"
-        payload['tender']['procuringEntity']['contactPoint']['telephone'] = \
-            "create fs: tender.procuringEntity.contactPoint.telephone"
-        payload['tender']['procuringEntity']['contactPoint']['faxNumber'] = \
-            "create fs: tender.procuringEntity.contactPoint.faxNumber"
-        payload['tender']['procuringEntity']['contactPoint']['url'] = \
-            "create fs: tender.procuringEntity.contactPoint.url"
+                del self.__payload['tender']['procuringEntity'][
+                    'additionalIdentifiers'][procuringentity_additionalidentifiers_positionn]['uri']
 
-        payload['planning']['budget']['id'] = "create fs: planning.budget.id"
-        payload['planning']['budget']['description'] = "create fs: planning.budget.description"
-        payload['planning']['budget']['period']['startDate'] = \
-            self.ei_payload['planning']['budget']['period']['startDate']
-        payload['planning']['budget']['period']['endDate'] = \
-            self.ei_payload['planning']['budget']['period']['endDate']
-        payload['planning']['budget']['amount']['amount'] = 88889.89
-        payload['planning']['budget']['amount']['currency'] = self.currency
-        payload['planning']['budget']['isEuropeanUnionFunded'] = True
-        payload['planning']['budget']['europeanUnionFunding']['projectName'] = \
-            "create fs: planning.budget.europeanUnionFunding.projectName"
-        payload['planning']['budget']['europeanUnionFunding']['projectIdentifier'] = \
-            "create fs: planning.budget.europeanUnionFunding.projectIdentifier"
-        payload['planning']['budget']['europeanUnionFunding']['uri'] = \
-            "create fs: planning.budget.europeanUnionFunding.uri"
-        payload['planning']['budget']['project'] = "create fs: planning.budget.project"
-        payload['planning']['budget']['projectID'] = "create fs: planning.budget.projectID"
-        payload['planning']['budget']['uri'] = "create fs: planning.budget.uri"
-        payload['planning']['rationale'] = "create fs: planning.rationale"
-        return payload
+            elif a == "tender.procuringEntity.contactPoint.faxNumber":
+                del self.__payload['tender']['procuringEntity']['contactPoint']['faxNumber']
+            elif a == "tender.procuringEntity.contactPoint.url":
+                del self.__payload['tender']['procuringEntity']['contactPoint']['url']
 
-    def create_fs_obligatory_data_model_own_money(self):
-        payload = {
-            "tender": {},
-            "planning": {},
-            "buyer": {}
-        }
+            elif a == "planning.budget.id":
+                del self.__payload['planning']['budget']['id']
+            elif a == "planning.budget.description":
+                del self.__payload['planning']['budget']['description']
+            elif a == "planning.budget.europeanUnionFunding":
+                self.__payload['planning']['budget']['isEuropeanUnionFunded'] = False
+                del self.__payload['planning']['budget']['europeanUnionFunding']
+            elif a == "planning.budget.europeanUnionFunding.uri":
+                del self.__payload['planning']['budget']['europeanUnionFunding']['uri']
+            elif a == "planning.budget.project":
+                del self.__payload['planning']['budget']['project']
+            elif a == "planning.budget.projectID":
+                del self.__payload['planning']['budget']['projectID']
+            elif a == "planning.budget.uri":
+                del self.__payload['planning']['budget']['uri']
+            elif a == "planning.rationale":
+                del self.__payload['planning']['rationale']
 
-        payload['tender'].update(self.constructor.tender_object())
-        payload['planning'].update(self.constructor.planning_object())
-        payload['buyer'].update(self.constructor.buyer_object())
+            elif a == "buyer.identifier.uri":
+                del self.__payload['buyer']['identifier']['uri']
+            elif a == "buyer.address.postalCode":
+                del self.__payload['buyer']['address']['postalCode']
+            elif a == "buyer.additionalIdentifiers":
+                del self.__payload['buyer']['additionalIdentifiers']
+            elif a == "buyer.additionalIdentifiers.uri":
+                del self.__payload['buyer']['additionalIdentifiers'][buyer_additionalidentifiers_position]['uri']
+            elif a == "buyer.contactPoint.faxNumber":
+                del self.__payload['buyer']['contactPoint']['faxNumber']
+            elif a == "buyer.contactPoint.url":
+                del self.__payload['buyer']['contactPoint']['url']
 
-        del payload['buyer']['identifier']['uri']
-        del payload['buyer']['address']['postalCode']
-        del payload['buyer']['additionalIdentifiers']
-        del payload['buyer']['contactPoint']['faxNumber']
-        del payload['buyer']['contactPoint']['url']
-        del payload['tender']['procuringEntity']['identifier']['uri']
-        del payload['tender']['procuringEntity']['additionalIdentifiers']
-        del payload['tender']['procuringEntity']['address']['postalCode']
-        del payload['tender']['procuringEntity']['contactPoint']['faxNumber']
-        del payload['tender']['procuringEntity']['contactPoint']['url']
-        del payload['planning']['budget']['id']
-        del payload['planning']['budget']['description']
-        del payload['planning']['budget']['europeanUnionFunding']
-        del payload['planning']['budget']['project']
-        del payload['planning']['budget']['projectID']
-        del payload['planning']['budget']['uri']
-        del payload['planning']['rationale']
+            else:
+                raise KeyError(f"Impossible to delete attribute by path {a}.")
 
-        payload['buyer']['name'] = "create fs: buyer.name"
-        payload['buyer']['identifier']['id'] = "create fs: buyer.identifier.id"
-        payload['buyer']['identifier']['scheme'] = "MD-IDNO"
-        payload['buyer']['identifier']['legalName'] = "create fs: buyer.identifier.legalName"
-        payload['buyer']['address']['streetAddress'] = "create fs: buyer.address.streetAddress"
-        payload['buyer']['address']['addressDetails']['country']['id'] = "MD"
-        payload['buyer']['address']['addressDetails']['region']['id'] = "1700000"
-        payload['buyer']['address']['addressDetails']['locality']['id'] = "1701000"
-        payload['buyer']['address']['addressDetails']['locality']['description'] = \
-            "create fs: buyer.address.addressDetails.locality.description"
-        payload['buyer']['address']['addressDetails']['locality']['scheme'] = "CUATM"
-        payload['buyer']['contactPoint']['name'] = "create fs: buyer.contactPoint.name"
-        payload['buyer']['contactPoint']['email'] = "create fs: buyer.contactPoint.email"
-        payload['buyer']['contactPoint']['telephone'] = "create fs: buyer.contactPoint.telephone"
+    def customize_buyer_additionalidentifiers(self, quantity_of_buyer_additionalidentifiers):
+        new_additionalidentifiers_array = list()
+        for q in range(quantity_of_buyer_additionalidentifiers):
+            new_additionalidentifiers_array.append(copy.deepcopy(self.__payload['buyer']['additionalIdentifiers'][0]))
+            new_additionalidentifiers_array[q]['id'] = f"create fs: buyer.additionalIdentifiers{q}.id"
+            new_additionalidentifiers_array[q]['scheme'] = f"create fs: buyer.additionalIdentifiers{q}.scheme"
+            new_additionalidentifiers_array[q]['legalName'] = f"create fs: buyer.additionalIdentifiers{q}.legalName"
+            new_additionalidentifiers_array[q]['uri'] = f"create fs: buyer.additionalIdentifiers{q}.uri"
 
-        payload['tender']['procuringEntity']['name'] = "create fs: procuringEntity.name"
-        payload['tender']['procuringEntity']['identifier']['id'] = "create fs: procuringEntity.identifier.id"
-        payload['tender']['procuringEntity']['identifier']['scheme'] = "MD-IDNO"
-        payload['tender']['procuringEntity']['identifier']['legalName'] = \
-            "create fs: procuringEntity.identifier.legalName"
+        self.__payload['buyer']['additionalIdentifiers'] = new_additionalidentifiers_array
 
-        payload['tender']['procuringEntity']['address']['streetAddress'] = \
-            "create fs: procuringEntity.address.streetAddress"
-        payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'] = "MD"
-        payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'] = "1700000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'] = "1701000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['scheme'] = "CUATM"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['description'] = \
-            "create fs: procuringEntity.address.addressDetails.locality.description"
-        payload['tender']['procuringEntity']['contactPoint']['name'] = \
-            "create fs: tender.procuringEntity.contactPoint.name"
-        payload['tender']['procuringEntity']['contactPoint']['email'] = \
-            "create fs: tender.procuringEntity.contactPoint.email"
-        payload['tender']['procuringEntity']['contactPoint']['telephone'] = \
-            "create fs: tender.procuringEntity.contactPoint.telephone"
+    def customize_tender_procuringentity_additionalidentifiers(
+            self, quantity_of_tender_procuringentity_additionalidentifiers):
+        new_additionalidentifiers_array = list()
+        for q in range(quantity_of_tender_procuringentity_additionalidentifiers):
 
-        payload['planning']['budget']['period']['startDate'] = \
-            self.ei_payload['planning']['budget']['period']['startDate']
-        payload['planning']['budget']['period']['endDate'] = \
-            self.ei_payload['planning']['budget']['period']['endDate']
-        payload['planning']['budget']['amount']['amount'] = 88889.89
-        payload['planning']['budget']['amount']['currency'] = self.currency
-        payload['planning']['budget']['isEuropeanUnionFunded'] = False
-        return payload
+            new_additionalidentifiers_array.append(
+                copy.deepcopy(self.__payload['tender']['procuringEntity']['additionalIdentifiers'][0])
+            )
 
-    def create_fs_obligatory_data_model_treasury_money(self, ei_payload):
-        payload = {
-            "tender": {},
-            "planning": {}
-        }
+            new_additionalidentifiers_array[q]['id'] = \
+                f"create fs: tender.procuringEntity.additionalIdentifiers{q}.id"
 
-        payload['tender'].update(self.constructor.tender_object())
-        payload['planning'].update(self.constructor.planning_object())
+            new_additionalidentifiers_array[q]['scheme'] = \
+                f"create fs: tender.procuringEntity.additionalIdentifiers{q}.scheme"
 
-        del payload['tender']['procuringEntity']['identifier']['uri']
-        del payload['tender']['procuringEntity']['address']['postalCode']
-        del payload['tender']['procuringEntity']['additionalIdentifiers']
-        del payload['tender']['procuringEntity']['contactPoint']['faxNumber']
-        del payload['tender']['procuringEntity']['contactPoint']['url']
-        del payload['planning']['budget']['id']
-        del payload['planning']['budget']['description']
-        del payload['planning']['budget']['europeanUnionFunding']
-        del payload['planning']['budget']['project']
-        del payload['planning']['budget']['projectID']
-        del payload['planning']['budget']['uri']
-        del payload['planning']['rationale']
+            new_additionalidentifiers_array[q]['legalName'] = \
+                f"create fs: tender.procuringEntity.additionalIdentifiers{q}.legalName"
 
-        payload['tender']['procuringEntity']['name'] = "create fs: procuringEntity.name"
-        payload['tender']['procuringEntity']['identifier']['id'] = "create fs: procuringEntity.identifier.id"
-        payload['tender']['procuringEntity']['identifier']['scheme'] = "MD-IDNO"
-        payload['tender']['procuringEntity']['identifier']['legalName'] = \
-            "create fs: procuringEntity.identifier.legalName"
-        payload['tender']['procuringEntity']['address']['streetAddress'] = \
-            "create fs: procuringEntity.address.streetAddress"
-        payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'] = "MD"
-        payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'] = "1700000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'] = "1701000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['scheme'] = "CUATM"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['description'] = \
-            "create fs: procuringEntity.address.addressDetails.locality.description"
-        payload['tender']['procuringEntity']['contactPoint']['name'] = \
-            "create fs: tender.procuringEntity.contactPoint.name"
-        payload['tender']['procuringEntity']['contactPoint']['email'] = \
-            "create fs: tender.procuringEntity.contactPoint.email"
-        payload['tender']['procuringEntity']['contactPoint']['telephone'] = \
-            "create fs: tender.procuringEntity.contactPoint.telephone"
-        payload['planning']['budget']['period']['startDate'] = ei_payload['planning']['budget']['period']['startDate']
-        payload['planning']['budget']['period']['endDate'] = ei_payload['planning']['budget']['period']['endDate']
-        payload['planning']['budget']['amount']['amount'] = 88889.89
-        payload['planning']['budget']['amount']['currency'] = self.currency
-        payload['planning']['budget']['isEuropeanUnionFunded'] = False
-        return payload
+            new_additionalidentifiers_array[q]['uri'] = \
+                f"create fs: tender.procuringEntity.additionalIdentifiers{q}.uri"
 
-    def create_fs_full_data_model_treasury_money(self):
-        payload = {
-            "tender": {},
-            "planning": {}
-        }
+        self.__payload['tender']['procuringEntity']['additionalIdentifiers'] = new_additionalidentifiers_array
 
-        payload['tender'].update(self.constructor.tender_object())
-        payload['tender']['procuringEntity']['additionalIdentifiers'] = [{}]
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0].update(
-            self.constructor.additional_identifiers_object())
-        payload['planning'].update(self.constructor.planning_object())
-
-        payload['tender']['procuringEntity']['name'] = "create fs: procuringEntity.name"
-        payload['tender']['procuringEntity']['identifier']['id'] = "create fs: procuringEntity.identifier.id"
-        payload['tender']['procuringEntity']['identifier']['scheme'] = "MD-IDNO"
-        payload['tender']['procuringEntity']['identifier']['legalName'] = \
-            "create fs: procuringEntity.identifier.legalName"
-        payload['tender']['procuringEntity']['identifier']['uri'] = "create fs: procuringEntity.identifier.uri"
-        payload['tender']['procuringEntity']['address']['streetAddress'] = \
-            "create fs: procuringEntity.address.streetAddress"
-        payload['tender']['procuringEntity']['address']['postalCode'] = "create fs: procuringEntity.address.postalCode"
-        payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'] = "MD"
-        payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'] = "1700000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'] = "1701000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['scheme'] = "CUATM"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['description'] = \
-            "create fs: procuringEntity.address.addressDetails.locality.description"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['id'] = \
-            "create fs: tender.procuringEntity.additionalIdentifiers.id"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['scheme'] = \
-            "create fs: tender.procuringEntity.additionalIdentifiers.scheme"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['legalName'] = \
-            "create fs: tender.procuringEntity.additionalIdentifiers.legalName"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['uri'] = \
-            "create fs: tender.procuringEntity.additionalIdentifiers.uri"
-        payload['tender']['procuringEntity']['contactPoint']['name'] = \
-            "create fs: tender.procuringEntity.contactPoint.name"
-        payload['tender']['procuringEntity']['contactPoint']['email'] = \
-            "create fs: tender.procuringEntity.contactPoint.email"
-        payload['tender']['procuringEntity']['contactPoint']['telephone'] = \
-            "create fs: tender.procuringEntity.contactPoint.telephone"
-        payload['tender']['procuringEntity']['contactPoint']['faxNumber'] = \
-            "create fs: tender.procuringEntity.contactPoint.faxNumber"
-        payload['tender']['procuringEntity']['contactPoint']['url'] = \
-            "create fs: tender.procuringEntity.contactPoint.url"
-
-        payload['planning']['budget']['id'] = "create fs: planning.budget.id"
-        payload['planning']['budget']['description'] = "create fs: planning.budget.description"
-        payload['planning']['budget']['period']['startDate'] = \
-            self.ei_payload['planning']['budget']['period']['startDate']
-        payload['planning']['budget']['period']['endDate'] = \
-            self.ei_payload['planning']['budget']['period']['endDate']
-        payload['planning']['budget']['amount']['amount'] = 88889.89
-        payload['planning']['budget']['amount']['currency'] = self.currency
-        payload['planning']['budget']['isEuropeanUnionFunded'] = True
-        payload['planning']['budget']['europeanUnionFunding']['projectName'] = \
-            "create fs: planning.budget.europeanUnionFunding.projectName"
-        payload['planning']['budget']['europeanUnionFunding']['projectIdentifier'] = \
-            "create fs: planning.budget.europeanUnionFunding.projectIdentifier"
-        payload['planning']['budget']['europeanUnionFunding']['uri'] = \
-            "create fs: planning.budget.europeanUnionFunding.uri"
-        payload['planning']['budget']['project'] = "create fs: planning.budget.project"
-        payload['planning']['budget']['projectID'] = "create fs: planning.budget.projectID"
-        payload['planning']['budget']['uri'] = "create fs: planning.budget.uri"
-        payload['planning']['rationale'] = "create fs: planning.rationale"
-        return payload
-
-    def update_fs_obligatory_data_model_treasury_money(self, create_fs_payload):
-        payload = {
-            "tender": {},
-            "planning": {}
-        }
-
-        payload['tender'].update(self.constructor.tender_object())
-        payload['planning'].update(self.constructor.planning_object())
-
-        del payload['planning']['budget']['id']
-        del payload['planning']['budget']['description']
-        del payload['planning']['budget']['europeanUnionFunding']
-        del payload['planning']['budget']['project']
-        del payload['planning']['budget']['projectID']
-        del payload['planning']['budget']['uri']
-        del payload['planning']['rationale']
-
-        new_period = Date().expenditure_item_period(end=80)
-        payload['planning']['budget']['period']['startDate'] = new_period[0]
-        payload['planning']['budget']['period']['endDate'] = new_period[1]
-        payload['planning']['budget']['amount']['amount'] = 11119.89
-        payload['planning']['budget']['amount']['currency'] = \
-            create_fs_payload['planning']['budget']['amount']['currency']
-        payload['planning']['budget']['isEuropeanUnionFunded'] = False
-        return payload
-
-    def update_fs_full_data_model_treasury_money(self, create_fs_payload):
-        payload = {
-            "tender": {},
-            "planning": {}
-        }
-
-        new_period = Date().expenditure_item_period(end=80)
-        payload['tender'].update(self.constructor.tender_object())
-        payload['tender']['procuringEntity']['additionalIdentifiers'] = [{}]
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0].update(
-            self.constructor.additional_identifiers_object())
-        payload['planning'].update(self.constructor.planning_object())
-
-        payload['tender']['procuringEntity']['name'] = "update fs: procuringEntity.name"
-        payload['tender']['procuringEntity']['identifier']['id'] = "update fs: procuringEntity.identifier.id"
-        payload['tender']['procuringEntity']['identifier']['scheme'] = "MD-IDNO"
-        payload['tender']['procuringEntity']['identifier']['legalName'] = \
-            "create fs: procuringEntity.identifier.legalName"
-        payload['tender']['procuringEntity']['identifier']['uri'] = "update fs: procuringEntity.identifier.uri"
-        payload['tender']['procuringEntity']['address']['streetAddress'] = \
-            "create fs: procuringEntity.address.streetAddress"
-        payload['tender']['procuringEntity']['address']['postalCode'] = "update fs: procuringEntity.address.postalCode"
-        payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'] = "MD"
-        payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'] = "3400000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'] = "3401000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['scheme'] = "other"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['description'] = \
-            "update fs: procuringEntity.address.addressDetails.locality.description"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['id'] = \
-            "update fs: tender.procuringEntity.additionalIdentifiers.id"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['scheme'] = \
-            "update fs: tender.procuringEntity.additionalIdentifiers.scheme"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['legalName'] = \
-            "update fs: tender.procuringEntity.additionalIdentifiers.legalName"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['uri'] = \
-            "update fs: tender.procuringEntity.additionalIdentifiers.uri"
-        payload['tender']['procuringEntity']['contactPoint']['name'] = \
-            "update fs: tender.procuringEntity.contactPoint.name"
-        payload['tender']['procuringEntity']['contactPoint']['email'] = \
-            "update fs: tender.procuringEntity.contactPoint.email"
-        payload['tender']['procuringEntity']['contactPoint']['telephone'] = \
-            "update fs: tender.procuringEntity.contactPoint.telephone"
-        payload['tender']['procuringEntity']['contactPoint']['faxNumber'] = \
-            "update fs: tender.procuringEntity.contactPoint.faxNumber"
-        payload['tender']['procuringEntity']['contactPoint']['url'] = \
-            "update fs: tender.procuringEntity.contactPoint.url"
-
-        payload['planning']['budget']['id'] = "update fs: planning.budget.id"
-        payload['planning']['budget']['description'] = "update fs: planning.budget.description"
-        payload['planning']['budget']['period']['startDate'] = new_period[0]
-        payload['planning']['budget']['period']['endDate'] = new_period[1]
-        payload['planning']['budget']['amount']['amount'] = 11119.89
-        payload['planning']['budget']['amount']['currency'] = \
-            create_fs_payload['planning']['budget']['amount']['currency']
-        payload['planning']['budget']['isEuropeanUnionFunded'] = True
-        payload['planning']['budget']['europeanUnionFunding']['projectName'] = \
-            "update fs: planning.budget.europeanUnionFunding.projectName"
-        payload['planning']['budget']['europeanUnionFunding']['projectIdentifier'] = \
-            "update fs: planning.budget.europeanUnionFunding.projectIdentifier"
-        payload['planning']['budget']['europeanUnionFunding']['uri'] = \
-            "update fs: planning.budget.europeanUnionFunding.uri"
-        payload['planning']['budget']['project'] = "update fs: planning.budget.project"
-        payload['planning']['budget']['projectID'] = "update fs: planning.budget.projectID"
-        payload['planning']['budget']['uri'] = "update fs: planning.budget.uri"
-        payload['planning']['rationale'] = "update fs: planning.rationale"
-        return payload
-
-    def update_fs_obligatory_data_model_own_money(self, create_fs_payload):
-        payload = {
-            "planning": {},
-            "buyer": {}
-        }
-
-        new_period = Date().expenditure_item_period(end=80)
-
-        payload['planning'].update(self.constructor.planning_object())
-        payload['buyer'].update(self.constructor.buyer_object())
-
-        del payload['buyer']['identifier']['uri']
-        del payload['buyer']['address']['postalCode']
-        del payload['buyer']['additionalIdentifiers']
-        del payload['buyer']['contactPoint']['faxNumber']
-        del payload['buyer']['contactPoint']['url']
-        del payload['planning']['budget']['id']
-        del payload['planning']['budget']['description']
-        del payload['planning']['budget']['europeanUnionFunding']
-        del payload['planning']['budget']['project']
-        del payload['planning']['budget']['projectID']
-        del payload['planning']['budget']['uri']
-        del payload['planning']['rationale']
-
-        payload['buyer']['name'] = "update fs: buyer.name"
-        payload['buyer']['identifier']['id'] = "update fs: buyer.identifier.id"
-        payload['buyer']['identifier']['scheme'] = "MD-IDNO"
-        payload['buyer']['identifier']['legalName'] = "update fs: buyer.identifier.legalName"
-        payload['buyer']['address']['streetAddress'] = "update fs: buyer.address.streetAddress"
-        payload['buyer']['address']['addressDetails']['country']['id'] = "MD"
-        payload['buyer']['address']['addressDetails']['region']['id'] = "3400000"
-        payload['buyer']['address']['addressDetails']['locality']['id'] = "3401000"
-        payload['buyer']['address']['addressDetails']['locality']['description'] = \
-            "update fs: buyer.address.addressDetails.locality.description"
-        payload['buyer']['address']['addressDetails']['locality']['scheme'] = "CUATM"
-        payload['buyer']['contactPoint']['name'] = "update fs: buyer.contactPoint.name"
-        payload['buyer']['contactPoint']['email'] = "update fs: buyer.contactPoint.email"
-        payload['buyer']['contactPoint']['telephone'] = "update fs: buyer.contactPoint.telephone"
-
-        payload['planning']['budget']['period']['startDate'] = new_period[0]
-        payload['planning']['budget']['period']['endDate'] = new_period[1]
-        payload['planning']['budget']['amount']['amount'] = 11119.89
-        payload['planning']['budget']['amount']['currency'] = \
-            create_fs_payload['planning']['budget']['amount']['currency']
-        payload['planning']['budget']['isEuropeanUnionFunded'] = False
-        return payload
-
-    def update_fs_full_data_model_own_money(self, create_fs_payload):
-        payload = {
-            "tender": {},
-            "planning": {},
-            "buyer": {}
-        }
-
-        payload['tender'].update(self.constructor.tender_object())
-        payload['tender']['procuringEntity']['additionalIdentifiers'] = [{}]
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0].update(
-            self.constructor.additional_identifiers_object())
-        payload['planning'].update(self.constructor.planning_object())
-        payload['buyer'].update(self.constructor.buyer_object())
-        payload['buyer']['additionalIdentifiers'] = [{}]
-        payload['buyer']['additionalIdentifiers'][0].update(
-            self.constructor.additional_identifiers_object())
-
-        new_period = Date().expenditure_item_period(end=80)
-
-        payload['buyer']['name'] = "update fs: buyer.name"
-        payload['buyer']['identifier']['id'] = "update fs: buyer.identifier.id"
-        payload['buyer']['identifier']['scheme'] = "MD-IDNO"
-        payload['buyer']['identifier']['legalName'] = "update fs: buyer.identifier.legalName"
-        payload['buyer']['identifier']['uri'] = "update fs: buyer.identifier.uri"
-        payload['buyer']['address']['streetAddress'] = "update fs: buyer.address.streetAddress"
-        payload['buyer']['address']['postalCode'] = "update fs: buyer.address.postalCode"
-        payload['buyer']['address']['addressDetails']['country']['id'] = "MD"
-        payload['buyer']['address']['addressDetails']['region']['id'] = "3400000"
-        payload['buyer']['address']['addressDetails']['locality']['id'] = "3401000"
-        payload['buyer']['address']['addressDetails']['locality']['description'] = \
-            "create fs: buyer.address.addressDetails.locality.description"
-        payload['buyer']['address']['addressDetails']['locality']['scheme'] = "CUATM"
-        payload['buyer']['additionalIdentifiers'][0]['id'] = "update fs: buyer.additionalIdentifiers.id"
-        payload['buyer']['additionalIdentifiers'][0]['scheme'] = "update fs: buyer.additionalIdentifiers.scheme"
-        payload['buyer']['additionalIdentifiers'][0]['legalName'] = "update fs: buyer.additionalIdentifiers.legalName"
-        payload['buyer']['additionalIdentifiers'][0]['uri'] = "update fs: buyer.additionalIdentifiers.uri"
-        payload['buyer']['contactPoint']['name'] = "update fs: buyer.contactPoint.name"
-        payload['buyer']['contactPoint']['email'] = "updatefs: buyer.contactPoint.email"
-        payload['buyer']['contactPoint']['telephone'] = "update fs: buyer.contactPoint.telephone"
-        payload['buyer']['contactPoint']['faxNumber'] = "update fs: buyer.contactPoint.faxNumber"
-        payload['buyer']['contactPoint']['url'] = "update fs: buyer.contactPoint.url"
-
-        payload['tender']['procuringEntity']['name'] = "update fs: procuringEntity.name"
-        payload['tender']['procuringEntity']['identifier']['id'] = "update fs: procuringEntity.identifier.id"
-        payload['tender']['procuringEntity']['identifier']['scheme'] = "MD-IDNO"
-        payload['tender']['procuringEntity']['identifier']['legalName'] = \
-            "update fs: procuringEntity.identifier.legalName"
-        payload['tender']['procuringEntity']['identifier']['uri'] = "update fs: procuringEntity.identifier.uri"
-        payload['tender']['procuringEntity']['address']['streetAddress'] = \
-            "update fs: procuringEntity.address.streetAddress"
-        payload['tender']['procuringEntity']['address']['postalCode'] = "update fs: procuringEntity.address.postalCode"
-        payload['tender']['procuringEntity']['address']['addressDetails']['country']['id'] = "MD"
-        payload['tender']['procuringEntity']['address']['addressDetails']['region']['id'] = "3400000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['id'] = "3401000"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['scheme'] = "CUATM"
-        payload['tender']['procuringEntity']['address']['addressDetails']['locality']['description'] = \
-            "update fs: procuringEntity.address.addressDetails.locality.description"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['id'] = \
-            "update fs: tender.procuringEntity.additionalIdentifiers.id"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['scheme'] = \
-            "update fs: tender.procuringEntity.additionalIdentifiers.scheme"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['legalName'] = \
-            "update fs: tender.procuringEntity.additionalIdentifiers.legalName"
-        payload['tender']['procuringEntity']['additionalIdentifiers'][0]['uri'] = \
-            "create fs: tender.procuringEntity.additionalIdentifiers.uri"
-        payload['tender']['procuringEntity']['contactPoint']['name'] = \
-            "update fs: tender.procuringEntity.contactPoint.name"
-        payload['tender']['procuringEntity']['contactPoint']['email'] = \
-            "update fs: tender.procuringEntity.contactPoint.email"
-        payload['tender']['procuringEntity']['contactPoint']['telephone'] = \
-            "update fs: tender.procuringEntity.contactPoint.telephone"
-        payload['tender']['procuringEntity']['contactPoint']['faxNumber'] = \
-            "update fs: tender.procuringEntity.contactPoint.faxNumber"
-        payload['tender']['procuringEntity']['contactPoint']['url'] = \
-            "update fs: tender.procuringEntity.contactPoint.url"
-
-        payload['planning']['budget']['id'] = "update fs: planning.budget.id"
-        payload['planning']['budget']['description'] = "update fs: planning.budget.description"
-        payload['planning']['budget']['period']['startDate'] = new_period[0]
-        payload['planning']['budget']['period']['endDate'] = new_period[1]
-        payload['planning']['budget']['amount']['amount'] = 11119.89
-        payload['planning']['budget']['amount']['currency'] = \
-            create_fs_payload['planning']['budget']['amount']['currency']
-        payload['planning']['budget']['isEuropeanUnionFunded'] = True
-        payload['planning']['budget']['europeanUnionFunding']['projectName'] = \
-            "update fs: planning.budget.europeanUnionFunding.projectName"
-        payload['planning']['budget']['europeanUnionFunding']['projectIdentifier'] = \
-            "update fs: planning.budget.europeanUnionFunding.projectIdentifier"
-        payload['planning']['budget']['europeanUnionFunding']['uri'] = \
-            "update fs: planning.budget.europeanUnionFunding.uri"
-        payload['planning']['budget']['project'] = "update fs: planning.budget.project"
-        payload['planning']['budget']['projectID'] = "update fs: planning.budget.projectID"
-        payload['planning']['budget']['uri'] = "update fs: planning.budget.uri"
-        payload['planning']['rationale'] = "update fs: planning.rationale"
-        return payload
+    def __del__(self):
+        print(f"The instance of class {__name__} was deleted.")

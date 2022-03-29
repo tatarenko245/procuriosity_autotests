@@ -13,7 +13,7 @@ class DeclarePreparePayload:
     def __init__(self):
         self.constructor = copy.deepcopy(PayloadLibrary())
         self.old_date = Date().old_period()[0]
-        document_one = Document(host_for_services=GlobalClassMetadata.host_for_services, file_name="API.pdf")
+        document_one = Document(host=GlobalClassMetadata.host_for_services, file_name="API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
 
     def create_declare_old_person_full_data_model(self, tenderer_id, requirement_id, actual_ms_release,

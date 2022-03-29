@@ -4,7 +4,7 @@ import time
 
 import requests
 
-from tests.utils.functions import time_bot
+from tests.utils.functions_collection.functions import time_bot
 
 
 def get_message_for_platform(operation_id=None, ocid=None, initiator=None):

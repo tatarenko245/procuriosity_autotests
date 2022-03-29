@@ -12,7 +12,7 @@ class AwardPayloads:
     def __init__(self, host_for_services, currency):
         self.constructor = copy.deepcopy(PayloadLibrary())
 
-        self.document_class = Document(host_for_services=host_for_services, file_name="API.pdf")
+        self.document_class = Document(host=host_for_services, file_name="API.pdf")
 
         date_class = Date()
         self.business_function_period = date_class.old_period()

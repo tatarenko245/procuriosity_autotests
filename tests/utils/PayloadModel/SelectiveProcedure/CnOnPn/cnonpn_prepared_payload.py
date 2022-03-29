@@ -11,7 +11,7 @@ from tests.utils.iStorage import Document
 
 class CnOnPnPreparePayload:
     def __init__(self, host_for_services):
-        document_one = Document(host_for_services=host_for_services, file_name="API.pdf")
+        document_one = Document(host=host_for_services, file_name="API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
 
         self.contact_period = Date().contact_period()
