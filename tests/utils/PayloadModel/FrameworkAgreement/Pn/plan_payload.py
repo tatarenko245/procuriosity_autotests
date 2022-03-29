@@ -112,8 +112,7 @@ class PlanPayload:
                             },
                             "description": "create pn: tender.lots0.placeOfPerformance.description"
                         }
-                    }
-                ],
+                    }],
                 "items": [
                     {
                         "id": "0",
@@ -132,8 +131,7 @@ class PlanPayload:
                         },
                         "description": "create ei: tender.items0.description",
                         "relatedLot": ["0"]
-                    }
-                ],
+                    }],
                 "documents": [
                     {
                         "documentType": f"{random.choice(documentType)}",
@@ -141,8 +139,7 @@ class PlanPayload:
                         "title": "create pn: tender.documents.title",
                         "description": "create pn: tender.documents.description",
                         "relatedLots": ["0"]
-                    }
-                ]
+                    }]
             }
         }
 
