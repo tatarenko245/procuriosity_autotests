@@ -5,7 +5,7 @@ from tests.utils.data_of_enum import currency
 from tests.utils.date_class import Date
 
 
-class FsPreparePayload:
+class FinancialSourcePayload:
     def __init__(self, ei_payload):
         self.ei_payload = ei_payload
         self.constructor = copy.deepcopy(PayloadLibrary())

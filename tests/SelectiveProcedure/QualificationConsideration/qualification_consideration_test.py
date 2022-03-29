@@ -4,8 +4,8 @@ import time
 import allure
 import requests
 from deepdiff import DeepDiff
-from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
-from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
+from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload import EiPreparePayload
+from tests.utils.PayloadModel.Budget.Fs.financial_source_payload import FinancialSourcePayload
 from tests.utils.PayloadModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.PayloadModel.SelectiveProcedure.QualificationDeclare.qualification_declare_prepared_payload import \
@@ -90,7 +90,7 @@ class TestQualificationConsideration:
             And save in variable fs_id.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=create_ei_payload)
 

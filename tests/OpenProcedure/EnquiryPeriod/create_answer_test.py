@@ -8,10 +8,10 @@ from deepdiff import DeepDiff
 from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, \
     GlobalClassCreateCnOnPn, GlobalClassCreateEnquiry, GlobalClassCreateAnswer
 from tests.utils.PayloadModel.OpenProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
-from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
+from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload import EiPreparePayload
 from tests.utils.PayloadModel.OpenProcedure.EnquiryPeriod.answer_prepared_payload import AnswerPreparePayload
 from tests.utils.PayloadModel.OpenProcedure.EnquiryPeriod.enquiry_prepared_payload import EnquiryPreparePayload
-from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
+from tests.utils.PayloadModel.Budget.Fs.financial_source_payload import FinancialSourcePayload
 from tests.utils.PayloadModel.OpenProcedure.Pn.pn_prepared_payload import PnPreparePayload
 
 from tests.utils.cassandra_session import CassandraSession
@@ -110,7 +110,7 @@ class TestCreateAnswer:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
+            fs_payload = copy.deepcopy(FinancialSourcePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().createFs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -458,7 +458,7 @@ class TestCreateAnswer:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
+            fs_payload = copy.deepcopy(FinancialSourcePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().createFs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -920,7 +920,7 @@ class TestCreateAnswer:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
+            fs_payload = copy.deepcopy(FinancialSourcePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().createFs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,
@@ -1380,7 +1380,7 @@ class TestCreateAnswer:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload = copy.deepcopy(FsPreparePayload(ei_payload=GlobalClassCreateEi.payload))
+            fs_payload = copy.deepcopy(FinancialSourcePayload(ei_payload=GlobalClassCreateEi.payload))
             GlobalClassCreateFs.payload = fs_payload.create_fs_full_data_model_own_money()
             Requests().createFs(
                 host_of_request=GlobalClassMetadata.host_for_bpe,

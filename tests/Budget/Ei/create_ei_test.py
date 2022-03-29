@@ -6,7 +6,7 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassMetadata
-from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
+from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload import EiPreparePayload
 from tests.utils.ReleaseModel.Budget.Ei.ei_prepared_release import EiExpectedRelease
 from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization

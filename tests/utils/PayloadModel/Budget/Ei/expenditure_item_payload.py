@@ -2,14 +2,13 @@ import copy
 import json
 import random
 
-from tests.utils.PayloadModel.Budget.Ei.ei_payload_library import PayloadLibrary
+from tests.utils.PayloadModel.Budget.Ei.ei_payload_library import ExpenditureItemConstructorPayload
 from tests.utils.data_of_enum import cpv_category, cpv_goods_high_level, cpv_works_high_level, \
     cpv_services_high_level, typeOfBuyer, mainGeneralActivity, mainSectoralActivity, currency, locality_scheme
 from tests.utils.date_class import Date
 
 
-
-class ExpenditureItem:
+class ExpenditureItemPayload:
     def __init__(
             self, is_tender_description=False, is_tender_items_array=False, quantity_of_tender_items_objects=1,
             is_tender_items_additionalclassifications_array=False,
@@ -51,46 +50,7 @@ class ExpenditureItem:
 
         ei_period = Date().expenditure_item_period()
 
-        try:
-            """
-            Prepare payload with required value.
-            """
-            constructor = copy.deepcopy(PayloadLibrary())
-            payload = constructor.payload()
 
-            payload['tender']['title'] = "create ei: tender.title"
-
-            tender_classification_id = None
-            category = random.choice(cpv_category)
-            if category == "goods":
-                tender_classification_id = random.choice(cpv_goods_high_level)
-            elif category == "works":
-                tender_classification_id = random.choice(cpv_works_high_level)
-            elif category == "services":
-                tender_classification_id = random.choice(cpv_services_high_level)
-
-            payload['tender']['classification']['id'] = tender_classification_id
-            payload['planning']['budget']['period']['startDate'] = ei_period[0]
-            payload['planning']['budget']['period']['endDate'] = ei_period[1]
-            payload['buyer']['name'] = "create ei: buyer.name"
-            payload['buyer']['identifier']['id'] = "create ei: buyer.identifier.id"
-            payload['buyer']['identifier']['scheme'] = "MD-IDNO"
-            payload['buyer']['identifier']['legalName'] = "create ei: buyer.identifier.legalName"
-            payload['buyer']['address']['streetAddress'] = "create ei: buyer.address.streetAddress"
-            payload['buyer']['address']['addressDetails']['country']['id'] = "MD"
-            payload['buyer']['address']['addressDetails']['region']['id'] = "1700000"
-            payload['buyer']['address']['addressDetails']['locality']['id'] = "1701000"
-
-            payload['buyer']['address']['addressDetails']['locality']['description'] = \
-                "create ei: buyer.address.addressDetails.locality.description"
-
-            payload['buyer']['address']['addressDetails']['locality']['scheme'] = "other"
-            payload['buyer']['contactPoint']['name'] = "create ei: buyer.contactPoint.name"
-            payload['buyer']['contactPoint']['email'] = "create ei: buyer.contactPoint.email"
-            payload['buyer']['contactPoint']['telephone'] = "create ei: buyer.contactPoint.telephone"
-
-        except KeyError:
-            raise KeyError("Impossible to prepare payload with required value.")
 
         try:
             """
@@ -135,7 +95,6 @@ class ExpenditureItem:
                     if self.is_tender_items_additionalclassifications_array is True:
                         payload['tender']['items'][item]['additionalClassifications'] = list()
                         for classification in range(self.quantity_of_tender_items_additionalclassifications_objects):
-
                             payload['tender']['items'][item]['additionalClassifications'].append(
                                 constructor.tender_items_additionalclassifications_object())
 

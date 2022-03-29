@@ -8,8 +8,8 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassMetadata, GlobalClassUpdateFs
-from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import EiPreparePayload
-from tests.utils.PayloadModel.Budget.Fs.fs_prepared_payload import FsPreparePayload
+from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload import EiPreparePayload
+from tests.utils.PayloadModel.Budget.Fs.financial_source_payload import FinancialSourcePayload
 from tests.utils.ReleaseModel.Budget.Fs.fs_prepared_release import FsExpectedRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
@@ -80,7 +80,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_full_data_model_own_money()
             synchronous_result_of_sending_the_request = Requests().createFs(
                 host_of_request=get_hosts[1],
@@ -233,7 +233,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=create_ei_payload)
 
@@ -506,7 +506,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_full_data_model_treasury_money()
 
             synchronous_result_of_sending_the_request = Requests().createFs(
@@ -821,7 +821,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=create_ei_payload)
 
@@ -1176,7 +1176,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_full_data_model_treasury_money()
 
             synchronous_result_of_sending_the_request = Requests().createFs(
@@ -1466,7 +1466,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_obligatory_data_model_own_money()
 
             synchronous_result_of_sending_the_request = Requests().createFs(
@@ -1740,7 +1740,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_full_data_model_own_money()
 
             synchronous_result_of_sending_the_request = Requests().createFs(
@@ -2050,7 +2050,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_obligatory_data_model_own_money()
 
             synchronous_result_of_sending_the_request = Requests().createFs(
@@ -2396,7 +2396,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_full_data_model_own_money()
 
             synchronous_result_of_sending_the_request = Requests().createFs(
@@ -2685,7 +2685,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_obligatory_data_model_treasury_money(
                 ei_payload=create_ei_payload)
 
@@ -3041,7 +3041,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_obligatory_data_model_own_money()
 
             synchronous_result_of_sending_the_request = Requests().createFs(
@@ -3387,7 +3387,7 @@ class TestUpdateFs:
             And save in variable fs_id and fs_token.
             """
             time.sleep(1)
-            fs_payload_class = copy.deepcopy(FsPreparePayload(ei_payload=create_ei_payload))
+            fs_payload_class = copy.deepcopy(FinancialSourcePayload(ei_payload=create_ei_payload))
             create_fs_payload = fs_payload_class.create_fs_full_data_model_treasury_money()
 
             synchronous_result_of_sending_the_request = Requests().createFs(

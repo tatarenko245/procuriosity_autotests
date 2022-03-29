@@ -1,11 +1,11 @@
 import copy
+import json
 
+import jmespath
 import allure
 
-
+from tests.utils.PayloadModel.Budget.Ei.ei_payload_library import ExpenditureItemPayload
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
-from tests.utils.PayloadModel.Budget.Ei.ei_prepared_payload import ExpenditureItem
-
 
 from tests.utils.platform_query_library import PlatformQueryRequest
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -24,7 +24,6 @@ class TestCreatePn:
                   "СreateFs process: obligatory data model, treasury money;\n"
                   "СreatePn process: obligatory data model, without lots and items.\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment):
-
         authorization = PlatformAuthorization(get_hosts[1])
 
         step_number = 1
@@ -42,7 +41,23 @@ class TestCreatePn:
             Send api request to BPE host to create a CreateEi process.
             And save in variable ei_ocid.
             """
-            payload = copy.deepcopy(ExpenditureItem()).create_expenditure_item()
+            payload = copy.deepcopy(ExpenditureItemPayload())
+
+            payload.delete_optional_fields_into_tender_object(
+                "tender.description",
+                "tender.items",
+                "planning.rationale",
+                "buyer.identifier.uri",
+                "buyer.address.postalCode",
+                "buyer.additionalIdentifiers",
+                "buyer.contactPoint.faxNumber",
+                "buyer.contactPoint.url",
+                "buyer.details",
+                item_position=0,
+                buyer_additionalidentifiers_position=0
+            )
+
+            payload = payload.build_expenditure_item_payload()
 
             PlatformQueryRequest().create_ei_process(
                 host=get_hosts[1],
@@ -54,38 +69,39 @@ class TestCreatePn:
                 test_mode=True
             )
 
-            message = get_message_for_platform(operation_id)
-            ei_ocid = message["data"]["outcomes"]["ei"][0]['id']
-
-        step_number = 1
-        with allure.step(f'# {step_number}. Authorization platform one: CreateFs process.'):
-            """
-            Tender platform authorization for CreateFs process.
-            As result get Tender platform's access token and process operation-id.
-            """
-            access_token = authorization.get_access_token_for_platform_one()
-            operation_id = authorization.get_x_operation_id(access_token)
-
-        step_number += 1
-        with allure.step(f'# {step_number}. Send a request to create a CreateFS process.'):
-            """
-            Send api request to BPE host to create a CreateFs process.
-            And save in variable fs_ocid.
-            """
-            payload = copy.deepcopy(ExpenditureItem()).create_expenditure_item()
-            print(payload)
-            PlatformQueryRequest().create_ei_process(
-                host=get_hosts[1],
-                access_token=access_token,
-                x_operation_id=operation_id,
-                country=parse_country,
-                language=parse_language,
-                payload=payload,
-                test_mode=True
-            )
-
-            message = get_message_for_platform(operation_id)
-            ei_ocid = message["data"]["outcomes"]["fs"][0]['id']
+        message = get_message_for_platform(operation_id)
+        ei_ocid = message["data"]["outcomes"]["ei"][0]['id']
+        #
+        # step_number = 1
+        # with allure.step(f'# {step_number}. Authorization platform one: CreateFs process.'):
+        #     """
+        #     Tender platform authorization for CreateFs process.
+        #     As result get Tender platform's access token and process operation-id.
+        #     """
+        #     access_token = authorization.get_access_token_for_platform_one()
+        #     operation_id = authorization.get_x_operation_id(access_token)
+        #
+        # step_number += 1
+        # with allure.step(f'# {step_number}. Send a request to create a CreateFS process.'):
+        #     """
+        #     Send api request to BPE host to create a CreateFs process.
+        #     And save in variable fs_ocid.
+        #     """
+        #     financial_source = copy.deepcopy(ExpenditureItemPayload())
+        #     payload = financial_source.create_expenditure_item()
+        #
+        #     PlatformQueryRequest().create_ei_process(
+        #         host=get_hosts[1],
+        #         access_token=access_token,
+        #         x_operation_id=operation_id,
+        #         country=parse_country,
+        #         language=parse_language,
+        #         payload=payload,
+        #         test_mode=True
+        #     )
+        #
+        #     message = get_message_for_platform(operation_id)
+        #     ei_ocid = message["data"]["outcomes"]["fs"][0]['id']
         #
         # step_number += 1
         # with allure.step(f'# {step_number}. Send a request to create a CreateFs process.'):
