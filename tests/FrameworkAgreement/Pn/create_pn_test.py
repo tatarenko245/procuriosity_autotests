@@ -253,11 +253,11 @@ class TestCreatePn:
 
                 try:
                     """
-                    Prepare expected PN release.
+                    Build expected PN release.
                     """
 
                 except ValueError:
-                    raise ValueError("Impossible to prepare expected PN release.")
+                    raise ValueError("Impossible to build expected PN release.")
         #
         #         with allure.step('Check a difference of comparing actual NP release before Protocol process and '
         #                          'expected NP release after Protocol process.'):
