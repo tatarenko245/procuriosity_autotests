@@ -125,3 +125,6 @@ class Date:
             create_answer_date, '%Y-%m-%dT%H:%M:%SZ') + datetime.timedelta(seconds=interval_seconds)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return end_date
+
+    def __del__(self):
+        print(f"The instance of Date class {__name__} was deleted.")

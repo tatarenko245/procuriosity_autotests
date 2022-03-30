@@ -6,12 +6,12 @@ import allure
 import requests
 from deepdiff import DeepDiff
 
-from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.PayloadModel.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
-from tests.utils.PayloadModel.LimitedProcedure.Award.award_payloads import AwardPayloads
-from tests.utils.PayloadModel.LimitedProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
-from tests.utils.PayloadModel.LimitedProcedure.Pn.pn_prepared_payload import PnPreparePayload
-from tests.utils.ReleaseModel.LimitedProcedure.Protocol.protocol_releases import ProtocolReleases
+from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.LimitedProcedure.Award.award_payloads import AwardPayloads
+from tests.utils.PayloadModels.LimitedProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
+from tests.utils.PayloadModels.LimitedProcedure.Pn.pn_prepared_payload import PnPreparePayload
+from tests.utils.ReleaseModels.LimitedProcedure.Protocol.protocol_releases import ProtocolReleases
 
 from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_query_library import Requests

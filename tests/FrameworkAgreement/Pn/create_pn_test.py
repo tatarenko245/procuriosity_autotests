@@ -3,12 +3,14 @@ import json
 import random
 
 import allure
+import requests
 
-from tests.utils.PayloadModel.Budget.Fs.financial_source_payload import FinancialSourcePayload
-from tests.utils.data_of_enum import currency
+from tests.utils.MessageModels.Pn.planning_notice_message import PlanningNoticeMessage
+from tests.utils.PayloadModels.Budget.Fs.financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.FrameworkAgreement.Pn.planing_notice_payload import PlanningNoticePayload
+from tests.utils.data_of_enum import currency_tuple
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
-from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload import ExpenditureItemPayload
-
+from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload import ExpenditureItemPayload
 
 from tests.utils.platform_query_library import PlatformQueryRequest
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -27,7 +29,6 @@ class TestCreatePn:
                   "СreateFs process: obligatory data model, treasury money;\n"
                   "СreatePn process: obligatory data model, without lots and items.\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment):
-
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateEi process.'):
             """
@@ -44,24 +45,30 @@ class TestCreatePn:
             Send api request to BPE host to create a CreateEi process.
             And save in variable ei_ocid.
             """
-            ei_payload = copy.deepcopy(ExpenditureItemPayload())
+            try:
+                """
+                Build payload for CreateEi process.
+                """
+                ei_payload = copy.deepcopy(ExpenditureItemPayload())
 
-            ei_payload.delete_optional_fields(
-                "tender.description",
-                "tender.items",
-                "planning.rationale",
-                "buyer.identifier.uri",
-                "buyer.address.postalCode",
-                "buyer.additionalIdentifiers",
-                "buyer.contactPoint.faxNumber",
-                "buyer.contactPoint.url",
-                "buyer.details"
-            )
-
-            ei_payload = ei_payload.build_expenditure_item_payload()
+                ei_payload.delete_optional_fields(
+                    "tender.description",
+                    "tender.items",
+                    "planning.rationale",
+                    "buyer.identifier.uri",
+                    "buyer.address.postalCode",
+                    "buyer.additionalIdentifiers",
+                    "buyer.contactPoint.faxNumber",
+                    "buyer.contactPoint.url",
+                    "buyer.details"
+                )
+                tender_classification_id = ei_payload.get_tender_classification_id()
+                ei_payload = ei_payload.build_expenditure_item_payload()
+            except ValueError:
+                raise ValueError("Impossible to build payload for CreateEi process.")
 
             PlatformQueryRequest().create_ei_process(
-                host=get_hosts[1],
+                host_to_bpe=get_hosts[1],
                 access_token=access_token,
                 x_operation_id=operation_id,
                 country=parse_country,
@@ -72,6 +79,7 @@ class TestCreatePn:
 
         message = get_message_for_platform(operation_id)
         ei_id = message["data"]["outcomes"]["ei"][0]['id']
+        allure.attach(str(message), 'Message for platform.')
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateFs process.'):
@@ -89,35 +97,43 @@ class TestCreatePn:
             Send api request to BPE host to create a CreateFs process.
             And save in variable cpid.
             """
-            fs_payload = copy.deepcopy(FinancialSourcePayload(
-                ei_payload=ei_payload,
-                currency=f"{random.choice(currency)}")
-            )
+            try:
+                """
+                Build payload for CreateFs process.
+                """
+                currency = f"{random.choice(currency_tuple)}"
+                fs_payload = copy.deepcopy(FinancialSourcePayload(
+                    ei_payload=ei_payload,
+                    amount=89999.89,
+                    currency=currency)
+                )
 
-            fs_payload.delete_optional_fields(
-                "tender.procuringEntity.identifier.uri",
-                "tender.procuringEntity.address.postalCode",
-                "tender.procuringEntity.additionalIdentifiers",
-                "tender.procuringEntity.contactPoint.faxNumber",
-                "tender.procuringEntity.contactPoint.url",
-                "planning.budget.id",
-                "planning.budget.description",
-                "planning.budget.europeanUnionFunding",
-                "planning.budget.project",
-                "planning.budget.projectID",
-                "planning.budget.uri",
-                "planning.rationale",
-                "buyer.identifier.uri",
-                "buyer.address.postalCode",
-                "buyer.additionalIdentifiers",
-                "buyer.contactPoint.faxNumber",
-                "buyer.contactPoint.url"
-            )
+                fs_payload.delete_optional_fields(
+                    "tender.procuringEntity.identifier.uri",
+                    "tender.procuringEntity.address.postalCode",
+                    "tender.procuringEntity.additionalIdentifiers",
+                    "tender.procuringEntity.contactPoint.faxNumber",
+                    "tender.procuringEntity.contactPoint.url",
+                    "planning.budget.id",
+                    "planning.budget.description",
+                    "planning.budget.europeanUnionFunding",
+                    "planning.budget.project",
+                    "planning.budget.projectID",
+                    "planning.budget.uri",
+                    "planning.rationale",
+                    "buyer.identifier.uri",
+                    "buyer.address.postalCode",
+                    "buyer.additionalIdentifiers",
+                    "buyer.contactPoint.faxNumber",
+                    "buyer.contactPoint.url"
+                )
 
-            fs_payload = fs_payload.build_financial_source_payload()
+                fs_payload = fs_payload.build_financial_source_payload()
+            except ValueError:
+                raise ValueError("Impossible to build payload for CreateFs process.")
 
             PlatformQueryRequest().create_fs_proces(
-                host=get_hosts[1],
+                host_to_bpe=get_hosts[1],
                 ocid=ei_id,
                 access_token=access_token,
                 x_operation_id=operation_id,
@@ -127,6 +143,7 @@ class TestCreatePn:
 
             message = get_message_for_platform(operation_id)
             fs_id = message["data"]["outcomes"]["fs"][0]['id']
+            allure.attach(str(message), 'Message for platform.')
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreatePn process.'):
@@ -144,290 +161,103 @@ class TestCreatePn:
             Send api request to BPE host to create a CreatePn process.
             And save in variable ocid and token..
             """
-            pn_payload = copy.deepcopy(FinancialSourcePayload(
-                ei_payload=ei_payload,
-                currency=f"{random.choice(currency)}")
-            )
+            try:
+                """
+                Build payload for CreatePn process.
+                """
+                pn_payload = copy.deepcopy(PlanningNoticePayload(
+                    fs_id=fs_id,
+                    amount=89999.89,
+                    currency=currency,
+                    tender_classification_id=tender_classification_id,
+                    host_to_service=get_hosts[2])
+                )
 
-            fs_payload.delete_optional_fields(
-                "tender.procuringEntity.identifier.uri",
-                "tender.procuringEntity.address.postalCode",
-                "tender.procuringEntity.additionalIdentifiers",
-                "tender.procuringEntity.contactPoint.faxNumber",
-                "tender.procuringEntity.contactPoint.url",
-                "planning.budget.id",
-                "planning.budget.description",
-                "planning.budget.europeanUnionFunding",
-                "planning.budget.project",
-                "planning.budget.projectID",
-                "planning.budget.uri",
-                "planning.rationale",
-                "buyer.identifier.uri",
-                "buyer.address.postalCode",
-                "buyer.additionalIdentifiers",
-                "buyer.contactPoint.faxNumber",
-                "buyer.contactPoint.url"
-            )
+                pn_payload.delete_optional_fields(
+                    "planning.rationale",
+                    "planning.budget.description",
+                    "tender.procurementMethodRationale",
+                    "tender.procurementMethodAdditionalInfo",
+                    "tender.lots",
+                    "tender.items",
+                    "tender.documents"
+                )
 
-            fs_payload = fs_payload.build_financial_source_payload()
+                pn_payload = pn_payload.build_plan_payload()
+            except ValueError:
+                raise ValueError("Impossible to build payload for CreatePn process.")
 
-            PlatformQueryRequest().create_fs_proces(
-                host=get_hosts[1],
-                ocid=ocid,
+            synchronous_result = PlatformQueryRequest().create_pn_proces(
+                host_to_bpe=get_hosts[1],
                 access_token=access_token,
                 x_operation_id=operation_id,
-                payload=fs_payload,
-                test_mode=True
+                payload=pn_payload,
+                test_mode=True,
+                country=parse_country,
+                language=parse_language,
+                pmd=parse_pmd
             )
 
-            message = get_message_for_platform(operation_id)
-            cpid = message["data"]["outcomes"]["fs"][0]['id']
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Authorization platform one: CreateCnOnPn process.'):
-        #     """
-        #     Tender platform authorization for CreateCnOnPn process.
-        #     As result get Tender platform's access token and process operation-id.
-        #     """
-        #     createCn_accessToken = authorization.get_access_token_for_platform_one()
-        #     createCn_operationId = authorization.get_x_operation_id(createCn_accessToken)
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Send a request to create a CreateCnOnPn process.'):
-        #     """
-        #     Send api request to BPE host to create a CreateCnOnPn process.
-        #     Save synchronous result of sending the request.
-        #     """
-        #     time.sleep(1)
-        #
-        #     cn_payload_class = copy.deepcopy(CnOnPnPreparePayload(host_for_services=get_hosts[2]))
-        #     createCn_payload = \
-        #         cn_payload_class.create_cnonpn_obligatory_data_model(
-        #             actual_ei_release=actual_ei_release_before_createCnOnPn,
-        #             pn_payload=createPn_payload)
-        #
-        #     Requests().createCnOnPn(
-        #         host_of_request=get_hosts[1],
-        #         access_token=createCn_accessToken,
-        #         x_operation_id=createCn_operationId,
-        #         pn_ocid=pn_ocid,
-        #         pn_id=pn_id,
-        #         pn_token=pn_token,
-        #         payload=createCn_payload,
-        #         test_mode=True)
-        #
-        #     createCn_feedPoint_message = KafkaMessage(createCn_operationId).get_message_from_kafka()
-        #     np_id = createCn_feedPoint_message['data']['outcomes']['np'][0]['id']
-        #     actual_np_release_before_createAward = requests.get(url=f"{pn_url}/{np_id}").json()
-        #     lot_id = actual_np_release_before_createAward['releases'][0]['tender']['lots'][0]['id']
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Authorization platform one: CreateAward process.'):
-        #     """
-        #     Tender platform authorization for CreateAward process.
-        #     As result get Tender platform's access token and process operation-id.
-        #     """
-        #     createAward_accessToken = authorization.get_access_token_for_platform_one()
-        #     createAward_operationId = authorization.get_x_operation_id(createAward_accessToken)
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Send a request to create a CreateAward process.'):
-        #     """
-        #     Send api request to BPE host to create a CreateAward process.
-        #     Save synchronous result of sending the request.
-        #     """
-        #     time.sleep(1)
-        #
-        #     award_payload_class = copy.deepcopy(AwardPayloads(
-        #         host_for_services=get_hosts[2],
-        #         currency=createCn_payload['tender']['lots'][0]['value']['currency'])
-        #     )
-        #     createAward_payload = award_payload_class.create_award_obligatory_data_model(
-        #         need_to_value_amount=True,
-        #         quantity_of_suppliers_objects=1
-        #     )
-        #
-        #     Requests().createAward_for_limitedProcedure(
-        #         host_of_request=get_hosts[1],
-        #         access_token=createAward_accessToken,
-        #         x_operation_id=createAward_operationId,
-        #         pn_ocid=pn_ocid,
-        #         pn_token=pn_token,
-        #         tender_id=np_id,
-        #         lot_id=lot_id,
-        #         payload=createAward_payload,
-        #         test_mode=True
-        #     )
-        #
-        # time.sleep(10)
-        # createAward_feedPoint_message = KafkaMessage(createAward_operationId).get_message_from_kafka()
-        # award_id = createAward_feedPoint_message['data']['outcomes']['awards'][0]['id']
-        # award_token = createAward_feedPoint_message['data']['outcomes']['awards'][0]['X-TOKEN']
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Authorization platform one: EvaluateAward process.'):
-        #     """
-        #     Tender platform authorization for EvaluateAward process.
-        #     As result get Tender platform's access token and process operation-id.
-        #     """
-        #     evaluateAward_accessToken = authorization.get_access_token_for_platform_one()
-        #     evaluateAward_operationId = authorization.get_x_operation_id(evaluateAward_accessToken)
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Send a request to create a EvaluateAward process.'):
-        #     """
-        #     Send api request to BPE host to create a CreateAward process.
-        #     Save synchronous result of sending the request.
-        #     """
-        #     award_payload_class = copy.deepcopy(AwardPayloads(
-        #         host_for_services=get_hosts[2],
-        #         currency=createCn_payload['tender']['lots'][0]['value']['currency'])
-        #     )
-        #     evaluateAward_payload = award_payload_class.evaluate_award_obligatory_data_model(
-        #         award_statusDetails="active"
-        #     )
-        #
-        #     Requests().evaluateAward_for_limitedProcedure(
-        #         host_of_request=get_hosts[1],
-        #         access_token=evaluateAward_accessToken,
-        #         x_operation_id=evaluateAward_operationId,
-        #         pn_ocid=pn_ocid,
-        #         tender_id=np_id,
-        #         award_id=award_id,
-        #         award_token=award_token,
-        #         payload=evaluateAward_payload,
-        #         test_mode=True
-        #     )
-        # time.sleep(10)
-        # actual_np_release_before_protocol = requests.get(url=f"{pn_url}/{np_id}").json()
-        # actual_ms_release_before_protocol = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Authorization platform one: Protocol process.'):
-        #     """
-        #     Tender platform authorization for protocol process.
-        #     As result get Tender platform's access token and process operation-id.
-        #     """
-        #     protocol_accessToken = authorization.get_access_token_for_platform_one()
-        #     protocol_operationId = authorization.get_x_operation_id(protocol_accessToken)
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Send a request to create a Protocol process.'):
-        #     """
-        #     Send api request to BPE host to create a Protocol process.
-        #     Save synchronous result of sending the request.
-        #     """
-        #     synchronous_result_of_sending_the_request = Requests().do_protocol(
-        #         host_of_request=get_hosts[1],
-        #         access_token=protocol_accessToken,
-        #         x_operation_id=protocol_operationId,
-        #         pn_ocid=pn_ocid,
-        #         pn_token=pn_token,
-        #         tender_id=np_id,
-        #         lot_id=lot_id,
-        #         test_mode=True
-        #     )
-        #
-        # step_number += 1
-        # with allure.step(f'# {step_number}. See result'):
-        #     """
-        #     Check the results of TestCase.
-        #     """
-        #
-        #     with allure.step(f'# {step_number}.1. Check status code'):
-        #         """
-        #         Check the synchronous_result_of_sending_the_request.
-        #         """
-        #         with allure.step('Compare actual status code of sending the request and '
-        #                          'expected status code of sending request.'):
-        #             allure.attach(str(synchronous_result_of_sending_the_request.status_code),
-        #                           "Actual status code of sending the request.")
-        #             allure.attach(str(202), "Expected status code of sending request.")
-        #             assert str(synchronous_result_of_sending_the_request.status_code) == str(202)
-        #
-        #     with allure.step(f'# {step_number}.2. Check message in feed point'):
-        #         """
-        #         Check the asynchronous_result_of_sending_the_request.
-        #         """
-        #         protocol_feedPointMessage = KafkaMessage(protocol_operationId).get_message_from_kafka()
-        #         allure.attach(str(protocol_feedPointMessage), 'Message in feed point')
-        #
-        #         asynchronous_result_of_sending_the_request_was_checked = KafkaMessage(
-        #             protocol_operationId).protocol_message_is_successful(
-        #             environment=parse_environment,
-        #             kafka_message=protocol_feedPointMessage,
-        #             pn_ocid=pn_ocid,
-        #             tender_id=np_id
-        #         )
-        #
-        #         with allure.step('Compare actual asynchronous result of sending the request and '
-        #                          'expected asynchronous result of sending request.'):
-        #             allure.attach(str(asynchronous_result_of_sending_the_request_was_checked),
-        #                           "Actual asynchronous result of sending the request.")
-        #             allure.attach(str(True), "Expected asynchronous result of sending the request.")
-        #             assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True), allure.attach(
-        #                 f"SELECT * FROM orchestrator.steps WHERE "
-        #                 f"operation_id = '{protocol_operationId}' ALLOW FILTERING;",
-        #                 "Cassandra DataBase: steps of process")
-        #
-        #     with allure.step(f'# {step_number}.3. Check NP release'):
-        #         """
-        #         Compare actual NP release before Protocol process and NP release after Protocol process.
-        #         """
-        #         allure.attach(str(json.dumps(actual_np_release_before_protocol)),
-        #                       "Actual NP release before Protocol process.")
-        #
-        #         actual_np_release_after_protocol = requests.get(url=f"{pn_url}/{np_id}").json()
-        #         allure.attach(str(json.dumps(actual_np_release_after_protocol)),
-        #                       "Actual NP release after Protocol process.")
-        #
-        #         compare_releases = dict(DeepDiff(
-        #             actual_np_release_before_protocol,
-        #             actual_np_release_after_protocol)
-        #         )
-        #
-        #         dictionary_item_added_was_cleaned = \
-        #             str(compare_releases['dictionary_item_added']).replace('root', '')[1:-1]
-        #         compare_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
-        #
-        #         expected_result = {
-        #             "dictionary_item_added": "['releases'][0]['contracts']",
-        #             "values_changed": {
-        #                 "root['releases'][0]['id']": {
-        #                     "new_value":
-        #                         f"{np_id}-"
-        #                         f"{actual_np_release_after_protocol['releases'][0]['id'][46:59]}",
-        #                     "old_value":
-        #                         f"{np_id}-"
-        #                         f"{actual_np_release_before_protocol['releases'][0]['id'][46:59]}"
-        #                 },
-        #                 "root['releases'][0]['date']": {
-        #                     "new_value": protocol_feedPointMessage['data']['operationDate'],
-        #                     "old_value": actual_np_release_before_protocol['releases'][0]['date']
-        #                 },
-        #                 "root['releases'][0]['tender']['lots'][0]['statusDetails']": {
-        #                     "new_value": "awarded",
-        #                     "old_value": "empty"
-        #                 }
-        #             }
-        #         }
-        #
-        #         try:
-        #             """
-        #             Prepare expected contracts array.
-        #             """
-        #             expected_contracts_release_class = ProtocolReleases(
-        #                 language=parse_language,
-        #                 protocol_feedPointMessage=protocol_feedPointMessage
-        #             )
-        #
-        #             final_expected_contracts_array = expected_contracts_release_class.create_contracts_array(
-        #                 lot_id=lot_id,
-        #                 award_id=award_id,
-        #                 actual_contacts_array=actual_np_release_after_protocol['releases'][0]['contracts']
-        #             )
-        #         except:
-        #             raise Exception("Impossible to prepare expected contracts array.")
+        step_number += 1
+        with allure.step(f'# {step_number}. See result'):
+            """
+            Check the results of TestCase.
+            """
+
+            with allure.step(f'# {step_number}.1. Check status code'):
+                """
+                Check the status code of sending the request.
+                """
+                with allure.step('Compare actual status code and expected status code of sending request.'):
+                    allure.attach(synchronous_result.status_code, "Actual status code.")
+                    allure.attach(202, "Expected status code.")
+                    assert synchronous_result.status_code == 202
+
+            with allure.step(f'# {step_number}.2. Check the message for platform.'):
+                """
+                Check the message for platform.
+                """
+                actual_message = get_message_for_platform(operation_id)
+
+                try:
+                    """
+                    Build expected message for CreatePn process.
+                    """
+                    expected_message = copy.deepcopy(PlanningNoticeMessage(
+                        environment=parse_environment,
+                        actual_message=actual_message,
+                        expected_quantity_of_outcomes_pn=1,
+                        test_mode=True)
+                    )
+
+                    expected_message = expected_message.build_expected_plan_message()
+                except ValueError:
+                    raise ValueError("Impossible to build expected message for CreatePn process.")
+
+                with allure.step('Compare actual and expected message for platform.'):
+                    allure.attach(json.dumps(actual_message), "Actual message.")
+                    allure.attach(json.dumps(expected_message), "Expected message.")
+
+                    assert actual_message == expected_message, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"operation_id = '{operation_id}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process")
+
+            with allure.step(f'# {step_number}.3. Check PN release.'):
+                """
+                Compare actual PN release and expected PN release.
+                """
+                pn_url = f"{actual_message['data']['url']}/{actual_message['data']['outcomes']['pn'][0]['id']}"
+                actual_pn_release = requests.get(url=pn_url).json()
+                allure.attach(str(json.dumps(actual_pn_release)), "Actual PN release.")
+
+                try:
+                    """
+                    Prepare expected PN release.
+                    """
+
+                except ValueError:
+                    raise ValueError("Impossible to prepare expected PN release.")
         #
         #         with allure.step('Check a difference of comparing actual NP release before Protocol process and '
         #                          'expected NP release after Protocol process.'):

@@ -6,10 +6,10 @@ import allure
 import requests
 from deepdiff import DeepDiff
 
-from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.PayloadModel.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
-from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
-from tests.utils.ReleaseModel.SelectiveProcedure.Pn.pn_prepared_release import PnExpectedRelease
+from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
+from tests.utils.ReleaseModels.SelectiveProcedure.Pn.pn_prepared_release import PnExpectedRelease
 from tests.utils.functions_collection import check_uuid_version
 
 from tests.utils.message_for_platform import KafkaMessage

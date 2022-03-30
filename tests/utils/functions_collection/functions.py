@@ -10,11 +10,11 @@ import csv
 import pytz
 import xlrd
 import allure
-from tests.utils.PayloadModel.OpenProcedure.SubmitBid.bid_payload_library import PayloadLibrary
-from tests.utils.data_of_enum import cpv_goods_low_level_03, cpv_goods_low_level_1, cpv_goods_low_level_2, \
-    cpv_goods_low_level_3, cpv_goods_low_level_44, cpv_goods_low_level_48, cpv_works_low_level_45, \
-    cpv_services_low_level_5, cpv_services_low_level_6, cpv_services_low_level_7, cpv_services_low_level_8, \
-    cpv_services_low_level_92, cpv_services_low_level_98, locality_id
+from tests.utils.PayloadModels.OpenProcedure.SubmitBid.bid_payload_library import PayloadLibrary
+from tests.utils.data_of_enum import cpv_goods_low_level_03_tuple, cpv_goods_low_level_1_tuple, cpv_goods_low_level_2_tuple, \
+    cpv_goods_low_level_3_tuple, cpv_goods_low_level_44_tuple, cpv_goods_low_level_48_tuple, cpv_works_low_level_45_tuple, \
+    cpv_services_low_level_5_tuple, cpv_services_low_level_6_tuple, cpv_services_low_level_7_tuple, cpv_services_low_level_8_tuple, \
+    cpv_services_low_level_92_tuple, cpv_services_low_level_98_tuple, locality_id_tuple
 from tests.utils.date_class import Date
 from tests.utils.services.e_mdm_service import MdmService
 import time
@@ -115,31 +115,31 @@ def generate_items_array(quantity_of_object, item_object, tender_classification_
             pass
         item_classification_id = None
         if tender_classification_id[0:2] == "03":
-            item_classification_id = f"{random.choice(cpv_goods_low_level_03)}"
+            item_classification_id = f"{random.choice(cpv_goods_low_level_03_tuple)}"
         elif tender_classification_id[0] == "1":
-            item_classification_id = f"{random.choice(cpv_goods_low_level_1)}"
+            item_classification_id = f"{random.choice(cpv_goods_low_level_1_tuple)}"
         elif tender_classification_id[0] == "2":
-            item_classification_id = f"{random.choice(cpv_goods_low_level_2)}"
+            item_classification_id = f"{random.choice(cpv_goods_low_level_2_tuple)}"
         elif tender_classification_id[0] == "3":
-            item_classification_id = f"{random.choice(cpv_goods_low_level_3)}"
+            item_classification_id = f"{random.choice(cpv_goods_low_level_3_tuple)}"
         elif tender_classification_id[0:2] == "44":
-            item_classification_id = f"{random.choice(cpv_goods_low_level_44)}"
+            item_classification_id = f"{random.choice(cpv_goods_low_level_44_tuple)}"
         elif tender_classification_id[0:2] == "48":
-            item_classification_id = f"{random.choice(cpv_goods_low_level_48)}"
+            item_classification_id = f"{random.choice(cpv_goods_low_level_48_tuple)}"
         elif tender_classification_id[0:2] == "45":
-            item_classification_id = f"{random.choice(cpv_works_low_level_45)}"
+            item_classification_id = f"{random.choice(cpv_works_low_level_45_tuple)}"
         elif tender_classification_id[0] == "5":
-            item_classification_id = f"{random.choice(cpv_services_low_level_5)}"
+            item_classification_id = f"{random.choice(cpv_services_low_level_5_tuple)}"
         elif tender_classification_id[0] == "6":
-            item_classification_id = f"{random.choice(cpv_services_low_level_6)}"
+            item_classification_id = f"{random.choice(cpv_services_low_level_6_tuple)}"
         elif tender_classification_id[0] == "7":
-            item_classification_id = f"{random.choice(cpv_services_low_level_7)}"
+            item_classification_id = f"{random.choice(cpv_services_low_level_7_tuple)}"
         elif tender_classification_id[0] == "8":
-            item_classification_id = f"{random.choice(cpv_services_low_level_8)}"
+            item_classification_id = f"{random.choice(cpv_services_low_level_8_tuple)}"
         elif tender_classification_id[0:2] == "92":
-            item_classification_id = f"{random.choice(cpv_services_low_level_92)}"
+            item_classification_id = f"{random.choice(cpv_services_low_level_92_tuple)}"
         elif tender_classification_id[0:2] == "98":
-            item_classification_id = f"{random.choice(cpv_services_low_level_98)}"
+            item_classification_id = f"{random.choice(cpv_services_low_level_98_tuple)}"
         else:
             Exception("Error: check your 'tender.clasification.id'")
         items_array[quantity_of_object]['classification']['id'] = item_classification_id
@@ -433,7 +433,7 @@ def generate_tender_classification_id(items_array):
 
 # This function returns root dir, for example 'procuriosity_autotests' dir
 def get_project_root() -> Path:
-    return Path(__file__).parent.parent.parent
+    return Path(__file__).parent.parent.parent.parent
 
 
 def get_value_from_country_csv(country, language):
@@ -1115,8 +1115,8 @@ def get_id_token_of_qualification_in_pending_awaiting_state(actual_qualification
                 yield qualification_id, qualification_token
 
 
-def get_locality_id_according_wuth_region_id(region_id):
-    locality_id_tuple = locality_id
-    for i in locality_id_tuple:
+def get_locality_id_according_with_region_id(region_id):
+    locality_id = locality_id_tuple
+    for i in locality_id:
         if region_id[:3] == i[:3]:
             return i

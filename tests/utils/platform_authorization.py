@@ -53,4 +53,4 @@ class PlatformAuthorization:
         return x_operation_id
 
     def __del__(self):
-        print(f"An instance of the class {__name__} has been deleted.")
+        print(f"An instance of the PlatformAuthorization class: {__name__} has been deleted.")

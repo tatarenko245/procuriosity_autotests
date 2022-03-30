@@ -4,14 +4,14 @@ import time
 import allure
 import requests
 from deepdiff import DeepDiff
-from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.PayloadModel.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
-from tests.utils.PayloadModel.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
-from tests.utils.PayloadModel.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
-from tests.utils.PayloadModel.SelectiveProcedure.QualificationDeclare.qualification_declare_prepared_payload import \
+from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
+from tests.utils.PayloadModels.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
+from tests.utils.PayloadModels.SelectiveProcedure.QualificationDeclare.qualification_declare_prepared_payload import \
     DeclarePreparePayload
-from tests.utils.PayloadModel.SelectiveProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload
-from tests.utils.ReleaseModel.SelectiveProcedure.QualificationDecalration.qualification_declaration_release import \
+from tests.utils.PayloadModels.SelectiveProcedure.Submission.submission_prepared_payload import SubmissionPreparePayload
+from tests.utils.ReleaseModels.SelectiveProcedure.QualificationDecalration.qualification_declaration_release import \
     QualificationDeclarationRelease
 from tests.utils.functions_collection import time_bot, get_id_token_of_qualification_in_pending_awaiting_state
 from tests.utils.message_for_platform import KafkaMessage

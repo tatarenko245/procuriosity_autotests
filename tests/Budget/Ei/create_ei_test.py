@@ -6,15 +6,15 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassMetadata
-from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.ReleaseModel.Budget.Ei.ei_prepared_release import EiExpectedRelease
+from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.ReleaseModels.Budget.Ei.ei_prepared_release import EiExpectedRelease
 from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 
 from tests.utils.platform_query_library import Requests
 
 
-@allure.parent_suite('Budget')
+@allure.parent_suite('Pn')
 @allure.suite('Ei')
 @allure.sub_suite('BPE: Create Ei')
 @allure.severity('Critical')

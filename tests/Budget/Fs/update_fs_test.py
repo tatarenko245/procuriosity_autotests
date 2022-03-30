@@ -8,9 +8,9 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassMetadata, GlobalClassUpdateFs
-from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.PayloadModel.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
-from tests.utils.ReleaseModel.Budget.Fs.fs_prepared_release import FsExpectedRelease
+from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.ReleaseModels.Budget.Fs.fs_prepared_release import FsExpectedRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 
@@ -20,7 +20,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.platform_query_library import Requests
 
 
-@allure.parent_suite('Budget')
+@allure.parent_suite('Pn')
 @allure.suite('Fs')
 @allure.sub_suite('BPE: Update Fs')
 @allure.severity('Critical')

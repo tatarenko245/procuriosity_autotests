@@ -5,10 +5,11 @@ import requests
 
 class PlatformQueryRequest:
     @staticmethod
-    @allure.step('# Prepared request: create Ei')
-    def create_ei_process(host, access_token, x_operation_id, country, language, payload, test_mode=False):
+    @allure.step('# Prepared request: create Expenditure item.')
+    def create_ei_process(host_to_bpe, access_token, x_operation_id, country, language, payload, test_mode=False):
+
         request = requests.post(
-            url=f"{host}/do/ei",
+            url=f"{host_to_bpe}/do/ei",
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "X-OPERATION-ID": x_operation_id,
@@ -19,7 +20,7 @@ class PlatformQueryRequest:
                 "testMode": test_mode
             },
             json=payload)
-        allure.attach(f"{host}/do/ei", "URL")
+        allure.attach(f"{host_to_bpe}/do/ei", "URL")
         allure.attach(json.dumps(payload), "Prepared payload")
         return request
 
@@ -42,10 +43,11 @@ class PlatformQueryRequest:
     #     return ei
 
     @staticmethod
-    @allure.step('# Prepared request: create Ei')
-    def create_fs_proces(host, ocid, access_token, x_operation_id, payload, test_mode=False):
+    @allure.step('# Prepared request: create Financial source.')
+    def create_fs_proces(host_to_bpe, ocid, access_token, x_operation_id, payload, test_mode=False):
+
         request = requests.post(
-            url=f"{host}/do/fs/{ocid}",
+            url=f"{host_to_bpe}/do/fs/{ocid}",
             params={
                 "testMode": test_mode
             },
@@ -54,7 +56,7 @@ class PlatformQueryRequest:
                 "X-OPERATION-ID": x_operation_id,
                 "Content-Type": "application/json"},
             json=payload)
-        allure.attach(f"{host}/do/fs/{ocid}", 'URL')
+        allure.attach(f"{host_to_bpe}/do/fs/{ocid}", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return request
     #
@@ -75,7 +77,29 @@ class PlatformQueryRequest:
     #     allure.attach(host_of_request + f"/do/fs/{ei_ocid}/{fs_id}", 'URL')
     #     allure.attach(json.dumps(payload), 'Prepared payload')
     #     return fs
-    #
+
+    @staticmethod
+    @allure.step('# Prepared request: create Planing notice.')
+    def create_pn_proces(host_to_bpe, access_token, x_operation_id, payload, country, language, pmd, test_mode=False):
+
+        request = requests.post(
+            url=f"{host_to_bpe}/do/pn",
+            params={
+                "testMode": test_mode,
+                "country": country,
+                "lang": language,
+                "pmd": pmd
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "X-OPERATION-ID": x_operation_id,
+                "Content-Type": "application/json"},
+            json=payload)
+        allure.attach(f"{host_to_bpe}/do/pn", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return request
+
+
     # @staticmethod
     # @allure.step('Prepared request: create Pn')
     # def createPn(host_of_request, access_token, x_operation_id, country,

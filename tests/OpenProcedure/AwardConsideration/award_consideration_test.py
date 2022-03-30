@@ -10,14 +10,14 @@ from deepdiff import DeepDiff
 from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, \
     GlobalClassCreateCnOnPn, GlobalClassCreateFirstBid, GlobalClassTenderPeriodEndAuction, \
     GlobalClassCreateDeclareNonConflict, GlobalClassAwardConsideration, GlobalClassTenderPeriodEndNoAuction
-from tests.utils.PayloadModel.OpenProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
-from tests.utils.PayloadModel.OpenProcedure.DeclareNonConflictInterest.declare_non_conflict_interest_prepared_payload import \
+from tests.utils.PayloadModels.OpenProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
+from tests.utils.PayloadModels.OpenProcedure.DeclareNonConflictInterest.declare_non_conflict_interest_prepared_payload import \
     DeclarePreparePayload
-from tests.utils.PayloadModel.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.PayloadModel.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
-from tests.utils.PayloadModel.OpenProcedure.Pn.pn_prepared_payload import PnPreparePayload
-from tests.utils.PayloadModel.OpenProcedure.SubmitBid.bid_prepared_payload import BidPreparePayload
-from tests.utils.ReleaseModel.OpenProcedure.AwardConsideration.award_consideration_release import AwardConsiderationRelease
+from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.OpenProcedure.Pn.pn_prepared_payload import PnPreparePayload
+from tests.utils.PayloadModels.OpenProcedure.SubmitBid.bid_prepared_payload import BidPreparePayload
+from tests.utils.ReleaseModels.OpenProcedure.AwardConsideration.award_consideration_release import AwardConsiderationRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 from tests.utils.functions_collection import get_project_root, time_bot
