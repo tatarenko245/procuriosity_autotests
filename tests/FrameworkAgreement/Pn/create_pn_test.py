@@ -8,6 +8,7 @@ import requests
 from tests.utils.MessageModels.Pn.planning_notice_message import PlanningNoticeMessage
 from tests.utils.PayloadModels.Budget.Fs.financial_source_payload import FinancialSourcePayload
 from tests.utils.PayloadModels.FrameworkAgreement.Pn.planing_notice_payload import PlanningNoticePayload
+from tests.utils.ReleaseModels.FrameworkAgreement.Pn.planning_notice_release import PlanningNoticeRelease
 from tests.utils.data_of_enum import currency_tuple
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
 from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload import ExpenditureItemPayload
@@ -182,8 +183,9 @@ class TestCreatePn:
                     "tender.items",
                     "tender.documents"
                 )
-
                 pn_payload = pn_payload.build_plan_payload()
+                print("PAYLOAD")
+                print(json.dumps(pn_payload))
             except ValueError:
                 raise ValueError("Impossible to build payload for CreatePn process.")
 
@@ -230,7 +232,7 @@ class TestCreatePn:
                         test_mode=True)
                     )
 
-                    expected_message = expected_message.build_expected_plan_message()
+                    expected_message = expected_message.build_expected_message_for_pn_process()
                 except ValueError:
                     raise ValueError("Impossible to build expected message for CreatePn process.")
 
@@ -250,12 +252,26 @@ class TestCreatePn:
                 pn_url = f"{actual_message['data']['url']}/{actual_message['data']['outcomes']['pn'][0]['id']}"
                 actual_pn_release = requests.get(url=pn_url).json()
                 allure.attach(str(json.dumps(actual_pn_release)), "Actual PN release.")
-
+                print("actual pn release")
+                print(json.dumps(actual_pn_release))
                 try:
                     """
                     Build expected PN release.
                     """
+                    expected_pn_release = copy.deepcopy(PlanningNoticeRelease(
+                        environment=parse_environment,
+                        host_to_service=get_hosts[2],
+                        language=parse_language,
+                        pmd=parse_pmd,
+                        pn_payload=pn_payload,
+                        pn_message=actual_message,
+                        actual_pn_release=actual_pn_release
+                    ))
 
+                    expected_pn_release = expected_pn_release.build_expected_pn_release()
+
+                    print("expected pn release")
+                    print(json.dumps(expected_pn_release))
                 except ValueError:
                     raise ValueError("Impossible to build expected PN release.")
         #

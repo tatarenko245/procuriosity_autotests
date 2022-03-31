@@ -504,7 +504,7 @@ class TestCreatePn:
                             'relationship': ['x_execution'],
                             'scheme': 'ocid',
                             'identifier': GlobalClassCreatePn.pn_ocid,
-                            'uri': f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
+                            'uri': f"{GlobalClassMetadata.__metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
                                    f"/{GlobalClassCreatePn.pn_ocid}"
                         }
                     }
@@ -577,7 +577,7 @@ class TestCreatePn:
                                 "x_execution"],
                             "scheme": "ocid",
                             "identifier": GlobalClassCreatePn.pn_ocid,
-                            "uri": f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
+                            "uri": f"{GlobalClassMetadata.__metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
                                    f"/{GlobalClassCreatePn.pn_ocid}"
                         }
                     }
@@ -925,7 +925,7 @@ class TestCreatePn:
                             'relationship': ['x_execution'],
                             'scheme': 'ocid',
                             'identifier': GlobalClassCreatePn.pn_ocid,
-                            'uri': f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
+                            'uri': f"{GlobalClassMetadata.__metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
                                    f"/{GlobalClassCreatePn.pn_ocid}"
                         }
                     }
@@ -998,7 +998,7 @@ class TestCreatePn:
                                 "x_execution"],
                             "scheme": "ocid",
                             "identifier": GlobalClassCreatePn.pn_ocid,
-                            "uri": f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
+                            "uri": f"{GlobalClassMetadata.__metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
                                    f"/{GlobalClassCreatePn.pn_ocid}"
                         }
                     }
@@ -1345,7 +1345,7 @@ class TestCreatePn:
                             'relationship': ['x_execution'],
                             'scheme': 'ocid',
                             'identifier': GlobalClassCreatePn.pn_ocid,
-                            'uri': f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
+                            'uri': f"{GlobalClassMetadata.__metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
                                    f"/{GlobalClassCreatePn.pn_ocid}"
                         }
                     }
@@ -1418,7 +1418,7 @@ class TestCreatePn:
                                 "x_execution"],
                             "scheme": "ocid",
                             "identifier": GlobalClassCreatePn.pn_ocid,
-                            "uri": f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
+                            "uri": f"{GlobalClassMetadata.__metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
                                    f"/{GlobalClassCreatePn.pn_ocid}"
                         }
                     }

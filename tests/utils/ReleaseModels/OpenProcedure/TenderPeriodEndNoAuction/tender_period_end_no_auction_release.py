@@ -34,7 +34,7 @@ class TenderPeriodExpectedChanges:
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
-        GlobalClassMetadata.metadata_tender_url = self.metadata_tender_url
+        GlobalClassMetadata.__metadata_tender_url = self.metadata_tender_url
 
     def prepare_unsuccessful_awards_array(self):
         try:

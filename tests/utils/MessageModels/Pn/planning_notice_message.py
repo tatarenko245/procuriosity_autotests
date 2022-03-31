@@ -35,7 +35,7 @@ class PlanningNoticeMessage:
             }
         }
 
-    def build_expected_plan_message(self):
+    def build_expected_message_for_pn_process(self):
         if "X-OPERATION-ID" in self.__actual_message:
             is_operation_id_correct = is_it_uuid(self.__actual_message['X-OPERATION-ID'])
 

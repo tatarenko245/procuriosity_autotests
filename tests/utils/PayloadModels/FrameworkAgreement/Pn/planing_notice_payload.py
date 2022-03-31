@@ -134,12 +134,12 @@ class PlanningNoticePayload:
                                 "id": "AA12-4"
                             }
                         ],
-                        "quantity": "10",
+                        "quantity": "10.989",
                         "unit": {
                             "id": "10"
                         },
                         "description": "create ei: tender.items0.description",
-                        "relatedLot": ["0"]
+                        "relatedLot": "0"
                     }],
                 "documents": [
                     {
@@ -244,7 +244,7 @@ class PlanningNoticePayload:
                 new_items_array[q_0]['additionalClassifications'][q_1]['id'] = \
                     list_of_additionalclassification_id[q_1]
 
-            new_items_array[q_0]['relatedLot'] = [lot_id_list[q_0]]
+            new_items_array[q_0]['relatedLot'] = lot_id_list[q_0]
 
         self.__payload['tender']['items'] = new_items_array
 
@@ -258,7 +258,7 @@ class PlanningNoticePayload:
             new_lots_array[q_0]['internalId'] = f"create pn: tender.lots{q_0}.internalId"
             new_lots_array[q_0]['title'] = f"create pn: tender.lotss{q_0}.title"
             new_lots_array[q_0]['description'] = f"create pn: tender.lots{q_0}.description"
-            new_lots_array[q_0]['value']['amount'] = self.__amount / quantity_of_lots
+            new_lots_array[q_0]['value']['amount'] = round(self.__amount / quantity_of_lots, 2)
             new_lots_array[q_0]['value']['currency'] = self.__currency
 
             contact_period = Date().contact_period()

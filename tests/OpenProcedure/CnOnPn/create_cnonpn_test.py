@@ -645,7 +645,7 @@ class TestCreateCnOnPn:
                             'relationship': ['x_evaluation'],
                             'scheme': 'ocid',
                             'identifier': GlobalClassCreateCnOnPn.ev_id,
-                            'uri': f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
+                            'uri': f"{GlobalClassMetadata.__metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
                                    f"/{GlobalClassCreateCnOnPn.ev_id}"
                         }
                     }
@@ -1205,7 +1205,7 @@ class TestCreateCnOnPn:
                             'relationship': ['x_evaluation'],
                             'scheme': 'ocid',
                             'identifier': GlobalClassCreateCnOnPn.ev_id,
-                            'uri': f"{GlobalClassMetadata.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
+                            'uri': f"{GlobalClassMetadata.__metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}"
                                    f"/{GlobalClassCreateCnOnPn.ev_id}"
                         }
                     }
