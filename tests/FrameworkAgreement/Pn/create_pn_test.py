@@ -174,15 +174,15 @@ class TestCreatePn:
                     host_to_service=get_hosts[2])
                 )
 
-                pn_payload.delete_optional_fields(
-                    "planning.rationale",
-                    "planning.budget.description",
-                    "tender.procurementMethodRationale",
-                    "tender.procurementMethodAdditionalInfo",
-                    "tender.lots",
-                    "tender.items",
-                    "tender.documents"
-                )
+                # pn_payload.delete_optional_fields(
+                #     "planning.rationale",
+                #     "planning.budget.description",
+                #     "tender.procurementMethodRationale",
+                #     "tender.procurementMethodAdditionalInfo",
+                #     "tender.lots",
+                #     "tender.items",
+                #     "tender.documents"
+                # )
                 pn_payload = pn_payload.build_plan_payload()
                 print("PAYLOAD")
                 print(json.dumps(pn_payload))
@@ -252,13 +252,12 @@ class TestCreatePn:
                 pn_url = f"{actual_message['data']['url']}/{actual_message['data']['outcomes']['pn'][0]['id']}"
                 actual_pn_release = requests.get(url=pn_url).json()
                 allure.attach(str(json.dumps(actual_pn_release)), "Actual PN release.")
-                print("actual pn release")
-                print(json.dumps(actual_pn_release))
+
                 try:
                     """
                     Build expected PN release.
                     """
-                    expected_pn_release = copy.deepcopy(PlanningNoticeRelease(
+                    expected_release = copy.deepcopy(PlanningNoticeRelease(
                         environment=parse_environment,
                         host_to_service=get_hosts[2],
                         language=parse_language,
@@ -268,78 +267,73 @@ class TestCreatePn:
                         actual_pn_release=actual_pn_release
                     ))
 
-                    expected_pn_release = expected_pn_release.build_expected_pn_release()
-
-                    print("expected pn release")
-                    print(json.dumps(expected_pn_release))
+                    expected_pn_release = expected_release.build_expected_pn_release()
                 except ValueError:
                     raise ValueError("Impossible to build expected PN release.")
-        #
-        #         with allure.step('Check a difference of comparing actual NP release before Protocol process and '
-        #                          'expected NP release after Protocol process.'):
-        #             allure.attach(str(compare_releases),
-        #                           "Actual result of comparing NP releases.")
-        #             allure.attach(str(expected_result),
-        #                           "Expected result of comparing NP releases.")
-        #             assert str(compare_releases) == str(expected_result), allure.attach(
-        #                 f"SELECT * FROM orchestrator.steps WHERE "
-        #                 f"operation_id = '{protocol_operationId}' ALLOW FILTERING;",
-        #                 "Cassandra DataBase: steps of process")
-        #
-        #     with allure.step(f'# {step_number}.4. Check MS release'):
-        #         """
-        #         Compare actual multistage release before Protocol process and
-        #         actual multistage release after Protocol process.
-        #         """
-        #         allure.attach(str(json.dumps(actual_ms_release_before_protocol)),
-        #                       "Actual Ms release before Protocol process.")
-        #
-        #         actual_ms_release_after_protocol = requests.get(url=f"{pn_url}/{pn_ocid}").json()
-        #         allure.attach(str(json.dumps(actual_np_release_after_protocol)),
-        #                       "Actual Ms release after Protocol process")
-        #
-        #         compare_releases = dict(DeepDiff(actual_ms_release_before_protocol,
-        #                                          actual_ms_release_after_protocol
-        #                                          )
-        #                                 )
-        #         expected_result = {}
-        #
-        #         with allure.step('Check a difference of comparing Ms release before Protocol and '
-        #                          'Ms release after Protocol.'):
-        #             allure.attach(str(compare_releases),
-        #                           "Actual result of comparing MS releases.")
-        #             allure.attach(str(expected_result),
-        #                           "Expected result of comparing Ms releases.")
-        #             assert str(compare_releases) == str(expected_result), allure.attach(
-        #                 f"SELECT * FROM orchestrator.steps WHERE "
-        #                 f"operation_id = '{protocol_operationId}' ALLOW FILTERING;",
-        #                 "Cassandra DataBase: steps of process")
-        #
-        #             try:
-        #                 """
-        #                     If TestCase was passed, then cLean up the database.
-        #                     If TestCase was failed, then return process steps by operation-id.
-        #                     """
-        #                 if compare_releases == expected_result:
-        #                     connect_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-        #
-        #                     connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-        #
-        #                     connect_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                     connect_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                     connect_to_database.createAward_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-        #
-        #                     connect_to_database.cleanup_steps_of_process(operation_id=createEi_operationId)
-        #
-        #                     connect_to_database.cleanup_steps_of_process(operation_id=createFs_operationId)
-        #
-        #                     connect_to_database.cleanup_steps_of_process(operation_id=createPn_operationId)
-        #
-        #                     connect_to_database.cleanup_steps_of_process(operation_id=createCn_operationId)
-        #
-        #                     connect_to_database.cleanup_steps_of_process_from_orchestrator(
-        #                         pn_ocid=pn_ocid)
-        #             except ValueError:
-        #                 raise ValueError("Can not return BPE operation step")
+
+                with allure.step('Compare actual and expected PN release.'):
+                    allure.attach(json.dumps(actual_pn_release), "Actual PN release.")
+                    allure.attach(json.dumps(expected_pn_release), "Expected PN release.")
+
+                    assert actual_pn_release == expected_pn_release, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"operation_id = '{operation_id}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process")
+
+            with allure.step(f'# {step_number}.4. Check MS release.'):
+                """
+                Compare actual MS release and expected MS release.
+                """
+                ms_url = f"{actual_message['data']['url']}/{actual_message['data']['ocid']}"
+                actual_ms_release = requests.get(url=ms_url).json()
+                allure.attach(str(json.dumps(actual_ms_release)), "Actual MS release.")
+                print("actual ms release")
+                print(json.dumps(actual_ms_release))
+                # try:
+                #     """
+                #     Build expected MS release.
+                #     """
+                #     expected_ms_release = expected_release.build_expected_pn_release()
+                #
+                #     print("expected ms release")
+                #     print(json.dumps(expected_ms_release))
+                # except ValueError:
+                #     raise ValueError("Impossible to build expected MS release.")
+                #
+                # with allure.step('Compare actual and expected MS release.'):
+                #     allure.attach(json.dumps(actual_ms_release), "Actual MS release.")
+                #     allure.attach(json.dumps(expected_ms_release), "Expected MS release.")
+                #
+                #     assert actual_pn_release == expected_release, \
+                #         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                #                       f"operation_id = '{operation_id}' ALLOW FILTERING;",
+                #                       "Cassandra DataBase: steps of process")
+            #
+            #             try:
+            #                 """
+            #                     If TestCase was passed, then cLean up the database.
+            #                     If TestCase was failed, then return process steps by operation-id.
+            #                     """
+            #                 if compare_releases == expected_result:
+            #                     connect_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
+            #
+            #                     connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
+            #
+            #                     connect_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+            #
+            #                     connect_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+            #
+            #                     connect_to_database.createAward_process_cleanup_table_of_services(pn_ocid=pn_ocid)
+            #
+            #                     connect_to_database.cleanup_steps_of_process(operation_id=createEi_operationId)
+            #
+            #                     connect_to_database.cleanup_steps_of_process(operation_id=createFs_operationId)
+            #
+            #                     connect_to_database.cleanup_steps_of_process(operation_id=createPn_operationId)
+            #
+            #                     connect_to_database.cleanup_steps_of_process(operation_id=createCn_operationId)
+            #
+            #                     connect_to_database.cleanup_steps_of_process_from_orchestrator(
+            #                         pn_ocid=pn_ocid)
+            #             except ValueError:
+            #                 raise ValueError("Can not return BPE operation step")
