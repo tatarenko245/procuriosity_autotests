@@ -52,17 +52,17 @@ class TestCreatePn:
                 """
                 ei_payload = copy.deepcopy(ExpenditureItemPayload())
 
-                ei_payload.delete_optional_fields(
-                    "tender.description",
-                    "tender.items",
-                    "planning.rationale",
-                    "buyer.identifier.uri",
-                    "buyer.address.postalCode",
-                    "buyer.additionalIdentifiers",
-                    "buyer.contactPoint.faxNumber",
-                    "buyer.contactPoint.url",
-                    "buyer.details"
-                )
+                # ei_payload.delete_optional_fields(
+                #     "tender.description",
+                #     "tender.items",
+                #     "planning.rationale",
+                #     "buyer.identifier.uri",
+                #     "buyer.address.postalCode",
+                #     "buyer.additionalIdentifiers",
+                #     "buyer.contactPoint.faxNumber",
+                #     "buyer.contactPoint.url",
+                #     "buyer.details"
+                # )
                 tender_classification_id = ei_payload.get_tender_classification_id()
                 ei_payload = ei_payload.build_expenditure_item_payload()
             except ValueError:
@@ -80,71 +80,77 @@ class TestCreatePn:
 
         message = get_message_for_platform(operation_id)
         ei_id = message["data"]["outcomes"]["ei"][0]['id']
+        ei_ocid = message["data"]['ocid']
+        ei_id_list = list()
+        ei_id_list.append(ei_id)
         allure.attach(str(message), 'Message for platform.')
 
-        step_number = 1
-        with allure.step(f'# {step_number}. Authorization platform one: CreateFs process.'):
-            """
-            Tender platform authorization for CreateFs process.
-            As result get Tender platform's access token and process operation-id.
-            """
-            platform_one = PlatformAuthorization(get_hosts[1])
-            access_token = platform_one.get_access_token_for_platform_one()
-            operation_id = platform_one.get_x_operation_id(access_token)
-
-        step_number += 1
-        with allure.step(f'# {step_number}. Send a request to create a CreateFS process.'):
-            """
-            Send api request to BPE host to create a CreateFs process.
-            And save in variable cpid.
-            """
-            try:
+        fs_id_list = list()
+        fs_budget_cpid_ocid_list = list()
+        currency = f"{random.choice(currency_tuple)}"
+        for _ in range(3):
+            step_number = 1
+            with allure.step(f'# {step_number}. Authorization platform one: CreateFs process.'):
                 """
-                Build payload for CreateFs process.
+                Tender platform authorization for CreateFs process.
+                As result get Tender platform's access token and process operation-id.
                 """
-                currency = f"{random.choice(currency_tuple)}"
-                fs_payload = copy.deepcopy(FinancialSourcePayload(
-                    ei_payload=ei_payload,
-                    amount=89999.89,
-                    currency=currency)
-                )
+                platform_one = PlatformAuthorization(get_hosts[1])
+                access_token = platform_one.get_access_token_for_platform_one()
+                operation_id = platform_one.get_x_operation_id(access_token)
 
-                fs_payload.delete_optional_fields(
-                    "tender.procuringEntity.identifier.uri",
-                    "tender.procuringEntity.address.postalCode",
-                    "tender.procuringEntity.additionalIdentifiers",
-                    "tender.procuringEntity.contactPoint.faxNumber",
-                    "tender.procuringEntity.contactPoint.url",
-                    "planning.budget.id",
-                    "planning.budget.description",
-                    "planning.budget.europeanUnionFunding",
-                    "planning.budget.project",
-                    "planning.budget.projectID",
-                    "planning.budget.uri",
-                    "planning.rationale",
-                    "buyer.identifier.uri",
-                    "buyer.address.postalCode",
-                    "buyer.additionalIdentifiers",
-                    "buyer.contactPoint.faxNumber",
-                    "buyer.contactPoint.url"
-                )
+                step_number += 1
+                with allure.step(f'# {step_number}. Send a request to create a CreateFS process.'):
+                    """
+                    Send api request to BPE host to create a CreateFs process.
+                    And save in variable cpid.
+                    """
+                    try:
+                        """
+                        Build payload for CreateFs process.
+                        """
+                        fs_payload = copy.deepcopy(FinancialSourcePayload(
+                            ei_payload=ei_payload,
+                            amount=89999.89,
+                            currency=currency)
+                        )
 
-                fs_payload = fs_payload.build_financial_source_payload()
-            except ValueError:
-                raise ValueError("Impossible to build payload for CreateFs process.")
+                        # fs_payload.delete_optional_fields(
+                        #     "tender.procuringEntity.identifier.uri",
+                        #     "tender.procuringEntity.address.postalCode",
+                        #     "tender.procuringEntity.additionalIdentifiers",
+                        #     "tender.procuringEntity.contactPoint.faxNumber",
+                        #     "tender.procuringEntity.contactPoint.url",
+                        #     "planning.budget.id",
+                        #     "planning.budget.description",
+                        #     "planning.budget.europeanUnionFunding",
+                        #     "planning.budget.project",
+                        #     "planning.budget.projectID",
+                        #     "planning.budget.uri",
+                        #     "planning.rationale",
+                        #     "buyer"
+                        # )
 
-            PlatformQueryRequest().create_fs_proces(
-                host_to_bpe=get_hosts[1],
-                ocid=ei_id,
-                access_token=access_token,
-                x_operation_id=operation_id,
-                payload=fs_payload,
-                test_mode=True
-            )
+                        fs_payload = fs_payload.build_financial_source_payload()
+                    except ValueError:
+                        raise ValueError("Impossible to build payload for CreateFs process.")
 
-            message = get_message_for_platform(operation_id)
-            fs_id = message["data"]["outcomes"]["fs"][0]['id']
-            allure.attach(str(message), 'Message for platform.')
+                    PlatformQueryRequest().create_fs_proces(
+                        host_to_bpe=get_hosts[1],
+                        ocid=ei_id,
+                        access_token=access_token,
+                        x_operation_id=operation_id,
+                        payload=fs_payload,
+                        test_mode=True
+                    )
+
+                    print(f"operation_id = {operation_id}")
+
+                    message = get_message_for_platform(operation_id)
+                    fs_id = message["data"]["outcomes"]["fs"][0]['id']
+                    fs_id_list.append(fs_id)
+                    fs_budget_cpid_ocid_list.append(f"{ei_ocid}/{fs_id}")
+                    allure.attach(str(message), 'Message for platform.')
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreatePn process.'):
@@ -168,11 +174,13 @@ class TestCreatePn:
                 """
                 pn_payload = copy.deepcopy(PlanningNoticePayload(
                     fs_id=fs_id,
-                    amount=89999.89,
+                    amount=909.99,
                     currency=currency,
                     tender_classification_id=tender_classification_id,
                     host_to_service=get_hosts[2])
                 )
+
+                pn_payload.customize_planning_budget_budgetbreakdown(fs_id_list)
 
                 # pn_payload.delete_optional_fields(
                 #     "planning.rationale",
@@ -251,6 +259,10 @@ class TestCreatePn:
                 """
                 pn_url = f"{actual_message['data']['url']}/{actual_message['data']['outcomes']['pn'][0]['id']}"
                 actual_pn_release = requests.get(url=pn_url).json()
+
+                ms_url = f"{actual_message['data']['url']}/{actual_message['data']['ocid']}"
+                actual_ms_release = requests.get(url=ms_url).json()
+
                 allure.attach(str(json.dumps(actual_pn_release)), "Actual PN release.")
 
                 try:
@@ -264,7 +276,8 @@ class TestCreatePn:
                         pmd=parse_pmd,
                         pn_payload=pn_payload,
                         pn_message=actual_message,
-                        actual_pn_release=actual_pn_release
+                        actual_pn_release=actual_pn_release,
+                        actual_ms_release=actual_ms_release
                     ))
 
                     expected_pn_release = expected_release.build_expected_pn_release()
@@ -284,21 +297,22 @@ class TestCreatePn:
                 """
                 Compare actual MS release and expected MS release.
                 """
-                ms_url = f"{actual_message['data']['url']}/{actual_message['data']['ocid']}"
-                actual_ms_release = requests.get(url=ms_url).json()
+
                 allure.attach(str(json.dumps(actual_ms_release)), "Actual MS release.")
                 print("actual ms release")
                 print(json.dumps(actual_ms_release))
-                # try:
-                #     """
-                #     Build expected MS release.
-                #     """
-                #     expected_ms_release = expected_release.build_expected_pn_release()
-                #
-                #     print("expected ms release")
-                #     print(json.dumps(expected_ms_release))
-                # except ValueError:
-                #     raise ValueError("Impossible to build expected MS release.")
+                try:
+                    """
+                    Build expected MS release.
+                    """
+                    print("fs_budget_cpid_ocid_list")
+                    print(fs_budget_cpid_ocid_list)
+                    expected_ms_release = expected_release.build_expected_ms_release(fs_budget_cpid_ocid_list)
+
+                    print("expected ms release")
+                    print(json.dumps(expected_ms_release))
+                except ValueError:
+                    raise ValueError("Impossible to build expected MS release.")
                 #
                 # with allure.step('Compare actual and expected MS release.'):
                 #     allure.attach(json.dumps(actual_ms_release), "Actual MS release.")

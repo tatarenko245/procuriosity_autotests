@@ -196,17 +196,14 @@ class PlanningNoticePayload:
             lot_id_list.append(self.__payload['tender']['lots'][q]['id'])
         return lot_id_list
 
-    def customize_planning_budget_budgetbreakdown(self, *fs_id, quantity_of_planning_budget_budgetbreakdown):
-        """
-        The quantity of *fs_id must be equal the quantity_of_planning_budget_budgetbreakdown.
-        """
-        new_budgetbreakdown_array = list()
-        for q in range(quantity_of_planning_budget_budgetbreakdown):
-            new_budgetbreakdown_array.append(copy.deepcopy(self.__payload['planning']['budget']['budgetBreakdown'][0]))
-            new_budgetbreakdown_array[q]['id'] = fs_id[q]
+    def customize_planning_budget_budgetbreakdown(self, list_of_fs_id):
 
-            new_budgetbreakdown_array[q]['amount']['amount'] = \
-                self.__amount / quantity_of_planning_budget_budgetbreakdown
+        new_budgetbreakdown_array = list()
+        for q in range(len(list_of_fs_id)):
+            new_budgetbreakdown_array.append(copy.deepcopy(self.__payload['planning']['budget']['budgetBreakdown'][0]))
+            new_budgetbreakdown_array[q]['id'] = list_of_fs_id[q]
+
+            new_budgetbreakdown_array[q]['amount']['amount'] = round(self.__amount / len(list_of_fs_id), 2)
 
             new_budgetbreakdown_array[q]['amount']['currency'] = self.__currency
 

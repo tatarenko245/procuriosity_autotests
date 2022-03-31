@@ -158,6 +158,8 @@ class FinancialSourcePayload:
             elif a == "planning.rationale":
                 del self.__payload['planning']['rationale']
 
+            elif a == "buyer":
+                del self.__payload['buyer']
             elif a == "buyer.identifier.uri":
                 del self.__payload['buyer']['identifier']['uri']
             elif a == "buyer.address.postalCode":
@@ -187,6 +189,7 @@ class FinancialSourcePayload:
 
     def customize_tender_procuringentity_additionalidentifiers(
             self, quantity_of_tender_procuringentity_additionalidentifiers):
+
         new_additionalidentifiers_array = list()
         for q in range(quantity_of_tender_procuringentity_additionalidentifiers):
 
