@@ -719,7 +719,7 @@ class PlanningNoticeRelease:
 
         return self.__expected_pn_release
 
-    def build_expected_ms_release(self, fs_budget_cpid_ocid_list, tender_classification_id):
+    def build_expected_ms_release(self, ei_payload, fs_payloads_list, tender_classification_id):
         print(f"\nПрокинули параметр tender.classifiacation.id = {tender_classification_id}")
         # Build the releases.planning object. Enrich or delete optional fields and enrich required fields:
         if "rationale" in self.__pn_payload['planning']:
@@ -759,11 +759,11 @@ class PlanningNoticeRelease:
             new_budgetbreakdown_array[q_0]['id'] = \
                 self.__pn_payload['planning']['budget']['budgetBreakdown'][q_0]['id']
 
-            actual_fs_release = requests.get(url=f"{self.metadata_budget_url}/{fs_budget_cpid_ocid_list[q_0]}").json()
-            if "description" in actual_fs_release['releases'][0]['planning']['budget']:
+            # actual_fs_release = requests.get(url=f"{self.metadata_budget_url}/{fs_budget_cpid_ocid_list[q_0]}").json()
+            if "description" in fs_payloads_list[q_0]['planning']['budget']:
 
                 new_budgetbreakdown_array[q_0]['description'] = \
-                    actual_fs_release['releases'][0]['planning']['budget']['description']
+                    fs_payloads_list[q_0]['planning']['budget']['description']
             else:
                 del new_budgetbreakdown_array[q_0]['description']
 
@@ -773,33 +773,41 @@ class PlanningNoticeRelease:
             sum_of_budgetbreakdown_amount_list.append(new_budgetbreakdown_array[q_0]['amount']['amount'])
 
             new_budgetbreakdown_array[q_0]['amount']['currency'] = \
-                actual_fs_release['releases'][0]['planning']['budget']['amount']['currency']
+                fs_payloads_list[q_0]['planning']['budget']['amount']['currency']
 
             new_budgetbreakdown_array[q_0]['period']['startDate'] = \
-                actual_fs_release['releases'][0]['planning']['budget']['period']['startDate']
+                fs_payloads_list[q_0]['planning']['budget']['period']['startDate']
 
             new_budgetbreakdown_array[q_0]['period']['endDate'] = \
-                actual_fs_release['releases'][0]['planning']['budget']['period']['endDate']
+                fs_payloads_list[q_0]['planning']['budget']['period']['endDate']
 
-            new_budgetbreakdown_array[q_0]['sourceParty']['id'] = \
-                actual_fs_release['releases'][0]['planning']['budget']['sourceEntity']['id']
+            if "buyer" in fs_payloads_list[q_0]:
+                new_budgetbreakdown_array[q_0]['sourceParty']['id'] = \
+                    f"{fs_payloads_list[q_0]['buyer']['identifier']['scheme']}-" \
+                    f"{fs_payloads_list[q_0]['buyer']['identifier']['id']}"
 
-            new_budgetbreakdown_array[q_0]['sourceParty']['name'] = \
-                actual_fs_release['releases'][0]['planning']['budget']['sourceEntity']['name']
+                new_budgetbreakdown_array[q_0]['sourceParty']['name'] = fs_payloads_list[q_0]['buyer']['name']
+            else:
 
-            if "europeanUnionFunding" in actual_fs_release['releases'][0]['planning']['budget']:
+                new_budgetbreakdown_array[q_0]['sourceParty']['id'] = \
+                    f"{ei_payload['buyer']['identifier']['scheme']}-" \
+                    f"{ei_payload['buyer']['identifier']['id']}"
+
+                new_budgetbreakdown_array[q_0]['sourceParty']['name'] = ei_payload['buyer']['name']
+
+            if "europeanUnionFunding" in fs_payloads_list[q_0]['planning']['budget']:
 
                 new_budgetbreakdown_array[q_0]['europeanUnionFunding'] = \
-                    actual_fs_release['releases'][0]['planning']['budget']['europeanUnionFunding']
+                    fs_payloads_list[q_0]['planning']['budget']['europeanUnionFunding']
 
-                if "uri" in actual_fs_release['releases'][0]['planning']['budget']['europeanUnionFunding']:
+                if "uri" in fs_payloads_list[q_0]['planning']['budget']['europeanUnionFunding']:
 
                     new_budgetbreakdown_array[q_0]['europeanUnionFunding']['uri'] = \
-                        actual_fs_release['releases'][0]['planning']['budget']['europeanUnionFunding']['uri']
+                        fs_payloads_list[q_0]['planning']['budget']['europeanUnionFunding']['uri']
                 else:
-                    del new_budgetbreakdown_array[q_0]['planning']['budget']['europeanUnionFunding']['uri']
+                    del new_budgetbreakdown_array[q_0]['europeanUnionFunding']['uri']
             else:
-                del self.__expected_ms_release['releases'][0]['planning']['budget']['europeanUnionFunding']
+                del new_budgetbreakdown_array[q_0]['europeanUnionFunding']
 
         self.__expected_ms_release['releases'][0]['planning']['budget']['budgetBreakdown'] = new_budgetbreakdown_array
 
@@ -855,7 +863,7 @@ class PlanningNoticeRelease:
            Enrich mainProcurementCategory, depends on tender.classification.id.
            """
             if \
-                    tender_classification_id == "03" or \
+                    tender_classification_id[0:2] == "03" or \
                     tender_classification_id[0] == "1" or \
                     tender_classification_id[0] == "2" or \
                     tender_classification_id[0] == "3" or \
@@ -879,7 +887,9 @@ class PlanningNoticeRelease:
             else:
                 raise ValueError("Check your tender.classification.id")
 
-            self.__expected_ms_release['releases'][0]['tender']['mainProcurementCategory'] = expected_main_procurement_category
+            self.__expected_ms_release['releases'][0]['tender']['mainProcurementCategory'] = \
+                expected_main_procurement_category
+
         except KeyError:
             raise KeyError("Could not parse tender.classification.id.")
 
