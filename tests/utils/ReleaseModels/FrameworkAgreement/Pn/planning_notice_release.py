@@ -1,7 +1,5 @@
 import copy
 
-import requests
-
 from tests.utils.functions_collection.functions import get_value_from_cpv_dictionary_xls, \
     get_value_from_cpvs_dictionary_csv, get_value_from_classification_unit_dictionary_csv, get_value_from_country_csv, \
     get_value_from_region_csv, get_value_from_locality_csv, is_it_uuid, get_contract_period_for_ms_release, \
@@ -503,7 +501,7 @@ class PlanningNoticeRelease:
                         }
 
                         if self.__pn_payload['tender']['lots'][q_0]['placeOfPerformance']['address']['addressDetails'][
-                            'locality']['scheme'] == "CUATM":
+                                'locality']['scheme'] == "CUATM":
 
                             lot_locality_data = get_value_from_locality_csv(
 
@@ -551,7 +549,8 @@ class PlanningNoticeRelease:
 
                     new_lots_array[q_0]['placeOfPerformance']['address']['addressDetails'][
                         'country'] = expected_lot_country_object
-                    new_lots_array[q_0]['placeOfPerformance']['address']['addressDetails']['region'] = expected_lot_region_object
+                    new_lots_array[q_0]['placeOfPerformance']['address']['addressDetails'][
+                        'region'] = expected_lot_region_object
                     new_lots_array[q_0]['placeOfPerformance']['address']['addressDetails'][
                         'locality'] = expected_lot_locality_object
                 self.__expected_pn_release['releases'][0]['tender']['lots'] = new_lots_array
@@ -920,7 +919,8 @@ class PlanningNoticeRelease:
                                  "'TEST_RFQ', 'TEST_MC', 'DCO', 'RFQ', 'MC' in pytest command")
 
             self.__expected_ms_release['releases'][0]['tender']['procurementMethod'] = expected_procurementmethod
-            self.__expected_ms_release['releases'][0]['tender']['procurementMethodDetails'] = expected_procurementmethoddetails
+            self.__expected_ms_release['releases'][0]['tender'][
+                'procurementMethodDetails'] = expected_procurementmethoddetails
         except KeyError:
             raise KeyError("Could not parse a pmd into pytest command.")
 
@@ -928,15 +928,16 @@ class PlanningNoticeRelease:
             """
             Enrich eligibilityCriteria, depends on language.
             """
-            expected_eligibilitycriteria = None
             if self.__language == "ro":
                 expected_eligibilitycriteria = "Regulile generale privind naționalitatea și originea, precum și " \
-                                       "alte criterii de eligibilitate sunt enumerate în Ghidul practic privind " \
-                                       "procedurile de contractare a acțiunilor externe ale UE (PRAG)"
+                                               "alte criterii de eligibilitate sunt enumerate în " \
+                                               "Ghidul practic privind procedurile de contractare " \
+                                               "a acțiunilor externe ale UE (PRAG)"
             elif self.__language == "en":
-                expected_eligibilitycriteria = "The general rules on nationality and origin, as well as other eligibility " \
-                                       "criteria are listed in the Practical Guide to Contract Procedures for EU " \
-                                       "External Actions (PRAG)"
+                expected_eligibilitycriteria = "The general rules on nationality and origin, " \
+                                               "as well as other eligibility criteria are listed " \
+                                               "in the Practical Guide to Contract Procedures for EU " \
+                                               "External Actions (PRAG)"
             else:
                 raise ValueError("Check your language: You must use 'ro', "
                                  "'en' in pytest command.")

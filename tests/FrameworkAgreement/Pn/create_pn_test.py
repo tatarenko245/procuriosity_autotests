@@ -81,7 +81,6 @@ class TestCreatePn:
 
         message = get_message_for_platform(operation_id)
         ei_id = message["data"]["outcomes"]["ei"][0]['id']
-        ei_ocid = message["data"]['ocid']
         ei_id_list = list()
         ei_id_list.append(ei_id)
         allure.attach(str(message), 'Message for platform.')
