@@ -307,7 +307,9 @@ class TestCreatePn:
                     """
                     print("fs_budget_cpid_ocid_list")
                     print(fs_budget_cpid_ocid_list)
-                    expected_ms_release = expected_release.build_expected_ms_release(fs_budget_cpid_ocid_list)
+                    expected_ms_release = expected_release.build_expected_ms_release(
+                        fs_budget_cpid_ocid_list,
+                        tender_classification_id)
 
                     print("expected ms release")
                     print(json.dumps(expected_ms_release))

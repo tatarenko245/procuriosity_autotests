@@ -46,7 +46,7 @@ def is_it_uuid(uuid_to_test):
     return str(uuid_obj) == uuid_to_test
 
 
-def get_value_from_classification_cpv_dictionary_xls(cpv, language):
+def get_value_from_cpv_dictionary_xls(cpv, language):
     path = get_project_root()
     # Open current xlsx file.
     excel_data_file = xlrd.open_workbook(f'{path}/CPV_dictionary.xls')
