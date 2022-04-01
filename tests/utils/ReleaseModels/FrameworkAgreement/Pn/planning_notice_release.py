@@ -1,9 +1,10 @@
 import copy
+import json
 
 from tests.utils.functions_collection.functions import get_value_from_cpv_dictionary_xls, \
     get_value_from_cpvs_dictionary_csv, get_value_from_classification_unit_dictionary_csv, get_value_from_country_csv, \
     get_value_from_region_csv, get_value_from_locality_csv, is_it_uuid, get_contract_period_for_ms_release, \
-    get_sum_of_lot, generate_tender_classification_id
+    get_sum_of_lot, generate_tender_classification_id, get_unique_party_from_list_by_id
 
 
 class PlanningNoticeRelease:
@@ -501,7 +502,7 @@ class PlanningNoticeRelease:
                         }
 
                         if self.__pn_payload['tender']['lots'][q_0]['placeOfPerformance']['address']['addressDetails'][
-                                'locality']['scheme'] == "CUATM":
+                            'locality']['scheme'] == "CUATM":
 
                             lot_locality_data = get_value_from_locality_csv(
 
@@ -719,7 +720,7 @@ class PlanningNoticeRelease:
         return self.__expected_pn_release
 
     def build_expected_ms_release(self, ei_payload, fs_payloads_list, tender_classification_id):
-        print(f"\nПрокинули параметр tender.classifiacation.id = {tender_classification_id}")
+
         # Build the releases.planning object. Enrich or delete optional fields and enrich required fields:
         if "rationale" in self.__pn_payload['planning']:
             self.__expected_ms_release['releases'][0]['planning']['rationale'] = self.__pn_payload['planning'][
@@ -863,11 +864,11 @@ class PlanningNoticeRelease:
            """
             if \
                     tender_classification_id[0:2] == "03" or \
-                    tender_classification_id[0] == "1" or \
-                    tender_classification_id[0] == "2" or \
-                    tender_classification_id[0] == "3" or \
-                    tender_classification_id[0:2] == "44" or \
-                    tender_classification_id[0:2] == "48":
+                            tender_classification_id[0] == "1" or \
+                            tender_classification_id[0] == "2" or \
+                            tender_classification_id[0] == "3" or \
+                            tender_classification_id[0:2] == "44" or \
+                            tender_classification_id[0:2] == "48":
                 expected_main_procurement_category = "goods"
 
             elif \
@@ -876,11 +877,11 @@ class PlanningNoticeRelease:
 
             elif \
                     tender_classification_id[0] == "5" or \
-                    tender_classification_id[0] == "6" or \
-                    tender_classification_id[0] == "7" or \
-                    tender_classification_id[0] == "8" or \
-                    tender_classification_id[0:2] == "92" or \
-                    tender_classification_id[0:2] == "98":
+                            tender_classification_id[0] == "6" or \
+                            tender_classification_id[0] == "7" or \
+                            tender_classification_id[0] == "8" or \
+                            tender_classification_id[0:2] == "92" or \
+                            tender_classification_id[0:2] == "98":
                 expected_main_procurement_category = "services"
 
             else:
@@ -974,5 +975,221 @@ class PlanningNoticeRelease:
             raise ValueError("Impossible to enrich releases.tender.value.amount.")
 
         # Build the releases.parties array. Enrich or delete optional fields and enrich required fields:
+        buyer_role_array = list()
+        payer_role_array = list()
+        funder_role_array = list()
 
+        buyer_role_array.append(copy.deepcopy(self.__expected_ms_release['releases'][0]['parties'][0]))
+
+        buyer_role_array[0]['id'] = f"{ei_payload['buyer']['identifier']['scheme']}-" \
+                                     f"{ei_payload['buyer']['identifier']['id']}"
+
+        buyer_role_array[0]['name'] = ei_payload['buyer']['name']
+        buyer_role_array[0]['identifier']['scheme'] = ei_payload['buyer']['identifier']['scheme']
+        buyer_role_array[0]['identifier']['id'] = ei_payload['buyer']['identifier']['id']
+        buyer_role_array[0]['identifier']['legalName'] = ei_payload['buyer']['identifier']['legalName']
+        buyer_role_array[0]['address']['streetAddress'] = ei_payload['buyer']['address']['streetAddress']
+
+        if "postalCode" in ei_payload['buyer']['address']:
+            buyer_role_array[0]['address']['postalCode'] = ei_payload['buyer']['address']['postalCode']
+        else:
+            del buyer_role_array[0]['address']['postalCode']
+
+        if "uri" in ei_payload['buyer']['identifier']:
+            buyer_role_array[0]['identifier']['uri'] = ei_payload['buyer']['identifier']['uri']
+        else:
+            del buyer_role_array[0]['identifier']['uri']
+
+        if "additionalIdentifiers" in ei_payload['buyer']:
+            for q_1 in range(len(ei_payload['buyer']['additionalIdentifiers'])):
+                buyer_role_array[0]['additionalIdentifiers'][q_1]['scheme'] = \
+                    ei_payload['buyer']['additionalIdentifiers'][q_1]['scheme']
+
+                buyer_role_array[0]['additionalIdentifiers'][q_1]['id'] = \
+                    ei_payload['buyer']['additionalIdentifiers'][q_1]['id']
+
+                buyer_role_array[0]['additionalIdentifiers'][q_1]['legalName'] = \
+                    ei_payload['buyer']['additionalIdentifiers'][q_1]['legalName']
+
+                buyer_role_array[0]['additionalIdentifiers'][q_1]['uri'] = \
+                    ei_payload['buyer']['additionalIdentifiers'][q_1]['uri']
+        else:
+            del buyer_role_array[0]['additionalIdentifiers']
+
+        if "faxNumber" in ei_payload['buyer']['contactPoint']:
+            buyer_role_array[0]['contactPoint']['faxNumber'] = ei_payload['buyer']['contactPoint']['faxNumber']
+        else:
+            del buyer_role_array[0]['contactPoint']['faxNumber']
+
+        if "url" in ei_payload['buyer']['contactPoint']:
+            buyer_role_array[0]['contactPoint']['url'] = ei_payload['buyer']['contactPoint']['url']
+        else:
+            del buyer_role_array[0]['contactPoint']['url']
+
+        if "details" in ei_payload['buyer']:
+            if "typeOfBuyer" in ei_payload['buyer']['details']:
+                buyer_role_array[0]['details']['typeOfBuyer'] = ei_payload['buyer']['details']['typeOfBuyer']
+            else:
+                del buyer_role_array['buyer']['details']['typeOfBuyer']
+
+            if "mainGeneralActivity" in ei_payload['buyer']['details']:
+
+                buyer_role_array[0]['details']['mainGeneralActivity'] = \
+                    ei_payload['buyer']['details']['mainGeneralActivity']
+            else:
+                del buyer_role_array[0]['details']['mainGeneralActivity']
+
+            if "mainSectoralActivity" in ei_payload['buyer']['details']:
+
+                buyer_role_array[0]['details']['mainSectoralActivity'] = \
+                    ei_payload['buyer']['details']['mainSectoralActivity']
+            else:
+                del buyer_role_array[0]['details']['mainSectoralActivity']
+        else:
+            del buyer_role_array[0]['details']
+
+        buyer_role_array[0]['roles'] = ["buyer"]
+
+        for q_2 in range(len(fs_payloads_list)):
+            if "buyer" in fs_payloads_list[q_2]:
+                funder_role_array.append(copy.deepcopy(self.__expected_ms_release['releases'][0]['parties'][0]))
+
+                funder_role_array[q_2]['id'] = f"{fs_payloads_list[q_2]['buyer']['identifier']['scheme']}-" \
+                                               f"{fs_payloads_list[q_2]['buyer']['identifier']['id']}"
+
+                funder_role_array[q_2]['name'] = fs_payloads_list[q_2]['buyer']['name']
+                funder_role_array[q_2]['identifier']['scheme'] = fs_payloads_list[q_2]['buyer']['identifier']['scheme']
+                funder_role_array[q_2]['identifier']['id'] = fs_payloads_list[q_2]['buyer']['identifier']['id']
+
+                funder_role_array[q_2]['identifier']['legalName'] = \
+                    fs_payloads_list[q_2]['buyer']['identifier']['legalName']
+
+                funder_role_array[q_2]['address']['streetAddress'] = fs_payloads_list[q_2]['buyer']['address'][
+                    'streetAddress']
+
+                if "postalCode" in fs_payloads_list[q_2]['buyer']['address']:
+
+                    funder_role_array[q_2]['address']['postalCode'] = \
+                        fs_payloads_list[q_2]['buyer']['address']['postalCode']
+                else:
+                    del funder_role_array[q_2]['address']['postalCode']
+
+                if "uri" in fs_payloads_list[q_2]['buyer']['identifier']:
+                    funder_role_array[q_2]['identifier']['uri'] = fs_payloads_list[q_2]['buyer']['identifier']['uri']
+                else:
+                    del funder_role_array[q_2]['identifier']['uri']
+
+                if "additionalIdentifiers" in fs_payloads_list[q_2]['buyer']:
+                    for q_3 in range(len(fs_payloads_list[q_2]['buyer']['additionalIdentifiers'])):
+                        funder_role_array[q_2]['additionalIdentifiers'][q_3]['scheme'] = \
+                            fs_payloads_list[q_2]['buyer']['additionalIdentifiers'][q_3]['scheme']
+
+                        funder_role_array[q_2]['additionalIdentifiers'][q_3]['id'] = \
+                            fs_payloads_list[q_2]['buyer']['additionalIdentifiers'][q_3]['id']
+
+                        funder_role_array[q_2]['additionalIdentifiers'][q_3]['legalName'] = \
+                            fs_payloads_list[q_2]['buyer']['additionalIdentifiers'][q_3]['legalName']
+
+                        funder_role_array[q_2]['additionalIdentifiers'][q_3]['uri'] = \
+                            fs_payloads_list[q_2]['buyer']['additionalIdentifiers'][q_3]['uri']
+                else:
+                    del funder_role_array[q_2]['additionalIdentifiers']
+
+                if "faxNumber" in fs_payloads_list[q_2]['buyer']['contactPoint']:
+
+                    funder_role_array[q_2]['contactPoint']['faxNumber'] = \
+                        fs_payloads_list[q_2]['buyer']['contactPoint']['faxNumber']
+                else:
+                    del funder_role_array[q_2]['contactPoint']['faxNumber']
+
+                if "url" in fs_payloads_list[q_2]['buyer']['contactPoint']:
+                    funder_role_array[q_2]['contactPoint']['url'] = fs_payloads_list[q_2]['buyer']['contactPoint']['url']
+                else:
+                    del funder_role_array[q_2]['contactPoint']['url']
+
+                del funder_role_array[q_2]['details']
+                funder_role_array[q_2]['roles'] = ["funder"]
+
+        for q_3 in range(len(fs_payloads_list)):
+            payer_role_array.append(copy.deepcopy(self.__expected_ms_release['releases'][0]['parties'][0]))
+
+            payer_role_array[q_3]['id'] = \
+                f"{fs_payloads_list[q_3]['tender']['procuringEntity']['identifier']['scheme']}-" \
+                f"{fs_payloads_list[q_3]['tender']['procuringEntity']['identifier']['id']}"
+
+            payer_role_array[q_3]['name'] = fs_payloads_list[q_3]['tender']['procuringEntity']['name']
+
+            payer_role_array[q_3]['identifier']['scheme'] = \
+                fs_payloads_list[q_3]['tender']['procuringEntity']['identifier']['scheme']
+
+            payer_role_array[q_3]['identifier']['id'] = \
+                fs_payloads_list[q_3]['tender']['procuringEntity']['identifier']['id']
+
+            payer_role_array[q_3]['identifier']['legalName'] = \
+                fs_payloads_list[q_3]['tender']['procuringEntity']['identifier']['legalName']
+
+            payer_role_array[q_3]['address']['streetAddress'] = \
+                fs_payloads_list[q_3]['tender']['procuringEntity']['address']['streetAddress']
+
+            if "postalCode" in fs_payloads_list[q_3]['tender']['procuringEntity']['address']:
+
+                payer_role_array[q_3]['address']['postalCode'] = \
+                    fs_payloads_list[q_3]['tender']['procuringEntity']['address']['postalCode']
+            else:
+                del payer_role_array[q_3]['address']['postalCode']
+
+            if "uri" in fs_payloads_list[q_3]['tender']['procuringEntity']['identifier']:
+
+                payer_role_array[q_3]['identifier']['uri'] = \
+                    fs_payloads_list[q_3]['tender']['procuringEntity']['identifier']['uri']
+            else:
+                del payer_role_array[q_3]['identifier']['uri']
+
+            if "additionalIdentifiers" in fs_payloads_list[q_3]['tender']['procuringEntity']:
+                for q_4 in range(len(fs_payloads_list[q_3]['tender']['procuringEntity']['additionalIdentifiers'])):
+
+                    payer_role_array[q_3]['additionalIdentifiers'][q_4]['scheme'] = \
+                        fs_payloads_list[q_3]['tender']['procuringEntity']['additionalIdentifiers'][q_4]['scheme']
+
+                    payer_role_array[q_3]['additionalIdentifiers'][q_4]['id'] = \
+                        fs_payloads_list[q_3]['tender']['procuringEntity']['additionalIdentifiers'][q_4]['id']
+
+                    payer_role_array[q_3]['additionalIdentifiers'][q_4]['legalName'] = \
+                        fs_payloads_list[q_3]['tender']['procuringEntity']['additionalIdentifiers'][q_4]['legalName']
+
+                    payer_role_array[q_3]['additionalIdentifiers'][q_4]['uri'] = \
+                        fs_payloads_list[q_3]['tender']['procuringEntity']['additionalIdentifiers'][q_4]['uri']
+            else:
+                del payer_role_array[q_3]['additionalIdentifiers']
+
+            if "faxNumber" in fs_payloads_list[q_3]['tender']['procuringEntity']['contactPoint']:
+
+                payer_role_array[q_3]['contactPoint']['faxNumber'] = \
+                    fs_payloads_list[q_3]['tender']['procuringEntity']['contactPoint']['faxNumber']
+            else:
+                del payer_role_array[q_3]['contactPoint']['faxNumber']
+
+            if "url" in fs_payloads_list[q_3]['tender']['procuringEntity']['contactPoint']:
+
+                payer_role_array[q_3]['contactPoint']['url'] = \
+                    fs_payloads_list[q_3]['tender']['procuringEntity']['contactPoint']['url']
+            else:
+                del payer_role_array[q_3]['contactPoint']['url']
+
+            del payer_role_array[q_3]['details']
+            payer_role_array[q_3]['roles'] = ["payer"]
+
+        parties_array = get_unique_party_from_list_by_id(buyer_role_array + funder_role_array + payer_role_array)
+
+        expected_parties_array = list()
+        if len(self.__actual_ms_release['releases'][0]['parties']) == len(parties_array):
+            for act in range(len(self.__actual_ms_release['releases'][0]['parties'])):
+                for exp in range(len(parties_array)):
+                    if parties_array[exp]['id'] == self.__actual_ms_release['releases'][0]['parties'][act]['id']:
+                        expected_parties_array.append(parties_array[exp])
+        else:
+            raise ValueError("Quantity of objects into actual ms release doesn't equal "
+                             "quantity of objects into prepared parties arry")
+
+        self.__expected_ms_release['releases'][0]['parties'] = expected_parties_array
         return self.__expected_ms_release

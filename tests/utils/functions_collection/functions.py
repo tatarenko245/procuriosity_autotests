@@ -11,9 +11,12 @@ import pytz
 import xlrd
 import allure
 from tests.utils.PayloadModels.OpenProcedure.SubmitBid.bid_payload_library import PayloadLibrary
-from tests.utils.data_of_enum import cpv_goods_low_level_03_tuple, cpv_goods_low_level_1_tuple, cpv_goods_low_level_2_tuple, \
-    cpv_goods_low_level_3_tuple, cpv_goods_low_level_44_tuple, cpv_goods_low_level_48_tuple, cpv_works_low_level_45_tuple, \
-    cpv_services_low_level_5_tuple, cpv_services_low_level_6_tuple, cpv_services_low_level_7_tuple, cpv_services_low_level_8_tuple, \
+from tests.utils.data_of_enum import cpv_goods_low_level_03_tuple, cpv_goods_low_level_1_tuple, \
+    cpv_goods_low_level_2_tuple, \
+    cpv_goods_low_level_3_tuple, cpv_goods_low_level_44_tuple, cpv_goods_low_level_48_tuple, \
+    cpv_works_low_level_45_tuple, \
+    cpv_services_low_level_5_tuple, cpv_services_low_level_6_tuple, cpv_services_low_level_7_tuple, \
+    cpv_services_low_level_8_tuple, \
     cpv_services_low_level_92_tuple, cpv_services_low_level_98_tuple, locality_id_tuple
 from tests.utils.date_class import Date
 from tests.utils.services.e_mdm_service import MdmService
@@ -1120,3 +1123,19 @@ def get_locality_id_according_with_region_id(region_id):
     for i in locality_id:
         if region_id[:3] == i[:3]:
             return i
+
+
+def get_unique_party_from_list_by_id(parties_array):
+    set_of_party_id = set()
+    dictionary_of_all_parties = dict()
+    for q in range(len(parties_array)):
+        mapper = {
+            parties_array[q]['id']: parties_array[q]
+        }
+        dictionary_of_all_parties.update(mapper)
+        set_of_party_id.add(parties_array[q]['id'])
+
+    unique_parties_array = list()
+    for q in set_of_party_id:
+        unique_parties_array.append(dictionary_of_all_parties[q])
+    return unique_parties_array

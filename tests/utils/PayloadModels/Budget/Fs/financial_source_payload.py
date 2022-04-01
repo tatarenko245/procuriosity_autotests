@@ -5,16 +5,17 @@ from tests.utils.data_of_enum import locality_scheme_tuple
 
 
 class FinancialSourcePayload:
-    def __init__(self, ei_payload, amount, currency):
+    def __init__(self, ei_payload, amount, currency, procuringentity_id, buyer_id=None):
         self.__ei_payload = ei_payload
         self.__amount = amount
         self.__currency = currency
+
         self.__payload = {
             "tender": {
                 "procuringEntity": {
                     "name": "create fs: procuringEntity.name",
                     "identifier": {
-                        "id": "create fs: procuringEntity.identifier.id",
+                        "id": f"{procuringentity_id}",
                         "scheme": "MD-IDNO",
                         "legalName": "create fs: procuringEntity.identifier.legalName",
                         "uri": "create fs: procuringEntity.identifier.uri"
@@ -79,7 +80,7 @@ class FinancialSourcePayload:
             "buyer": {
                 "name": "create fs: buyer.name",
                 "identifier": {
-                    "id": "create fs: buyer.identifier.id",
+                    "id": f"{buyer_id}",
                     "scheme": "MD-IDNO",
                     "legalName": "create fs: buyer.identifier.legalName",
                     "uri": "create fs: buyer.identifier.uri"

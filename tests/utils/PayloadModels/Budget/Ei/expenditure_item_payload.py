@@ -9,7 +9,7 @@ from tests.utils.date_class import Date
 
 
 class ExpenditureItemPayload:
-    def __init__(self):
+    def __init__(self, buyer_id):
 
         __category = random.choice(cpv_category_tuple)
         if __category == "goods":
@@ -78,7 +78,7 @@ class ExpenditureItemPayload:
             "buyer": {
                 "name": "create ei: buyer.name",
                 "identifier": {
-                    "id": "create ei: buyer.identifier.id",
+                    "id": f"{buyer_id}",
                     "scheme": "MD-IDNO",
                     "legalName": "create ei: buyer.identifier.legalName",
                     "uri": "create ei: buyer.identifier.uri"

@@ -51,19 +51,19 @@ class TestCreatePn:
                 """
                 Build payload for CreateEi process.
                 """
-                ei_payload = copy.deepcopy(ExpenditureItemPayload())
+                ei_payload = copy.deepcopy(ExpenditureItemPayload(buyer_id=0))
 
-                ei_payload.delete_optional_fields(
-                    "tender.description",
-                    "tender.items",
-                    "planning.rationale",
-                    "buyer.identifier.uri",
-                    "buyer.address.postalCode",
-                    "buyer.additionalIdentifiers",
-                    "buyer.contactPoint.faxNumber",
-                    "buyer.contactPoint.url",
-                    "buyer.details"
-                )
+                # ei_payload.delete_optional_fields(
+                #     "tender.description",
+                #     "tender.items",
+                #     "planning.rationale",
+                #     "buyer.identifier.uri",
+                #     "buyer.address.postalCode",
+                #     "buyer.additionalIdentifiers",
+                #     "buyer.contactPoint.faxNumber",
+                #     "buyer.contactPoint.url",
+                #     "buyer.details"
+                # )
                 tender_classification_id = ei_payload.get_tender_classification_id()
                 ei_payload = ei_payload.build_expenditure_item_payload()
             except ValueError:
@@ -88,7 +88,6 @@ class TestCreatePn:
         fs_id_list = list()
         fs_payloads_list = list()
         currency = f"{random.choice(currency_tuple)}"
-
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: first CreateFs process,'
                          f'based on full data model into payload, the own money.'):
@@ -114,7 +113,9 @@ class TestCreatePn:
                     fs_payload = copy.deepcopy(FinancialSourcePayload(
                         ei_payload=ei_payload,
                         amount=89999.89,
-                        currency=currency)
+                        currency=currency,
+                        procuringentity_id=1,
+                        buyer_id=0)
                     )
 
                     fs_payload = fs_payload.build_financial_source_payload()
@@ -161,7 +162,8 @@ class TestCreatePn:
                     fs_payload = copy.deepcopy(FinancialSourcePayload(
                         ei_payload=ei_payload,
                         amount=89999.89,
-                        currency=currency)
+                        currency=currency,
+                        procuringentity_id=1)
                     )
 
                     fs_payload.delete_optional_fields(
