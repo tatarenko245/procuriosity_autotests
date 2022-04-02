@@ -33,7 +33,7 @@ class TenderPeriodExpectedChanges:
                 self.metadata_auction_url = "https://eauction.eprocurement.systems/auctions/"
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
-        GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
+        GlobalClassMetadata.__metadata_budget_url = self.metadata_budget_url
         GlobalClassMetadata.__metadata_tender_url = self.metadata_tender_url
 
     def prepare_unsuccessful_awards_array(self, feed_point_message):

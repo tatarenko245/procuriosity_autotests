@@ -26,9 +26,9 @@ from tests.utils.platform_authorization import PlatformAuthorization
 class TestCreatePn:
     @allure.title("Check PN and MS releases after CreatePn process, without optional fields. \n"
                   "------------------------------------------------\n"
-                  "CreateEi process: required data model, without items array;\n"
-                  "СreateFs process: full data model, the own money;\n"
-                  "СreateFs process: required data model, the treasury money;\n"
+                  "CreateEi process: required data model, without items array, buyer_id = 0;\n"
+                  "СreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 1;\n"
+                  "СreateFs process: required data model, the treasury money, procuringEntity_id = 0;\n"
                   "СreatePn process: required data model, without lots and items.\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment):
         step_number = 1
@@ -53,17 +53,17 @@ class TestCreatePn:
                 """
                 ei_payload = copy.deepcopy(ExpenditureItemPayload(buyer_id=0))
 
-                # ei_payload.delete_optional_fields(
-                #     "tender.description",
-                #     "tender.items",
-                #     "planning.rationale",
-                #     "buyer.identifier.uri",
-                #     "buyer.address.postalCode",
-                #     "buyer.additionalIdentifiers",
-                #     "buyer.contactPoint.faxNumber",
-                #     "buyer.contactPoint.url",
-                #     "buyer.details"
-                # )
+                ei_payload.delete_optional_fields(
+                    "tender.description",
+                    "tender.items",
+                    "planning.rationale",
+                    "buyer.identifier.uri",
+                    "buyer.address.postalCode",
+                    "buyer.additionalIdentifiers",
+                    "buyer.contactPoint.faxNumber",
+                    "buyer.contactPoint.url",
+                    "buyer.details"
+                )
                 tender_classification_id = ei_payload.get_tender_classification_id()
                 ei_payload = ei_payload.build_expenditure_item_payload()
             except ValueError:
@@ -79,14 +79,15 @@ class TestCreatePn:
                 test_mode=True
             )
 
-        message = get_message_for_platform(operation_id)
-        ei_id = message["data"]["outcomes"]["ei"][0]['id']
+        ei_message = get_message_for_platform(operation_id)
+        ei_id = ei_message["data"]["outcomes"]["ei"][0]['id']
         ei_id_list = list()
         ei_id_list.append(ei_id)
-        allure.attach(str(message), 'Message for platform.')
+        allure.attach(str(ei_message), 'Message for platform.')
 
         fs_id_list = list()
         fs_payloads_list = list()
+        fs_message_list = list()
         currency = f"{random.choice(currency_tuple)}"
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: first CreateFs process,'
@@ -132,10 +133,11 @@ class TestCreatePn:
                     test_mode=True
                 )
 
-                message = get_message_for_platform(operation_id)
-                fs_id = message["data"]["outcomes"]["fs"][0]['id']
+                fs_message = get_message_for_platform(operation_id)
+                fs_message_list.append(fs_message)
+                fs_id = fs_message["data"]["outcomes"]["fs"][0]['id']
                 fs_id_list.append(fs_id)
-                allure.attach(str(message), 'Message for platform.')
+                allure.attach(str(fs_message), 'Message for platform.')
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: second CreateFs process,'
@@ -163,7 +165,7 @@ class TestCreatePn:
                         ei_payload=ei_payload,
                         amount=89999.89,
                         currency=currency,
-                        procuringentity_id=1)
+                        procuringentity_id=0)
                     )
 
                     fs_payload.delete_optional_fields(
@@ -196,10 +198,11 @@ class TestCreatePn:
                     test_mode=True
                 )
 
-                message = get_message_for_platform(operation_id)
-                fs_id = message["data"]["outcomes"]["fs"][0]['id']
+                fs_message = get_message_for_platform(operation_id)
+                fs_message_list.append(fs_message)
+                fs_id = fs_message["data"]["outcomes"]["fs"][0]['id']
                 fs_id_list.append(fs_id)
-                allure.attach(str(message), 'Message for platform.')
+                allure.attach(str(fs_message), 'Message for platform.')
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreatePn process.'):
@@ -272,15 +275,15 @@ class TestCreatePn:
                     allure.attach(202, "Expected status code.")
                     assert synchronous_result.status_code == 202
 
-            with allure.step(f'# {step_number}.2. Check the message for platform.'):
+            with allure.step(f'# {step_number}.2. Check the fs_message for platform.'):
                 """
-                Check the message for platform.
+                Check the fs_message for platform.
                 """
                 actual_message = get_message_for_platform(operation_id)
 
                 try:
                     """
-                    Build expected message for CreatePn process.
+                    Build expected fs_message for CreatePn process.
                     """
                     expected_message = copy.deepcopy(PlanningNoticeMessage(
                         environment=parse_environment,
@@ -291,11 +294,11 @@ class TestCreatePn:
 
                     expected_message = expected_message.build_expected_message_for_pn_process()
                 except ValueError:
-                    raise ValueError("Impossible to build expected message for CreatePn process.")
+                    raise ValueError("Impossible to build expected fs_message for CreatePn process.")
 
-                with allure.step('Compare actual and expected message for platform.'):
-                    allure.attach(json.dumps(actual_message), "Actual message.")
-                    allure.attach(json.dumps(expected_message), "Expected message.")
+                with allure.step('Compare actual and expected fs_message for platform.'):
+                    allure.attach(json.dumps(actual_message), "Actual fs_message.")
+                    allure.attach(json.dumps(expected_message), "Expected fs_message.")
 
                     assert actual_message == expected_message, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
@@ -356,7 +359,9 @@ class TestCreatePn:
                     """
                     expected_ms_release = expected_release.build_expected_ms_release(
                         ei_payload,
+                        ei_message,
                         fs_payloads_list,
+                        fs_message_list,
                         tender_classification_id)
 
                     print("expected ms release")

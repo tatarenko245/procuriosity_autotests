@@ -38,7 +38,7 @@ class PnExpectedRelease:
                     "https://raw.githubusercontent.com/open-contracting/ocds_enquiry_extension/v1.1.1/extension.json"]
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
-        GlobalClassMetadata.metadata_budget_url = self.metadata_budget_url
+        GlobalClassMetadata.__metadata_budget_url = self.metadata_budget_url
         GlobalClassMetadata.__metadata_tender_url = self.metadata_tender_url
 
     def prepare_expected_lots_array(self, payload_lots_array, release_lots_array):
