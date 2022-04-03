@@ -165,7 +165,7 @@ class TestCreatePn:
                         ei_payload=ei_payload,
                         amount=89999.89,
                         currency=currency,
-                        procuringentity_id=0)
+                        procuringentity_id=1)
                     )
 
                     fs_payload.delete_optional_fields(
