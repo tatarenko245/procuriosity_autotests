@@ -1505,10 +1505,7 @@ class PlanningNoticeRelease:
         parties_array = \
             permanent_parties_with_buyer_role_array + permanent_parties_with_payer_role_array + \
             permanent_parties_with_funder_role_array
-        print("\nActual parties array")
-        print(json.dumps(self.__actual_ms_release['releases'][0]['parties']))
-        print("\nExpected parties array")
-        print(json.dumps(parties_array))
+
         expected_parties_array = list()
         if len(self.__actual_ms_release['releases'][0]['parties']) == len(parties_array):
             for act in range(len(self.__actual_ms_release['releases'][0]['parties'])):
@@ -1517,7 +1514,12 @@ class PlanningNoticeRelease:
                         expected_parties_array.append(parties_array[exp])
         else:
             raise ValueError("Quantity of objects into actual ms release doesn't equal "
-                             "quantity of objects into prepared parties arry")
+                             "quantity of objects into prepared parties array")
+
+        print("\nActual parties array")
+        print(json.dumps(self.__actual_ms_release['releases'][0]['parties']))
+        print("\nExpected parties array")
+        print(json.dumps(expected_parties_array))
 
         self.__expected_ms_release['releases'][0]['parties'] = expected_parties_array
 

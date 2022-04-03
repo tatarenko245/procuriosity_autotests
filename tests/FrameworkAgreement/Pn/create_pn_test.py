@@ -66,6 +66,8 @@ class TestCreatePn:
                 )
                 tender_classification_id = ei_payload.get_tender_classification_id()
                 ei_payload = ei_payload.build_expenditure_item_payload()
+                print("\nEI payload")
+                print(json.dumps(ei_payload))
             except ValueError:
                 raise ValueError("Impossible to build payload for CreateEi process.")
 
@@ -120,6 +122,8 @@ class TestCreatePn:
                     )
 
                     fs_payload = fs_payload.build_financial_source_payload()
+                    print("\nFS payload 1")
+                    print(json.dumps(fs_payload))
                     fs_payloads_list.append(fs_payload)
                 except ValueError:
                     raise ValueError("Impossible to build payload for CreateFs process.")
@@ -185,6 +189,8 @@ class TestCreatePn:
                     )
 
                     fs_payload = fs_payload.build_financial_source_payload()
+                    print("\nFS payload 2")
+                    print(json.dumps(fs_payload))
                     fs_payloads_list.append(fs_payload)
                 except ValueError:
                     raise ValueError("Impossible to build payload for CreateFs process.")
@@ -244,7 +250,7 @@ class TestCreatePn:
                 #     "tender.documents"
                 # )
                 pn_payload = pn_payload.build_plan_payload()
-                print("PAYLOAD")
+                print("PN payload")
                 print(json.dumps(pn_payload))
             except ValueError:
                 raise ValueError("Impossible to build payload for CreatePn process.")
