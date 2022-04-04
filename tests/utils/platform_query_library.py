@@ -99,6 +99,26 @@ class PlatformQueryRequest:
         allure.attach(json.dumps(payload), 'Prepared payload')
         return request
 
+    @staticmethod
+    @allure.step('# Prepared request: create Aggregated plan.')
+    def create_ap_proces(host_to_bpe, access_token, x_operation_id, payload, country, language, pmd, test_mode=False):
+        request = requests.post(
+            url=f"{host_to_bpe}/do/ap",
+            params={
+                "testMode": test_mode,
+                "country": country,
+                "lang": language,
+                "pmd": pmd
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "X-OPERATION-ID": x_operation_id,
+                "Content-Type": "application/json"},
+            json=payload)
+        allure.attach(f"{host_to_bpe}/do/ap", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return request
+
 
     # @staticmethod
     # @allure.step('Prepared request: create Pn')

@@ -1,6 +1,6 @@
 class CassandraSession:
     @staticmethod
-    def cleanup_table_of_services_for_expenditure_item(connect_to_ocds, cp_id):
+    def cleanup_table_of_services_for_expenditureItem(connect_to_ocds, cp_id):
         connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{cp_id}';").one()
         connect_to_ocds.execute(f"DELETE FROM budget_ei WHERE cp_id='{cp_id}';")
         connect_to_ocds.execute(f"DELETE FROM notice_budget_release WHERE cp_id='{cp_id}';")
@@ -8,7 +8,14 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM notice_budget_compiled_release WHERE cp_id='{cp_id}';")
 
     @staticmethod
-    def cleanup_orchestrator_operation_step_by_operationid(connect_to_ocds, operation_id):
+    def get_processId_by_operationId(connect_to_ocds, operation_id):
+        get_process_id = connect_to_ocds.execute(
+            f"SELECT * FROM orchestrator_operation WHERE operation_id = '{operation_id}';").one()
+        process_id = get_process_id.process_id
+        return process_id
+
+    @staticmethod
+    def cleanup_ocds_orchestratorOperationStep_by_operationId(connect_to_ocds, operation_id):
         get_process_id = connect_to_ocds.execute(
             f"SELECT * FROM orchestrator_operation WHERE operation_id = '{operation_id}';").one()
 
@@ -16,8 +23,24 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM orchestrator_operation_step WHERE process_id = '{process_id}';")
 
     @staticmethod
-    def cleanup_steps_by_cpid(connect_to_orchestrator, cpid):
+    def cleanup_orchestrator_steps_by_cpid(connect_to_orchestrator, cpid):
         connect_to_orchestrator.execute(f"DELETE FROM steps WHERE cpid = '{cpid}' ALLOW FILTERING;")
+
+    @staticmethod
+    def get_maxDurationOfFA_from_access_rules(connect_to_access, country, pmd):
+        value = connect_to_access.execute(
+            f"""SELECT value FROM access.rules WHERE 
+            country ='{country}' and pmd='{pmd}' and operation_type='all' and parameter ='maxDurationOfFA' 
+            ALLOW FILTERING;""").one()
+        return value.value
+
+    @staticmethod
+    def cleanup_table_of_services_for_aggregatedPlan(connect_to_ocds, connect_to_access, ap_ocid):
+        connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ap_ocid}';").one()
+        connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{ap_ocid}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{ap_ocid}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_offset WHERE cp_id='{ap_ocid}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_ocid}';")
 
     # def fs_process_cleanup_table_of_services(self, ei_id):
     #     self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one()
@@ -271,3 +294,6 @@ class CassandraSession:
     #         "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
     #     return value.value
     #
+
+    def __del__(self):
+        print(f"The instance of CassandraSession class {__name__} was deleted.")

@@ -123,10 +123,10 @@ class TestCreateFs:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if asynchronous_result_of_sending_the_request_was_checked is True:
-                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.cleanup_table_of_services_for_expenditureItem(cp_id=ei_ocid)
                         connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
-                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connect_to_database.get_bpe_operation_step_by_operation_id(
@@ -375,10 +375,10 @@ class TestCreateFs:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.cleanup_table_of_services_for_expenditureItem(cp_id=ei_ocid)
                         connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
-                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connect_to_database.get_bpe_operation_step_by_operation_id(
@@ -653,10 +653,10 @@ class TestCreateFs:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.cleanup_table_of_services_for_expenditureItem(cp_id=ei_ocid)
                         connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
-                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connect_to_database.get_bpe_operation_step_by_operation_id(
@@ -931,10 +931,10 @@ class TestCreateFs:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.cleanup_table_of_services_for_expenditureItem(cp_id=ei_ocid)
                         connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
-                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connect_to_database.get_bpe_operation_step_by_operation_id(
@@ -1211,10 +1211,10 @@ class TestCreateFs:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if compare_releases == expected_result:
-                        connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
+                        connect_to_database.cleanup_table_of_services_for_expenditureItem(cp_id=ei_ocid)
                         connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_ei_operation_id)
-                        connect_to_database.cleanup_orchestrator_operation_step_by_operationid(operation_id=create_fs_operation_id)
+                        connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_ei_operation_id)
+                        connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_fs_operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
                             steps = connect_to_database.get_bpe_operation_step_by_operation_id(

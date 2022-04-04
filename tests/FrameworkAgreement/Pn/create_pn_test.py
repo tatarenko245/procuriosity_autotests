@@ -9,7 +9,9 @@ from tests.utils.MessageModels.Pn.planning_notice_message import PlanningNoticeM
 from tests.utils.PayloadModels.Budget.Fs.financial_source_payload import FinancialSourcePayload
 from tests.utils.PayloadModels.FrameworkAgreement.Pn.planing_notice_payload import PlanningNoticePayload
 from tests.utils.ReleaseModels.FrameworkAgreement.Pn.planning_notice_release import PlanningNoticeRelease
+from tests.utils.cassandra_session import CassandraSession
 from tests.utils.data_of_enum import currency_tuple
+from tests.utils.fixtures_collection.cassandra_session import connect_to_ocds
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
 from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload import ExpenditureItemPayload
 
@@ -30,7 +32,7 @@ class TestCreatePn:
                   "СreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 1;\n"
                   "СreateFs process: required data model, the treasury money, procuringEntity_id = 0;\n"
                   "СreatePn process: required data model, without lots and items.\n")
-    def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment):
+    def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment, connect_to_ocds):
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateEi process.'):
             """
@@ -117,8 +119,8 @@ class TestCreatePn:
                         ei_payload=ei_payload,
                         amount=89999.89,
                         currency=currency,
-                        procuringentity_id=1,
-                        buyer_id=0)
+                        payer_id=1,
+                        funder_id=0)
                     )
 
                     fs_payload = fs_payload.build_financial_source_payload()
@@ -169,7 +171,7 @@ class TestCreatePn:
                         ei_payload=ei_payload,
                         amount=89999.89,
                         currency=currency,
-                        procuringentity_id=1)
+                        payer_id=1)
                     )
 
                     fs_payload.delete_optional_fields(
@@ -281,7 +283,7 @@ class TestCreatePn:
                     allure.attach(202, "Expected status code.")
                     assert synchronous_result.status_code == 202
 
-            with allure.step(f'# {step_number}.2. Check the fs_message for platform.'):
+            with allure.step(f'# {step_number}.2. Check the pn_message for platform.'):
                 """
                 Check the fs_message for platform.
                 """
@@ -289,7 +291,7 @@ class TestCreatePn:
 
                 try:
                     """
-                    Build expected fs_message for CreatePn process.
+                    Build expected pn_message for CreatePn process.
                     """
                     expected_message = copy.deepcopy(PlanningNoticeMessage(
                         environment=parse_environment,
@@ -303,13 +305,15 @@ class TestCreatePn:
                     raise ValueError("Impossible to build expected fs_message for CreatePn process.")
 
                 with allure.step('Compare actual and expected fs_message for platform.'):
-                    allure.attach(json.dumps(actual_message), "Actual fs_message.")
-                    allure.attach(json.dumps(expected_message), "Expected fs_message.")
+                    allure.attach(json.dumps(actual_message), "Actual pn_message.")
+                    allure.attach(json.dumps(expected_message), "Expected pn_message.")
+
+                    process_id = CassandraSession().get_processId_by_operationId(connect_to_ocds, operation_id)
 
                     assert actual_message == expected_message, \
-                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{operation_id}' ALLOW FILTERING;",
-                                      "Cassandra DataBase: steps of process")
+                        allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                                      f"process_id = '{process_id}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.3. Check PN release.'):
                 """
@@ -347,9 +351,9 @@ class TestCreatePn:
                     allure.attach(json.dumps(expected_pn_release), "Expected PN release.")
 
                     assert actual_pn_release == expected_pn_release, \
-                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{operation_id}' ALLOW FILTERING;",
-                                      "Cassandra DataBase: steps of process")
+                        allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                                      f"process_id = '{process_id}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.4. Check MS release.'):
                 """
@@ -380,9 +384,9 @@ class TestCreatePn:
                 #     allure.attach(json.dumps(expected_ms_release), "Expected MS release.")
                 #
                 #     assert actual_pn_release == expected_release, \
-                #         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                #                       f"operation_id = '{operation_id}' ALLOW FILTERING;",
-                #                       "Cassandra DataBase: steps of process")
+                #         allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                #                                       f"process_id = '{process_id}' ALLOW FILTERING;",
+                #                                       "Cassandra DataBase: steps of process.")
             #
             #             try:
             #                 """

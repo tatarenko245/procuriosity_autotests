@@ -17,6 +17,7 @@ from tests.utils.iStorage import Document
 
 class PlanningNoticePayload:
     def __init__(self, fs_id, amount, currency, tender_classification_id, host_to_service):
+
         __pn_period = Date().planning_notice_period()
         __contact_period = Date().contact_period()
 

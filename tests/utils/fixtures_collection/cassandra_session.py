@@ -32,6 +32,14 @@ def connect_to_orchestrator(log_in_to_database):
     yield orchestrator_keyspace
     orchestrator_keyspace.shutdown()
     print(f"The connection to {orchestrator_keyspace} has been disconnected.")
+
+
+@pytest.fixture(scope="class")
+def connect_to_access(log_in_to_database):
+    access_keyspace = log_in_to_database.connect('access')
+    yield access_keyspace
+    access_keyspace.shutdown()
+    print(f"The connection to {access_keyspace} has been disconnected.")
 #
 #
 # @pytest.fixture(scope="class")

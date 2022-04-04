@@ -41,12 +41,19 @@ class Date:
         return start_date
 
     @staticmethod
-    def contact_period():
+    def contact_period(maxDurationOfFA=None):
         date = datetime.datetime.now()
-        duration_date_start = date + datetime.timedelta(days=60)
-        start_date = duration_date_start.strftime('%Y-%m-%dT%H:%M:%SZ')
-        duration_date_end = date + datetime.timedelta(days=80)
-        end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+        if maxDurationOfFA is None:
+            duration_date_start = date + datetime.timedelta(days=60)
+            start_date = duration_date_start.strftime('%Y-%m-%dT%H:%M:%SZ')
+            duration_date_end = date + datetime.timedelta(days=80)
+            end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+        else:
+            days = int(maxDurationOfFA)/60/60/24
+            duration_date_start = date + datetime.timedelta(days=1)
+            start_date = duration_date_start.strftime('%Y-%m-%dT%H:%M:%SZ')
+            duration_date_end = date + datetime.timedelta(days=days-1)
+            end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return start_date, end_date
 
     @staticmethod
