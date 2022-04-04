@@ -92,8 +92,8 @@ class TestCreatePn:
                 Check the status code of sending the request.
                 """
                 with allure.step('Compare actual status code and expected status code of sending request.'):
-                    allure.attach(synchronous_result.status_code, "Actual status code.")
-                    allure.attach(202, "Expected status code.")
+                    allure.attach(str(synchronous_result.status_code), "Actual status code.")
+                    allure.attach(str(202), "Expected status code.")
                     assert synchronous_result.status_code == 202
 
             with allure.step(f'# {step_number}.2. Check the ap_message for platform.'):
