@@ -36,8 +36,8 @@ class CassandraSession:
 
     @staticmethod
     def cleanup_table_of_services_for_aggregatedPlan(connect_to_ocds, connect_to_access, ap_ocid):
-        connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ap_ocid}';").one()
         connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{ap_ocid}';")
+        connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ap_ocid}';").one()
         connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{ap_ocid}';")
         connect_to_ocds.execute(f"DELETE FROM notice_offset WHERE cp_id='{ap_ocid}';")
         connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_ocid}';")

@@ -197,7 +197,6 @@ class TestCreatePn:
                     """
                     CLean up the database.
                     """
-
                     database.cleanup_table_of_services_for_aggregatedPlan(
                         connect_to_ocds,
                         connect_to_access,
