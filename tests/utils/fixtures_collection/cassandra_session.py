@@ -40,8 +40,3 @@ def connect_to_access(log_in_to_database):
     yield access_keyspace
     access_keyspace.shutdown()
     print(f"The connection to {access_keyspace} has been disconnected.")
-#
-#
-# @pytest.fixture(scope="class")
-# def clear_tables_of_all_services(connect_to_ocds):
-#     connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{cp_id}';").one()

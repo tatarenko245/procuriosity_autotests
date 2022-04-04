@@ -209,4 +209,4 @@ class TestCreatePn:
                         operation_id
                     )
                 except ValueError:
-                    raise ValueError("Impposible to cLean up the database.")
+                    raise ValueError("Impossible to cLean up the database.")
