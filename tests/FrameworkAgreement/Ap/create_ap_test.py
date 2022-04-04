@@ -183,10 +183,7 @@ class TestCreatePn:
 
                 except ValueError:
                     raise ValueError("Impossible to build expected MS release.")
-            print("actual_ms_release")
-            print(json.dumps(actual_ms_release))
-            print("expected_ms_release")
-            print(json.dumps(expected_ms_release))
+
             with allure.step('Compare actual and expected MS release.'):
                 allure.attach(json.dumps(actual_ms_release), "Actual MS release.")
                 allure.attach(json.dumps(expected_ms_release), "Expected MS release.")
