@@ -68,8 +68,6 @@ class TestCreatePn:
                 )
                 tender_classification_id = ei_payload.get_tender_classification_id()
                 ei_payload = ei_payload.build_expenditure_item_payload()
-                print("\nEI payload")
-                print(json.dumps(ei_payload))
             except ValueError:
                 raise ValueError("Impossible to build payload for CreateEi process.")
 
@@ -124,8 +122,6 @@ class TestCreatePn:
                     )
 
                     fs_payload = fs_payload.build_financial_source_payload()
-                    print("\nFS payload 1")
-                    print(json.dumps(fs_payload))
                     fs_payloads_list.append(fs_payload)
                 except ValueError:
                     raise ValueError("Impossible to build payload for CreateFs process.")
@@ -191,8 +187,6 @@ class TestCreatePn:
                     )
 
                     fs_payload = fs_payload.build_financial_source_payload()
-                    print("\nFS payload 2")
-                    print(json.dumps(fs_payload))
                     fs_payloads_list.append(fs_payload)
                 except ValueError:
                     raise ValueError("Impossible to build payload for CreateFs process.")
@@ -242,18 +236,17 @@ class TestCreatePn:
 
                 pn_payload.customize_planning_budget_budgetbreakdown(fs_id_list)
 
-                # pn_payload.delete_optional_fields(
-                #     "planning.rationale",
-                #     "planning.budget.description",
-                #     "tender.procurementMethodRationale",
-                #     "tender.procurementMethodAdditionalInfo",
-                #     "tender.lots",
-                #     "tender.items",
-                #     "tender.documents"
-                # )
+                pn_payload.delete_optional_fields(
+                    "planning.rationale",
+                    "planning.budget.description",
+                    "tender.procurementMethodRationale",
+                    "tender.procurementMethodAdditionalInfo",
+                    "tender.lots",
+                    "tender.items",
+                    "tender.documents"
+                )
                 pn_payload = pn_payload.build_plan_payload()
-                print("PN payload")
-                print(json.dumps(pn_payload))
+
             except ValueError:
                 raise ValueError("Impossible to build payload for CreatePn process.")
 
@@ -279,8 +272,8 @@ class TestCreatePn:
                 Check the status code of sending the request.
                 """
                 with allure.step('Compare actual status code and expected status code of sending request.'):
-                    allure.attach(synchronous_result.status_code, "Actual status code.")
-                    allure.attach(202, "Expected status code.")
+                    allure.attach(str(synchronous_result.status_code), "Actual status code.")
+                    allure.attach(str(202), "Expected status code.")
                     assert synchronous_result.status_code == 202
 
             with allure.step(f'# {step_number}.2. Check the pn_message for platform.'):
@@ -325,7 +318,6 @@ class TestCreatePn:
                 ms_url = f"{actual_message['data']['url']}/{actual_message['data']['ocid']}"
                 actual_ms_release = requests.get(url=ms_url).json()
 
-                allure.attach(str(json.dumps(actual_pn_release)), "Actual PN release.")
 
                 try:
                     """
@@ -359,10 +351,6 @@ class TestCreatePn:
                 """
                 Compare actual MS release and expected MS release.
                 """
-
-                allure.attach(str(json.dumps(actual_ms_release)), "Actual MS release.")
-                print("actual ms release")
-                print(json.dumps(actual_ms_release))
                 try:
                     """
                     Build expected MS release.
@@ -372,10 +360,8 @@ class TestCreatePn:
                         ei_message,
                         fs_payloads_list,
                         fs_message_list,
-                        tender_classification_id)
-
-                    print("expected ms release")
-                    print(json.dumps(expected_ms_release))
+                        tender_classification_id
+                    )
                 except ValueError:
                     raise ValueError("Impossible to build expected MS release.")
                 #

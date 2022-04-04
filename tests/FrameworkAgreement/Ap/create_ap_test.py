@@ -138,8 +138,6 @@ class TestCreatePn:
                 ms_url = f"{actual_message['data']['url']}/{actual_message['data']['ocid']}"
                 actual_ms_release = requests.get(url=ms_url).json()
 
-                allure.attach(str(json.dumps(actual_ap_release)), "Actual AP release.")
-
                 try:
                     """
                     Build expected AP release.
@@ -172,9 +170,6 @@ class TestCreatePn:
                 """
                 Compare actual MS release and expected MS release.
                 """
-
-                allure.attach(str(json.dumps(actual_ms_release)), "Actual MS release.")
-
                 try:
                     """
                     Build expected MS release.
