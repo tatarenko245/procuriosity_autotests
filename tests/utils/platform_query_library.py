@@ -44,10 +44,10 @@ class PlatformQueryRequest:
 
     @staticmethod
     @allure.step('# Prepared request: create Financial source.')
-    def create_fs_proces(host_to_bpe, ocid, access_token, x_operation_id, payload, test_mode=False):
+    def create_fs_proces(host_to_bpe, cpid, access_token, x_operation_id, payload, test_mode=False):
 
         request = requests.post(
-            url=f"{host_to_bpe}/do/fs/{ocid}",
+            url=f"{host_to_bpe}/do/fs/{cpid}",
             params={
                 "testMode": test_mode
             },
@@ -56,7 +56,7 @@ class PlatformQueryRequest:
                 "X-OPERATION-ID": x_operation_id,
                 "Content-Type": "application/json"},
             json=payload)
-        allure.attach(f"{host_to_bpe}/do/fs/{ocid}", 'URL')
+        allure.attach(f"{host_to_bpe}/do/fs/{cpid}", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return request
     #
@@ -117,6 +117,27 @@ class PlatformQueryRequest:
             json=payload)
         allure.attach(f"{host_to_bpe}/do/ap", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
+        return request
+
+    @staticmethod
+    @allure.step('# Prepared request: do Outsourcing plan.')
+    def do_outsourcing_proces(host_to_bpe, access_token, x_operation_id, ap_cpid, ap_id, cpid, ocid,
+                              pn_token, test_mode=False):
+
+        request = requests.post(
+            url=f"{host_to_bpe}/do/outsourcing/{cpid}/{ocid}",
+            params={
+                "testMode": test_mode,
+                "FA": ap_cpid,
+                "AP": ap_id
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "X-OPERATION-ID": x_operation_id,
+                "X-TOKEN": pn_token,
+                "Content-Type": "application/json"}
+            )
+        allure.attach(f"{host_to_bpe}/do/outsourcing/{cpid}/{ocid}", 'URL')
         return request
 
 

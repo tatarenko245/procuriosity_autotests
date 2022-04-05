@@ -87,7 +87,7 @@ class PlanningNoticeMessage:
             else:
                 raise ValueError("The message of CreatePn process is not correct: 'data.operationDate'.")
         else:
-            raise KeyError("The message of CreateEi process is not correct: mismatch key 'data.operationDate'.")
+            raise KeyError("The message of CreatePn process is not correct: mismatch key 'data.operationDate'.")
 
         outcomes_pn_array = list()
         for obj in range(self.__expected_quantity_of_outcomes_pn):

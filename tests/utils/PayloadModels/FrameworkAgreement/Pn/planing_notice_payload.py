@@ -16,7 +16,7 @@ from tests.utils.iStorage import Document
 
 
 class PlanningNoticePayload:
-    def __init__(self, fs_id, amount, currency, tender_classification_id, host_to_service):
+    def __init__(self, fs_id, amount, currency, tenderClassificationId, host_to_service):
 
         __pn_period = Date().planning_notice_period()
         __contact_period = Date().contact_period()
@@ -26,36 +26,36 @@ class PlanningNoticePayload:
 
         self.__amount = amount
         self.__currency = currency
-        self.__tender_classification_id = tender_classification_id
+        self.__tenderClassificationId = tenderClassificationId
         self.__host = host_to_service
         try:
             item_classification_id = None
 
-            if tender_classification_id[0:3] == "031":
+            if tenderClassificationId[0:3] == "031":
                 item_classification_id = random.choice(cpv_goods_low_level_03_tuple)
-            elif tender_classification_id[0:3] == "146":
+            elif tenderClassificationId[0:3] == "146":
                 item_classification_id = random.choice(cpv_goods_low_level_1_tuple)
-            elif tender_classification_id[0:3] == "221":
+            elif tenderClassificationId[0:3] == "221":
                 item_classification_id = random.choice(cpv_goods_low_level_2_tuple)
-            elif tender_classification_id[0:3] == "301":
+            elif tenderClassificationId[0:3] == "301":
                 item_classification_id = random.choice(cpv_goods_low_level_3_tuple)
-            elif tender_classification_id[0:3] == "444":
+            elif tenderClassificationId[0:3] == "444":
                 item_classification_id = random.choice(cpv_goods_low_level_44_tuple)
-            elif tender_classification_id[0:3] == "482":
+            elif tenderClassificationId[0:3] == "482":
                 item_classification_id = random.choice(cpv_goods_low_level_48_tuple)
-            elif tender_classification_id[0:3] == "451":
+            elif tenderClassificationId[0:3] == "451":
                 item_classification_id = random.choice(cpv_works_low_level_45_tuple)
-            elif tender_classification_id[0:3] == "515":
+            elif tenderClassificationId[0:3] == "515":
                 item_classification_id = random.choice(cpv_services_low_level_5_tuple)
-            elif tender_classification_id[0:3] == "637":
+            elif tenderClassificationId[0:3] == "637":
                 item_classification_id = random.choice(cpv_services_low_level_6_tuple)
-            elif tender_classification_id[0:3] == "713":
+            elif tenderClassificationId[0:3] == "713":
                 item_classification_id = random.choice(cpv_services_low_level_7_tuple)
-            elif tender_classification_id[0:3] == "851":
+            elif tenderClassificationId[0:3] == "851":
                 item_classification_id = random.choice(cpv_services_low_level_8_tuple)
-            elif tender_classification_id[0:3] == "923":
+            elif tenderClassificationId[0:3] == "923":
                 item_classification_id = random.choice(cpv_services_low_level_92_tuple)
-            elif tender_classification_id[0:3] == "983":
+            elif tenderClassificationId[0:3] == "983":
                 item_classification_id = random.choice(cpv_services_low_level_98_tuple)
         except ValueError:
             raise ValueError("Check tender_classification_id")
@@ -218,7 +218,7 @@ class PlanningNoticePayload:
         new_items_array = generate_items_array(
             quantity_of_object=quantity_of_items,
             item_object=copy.deepcopy(self.__payload['tender']['items'][0]),
-            tender_classification_id=self.__tender_classification_id
+            tender_classification_id=self.__tenderClassificationId
         )
 
         for q_0 in range(quantity_of_items):

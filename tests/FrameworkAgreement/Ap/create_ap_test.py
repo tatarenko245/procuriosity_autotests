@@ -33,7 +33,7 @@ class TestCreatePn:
             """
             platform_one = PlatformAuthorization(get_hosts[1])
             access_token = platform_one.get_access_token_for_platform_one()
-            operation_id = platform_one.get_x_operation_id(access_token)
+            ap_operationId = platform_one.get_x_operation_id(access_token)
 
         step_number += 1
         with allure.step(f'# {step_number}. Send a request to create a CreateAp process.'):
@@ -73,7 +73,7 @@ class TestCreatePn:
             synchronous_result = PlatformQueryRequest().create_ap_proces(
                 host_to_bpe=get_hosts[1],
                 access_token=access_token,
-                x_operation_id=operation_id,
+                x_operation_id=ap_operationId,
                 payload=ap_payload,
                 test_mode=True,
                 country=parse_country,
@@ -100,7 +100,7 @@ class TestCreatePn:
                 """
                 Check the fs_message for platform.
                 """
-                actual_message = get_message_for_platform(operation_id)
+                actual_message = get_message_for_platform(ap_operationId)
 
                 try:
                     """
@@ -121,7 +121,7 @@ class TestCreatePn:
                     allure.attach(json.dumps(actual_message), "Actual ap_message.")
                     allure.attach(json.dumps(expected_message), "Expected ap_message.")
 
-                    process_id = database.get_processId_by_operationId(connect_to_ocds, operation_id)
+                    process_id = database.get_processId_by_operationId(connect_to_ocds, ap_operationId)
 
                     assert actual_message == expected_message, \
                         allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
@@ -192,15 +192,16 @@ class TestCreatePn:
                     """
                     CLean up the database.
                     """
+                    # Clean after aggregatedPlan process:
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        ap_operationId
+                    )
+
                     database.cleanup_table_of_services_for_aggregatedPlan(
                         connect_to_ocds,
                         connect_to_access,
-                        ap_ocid=actual_message['data']['ocid']
-                    )
-
-                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
-                        connect_to_ocds,
-                        operation_id
+                        ap_cpid=actual_message['data']['ocid']
                     )
                 except ValueError:
                     raise ValueError("Impossible to cLean up the database.")

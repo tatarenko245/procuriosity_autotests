@@ -8,7 +8,7 @@ from tests.utils.iStorage import Document
 
 
 class AggregatedPayload:
-    def __init__(self, centralPurchasingBody_id, host_to_service, maxDurationOfFA, tender_classification_id=None,
+    def __init__(self, centralPurchasingBody_id, host_to_service, maxDurationOfFA, tenderClassificationId=None,
                  currency=None):
 
         __pn_period = Date().planning_notice_period()
@@ -18,15 +18,15 @@ class AggregatedPayload:
         self.__document_one_was_uploaded = __document_one.uploading_document()
         self.__host = host_to_service
 
-        __tender_classification_id = tender_classification_id
-        if __tender_classification_id is None:
+        __tenderClassificationId = tenderClassificationId
+        if __tenderClassificationId is None:
             __category = random.choice(cpv_category_tuple)
             if __category == "goods":
-                __tender_classification_id = random.choice(cpv_goods_high_level_tuple)
+                __tenderClassificationId = random.choice(cpv_goods_high_level_tuple)
             elif __category == "works":
-                __tender_classification_id = random.choice(cpv_works_high_level_tuple)
+                __tenderClassificationId = random.choice(cpv_works_high_level_tuple)
             elif __category == "services":
-                __tender_classification_id = random.choice(cpv_services_high_level_tuple)
+                __tenderClassificationId = random.choice(cpv_services_high_level_tuple)
 
         if currency is None:
             currency = f"{random.choice(currency_tuple)}"
@@ -38,7 +38,7 @@ class AggregatedPayload:
                 "legalBasis": f"{random.choice(legalBasis_tuple)}",
                 "procurementMethodRationale": "create ap: tender.procurementMethodRationale",
                 "classification": {
-                    "id": __tender_classification_id
+                    "id": __tenderClassificationId
                 },
                 "tenderPeriod": {
                     "startDate": __pn_period

@@ -24,7 +24,7 @@ class CassandraSession:
 
     @staticmethod
     def cleanup_orchestrator_steps_by_cpid(connect_to_orchestrator, cpid):
-        connect_to_orchestrator.execute(f"DELETE FROM steps WHERE cpid = '{cpid}' ALLOW FILTERING;")
+        connect_to_orchestrator.execute(f"DELETE FROM steps WHERE cpid = '{cpid}';")
 
     @staticmethod
     def get_maxDurationOfFA_from_access_rules(connect_to_access, country, pmd):
@@ -35,28 +35,38 @@ class CassandraSession:
         return value.value
 
     @staticmethod
-    def cleanup_table_of_services_for_aggregatedPlan(connect_to_ocds, connect_to_access, ap_ocid):
-        connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{ap_ocid}';")
-        connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ap_ocid}';").one()
-        connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{ap_ocid}';")
-        connect_to_ocds.execute(f"DELETE FROM notice_offset WHERE cp_id='{ap_ocid}';")
-        connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_ocid}';")
+    def cleanup_table_of_services_for_aggregatedPlan(connect_to_ocds, connect_to_access, ap_cpid):
+        connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{ap_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ap_cpid}';").one()
+        connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{ap_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_offset WHERE cp_id='{ap_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_cpid}';")
 
-    # def fs_process_cleanup_table_of_services(self, ei_id):
-    #     self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ei_id}';").one()
-    #     self.ocds_keyspace.execute(f"DELETE FROM budget_ei WHERE cp_id='{ei_id}';")
-    #     self.ocds_keyspace.execute(f"DELETE FROM budget_fs WHERE cp_id='{ei_id}';")
-    #     self.ocds_keyspace.execute(f"DELETE FROM notice_budget_release WHERE cp_id='{ei_id}';")
-    #     self.ocds_keyspace.execute(f"DELETE FROM notice_budget_offset WHERE cp_id='{ei_id}';")
-    #     self.ocds_keyspace.execute(f"DELETE FROM notice_budget_compiled_release WHERE cp_id='{ei_id}';")
-    #
-    # def pn_process_cleanup_table_of_services(self, pn_ocid):
-    #     self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
-    #     self.ocds_keyspace.execute(f"DELETE FROM budget_fs WHERE cp_id='{pn_ocid}';")
-    #     self.access_keyspace.execute(f"DELETE FROM tenders WHERE cpid='{pn_ocid}';")
-    #     self.ocds_keyspace.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_ocid}';")
-    #     self.ocds_keyspace.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_ocid}';")
-    #     self.ocds_keyspace.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_ocid}';")
+    @staticmethod
+    def cleanup_table_of_services_for_outsourcingPlan(connect_to_ocds, connect_to_access, pn_cpid):
+        connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{pn_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_cpid}';").one()
+        connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_cpid}';")
+
+    @staticmethod
+    def cleanup_table_of_services_for_financialSource(connect_to_ocds, cp_id):
+        connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{cp_id}';").one()
+        connect_to_ocds.execute(f"DELETE FROM budget_ei WHERE cp_id='{cp_id}';")
+        connect_to_ocds.execute(f"DELETE FROM budget_fs WHERE cp_id='{cp_id}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_budget_release WHERE cp_id='{cp_id}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_budget_offset WHERE cp_id='{cp_id}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_budget_compiled_release WHERE cp_id='{cp_id}';")
+
+    @staticmethod
+    def cleanup_table_of_services_for_planningNotice(connect_to_ocds, connect_to_access, cp_id):
+        connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{cp_id}';").one()
+        connect_to_ocds.execute(f"DELETE FROM budget_fs WHERE cp_id='{cp_id}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{cp_id}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_offset WHERE cp_id='{cp_id}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{cp_id}';")
+        connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{cp_id}';")
     #
     # def cnonpn_process_cleanup_table_of_services(self, pn_ocid):
     #     self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()

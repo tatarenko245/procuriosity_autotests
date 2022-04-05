@@ -858,9 +858,6 @@ class PlanningNoticeRelease:
 
         self.__expected_ms_release['releases'][0]['tender']['legalBasis'] = self.__pn_payload['tender']['legalBasis']
 
-        self.__expected_ms_release['releases'][0]['tender']['procurementMethodRationale'] = \
-            self.__pn_payload['tender']['procurementMethodRationale']
-
         try:
             """
            Enrich mainProcurementCategory, depends on tender.classification.id.
@@ -950,13 +947,6 @@ class PlanningNoticeRelease:
         except KeyError:
             raise KeyError("Could not parse a language into pytest command.")
 
-        expected_contractperiod = get_contract_period_for_ms_release(lots_array=self.__pn_payload['tender']['lots'])
-        self.__expected_ms_release['releases'][0]['tender']['contractPeriod']['startDate'] = expected_contractperiod[0]
-        self.__expected_ms_release['releases'][0]['tender']['contractPeriod']['endDate'] = expected_contractperiod[1]
-
-        self.__expected_ms_release['releases'][0]['tender']['procurementMethodAdditionalInfo'] = \
-            self.__pn_payload['tender']['procurementMethodAdditionalInfo']
-
         try:
             """
             Enrich releases.tender.value.amount, depends on lots into pn_payload.
@@ -968,12 +958,23 @@ class PlanningNoticeRelease:
 
                 self.__expected_ms_release['releases'][0]['tender']['value']['currency'] = \
                     self.__pn_payload['tender']['lots'][0]['value']['currency']
+
+                expected_contractperiod = get_contract_period_for_ms_release(
+                    lots_array=self.__pn_payload['tender']['lots'])
+
+                self.__expected_ms_release['releases'][0]['tender']['contractPeriod']['startDate'] = \
+                    expected_contractperiod[0]
+
+                self.__expected_ms_release['releases'][0]['tender']['contractPeriod']['endDate'] = \
+                    expected_contractperiod[1]
             else:
                 self.__expected_ms_release['releases'][0]['tender']['value']['amount'] = round(
                     sum(sum_of_budgetbreakdown_amount_list), 2)
 
                 self.__expected_ms_release['releases'][0]['tender']['value']['currency'] = \
                     self.__pn_payload['planning']['budget']['budgetBreakdown'][0]['amount']['currency']
+
+                del self.__expected_ms_release['releases'][0]['tender']['contractPeriod']
         except ValueError:
             raise ValueError("Impossible to enrich releases.tender.value.amount.")
 

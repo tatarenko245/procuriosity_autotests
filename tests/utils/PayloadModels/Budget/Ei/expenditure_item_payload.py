@@ -9,31 +9,24 @@ from tests.utils.date_class import Date
 
 
 class ExpenditureItemPayload:
-    def __init__(self, buyer_id):
-
-        __category = random.choice(cpv_category_tuple)
-        if __category == "goods":
-            self.__tender_classification_id = random.choice(cpv_goods_high_level_tuple)
-        elif __category == "works":
-            self.__tender_classification_id = random.choice(cpv_works_high_level_tuple)
-        elif __category == "services":
-            self.__tender_classification_id = random.choice(cpv_services_high_level_tuple)
+    def __init__(self, buyer_id, tenderClassificationId):
 
         __ei_period = Date().expenditure_item_period()
+        self.__tenderClassificationId = tenderClassificationId
 
         self.__payload = {
             "tender": {
                 "title": "create ei: tender.title",
                 "description": "create ei: tender.description",
                 "classification": {
-                    "id": self.__tender_classification_id
+                    "id": self.__tenderClassificationId
                 },
                 "items": [
                     {
                         "id": "0",
                         "description": f"create ei: tender.items0.description",
                         "classification": {
-                            "id": self.__tender_classification_id
+                            "id": self.__tenderClassificationId
                         },
                         "additionalClassifications": [
                             {
@@ -128,7 +121,7 @@ class ExpenditureItemPayload:
         return self.__payload
 
     def get_tender_classification_id(self):
-        return self.__tender_classification_id
+        return self.__tenderClassificationId
 
     def delete_optional_fields(self, *args, item_position=0, buyer_additionalidentifiers_position=0):
         for a in args:
@@ -178,7 +171,7 @@ class ExpenditureItemPayload:
         new_items_array = generate_items_array(
             quantity_of_object=quantity_of_items,
             item_object=copy.deepcopy(self.__payload['tender']['items'][0]),
-            tender_classification_id=self.__tender_classification_id
+            tender_classification_id=self.__tenderClassificationId
         )
 
         for q_0 in range(quantity_of_items):

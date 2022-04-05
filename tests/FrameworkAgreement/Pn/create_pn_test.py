@@ -11,7 +11,6 @@ from tests.utils.PayloadModels.FrameworkAgreement.Pn.planing_notice_payload impo
 from tests.utils.ReleaseModels.FrameworkAgreement.Pn.planning_notice_release import PlanningNoticeRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.data_of_enum import currency_tuple
-from tests.utils.fixtures_collection.cassandra_session import connect_to_ocds
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
 from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload import ExpenditureItemPayload
 
@@ -29,10 +28,11 @@ class TestCreatePn:
     @allure.title("Check PN and MS releases after CreatePn process, without optional fields. \n"
                   "------------------------------------------------\n"
                   "CreateEi process: required data model, without items array, buyer_id = 0;\n"
-                  "СreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 1;\n"
-                  "СreateFs process: required data model, the treasury money, procuringEntity_id = 0;\n"
+                  "СreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 0;\n"
+                  "СreateFs process: required data model, the treasury money, procuringEntity_id = 1;\n"
                   "СreatePn process: required data model, without lots and items.\n")
-    def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment, connect_to_ocds):
+    def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                    tenderClassificationId, connect_to_ocds):
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateEi process.'):
             """
@@ -41,7 +41,7 @@ class TestCreatePn:
             """
             platform_one = PlatformAuthorization(get_hosts[1])
             access_token = platform_one.get_access_token_for_platform_one()
-            operation_id = platform_one.get_x_operation_id(access_token)
+            ei_operationId = platform_one.get_x_operation_id(access_token)
 
         step_number += 1
         with allure.step(f'# {step_number}. Send a request to create a CreateEi process.'):
@@ -53,7 +53,10 @@ class TestCreatePn:
                 """
                 Build payload for CreateEi process.
                 """
-                ei_payload = copy.deepcopy(ExpenditureItemPayload(buyer_id=0))
+                ei_payload = copy.deepcopy(ExpenditureItemPayload(
+                    buyer_id=0,
+                    tenderClassificationId=tenderClassificationId)
+                )
 
                 ei_payload.delete_optional_fields(
                     "tender.description",
@@ -66,7 +69,7 @@ class TestCreatePn:
                     "buyer.contactPoint.url",
                     "buyer.details"
                 )
-                tender_classification_id = ei_payload.get_tender_classification_id()
+
                 ei_payload = ei_payload.build_expenditure_item_payload()
             except ValueError:
                 raise ValueError("Impossible to build payload for CreateEi process.")
@@ -74,18 +77,18 @@ class TestCreatePn:
             PlatformQueryRequest().create_ei_process(
                 host_to_bpe=get_hosts[1],
                 access_token=access_token,
-                x_operation_id=operation_id,
+                x_operation_id=ei_operationId,
                 country=parse_country,
                 language=parse_language,
                 payload=ei_payload,
                 test_mode=True
             )
 
-        ei_message = get_message_for_platform(operation_id)
-        ei_id = ei_message["data"]["outcomes"]["ei"][0]['id']
-        ei_id_list = list()
-        ei_id_list.append(ei_id)
-        allure.attach(str(ei_message), 'Message for platform.')
+            ei_message = get_message_for_platform(ei_operationId)
+            ei_id = ei_message["data"]["outcomes"]["ei"][0]['id']
+            ei_id_list = list()
+            ei_id_list.append(ei_id)
+            allure.attach(str(ei_message), 'Message for platform.')
 
         fs_id_list = list()
         fs_payloads_list = list()
@@ -100,46 +103,46 @@ class TestCreatePn:
             """
             platform_one = PlatformAuthorization(get_hosts[1])
             access_token = platform_one.get_access_token_for_platform_one()
-            operation_id = platform_one.get_x_operation_id(access_token)
+            fs_1_operationId = platform_one.get_x_operation_id(access_token)
 
-            step_number += 1
-            with allure.step(f'# {step_number}. Send a request to create first CreateFS process,'
-                             f'based on full data model into payload, the own money.'):
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create first CreateFS process,'
+                         f'based on full data model into payload, the own money.'):
+            """
+            Send api request to BPE host to create a CreateFs process.
+            And save in variable cpid.
+            """
+            try:
                 """
-                Send api request to BPE host to create a CreateFs process.
-                And save in variable cpid.
+                Build payload for CreateFs process.
                 """
-                try:
-                    """
-                    Build payload for CreateFs process.
-                    """
-                    fs_payload = copy.deepcopy(FinancialSourcePayload(
-                        ei_payload=ei_payload,
-                        amount=89999.89,
-                        currency=currency,
-                        payer_id=1,
-                        funder_id=0)
-                    )
-
-                    fs_payload = fs_payload.build_financial_source_payload()
-                    fs_payloads_list.append(fs_payload)
-                except ValueError:
-                    raise ValueError("Impossible to build payload for CreateFs process.")
-
-                PlatformQueryRequest().create_fs_proces(
-                    host_to_bpe=get_hosts[1],
-                    ocid=ei_id,
-                    access_token=access_token,
-                    x_operation_id=operation_id,
-                    payload=fs_payload,
-                    test_mode=True
+                fs_payload = copy.deepcopy(FinancialSourcePayload(
+                    ei_payload=ei_payload,
+                    amount=89999.89,
+                    currency=currency,
+                    payer_id=1,
+                    funder_id=0)
                 )
 
-                fs_message = get_message_for_platform(operation_id)
-                fs_message_list.append(fs_message)
-                fs_id = fs_message["data"]["outcomes"]["fs"][0]['id']
-                fs_id_list.append(fs_id)
-                allure.attach(str(fs_message), 'Message for platform.')
+                fs_payload = fs_payload.build_financial_source_payload()
+                fs_payloads_list.append(fs_payload)
+            except ValueError:
+                raise ValueError("Impossible to build payload for CreateFs process.")
+
+            PlatformQueryRequest().create_fs_proces(
+                host_to_bpe=get_hosts[1],
+                cpid=ei_id,
+                access_token=access_token,
+                x_operation_id=fs_1_operationId,
+                payload=fs_payload,
+                test_mode=True
+            )
+
+            fs_message = get_message_for_platform(fs_1_operationId)
+            fs_message_list.append(fs_message)
+            fs_id = fs_message["data"]["outcomes"]["fs"][0]['id']
+            fs_id_list.append(fs_id)
+            allure.attach(str(fs_message), 'Message for platform.')
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: second CreateFs process,'
@@ -150,61 +153,61 @@ class TestCreatePn:
             """
             platform_one = PlatformAuthorization(get_hosts[1])
             access_token = platform_one.get_access_token_for_platform_one()
-            operation_id = platform_one.get_x_operation_id(access_token)
+            fs_2_operationId = platform_one.get_x_operation_id(access_token)
 
-            step_number += 1
-            with allure.step(f'# {step_number}. Send a request to create second CreateFS process, '
-                             f'based on required value into payload, the treasury money'):
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create second CreateFS process, '
+                         f'based on required value into payload, the treasury money'):
+            """
+            Send api request to BPE host to create a CreateFs process.
+            And save in variable cpid.
+            """
+            try:
                 """
-                Send api request to BPE host to create a CreateFs process.
-                And save in variable cpid.
+                Build payload for CreateFs process.
                 """
-                try:
-                    """
-                    Build payload for CreateFs process.
-                    """
-                    fs_payload = copy.deepcopy(FinancialSourcePayload(
-                        ei_payload=ei_payload,
-                        amount=89999.89,
-                        currency=currency,
-                        payer_id=1)
-                    )
-
-                    fs_payload.delete_optional_fields(
-                        "tender.procuringEntity.identifier.uri",
-                        "tender.procuringEntity.address.postalCode",
-                        "tender.procuringEntity.additionalIdentifiers",
-                        "tender.procuringEntity.contactPoint.faxNumber",
-                        "tender.procuringEntity.contactPoint.url",
-                        "planning.budget.id",
-                        "planning.budget.description",
-                        "planning.budget.europeanUnionFunding",
-                        "planning.budget.project",
-                        "planning.budget.projectID",
-                        "planning.budget.uri",
-                        "planning.rationale",
-                        "buyer"
-                    )
-
-                    fs_payload = fs_payload.build_financial_source_payload()
-                    fs_payloads_list.append(fs_payload)
-                except ValueError:
-                    raise ValueError("Impossible to build payload for CreateFs process.")
-
-                PlatformQueryRequest().create_fs_proces(
-                    host_to_bpe=get_hosts[1],
-                    ocid=ei_id,
-                    access_token=access_token,
-                    x_operation_id=operation_id,
-                    payload=fs_payload,
-                    test_mode=True
+                fs_payload = copy.deepcopy(FinancialSourcePayload(
+                    ei_payload=ei_payload,
+                    amount=89999.89,
+                    currency=currency,
+                    payer_id=1)
                 )
 
-                fs_message = get_message_for_platform(operation_id)
-                fs_message_list.append(fs_message)
-                fs_id = fs_message["data"]["outcomes"]["fs"][0]['id']
-                fs_id_list.append(fs_id)
-                allure.attach(str(fs_message), 'Message for platform.')
+                fs_payload.delete_optional_fields(
+                    "tender.procuringEntity.identifier.uri",
+                    "tender.procuringEntity.address.postalCode",
+                    "tender.procuringEntity.additionalIdentifiers",
+                    "tender.procuringEntity.contactPoint.faxNumber",
+                    "tender.procuringEntity.contactPoint.url",
+                    "planning.budget.id",
+                    "planning.budget.description",
+                    "planning.budget.europeanUnionFunding",
+                    "planning.budget.project",
+                    "planning.budget.projectID",
+                    "planning.budget.uri",
+                    "planning.rationale",
+                    "buyer"
+                )
+
+                fs_payload = fs_payload.build_financial_source_payload()
+                fs_payloads_list.append(fs_payload)
+            except ValueError:
+                raise ValueError("Impossible to build payload for CreateFs process.")
+
+            PlatformQueryRequest().create_fs_proces(
+                host_to_bpe=get_hosts[1],
+                cpid=ei_id,
+                access_token=access_token,
+                x_operation_id=fs_2_operationId,
+                payload=fs_payload,
+                test_mode=True
+            )
+
+            fs_message = get_message_for_platform(fs_2_operationId)
+            fs_message_list.append(fs_message)
+            fs_id = fs_message["data"]["outcomes"]["fs"][0]['id']
+            fs_id_list.append(fs_id)
+            allure.attach(str(fs_message), 'Message for platform.')
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreatePn process.'):
@@ -214,7 +217,7 @@ class TestCreatePn:
             """
             platform_one = PlatformAuthorization(get_hosts[1])
             access_token = platform_one.get_access_token_for_platform_one()
-            operation_id = platform_one.get_x_operation_id(access_token)
+            pn_operationId = platform_one.get_x_operation_id(access_token)
 
         step_number += 1
         with allure.step(f'# {step_number}. Send a request to create a CreatePn process.'):
@@ -230,7 +233,7 @@ class TestCreatePn:
                     fs_id=fs_id,
                     amount=909.99,
                     currency=currency,
-                    tender_classification_id=tender_classification_id,
+                    tenderClassificationId=tenderClassificationId,
                     host_to_service=get_hosts[2])
                 )
 
@@ -253,7 +256,7 @@ class TestCreatePn:
             synchronous_result = PlatformQueryRequest().create_pn_proces(
                 host_to_bpe=get_hosts[1],
                 access_token=access_token,
-                x_operation_id=operation_id,
+                x_operation_id=pn_operationId,
                 payload=pn_payload,
                 test_mode=True,
                 country=parse_country,
@@ -280,7 +283,7 @@ class TestCreatePn:
                 """
                 Check the fs_message for platform.
                 """
-                actual_message = get_message_for_platform(operation_id)
+                actual_message = get_message_for_platform(pn_operationId)
 
                 try:
                     """
@@ -301,7 +304,7 @@ class TestCreatePn:
                     allure.attach(json.dumps(actual_message), "Actual pn_message.")
                     allure.attach(json.dumps(expected_message), "Expected pn_message.")
 
-                    process_id = CassandraSession().get_processId_by_operationId(connect_to_ocds, operation_id)
+                    process_id = CassandraSession().get_processId_by_operationId(connect_to_ocds, pn_operationId)
 
                     assert actual_message == expected_message, \
                         allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
@@ -317,7 +320,6 @@ class TestCreatePn:
 
                 ms_url = f"{actual_message['data']['url']}/{actual_message['data']['ocid']}"
                 actual_ms_release = requests.get(url=ms_url).json()
-
 
                 try:
                     """
@@ -360,7 +362,7 @@ class TestCreatePn:
                         ei_message,
                         fs_payloads_list,
                         fs_message_list,
-                        tender_classification_id
+                        tenderClassificationId
                     )
                 except ValueError:
                     raise ValueError("Impossible to build expected MS release.")
@@ -373,32 +375,48 @@ class TestCreatePn:
                 #         allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
                 #                                       f"process_id = '{process_id}' ALLOW FILTERING;",
                 #                                       "Cassandra DataBase: steps of process.")
-            #
-            #             try:
-            #                 """
-            #                     If TestCase was passed, then cLean up the database.
-            #                     If TestCase was failed, then return process steps by operation-id.
-            #                     """
-            #                 if compare_releases == expected_result:
-            #                     connect_to_database.ei_process_cleanup_table_of_services(ei_id=ei_ocid)
-            #
-            #                     connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
-            #
-            #                     connect_to_database.pn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-            #
-            #                     connect_to_database.cnonpn_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-            #
-            #                     connect_to_database.createAward_process_cleanup_table_of_services(pn_ocid=pn_ocid)
-            #
-            #                     connect_to_database.cleanup_steps_of_process(operation_id=createEi_operationId)
-            #
-            #                     connect_to_database.cleanup_steps_of_process(operation_id=createFs_operationId)
-            #
-            #                     connect_to_database.cleanup_steps_of_process(operation_id=createPn_operationId)
-            #
-            #                     connect_to_database.cleanup_steps_of_process(operation_id=createCn_operationId)
-            #
-            #                     connect_to_database.cleanup_steps_of_process_from_orchestrator(
-            #                         pn_ocid=pn_ocid)
-            #             except ValueError:
-            #                 raise ValueError("Can not return BPE operation step")
+
+                    # try:
+                    #     """
+                    #     CLean up the database.
+                    #     """
+                    #     # Clean after crateEi process:
+                    #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                    #         connect_to_ocds,
+                    #         ei_operationId
+                    #     )
+                    #
+                    #     database.cleanup_table_of_services_for_expenditureItem(
+                    #         connect_to_ocds,
+                    #         ei_id
+                    #     )
+                    #
+                    #     # Clean after crateFs process:
+                    #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                    #         connect_to_ocds,
+                    #         fs_1_operationId
+                    #     )
+                    #
+                    #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                    #         connect_to_ocds,
+                    #         fs_2_operationId
+                    #     )
+                    #
+                    #     database.cleanup_table_of_services_for_financialSource(
+                    #         connect_to_ocds,
+                    #         ei_id
+                    #     )
+                    #
+                    #     # Clean after cratePn process:
+                    #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                    #         connect_to_ocds,
+                    #         pn_operationId
+                    #     )
+                    #
+                    #     database.cleanup_table_of_services_for_planningNotice(
+                    #         connect_to_ocds,
+                    #         connect_to_access,
+                    #         pn_cpid
+                    #     )
+                    # except ValueError:
+                    #     raise ValueError("Impossible to cLean up the database.")

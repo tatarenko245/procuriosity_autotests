@@ -1,0 +1,681 @@
+import copy
+import json
+import random
+
+import allure
+import requests
+from deepdiff import DeepDiff
+
+from tests.utils.MessageModels.OutsourcingPn.outsourcing_pn_message import OutsourcingPnMessage
+from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload import ExpenditureItemPayload
+from tests.utils.PayloadModels.Budget.Fs.financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.FrameworkAgreement.Ap.aggregated_plan_payload import AggregatedPayload
+from tests.utils.PayloadModels.FrameworkAgreement.Pn.planing_notice_payload import PlanningNoticePayload
+from tests.utils.cassandra_session import CassandraSession
+from tests.utils.data_of_enum import currency_tuple
+from tests.utils.functions_collection.functions import is_it_uuid
+from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
+from tests.utils.platform_query_library import PlatformQueryRequest
+from tests.utils.platform_authorization import PlatformAuthorization
+
+
+@allure.parent_suite('Framework Agreement')
+@allure.suite('Ap')
+@allure.sub_suite('BPE: Create Ap')
+@allure.severity('Critical')
+@allure.testcase(url=None,
+                 name=None)
+class TestCreatePn:
+    @allure.title("Check Ap and MS releases after OutsourcingPn process, without optional fields. \n"
+                  "------------------------------------------------\n"
+                  "CreateEi process: required data model, without items array, buyer_id = 0;\n"
+                  "СreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 1;\n"
+                  "СreateFs process: required data model, the treasury money, procuringEntity_id = 0;\n"
+                  "СreatePn process: required data model, without lots and items.\n"
+                  "СreateAp process: required data mode;\n"
+                  "OutsourcingPn process: payload is not needed.\n")
+    def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
+                    tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator):
+
+        metadata_tender_url = None
+        try:
+            if parse_environment == "dev":
+                metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
+            elif parse_environment == "sandbox":
+                metadata_tender_url = "http://public.eprocurement.systems/tenders"
+        except ValueError:
+            raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
+
+        step_number = 1
+        with allure.step(f'# {step_number}. Authorization platform one: CreateEi process.'):
+            """
+            Tender platform authorization for CreateEi process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            platform_one = PlatformAuthorization(get_hosts[1])
+            access_token = platform_one.get_access_token_for_platform_one()
+            ei_operationId = platform_one.get_x_operation_id(access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create a CreateEi process.'):
+            """
+            Send api request to BPE host to create a CreateEi process.
+            And save in variable ei_ocid.
+            """
+            try:
+                """
+                Build payload for CreateEi process.
+                """
+                ei_payload = copy.deepcopy(ExpenditureItemPayload(
+                    buyer_id=0,
+                    tenderClassificationId=tenderClassificationId)
+                )
+
+                ei_payload.delete_optional_fields(
+                    "tender.description",
+                    "tender.items",
+                    "planning.rationale",
+                    "buyer.identifier.uri",
+                    "buyer.address.postalCode",
+                    "buyer.additionalIdentifiers",
+                    "buyer.contactPoint.faxNumber",
+                    "buyer.contactPoint.url",
+                    "buyer.details"
+                )
+
+                ei_payload = ei_payload.build_expenditure_item_payload()
+            except ValueError:
+                raise ValueError("Impossible to build payload for CreateEi process.")
+
+            PlatformQueryRequest().create_ei_process(
+                host_to_bpe=get_hosts[1],
+                access_token=access_token,
+                x_operation_id=ei_operationId,
+                country=parse_country,
+                language=parse_language,
+                payload=ei_payload,
+                test_mode=True
+            )
+
+            ei_message = get_message_for_platform(ei_operationId)
+            ei_id = ei_message["data"]["outcomes"]["ei"][0]['id']
+            ei_id_list = list()
+            ei_id_list.append(ei_id)
+            allure.attach(str(ei_message), 'Message for platform.')
+
+        fs_id_list = list()
+        fs_payloads_list = list()
+        fs_message_list = list()
+        currency = f"{random.choice(currency_tuple)}"
+        step_number = 1
+        with allure.step(f'# {step_number}. Authorization platform one: first CreateFs process,'
+                         f'based on full data model into payload, the own money.'):
+            """
+            Tender platform authorization for CreateFs process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            platform_one = PlatformAuthorization(get_hosts[1])
+            access_token = platform_one.get_access_token_for_platform_one()
+            fs_1_operationId = platform_one.get_x_operation_id(access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create first CreateFS process,'
+                         f'based on full data model into payload, the own money.'):
+            """
+            Send api request to BPE host to create a CreateFs process.
+            And save in variable cpid.
+            """
+            try:
+                """
+                Build payload for CreateFs process.
+                """
+                fs_payload = copy.deepcopy(FinancialSourcePayload(
+                    ei_payload=ei_payload,
+                    amount=89999.89,
+                    currency=currency,
+                    payer_id=1,
+                    funder_id=1)
+                )
+
+                fs_payload = fs_payload.build_financial_source_payload()
+                fs_payloads_list.append(fs_payload)
+            except ValueError:
+                raise ValueError("Impossible to build payload for CreateFs process.")
+
+            PlatformQueryRequest().create_fs_proces(
+                host_to_bpe=get_hosts[1],
+                cpid=ei_id,
+                access_token=access_token,
+                x_operation_id=fs_1_operationId,
+                payload=fs_payload,
+                test_mode=True
+            )
+
+            fs_message = get_message_for_platform(fs_1_operationId)
+            fs_message_list.append(fs_message)
+            fs_id = fs_message["data"]["outcomes"]["fs"][0]['id']
+            fs_id_list.append(fs_id)
+            allure.attach(str(fs_message), 'Message for platform.')
+
+        step_number = 1
+        with allure.step(f'# {step_number}. Authorization platform one: second CreateFs process,'
+                         f'based on required value into payload, the treasury money.'):
+            """
+            Tender platform authorization for CreateFs process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            platform_one = PlatformAuthorization(get_hosts[1])
+            access_token = platform_one.get_access_token_for_platform_one()
+            fs_2_operationId = platform_one.get_x_operation_id(access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create second CreateFS process, '
+                         f'based on required value into payload, the treasury money'):
+            """
+            Send api request to BPE host to create a CreateFs process.
+            And save in variable cpid.
+            """
+            try:
+                """
+                Build payload for CreateFs process.
+                """
+                fs_payload = copy.deepcopy(FinancialSourcePayload(
+                    ei_payload=ei_payload,
+                    amount=89999.89,
+                    currency=currency,
+                    payer_id=0)
+                )
+
+                fs_payload.delete_optional_fields(
+                    "tender.procuringEntity.identifier.uri",
+                    "tender.procuringEntity.address.postalCode",
+                    "tender.procuringEntity.additionalIdentifiers",
+                    "tender.procuringEntity.contactPoint.faxNumber",
+                    "tender.procuringEntity.contactPoint.url",
+                    "planning.budget.id",
+                    "planning.budget.description",
+                    "planning.budget.europeanUnionFunding",
+                    "planning.budget.project",
+                    "planning.budget.projectID",
+                    "planning.budget.uri",
+                    "planning.rationale",
+                    "buyer"
+                )
+
+                fs_payload = fs_payload.build_financial_source_payload()
+                fs_payloads_list.append(fs_payload)
+            except ValueError:
+                raise ValueError("Impossible to build payload for CreateFs process.")
+
+            PlatformQueryRequest().create_fs_proces(
+                host_to_bpe=get_hosts[1],
+                cpid=ei_id,
+                access_token=access_token,
+                x_operation_id=fs_2_operationId,
+                payload=fs_payload,
+                test_mode=True
+            )
+
+            fs_message = get_message_for_platform(fs_2_operationId)
+            fs_message_list.append(fs_message)
+            fs_id = fs_message["data"]["outcomes"]["fs"][0]['id']
+            fs_id_list.append(fs_id)
+            allure.attach(str(fs_message), 'Message for platform.')
+
+        step_number = 1
+        with allure.step(f'# {step_number}. Authorization platform one: CreatePn process.'):
+            """
+            Tender platform authorization for CreatePn process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            platform_one = PlatformAuthorization(get_hosts[1])
+            access_token = platform_one.get_access_token_for_platform_one()
+            pn_operationId = platform_one.get_x_operation_id(access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create a CreatePn process.'):
+            """
+            Send api request to BPE host to create a CreatePn process.
+            And save in variable ocid and token..
+            """
+            try:
+                """
+                Build payload for CreatePn process.
+                """
+                pn_payload = copy.deepcopy(PlanningNoticePayload(
+                    fs_id=fs_id,
+                    amount=909.99,
+                    currency=currency,
+                    tenderClassificationId=tenderClassificationId,
+                    host_to_service=get_hosts[2])
+                )
+
+                pn_payload.customize_planning_budget_budgetbreakdown(fs_id_list)
+
+                pn_payload.delete_optional_fields(
+                    "planning.rationale",
+                    "planning.budget.description",
+                    "tender.procurementMethodRationale",
+                    "tender.procurementMethodAdditionalInfo",
+                    "tender.lots",
+                    "tender.items",
+                    "tender.documents"
+                )
+                pn_payload = pn_payload.build_plan_payload()
+
+            except ValueError:
+                raise ValueError("Impossible to build payload for CreatePn process.")
+
+            PlatformQueryRequest().create_pn_proces(
+                host_to_bpe=get_hosts[1],
+                access_token=access_token,
+                x_operation_id=pn_operationId,
+                payload=pn_payload,
+                test_mode=True,
+                country=parse_country,
+                language=parse_language,
+                pmd="TEST_DCO"
+            )
+
+            pn_message = get_message_for_platform(pn_operationId)
+            pn_cpid = pn_message['data']['ocid']
+            pn_id = pn_message["data"]["outcomes"]["pn"][0]['id']
+            pn_token = pn_message['data']['outcomes']['pn'][0]['X-TOKEN']
+            allure.attach(str(pn_message), 'Message for platform.')
+
+        step_number = 1
+        with allure.step(f'# {step_number}. Authorization platform one: CreateAp process.'):
+            """
+            Tender platform authorization for CreateAp process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            platform_one = PlatformAuthorization(get_hosts[1])
+            access_token = platform_one.get_access_token_for_platform_one()
+            ap_operationId = platform_one.get_x_operation_id(access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create a CreateAp process.'):
+            """
+            Send api request to BPE host to create a CreateAp process.
+            And save in variable ocid and token..
+            """
+            try:
+                """
+                Build payload for CreateAp process.
+                """
+                database = CassandraSession()
+                maxDurationOfFA = database.get_maxDurationOfFA_from_access_rules(
+                    connect_to_access,
+                    parse_country,
+                    parse_pmd
+                )
+
+                ap_payload = copy.deepcopy(AggregatedPayload(
+                    centralPurchasingBody_id=55,
+                    host_to_service=get_hosts[2],
+                    maxDurationOfFA=maxDurationOfFA,
+                    tenderClassificationId=tenderClassificationId,
+                    currency=currency)
+                )
+
+                ap_payload.delete_optional_fields(
+                    "tender.procurementMethodRationale",
+                    "tender.procuringEntity.additionalIdentifiers",
+                    "tender.procuringEntity.address.postalCode",
+                    "tender.procuringEntity.contactPoint.faxNumber",
+                    "tender.procuringEntity.contactPoint.url"
+                )
+
+                ap_payload = ap_payload.build_aggregated_plan_payload()
+            except ValueError:
+                raise ValueError("Impossible to build payload for CreateAp process.")
+
+            PlatformQueryRequest().create_ap_proces(
+                host_to_bpe=get_hosts[1],
+                access_token=access_token,
+                x_operation_id=ap_operationId,
+                payload=ap_payload,
+                test_mode=True,
+                country=parse_country,
+                language=parse_language,
+                pmd=parse_pmd
+            )
+
+            ap_message = get_message_for_platform(ap_operationId)
+            ap_cpid = ap_message["data"]['ocid']
+            ap_id = ap_message["data"]["outcomes"]["ap"][0]['id']
+            allure.attach(str(ap_message), 'Message for platform.')
+
+        pn_url = f"{pn_message['data']['url']}/{pn_id}"
+        actual_pn_release_before_outsourcingPlan = requests.get(url=pn_url).json()
+
+        ms_url = f"{pn_message['data']['url']}/{pn_cpid}"
+        actual_ms_release_before_outsourcingPlan = requests.get(url=ms_url).json()
+
+        ap_url = f"{ap_message['data']['url']}/{ap_id}"
+        actual_ap_release_before_outsourcingPlan = requests.get(url=ap_url).json()
+
+        cpb_ms_url = f"{ap_message['data']['url']}/{ap_cpid}"
+        cpb_actual_ms_release_before_outsourcingPlan = requests.get(url=cpb_ms_url).json()
+
+        step_number = 1
+        with allure.step(f'# {step_number}. Authorization platform one: OutsourcingPn process.'):
+            """
+            Tender platform authorization for OutsourcingPn process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            platform_one = PlatformAuthorization(get_hosts[1])
+            access_token = platform_one.get_access_token_for_platform_one()
+            outsourcePn_operation_id = platform_one.get_x_operation_id(access_token)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create a OutsourcingPn process.'):
+            """
+            Send api request to BPE host to create a OutsourcingPn process.
+            And save in variable .
+            """
+            synchronous_result = PlatformQueryRequest().do_outsourcing_proces(
+                host_to_bpe=get_hosts[1],
+                access_token=access_token,
+                x_operation_id=outsourcePn_operation_id,
+                cpid=pn_cpid,
+                ocid=pn_id,
+                pn_token=pn_token,
+                ap_cpid=ap_cpid,
+                ap_id=ap_id,
+                test_mode=True,
+
+            )
+
+        step_number += 1
+        with allure.step(f'# {step_number}. See result'):
+            """
+            Check the results of TestCase.
+            """
+
+            with allure.step(f'# {step_number}.1. Check status code'):
+                """
+                Check the status code of sending the request.
+                """
+                with allure.step('Compare actual status code and expected status code of sending request.'):
+                    allure.attach(str(synchronous_result.status_code), "Actual status code.")
+                    allure.attach(str(202), "Expected status code.")
+                    assert synchronous_result.status_code == 202
+
+            with allure.step(f'# {step_number}.2. Check the OutsourcingPn message for platform.'):
+                """
+                Check the fs_message for platform.
+                """
+                actual_message = get_message_for_platform(outsourcePn_operation_id)
+
+                try:
+                    """
+                    Build expected ap_message for CreatePn process.
+                    """
+                    expected_message = copy.deepcopy(OutsourcingPnMessage(
+                        environment=parse_environment,
+                        actual_message=actual_message,
+                        pn_ocid=pn_cpid,
+                        pn_id=pn_id,
+                        expected_quantity_of_outcomes_ap=1,
+                        test_mode=True)
+                    )
+
+                    expected_message = expected_message.build_expected_message_for_outsourcingPn_process()
+                except ValueError:
+                    raise ValueError("Impossible to build expected fs_message for CreatePn process.")
+
+                with allure.step('Compare actual and expected fs_message for platform.'):
+                    allure.attach(json.dumps(actual_message), "Actual ap_message.")
+                    allure.attach(json.dumps(expected_message), "Expected ap_message.")
+
+                    assert actual_message == expected_message, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"operation_id = '{outsourcePn_operation_id}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
+
+            with allure.step(f'# {step_number}.3. Check PN release.'):
+                """
+                Compare actual PN release before and after OutsourcingPn process.
+                """
+                actual_pn_release_after_outsourcingPlan = requests.get(url=pn_url).json()
+
+                actual_result_of_comparing_releases = dict(DeepDiff(
+                    actual_pn_release_before_outsourcingPlan,
+                    actual_pn_release_after_outsourcingPlan)
+                )
+                try:
+                    """
+                    Prepare relatedProcess object, with relationship = framework.
+                    """
+                    is_permanent_relatedProcess_id_correct = is_it_uuid(
+                        actual_pn_release_after_outsourcingPlan['releases'][0]['relatedProcesses'][1]['id']
+                    )
+
+                    if is_permanent_relatedProcess_id_correct is True:
+                        pass
+                    else:
+                        raise ValueError(f"The releases[0].relatedProcess[1].id must be uuid.")
+
+                    relatedProcess_object_framework = {
+                        "root['releases'][0]['relatedProcesses'][1]": {
+                            "id": actual_pn_release_after_outsourcingPlan[
+                                'releases'][0]['relatedProcesses'][1]['id'],
+
+                            "relationship": [
+                                "framework"
+                            ],
+                            "scheme": "ocid",
+                            "identifier": ap_cpid,
+                            "uri": f"{metadata_tender_url}/{ap_cpid}/{ap_cpid}"
+                        }
+                    }
+                except ValueError:
+                    raise ValueError("Impossible to prepare relatedProcess object, with relationship = framework")
+
+                expected_result_of_comparing_releases = {
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{pn_id}-{actual_pn_release_after_outsourcingPlan['releases'][0]['id'][46:59]}",
+                            "old_value":
+                                f"{pn_id}-{actual_pn_release_before_outsourcingPlan['releases'][0]['id'][46:59]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": actual_message['data']['operationDate'],
+                            "old_value": pn_message['data']['operationDate']
+                        },
+                        "root['releases'][0]['tender']['statusDetails']": {
+                            "new_value": "aggregationPending",
+                            "old_value": "planning"
+                        }
+                    },
+                    "iterable_item_added": relatedProcess_object_framework
+                }
+
+                with allure.step('Compare actual PN release before and after OutsourcingPn process.'):
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual release.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected release.")
+
+                    assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"operation_id = '{outsourcePn_operation_id}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
+
+            with allure.step(f'# {step_number}.4. Check MS release.'):
+                """
+                Compare actual MS release before and after OutsourcingPn process.
+                """
+                actual_ms_release_after_outsourcingPlan = requests.get(url=ms_url).json()
+
+                actual_result_of_comparing_releases = dict(DeepDiff(
+                    actual_ms_release_before_outsourcingPlan,
+                    actual_ms_release_after_outsourcingPlan)
+                )
+
+                expected_result_of_comparing_releases = {}
+
+                with allure.step('Compare actual MS release before and after OutsourcingPn process.'):
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual release.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected release.")
+
+                    assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"operation_id = '{outsourcePn_operation_id}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
+
+            with allure.step(f'# {step_number}.5. Check AP release.'):
+                """
+                Compare actual Ap release before and after OutsourcingPn process.
+                """
+                actual_ap_release_after_outsourcingPlan = requests.get(url=ap_url).json()
+
+                actual_result_of_comparing_releases = dict(DeepDiff(
+                    actual_ap_release_before_outsourcingPlan,
+                    actual_ap_release_after_outsourcingPlan)
+                )
+
+                expected_result_of_comparing_releases = {}
+
+            with allure.step('Compare actual AP release before and after OutsourcingPn process.'):
+                allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual release.")
+                allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected release.")
+
+                assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                    allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                  f"operation_id = '{outsourcePn_operation_id}' ALLOW FILTERING;",
+                                  "Cassandra DataBase: steps of process.")
+
+            with allure.step(f'# {step_number}.6. Check MS release of CPB.'):
+                """
+                Compare actual MS release of CPB before and after OutsourcingPn process.
+                """
+                actual_ms_release_after_outsourcingPlan = requests.get(url=cpb_ms_url).json()
+
+                actual_result_of_comparing_releases = dict(DeepDiff(
+                    cpb_actual_ms_release_before_outsourcingPlan,
+                    actual_ms_release_after_outsourcingPlan)
+                )
+
+                try:
+                    """
+                    Prepare relatedProcess object, with relationship = x-demand.
+                    """
+                    is_permanent_relatedProcess_id_correct = is_it_uuid(
+                        actual_ms_release_after_outsourcingPlan['releases'][0]['relatedProcesses'][1]['id']
+                    )
+
+                    if is_permanent_relatedProcess_id_correct is True:
+                        pass
+                    else:
+                        raise ValueError(f"The releases[0].relatedProcess[1].id must be uuid.")
+
+                    relatedProcess_object_demand = {
+                        "root['releases'][0]['relatedProcesses'][1]": {
+                            "id": actual_ms_release_after_outsourcingPlan[
+                                'releases'][0]['relatedProcesses'][1]['id'],
+
+                            "relationship": [
+                                "x_demand"
+                            ],
+                            "scheme": "ocid",
+                            "identifier": pn_cpid,
+                            "uri": f"{metadata_tender_url}/{pn_cpid}/{pn_cpid}"
+                        }
+                    }
+                except ValueError:
+                    raise ValueError("Impossible to prepare relatedProcess object, with relationship = framework")
+
+                expected_result_of_comparing_releases = {
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{ap_cpid}-{actual_ms_release_after_outsourcingPlan['releases'][0]['id'][29:42]}",
+                            "old_value":
+                                f"{ap_cpid}-{cpb_actual_ms_release_before_outsourcingPlan['releases'][0]['id'][29:42]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": actual_message['data']['operationDate'],
+                            "old_value": ap_message['data']['operationDate']
+                        }
+                    },
+                    "iterable_item_added": relatedProcess_object_demand
+                }
+
+            with allure.step('Compare actual MS release of CPB before and after OutsourcingPn process.'):
+                allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual release.")
+                allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected release.")
+
+                assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                    allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                  f"operation_id = '{outsourcePn_operation_id}' ALLOW FILTERING;",
+                                  "Cassandra DataBase: steps of process.")
+
+                try:
+                    """
+                    CLean up the database.
+                    """
+                    # Clean after crateEi process:
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        ei_operationId
+                    )
+
+                    database.cleanup_table_of_services_for_expenditureItem(
+                        connect_to_ocds,
+                        ei_id
+                    )
+
+                    # Clean after crateFs process:
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        fs_1_operationId
+                    )
+
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        fs_2_operationId
+                    )
+
+                    database.cleanup_table_of_services_for_financialSource(
+                        connect_to_ocds,
+                        ei_id
+                    )
+
+                    # Clean after cratePn process:
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        pn_operationId
+                    )
+
+                    database.cleanup_table_of_services_for_planningNotice(
+                        connect_to_ocds,
+                        connect_to_access,
+                        pn_cpid
+                    )
+
+                    # Clean after aggregatedPlan process:
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        ap_operationId
+                    )
+
+                    database.cleanup_table_of_services_for_aggregatedPlan(
+                        connect_to_ocds,
+                        connect_to_access,
+                        ap_cpid
+                    )
+
+                    # Clean after outsourcingPlan process:
+                    database.cleanup_orchestrator_steps_by_cpid(
+                        connect_to_orchestrator,
+                        pn_cpid
+                    )
+
+                    database.cleanup_table_of_services_for_outsourcingPlan(
+                        connect_to_ocds,
+                        connect_to_access,
+                        pn_cpid
+                    )
+                except ValueError:
+                    raise ValueError("Impossible to cLean up the database.")
