@@ -94,7 +94,7 @@ class TestCreatePn:
         fs_payloads_list = list()
         fs_message_list = list()
         currency = f"{random.choice(currency_tuple)}"
-        step_number = 1
+        step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: first CreateFs process,'
                          f'based on full data model into payload, the own money.'):
             """
@@ -144,7 +144,7 @@ class TestCreatePn:
             fs_id_list.append(fs_id)
             allure.attach(str(fs_message), 'Message for platform.')
 
-        step_number = 1
+        step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: second CreateFs process,'
                          f'based on required value into payload, the treasury money.'):
             """
@@ -209,7 +209,7 @@ class TestCreatePn:
             fs_id_list.append(fs_id)
             allure.attach(str(fs_message), 'Message for platform.')
 
-        step_number = 1
+        step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: CreatePn process.'):
             """
             Tender platform authorization for CreatePn process.

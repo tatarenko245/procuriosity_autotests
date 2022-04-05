@@ -20,8 +20,8 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 @allure.parent_suite('Framework Agreement')
-@allure.suite('Ap')
-@allure.sub_suite('BPE: Create Ap')
+@allure.suite('OutsourcingPn')
+@allure.sub_suite('BPE: Outsourcing Plan')
 @allure.severity('Critical')
 @allure.testcase(url=None,
                  name=None)
@@ -107,7 +107,7 @@ class TestCreatePn:
         fs_payloads_list = list()
         fs_message_list = list()
         currency = f"{random.choice(currency_tuple)}"
-        step_number = 1
+        step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: first CreateFs process,'
                          f'based on full data model into payload, the own money.'):
             """
@@ -157,7 +157,7 @@ class TestCreatePn:
             fs_id_list.append(fs_id)
             allure.attach(str(fs_message), 'Message for platform.')
 
-        step_number = 1
+        step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: second CreateFs process,'
                          f'based on required value into payload, the treasury money.'):
             """
@@ -222,7 +222,7 @@ class TestCreatePn:
             fs_id_list.append(fs_id)
             allure.attach(str(fs_message), 'Message for platform.')
 
-        step_number = 1
+        step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: CreatePn process.'):
             """
             Tender platform authorization for CreatePn process.
@@ -283,7 +283,7 @@ class TestCreatePn:
             pn_token = pn_message['data']['outcomes']['pn'][0]['X-TOKEN']
             allure.attach(str(pn_message), 'Message for platform.')
 
-        step_number = 1
+        step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateAp process.'):
             """
             Tender platform authorization for CreateAp process.
@@ -358,7 +358,7 @@ class TestCreatePn:
         cpb_ms_url = f"{ap_message['data']['url']}/{ap_cpid}"
         cpb_actual_ms_release_before_outsourcingPlan = requests.get(url=cpb_ms_url).json()
 
-        step_number = 1
+        step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: OutsourcingPn process.'):
             """
             Tender platform authorization for OutsourcingPn process.
