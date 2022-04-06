@@ -6,8 +6,8 @@ import allure
 import requests
 from deepdiff import DeepDiff
 
-from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.FinancialSource.deldete_financial_source_payload import FinancialSourcePayload
 from tests.utils.PayloadModels.SelectiveProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModels.SelectiveProcedure.EnquiryPeriod.enquiry_prepared_payload import EnquiryPreparePayload
 from tests.utils.PayloadModels.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
@@ -20,9 +20,9 @@ from tests.utils.platform_authorization import PlatformAuthorization
 class TestCreateEnquiry:
     @allure.title("Check Ev and MS releases data after Enquiry creating without optional fields. \n"
                   "------------------------------------------------\n"
-                  "create Ei: obligatory data model without items array;\n"
-                  "create Fs: obligatory data model, treasury money;\n"
-                  "create Pn: obligatory data model, without lots and items;\n"
+                  "create ExpenditureItem: obligatory data model without items array;\n"
+                  "create FinancialSource: obligatory data model, treasury money;\n"
+                  "create PlanningNotice: obligatory data model, without lots and items;\n"
                   "create CnOnPn: obligatory data model, with lots and items;\n"
                   "create Enquiry: obligatory data model;\n")
     def test_check_pn_ms_releases_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -39,7 +39,7 @@ class TestCreateEnquiry:
         except ValueError:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -48,7 +48,7 @@ class TestCreateEnquiry:
             ei_operation_id = authorization.get_x_operation_id(ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -69,7 +69,7 @@ class TestCreateEnquiry:
             ei_ocid = ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -78,7 +78,7 @@ class TestCreateEnquiry:
             fs_operation_id = authorization.get_x_operation_id(fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id.
@@ -99,7 +99,7 @@ class TestCreateEnquiry:
             fs_feed_point_message = KafkaMessage(fs_operation_id).get_message_from_kafka()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Pn'):
+        with allure.step(f'# {step_number}. Authorization platform one: create PlanningNotice'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -108,7 +108,7 @@ class TestCreateEnquiry:
             pn_operation_id = authorization.get_x_operation_id(pn_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Pn'):
+        with allure.step(f'# {step_number}. Send request to create PlanningNotice'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.

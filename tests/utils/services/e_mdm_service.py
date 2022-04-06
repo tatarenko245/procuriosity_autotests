@@ -22,7 +22,7 @@ class MdmService:
                 "context": {
                     "operationId": str(uuid.uuid4()),
                     "requestId": str(uuid.uuid1()),
-                    "stage": "Ei",
+                    "stage": "ExpenditureItem",
                     "processType": "ei",
                     "operationType": "createEI",
                     "owner": "445f6851-c908-407d-9b45-14b92f3e964b",
@@ -158,7 +158,7 @@ class MdmService:
                     "operationId": str(uuid.uuid4()),
                     "requestId": str(uuid.uuid1()),
                     "cpid": ei_id,
-                    "stage": "Fs",
+                    "stage": "FinancialSource",
                     "processType": "fs",
                     "operationType": "createFS",
                     "owner": "445f6851-c908-407d-9b45-14b92f3e964b",

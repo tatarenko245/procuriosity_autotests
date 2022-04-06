@@ -942,8 +942,8 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
             requirement_responses_object['evidences'][0]['relatedDocument']['id'] = \
                 payload['bid']['documents'][0]['id']
 
-            requirement_responses_object['period']['startDate'] = date.contact_period()[0]
-            requirement_responses_object['period']['endDate'] = date.contact_period()[1]
+            requirement_responses_object['period']['startDate'] = date.contactPeriod()[0]
+            requirement_responses_object['period']['endDate'] = date.contactPeriod()[1]
             payload['bid']['requirementResponses'].append(copy.deepcopy(requirement_responses_object))
 
     for i in range(quantity_of_requirement_responses_objects):

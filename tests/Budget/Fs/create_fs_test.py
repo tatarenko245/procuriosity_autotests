@@ -6,9 +6,9 @@ import time
 import allure
 import requests
 from deepdiff import DeepDiff
-from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
-from tests.utils.ReleaseModels.Budget.Fs.fs_prepared_release import FsExpectedRelease
+from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.FinancialSource.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.ReleaseModels.Budget.FinancialSource.fs_prepared_release import FsExpectedRelease
 from tests.utils.functions_collection import check_uuid_version
 from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -16,24 +16,24 @@ from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.platform_query_library import Requests
 
 
-@allure.parent_suite('Pn')
-@allure.suite('Fs')
-@allure.sub_suite('BPE: Create Fs')
+@allure.parent_suite('PlanningNotice')
+@allure.suite('FinancialSource')
+@allure.sub_suite('BPE: Create FinancialSource')
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/'
                      'edit#gid=1455075741',
-                 name='Google sheets: Create Fs')
+                 name='Google sheets: Create FinancialSource')
 class TestCreateFs:
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check status code and message from Kafka topic after Fs creating')
+                  'Check status code and message from Kafka topic after FinancialSource creating')
     def test_check_result_of_sending_the_request(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                                                  connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -42,7 +42,7 @@ class TestCreateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -63,7 +63,7 @@ class TestCreateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -72,7 +72,7 @@ class TestCreateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -142,10 +142,10 @@ class TestCreateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs creation:'
+                  'Check FinancialSource release data after FinancialSource creation:'
                   'ei -> model without optional fields '
                   'and fs -> full data model own money')
     def test_check_fs_release_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -155,7 +155,7 @@ class TestCreateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -164,7 +164,7 @@ class TestCreateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -187,7 +187,7 @@ class TestCreateFs:
                 url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -196,7 +196,7 @@ class TestCreateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -268,12 +268,12 @@ class TestCreateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.3. Check Fs release'):
+            with allure.step(f'# {step_number}.3. Check FinancialSource release'):
                 """
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual Fs release")
+                allure.attach(str(json.dumps(actual_fs_release)), "Actual FinancialSource release")
 
                 expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=parse_environment,
@@ -286,7 +286,7 @@ class TestCreateFs:
                 expected_fs_release_model = copy.deepcopy(
                     expected_release_class.fs_release_full_data_model_own_money_payer_id_is_not_equal_funder_id())
 
-                allure.attach(str(json.dumps(expected_fs_release_model)), "Expected Fs release")
+                allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FinancialSource release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
                 expected_result = {}
@@ -305,24 +305,24 @@ class TestCreateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release and expected Fs release and '
-                                 'expected result of comparing Fs release and expected Fs release.'):
+                with allure.step('Compare actual result of comparing FinancialSource release and expected FinancialSource release and '
+                                 'expected result of comparing FinancialSource release and expected FinancialSource release.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release and expected Fs release.")
+                                  "Actual result of comparing FinancialSource release and expected FinancialSource release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release and expected Fs release.")
+                                  "Expected result of comparing FinancialSource release and expected FinancialSource release.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.4. Check Ei release after Fs creating'):
+            with allure.step(f'# {step_number}.4. Check ExpenditureItem release after FinancialSource creating'):
                 """
                 Compare actual second expenditure item release after fs creating with
                 first expenditure item release before fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_creating)),
-                              "Actual Ei release before fs creating")
+                              "Actual ExpenditureItem release before fs creating")
 
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_creating)),
-                              "Actual Ei release after fs creating")
+                              "Actual ExpenditureItem release after fs creating")
 
                 compare_releases = DeepDiff(actual_ei_release_before_fs_creating, actual_ei_release_after_fs_creating)
                 dictionary_item_added_was_cleaned = \
@@ -366,7 +366,7 @@ class TestCreateFs:
                     )
                 except ValueError:
                     raise ValueError(
-                        "Check your relatedProcesses.id in Ei release: relatedProcesses.id in Ei release "
+                        "Check your relatedProcesses.id in ExpenditureItem release: relatedProcesses.id in ExpenditureItem release "
                         "must be uuid version 1")
 
                 try:
@@ -387,43 +387,43 @@ class TestCreateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs creating and '
-                                 'after Fs creating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource creating and '
+                                 'after FinancialSource creating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release before Fs creating and after Fs creating.")
+                                  "Actual result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs creating and after Fs creating")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating")
                     assert compare_releases == expected_result
 
-                with allure.step('Compare actual result of comparing Ei release before Fs creating and '
-                                 'after Fs creating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource creating and '
+                                 'after FinancialSource creating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release before Fs creating and after Fs creating.")
+                                  "Actual result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs creating and after Fs creating")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating")
                     assert compare_releases == expected_result
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][amount].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][amount].'):
                     allure.attach(str(actual_ei_release_after_fs_creating[
                                           'releases'][0]['planning']['budget']['amount']),
-                                  "Actual result of publication Fs release[releases][tender][description].")
+                                  "Actual result of publication FinancialSource release[releases][tender][description].")
                     allure.attach(str(create_fs_payload['planning']['budget']['amount']),
-                                  "Expected result of publication Fs release[releases][tender][description].")
+                                  "Expected result of publication FinancialSource release[releases][tender][description].")
                     assert actual_ei_release_after_fs_creating['releases'][0]['planning']['budget']['amount'] == \
                            create_fs_payload['planning']['budget']['amount']
 
-                with allure.step('Check correctness of publication Fs release[releases][relatedProcesses].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][relatedProcesses].'):
                     allure.attach(str(actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses']),
-                                  "Actual result of publication Fs release[releases][relatedProcesses].")
+                                  "Actual result of publication FinancialSource release[releases][relatedProcesses].")
                     allure.attach(str(expected_related_processes_model),
-                                  "Expected result of publication Fs release[releases][relatedProcesses].")
+                                  "Expected result of publication FinancialSource release[releases][relatedProcesses].")
                     assert actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses'] == \
                            expected_related_processes_model
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs creation:'
+                  'Check FinancialSource release data after FinancialSource creation:'
                   'ei -> full data model and '
                   'fs -> full data model treasury money')
     def test_check_fs_release_two(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -433,7 +433,7 @@ class TestCreateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -442,7 +442,7 @@ class TestCreateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -465,7 +465,7 @@ class TestCreateFs:
                 url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -474,7 +474,7 @@ class TestCreateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -546,12 +546,12 @@ class TestCreateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.3. Check Fs release'):
+            with allure.step(f'# {step_number}.3. Check FinancialSource release'):
                 """
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual Fs release")
+                allure.attach(str(json.dumps(actual_fs_release)), "Actual FinancialSource release")
 
                 expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=parse_environment,
@@ -564,7 +564,7 @@ class TestCreateFs:
                 expected_fs_release_model = copy.deepcopy(
                     expected_release_class.fs_release_full_data_model_treasury_money(ei_payload=create_ei_payload))
 
-                allure.attach(str(json.dumps(expected_fs_release_model)), "Expected Fs release")
+                allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FinancialSource release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
                 expected_result = {}
@@ -583,24 +583,24 @@ class TestCreateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release and expected Fs release and '
-                                 'expected result of comparing Fs release and expected Fs release.'):
+                with allure.step('Compare actual result of comparing FinancialSource release and expected FinancialSource release and '
+                                 'expected result of comparing FinancialSource release and expected FinancialSource release.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release and expected Fs release.")
+                                  "Actual result of comparing FinancialSource release and expected FinancialSource release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release and expected Fs release.")
+                                  "Expected result of comparing FinancialSource release and expected FinancialSource release.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.4. Check Ei release after Fs creating'):
+            with allure.step(f'# {step_number}.4. Check ExpenditureItem release after FinancialSource creating'):
                 """
                 Compare actual second expenditure item release after fs creating with
                 first expenditure item release before fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_creating)),
-                              "Actual Ei release before fs creating")
+                              "Actual ExpenditureItem release before fs creating")
 
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_creating)),
-                              "Actual Ei release after fs creating")
+                              "Actual ExpenditureItem release after fs creating")
 
                 compare_releases = DeepDiff(actual_ei_release_before_fs_creating, actual_ei_release_after_fs_creating)
                 dictionary_item_added_was_cleaned = \
@@ -644,7 +644,7 @@ class TestCreateFs:
                     )
                 except ValueError:
                     raise ValueError(
-                        "Check your relatedProcesses.id in Ei release: relatedProcesses.id in Ei release "
+                        "Check your relatedProcesses.id in ExpenditureItem release: relatedProcesses.id in ExpenditureItem release "
                         "must be uuid version 1")
 
                 try:
@@ -665,43 +665,43 @@ class TestCreateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs creating and '
-                                 'after Fs creating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource creating and '
+                                 'after FinancialSource creating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release before Fs creating and after Fs creating.")
+                                  "Actual result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs creating and after Fs creating")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating")
                     assert compare_releases == expected_result
 
-                with allure.step('Compare actual result of comparing Ei release before Fs creating and '
-                                 'after Fs creating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource creating and '
+                                 'after FinancialSource creating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release before Fs creating and after Fs creating.")
+                                  "Actual result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs creating and after Fs creating")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating")
                     assert compare_releases == expected_result
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][amount].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][amount].'):
                     allure.attach(str(actual_ei_release_after_fs_creating[
                                           'releases'][0]['planning']['budget']['amount']),
-                                  "Actual result of publication Fs release[releases][tender][description].")
+                                  "Actual result of publication FinancialSource release[releases][tender][description].")
                     allure.attach(str(create_fs_payload['planning']['budget']['amount']),
-                                  "Expected result of publication Fs release[releases][tender][description].")
+                                  "Expected result of publication FinancialSource release[releases][tender][description].")
                     assert actual_ei_release_after_fs_creating['releases'][0]['planning']['budget']['amount'] == \
                            create_fs_payload['planning']['budget']['amount']
 
-                with allure.step('Check correctness of publication Fs release[releases][relatedProcesses].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][relatedProcesses].'):
                     allure.attach(str(actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses']),
-                                  "Actual result of publication Fs release[releases][relatedProcesses].")
+                                  "Actual result of publication FinancialSource release[releases][relatedProcesses].")
                     allure.attach(str(expected_related_processes_model),
-                                  "Expected result of publication Fs release[releases][relatedProcesses].")
+                                  "Expected result of publication FinancialSource release[releases][relatedProcesses].")
                     assert actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses'] == \
                            expected_related_processes_model
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs creation:'
+                  'Check FinancialSource release data after FinancialSource creation:'
                   'ei -> full data model and '
                   'fs -> model without optional fields own money')
     def test_check_fs_release_three(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -711,7 +711,7 @@ class TestCreateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -720,7 +720,7 @@ class TestCreateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -743,7 +743,7 @@ class TestCreateFs:
                 url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -752,7 +752,7 @@ class TestCreateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -824,12 +824,12 @@ class TestCreateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.3. Check Fs release'):
+            with allure.step(f'# {step_number}.3. Check FinancialSource release'):
                 """
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual Fs release")
+                allure.attach(str(json.dumps(actual_fs_release)), "Actual FinancialSource release")
 
                 expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=parse_environment,
@@ -842,7 +842,7 @@ class TestCreateFs:
                 expected_fs_release_model = copy.deepcopy(
                     expected_release_class.fs_release_obligatory_data_model_own_money_payer_id_is_not_equal_funder_id())
 
-                allure.attach(str(json.dumps(expected_fs_release_model)), "Expected Fs release")
+                allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FinancialSource release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
                 expected_result = {}
@@ -861,24 +861,24 @@ class TestCreateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release and expected Fs release and '
-                                 'expected result of comparing Fs release and expected Fs release.'):
+                with allure.step('Compare actual result of comparing FinancialSource release and expected FinancialSource release and '
+                                 'expected result of comparing FinancialSource release and expected FinancialSource release.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release and expected Fs release.")
+                                  "Actual result of comparing FinancialSource release and expected FinancialSource release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release and expected Fs release.")
+                                  "Expected result of comparing FinancialSource release and expected FinancialSource release.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.4. Check Ei release after Fs creating'):
+            with allure.step(f'# {step_number}.4. Check ExpenditureItem release after FinancialSource creating'):
                 """
                 Compare actual second expenditure item release after fs creating with
                 first expenditure item release before fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_creating)),
-                              "Actual Ei release before fs creating")
+                              "Actual ExpenditureItem release before fs creating")
 
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_creating)),
-                              "Actual Ei release after fs creating")
+                              "Actual ExpenditureItem release after fs creating")
 
                 compare_releases = DeepDiff(actual_ei_release_before_fs_creating, actual_ei_release_after_fs_creating)
                 dictionary_item_added_was_cleaned = \
@@ -922,7 +922,7 @@ class TestCreateFs:
                     )
                 except ValueError:
                     raise ValueError(
-                        "Check your relatedProcesses.id in Ei release: relatedProcesses.id in Ei release "
+                        "Check your relatedProcesses.id in ExpenditureItem release: relatedProcesses.id in ExpenditureItem release "
                         "must be uuid version 1")
 
                 try:
@@ -943,43 +943,43 @@ class TestCreateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs creating and '
-                                 'after Fs creating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource creating and '
+                                 'after FinancialSource creating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release before Fs creating and after Fs creating.")
+                                  "Actual result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs creating and after Fs creating")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating")
                     assert compare_releases == expected_result
 
-                with allure.step('Compare actual result of comparing Ei release before Fs creating and '
-                                 'after Fs creating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource creating and '
+                                 'after FinancialSource creating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release before Fs creating and after Fs creating.")
+                                  "Actual result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs creating and after Fs creating")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating")
                     assert compare_releases == expected_result
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][amount].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][amount].'):
                     allure.attach(str(actual_ei_release_after_fs_creating[
                                           'releases'][0]['planning']['budget']['amount']),
-                                  "Actual result of publication Fs release[releases][tender][description].")
+                                  "Actual result of publication FinancialSource release[releases][tender][description].")
                     allure.attach(str(create_fs_payload['planning']['budget']['amount']),
-                                  "Expected result of publication Fs release[releases][tender][description].")
+                                  "Expected result of publication FinancialSource release[releases][tender][description].")
                     assert actual_ei_release_after_fs_creating['releases'][0]['planning']['budget']['amount'] == \
                            create_fs_payload['planning']['budget']['amount']
 
-                with allure.step('Check correctness of publication Fs release[releases][relatedProcesses].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][relatedProcesses].'):
                     allure.attach(str(actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses']),
-                                  "Actual result of publication Fs release[releases][relatedProcesses].")
+                                  "Actual result of publication FinancialSource release[releases][relatedProcesses].")
                     allure.attach(str(expected_related_processes_model),
-                                  "Expected result of publication Fs release[releases][relatedProcesses].")
+                                  "Expected result of publication FinancialSource release[releases][relatedProcesses].")
                     assert actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses'] == \
                            expected_related_processes_model
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs creation:'
+                  'Check FinancialSource release data after FinancialSource creation:'
                   'ei -> model without optional fields and '
                   'fs -> model without optional fields treasury money')
     def test_check_fs_release_four(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -989,7 +989,7 @@ class TestCreateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -998,7 +998,7 @@ class TestCreateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -1021,7 +1021,7 @@ class TestCreateFs:
                 url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -1030,7 +1030,7 @@ class TestCreateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -1103,12 +1103,12 @@ class TestCreateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.3. Check Fs release'):
+            with allure.step(f'# {step_number}.3. Check FinancialSource release'):
                 """
                 Compare actual first financial source release with expected financial source
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_fs_release)), "Actual Fs release")
+                allure.attach(str(json.dumps(actual_fs_release)), "Actual FinancialSource release")
 
                 expected_release_class = copy.deepcopy(FsExpectedRelease(
                     environment=parse_environment,
@@ -1122,7 +1122,7 @@ class TestCreateFs:
                     expected_release_class.fs_release_obligatory_data_model_treasury_money(
                         ei_payload=create_ei_payload))
 
-                allure.attach(str(json.dumps(expected_fs_release_model)), "Expected Fs release")
+                allure.attach(str(json.dumps(expected_fs_release_model)), "Expected FinancialSource release")
 
                 compare_releases = dict(DeepDiff(actual_fs_release, expected_fs_release_model))
                 expected_result = {}
@@ -1141,24 +1141,24 @@ class TestCreateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release and expected Fs release and '
-                                 'expected result of comparing Fs release and expected Fs release.'):
+                with allure.step('Compare actual result of comparing FinancialSource release and expected FinancialSource release and '
+                                 'expected result of comparing FinancialSource release and expected FinancialSource release.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release and expected Fs release.")
+                                  "Actual result of comparing FinancialSource release and expected FinancialSource release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release and expected Fs release.")
+                                  "Expected result of comparing FinancialSource release and expected FinancialSource release.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.4. Check Ei release after Fs creating'):
+            with allure.step(f'# {step_number}.4. Check ExpenditureItem release after FinancialSource creating'):
                 """
                 Compare actual second expenditure item release after fs creating with
                 first expenditure item release before fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_creating)),
-                              "Actual Ei release before fs creating")
+                              "Actual ExpenditureItem release before fs creating")
 
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_creating)),
-                              "Actual Ei release after fs creating")
+                              "Actual ExpenditureItem release after fs creating")
 
                 compare_releases = DeepDiff(actual_ei_release_before_fs_creating, actual_ei_release_after_fs_creating)
                 dictionary_item_added_was_cleaned = \
@@ -1202,7 +1202,7 @@ class TestCreateFs:
                     )
                 except ValueError:
                     raise ValueError(
-                        "Check your relatedProcesses.id in Ei release: relatedProcesses.id in Ei release "
+                        "Check your relatedProcesses.id in ExpenditureItem release: relatedProcesses.id in ExpenditureItem release "
                         "must be uuid version 1")
 
                 try:
@@ -1223,35 +1223,35 @@ class TestCreateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs creating and '
-                                 'after Fs creating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource creating and '
+                                 'after FinancialSource creating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release before Fs creating and after Fs creating.")
+                                  "Actual result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs creating and after Fs creating")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating")
                     assert compare_releases == expected_result
 
-                with allure.step('Compare actual result of comparing Ei release before Fs creating and '
-                                 'after Fs creating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource creating and '
+                                 'after FinancialSource creating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release before Fs creating and after Fs creating.")
+                                  "Actual result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs creating and after Fs creating")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource creating and after FinancialSource creating")
                     assert compare_releases == expected_result
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][amount].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][amount].'):
                     allure.attach(str(actual_ei_release_after_fs_creating[
                                           'releases'][0]['planning']['budget']['amount']),
-                                  "Actual result of publication Fs release[releases][tender][description].")
+                                  "Actual result of publication FinancialSource release[releases][tender][description].")
                     allure.attach(str(create_fs_payload['planning']['budget']['amount']),
-                                  "Expected result of publication Fs release[releases][tender][description].")
+                                  "Expected result of publication FinancialSource release[releases][tender][description].")
                     assert actual_ei_release_after_fs_creating['releases'][0]['planning']['budget']['amount'] == \
                            create_fs_payload['planning']['budget']['amount']
 
-                with allure.step('Check correctness of publication Fs release[releases][relatedProcesses].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][relatedProcesses].'):
                     allure.attach(str(actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses']),
-                                  "Actual result of publication Fs release[releases][relatedProcesses].")
+                                  "Actual result of publication FinancialSource release[releases][relatedProcesses].")
                     allure.attach(str(expected_related_processes_model),
-                                  "Expected result of publication Fs release[releases][relatedProcesses].")
+                                  "Expected result of publication FinancialSource release[releases][relatedProcesses].")
                     assert actual_ei_release_after_fs_creating['releases'][0]['relatedProcesses'] == \
                            expected_related_processes_model

@@ -6,7 +6,7 @@ from tests.utils.date_class import Date
 
 class PnPreparePayload:
     def __init__(self, fs_payload, fs_feed_point_message):
-        self.pn_period = Date().planning_notice_period()
+        self.pn_period = Date().planningNotice_period()
         self.fs_payload = fs_payload
         self.fs_feed_point_message = fs_feed_point_message
 

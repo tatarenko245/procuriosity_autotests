@@ -8,10 +8,10 @@ from deepdiff import DeepDiff
 from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, \
     GlobalClassCreateCnOnPn, GlobalClassCreateEnquiry, GlobalClassCreateAnswer
 from tests.utils.PayloadModels.OpenProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
-from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditure_item_payload__ import EiPreparePayload
 from tests.utils.PayloadModels.OpenProcedure.EnquiryPeriod.answer_prepared_payload import AnswerPreparePayload
 from tests.utils.PayloadModels.OpenProcedure.EnquiryPeriod.enquiry_prepared_payload import EnquiryPreparePayload
-from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.Budget.FinancialSource.deldete_financial_source_payload import FinancialSourcePayload
 from tests.utils.PayloadModels.OpenProcedure.Pn.pn_prepared_payload import PnPreparePayload
 
 from tests.utils.cassandra_session import CassandraSession
@@ -60,7 +60,7 @@ class TestCreateAnswer:
 
     @allure.title('Check status code and message from Kafka topic after Answer creating')
     def test_check_result_of_sending_the_request(self, parse_country, connect_to_database, parse_pmd):
-        with allure.step('# 1. Authorization platform one: create Ei'):
+        with allure.step('# 1. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -70,7 +70,7 @@ class TestCreateAnswer:
 
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Send request to create Ei'):
+        with allure.step('# 2. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -94,7 +94,7 @@ class TestCreateAnswer:
             GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
-        with allure.step('# 3. Authorization platform one: create Fs'):
+        with allure.step('# 3. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -104,7 +104,7 @@ class TestCreateAnswer:
 
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
-        with allure.step('# 4. Send request to create Fs'):
+        with allure.step('# 4. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -128,7 +128,7 @@ class TestCreateAnswer:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create Pn'):
+        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -139,7 +139,7 @@ class TestCreateAnswer:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request to create Pn'):
+        with allure.step('# 6. Send request to create PlanningNotice'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -408,7 +408,7 @@ class TestCreateAnswer:
 
     @allure.title('Check EV and MS releases data after Answer creating based on full data model')
     def test_check_ev_ms_releases_three(self, parse_country, connect_to_database, parse_pmd):
-        with allure.step('# 1. Authorization platform one: create Ei'):
+        with allure.step('# 1. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -418,7 +418,7 @@ class TestCreateAnswer:
 
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Send request to create Ei'):
+        with allure.step('# 2. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -442,7 +442,7 @@ class TestCreateAnswer:
             GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
-        with allure.step('# 3. Authorization platform one: create Fs'):
+        with allure.step('# 3. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -452,7 +452,7 @@ class TestCreateAnswer:
 
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
-        with allure.step('# 4. Send request to create Fs'):
+        with allure.step('# 4. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -476,7 +476,7 @@ class TestCreateAnswer:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create Pn'):
+        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -487,7 +487,7 @@ class TestCreateAnswer:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request to create Pn'):
+        with allure.step('# 6. Send request to create PlanningNotice'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -870,7 +870,7 @@ class TestCreateAnswer:
 
     @allure.title('Check EV and MS releases data after Answer creating based on data model without optional fields')
     def test_check_ev_ms_releases_two(self, parse_country, connect_to_database, parse_pmd):
-        with allure.step('# 1. Authorization platform one: create Ei'):
+        with allure.step('# 1. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -880,7 +880,7 @@ class TestCreateAnswer:
 
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Send request to create Ei'):
+        with allure.step('# 2. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -904,7 +904,7 @@ class TestCreateAnswer:
             GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
-        with allure.step('# 3. Authorization platform one: create Fs'):
+        with allure.step('# 3. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -914,7 +914,7 @@ class TestCreateAnswer:
 
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
-        with allure.step('# 4. Send request to create Fs'):
+        with allure.step('# 4. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -938,7 +938,7 @@ class TestCreateAnswer:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create Pn'):
+        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -949,7 +949,7 @@ class TestCreateAnswer:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request to create Pn'):
+        with allure.step('# 6. Send request to create PlanningNotice'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -1330,7 +1330,7 @@ class TestCreateAnswer:
     @allure.title('Check EV and MS releases data after Answer creating based on data model without optional fields '
                   'if tender state is suspended')
     def test_check_ev_ms_releases_four(self, parse_country, connect_to_database, parse_pmd):
-        with allure.step('# 1. Authorization platform one: create Ei'):
+        with allure.step('# 1. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -1340,7 +1340,7 @@ class TestCreateAnswer:
 
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Send request to create Ei'):
+        with allure.step('# 2. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -1364,7 +1364,7 @@ class TestCreateAnswer:
             GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
-        with allure.step('# 3. Authorization platform one: create Fs'):
+        with allure.step('# 3. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -1374,7 +1374,7 @@ class TestCreateAnswer:
 
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
-        with allure.step('# 4. Send request to create Fs'):
+        with allure.step('# 4. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -1398,7 +1398,7 @@ class TestCreateAnswer:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create Pn'):
+        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -1409,7 +1409,7 @@ class TestCreateAnswer:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request to create Pn'):
+        with allure.step('# 6. Send request to create PlanningNotice'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.

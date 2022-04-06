@@ -14,7 +14,7 @@ class CnOnPnPreparePayload:
         document_one = Document(host=host_for_services, file_name="API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
 
-        self.contact_period = Date().contact_period()
+        self.contact_period = Date().contactPeriod()
         self.duration_period = Date().duration_period()
 
     def create_cnonpn_obligatory_data_model(self, actual_ei_release, pn_payload, pre_qualification_period_end):
@@ -55,7 +55,7 @@ class CnOnPnPreparePayload:
         payload = {
             "preQualification": {
                 "period": {
-                    "endDate": Date().pre_qualification_period_end_date(interval_seconds=pre_qualification_period_end)
+                    "endDate": Date().preQualificationPeriod_endDate(interval_seconds=pre_qualification_period_end)
                 }
             },
             "tender": {
@@ -164,7 +164,7 @@ class CnOnPnPreparePayload:
         payload = {
             "preQualification": {
                 "period": {
-                    "endDate": Date().pre_qualification_period_end_date(interval_seconds=pre_qualification_period_end)
+                    "endDate": Date().preQualificationPeriod_endDate(interval_seconds=pre_qualification_period_end)
                 }
             },
             "tender": {
@@ -285,7 +285,7 @@ class CnOnPnPreparePayload:
         payload = {
             "preQualification": {
                 "period": {
-                    "endDate": Date().pre_qualification_period_end_date(interval_seconds=pre_qualification_period_end)
+                    "endDate": Date().preQualificationPeriod_endDate(interval_seconds=pre_qualification_period_end)
                 }
             },
             "tender": {

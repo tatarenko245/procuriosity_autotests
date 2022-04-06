@@ -122,8 +122,8 @@ class FinancialSourcePayload:
         return self.__payload
 
     def delete_optional_fields(
-            self, *args, procuringentity_additionalidentifiers_positionn=0,
-            buyer_additionalidentifiers_position=0):
+            self, *args, procuringEntity_additionalIdentifiers_position=0,
+            buyer_additionalIdentifiers_position=0):
         for a in args:
             if a == "tender.procuringEntity.identifier.uri":
                 del self.__payload['tender']['procuringEntity']['identifier']['uri']
@@ -134,7 +134,7 @@ class FinancialSourcePayload:
             elif a == "tender.procuringEntity.additionalIdentifiers.uri":
 
                 del self.__payload['tender']['procuringEntity'][
-                    'additionalIdentifiers'][procuringentity_additionalidentifiers_positionn]['uri']
+                    'additionalIdentifiers'][procuringEntity_additionalIdentifiers_position]['uri']
 
             elif a == "tender.procuringEntity.contactPoint.faxNumber":
                 del self.__payload['tender']['procuringEntity']['contactPoint']['faxNumber']
@@ -168,7 +168,7 @@ class FinancialSourcePayload:
             elif a == "buyer.additionalIdentifiers":
                 del self.__payload['buyer']['additionalIdentifiers']
             elif a == "buyer.additionalIdentifiers.uri":
-                del self.__payload['buyer']['additionalIdentifiers'][buyer_additionalidentifiers_position]['uri']
+                del self.__payload['buyer']['additionalIdentifiers'][buyer_additionalIdentifiers_position]['uri']
             elif a == "buyer.contactPoint.faxNumber":
                 del self.__payload['buyer']['contactPoint']['faxNumber']
             elif a == "buyer.contactPoint.url":
@@ -177,40 +177,40 @@ class FinancialSourcePayload:
             else:
                 raise KeyError(f"Impossible to delete attribute by path {a}.")
 
-    def customize_buyer_additionalidentifiers(self, quantity_of_buyer_additionalidentifiers):
-        new_additionalidentifiers_array = list()
-        for q in range(quantity_of_buyer_additionalidentifiers):
-            new_additionalidentifiers_array.append(copy.deepcopy(self.__payload['buyer']['additionalIdentifiers'][0]))
-            new_additionalidentifiers_array[q]['id'] = f"create fs: buyer.additionalIdentifiers{q}.id"
-            new_additionalidentifiers_array[q]['scheme'] = f"create fs: buyer.additionalIdentifiers{q}.scheme"
-            new_additionalidentifiers_array[q]['legalName'] = f"create fs: buyer.additionalIdentifiers{q}.legalName"
-            new_additionalidentifiers_array[q]['uri'] = f"create fs: buyer.additionalIdentifiers{q}.uri"
+    def customize_buyer_additionalIdentifiers(self, quantity_of_buyer_additionalIdentifiers):
+        new_additionalIdentifiers_array = list()
+        for q in range(quantity_of_buyer_additionalIdentifiers):
+            new_additionalIdentifiers_array.append(copy.deepcopy(self.__payload['buyer']['additionalIdentifiers'][0]))
+            new_additionalIdentifiers_array[q]['id'] = f"create fs: buyer.additionalIdentifiers{q}.id"
+            new_additionalIdentifiers_array[q]['scheme'] = f"create fs: buyer.additionalIdentifiers{q}.scheme"
+            new_additionalIdentifiers_array[q]['legalName'] = f"create fs: buyer.additionalIdentifiers{q}.legalName"
+            new_additionalIdentifiers_array[q]['uri'] = f"create fs: buyer.additionalIdentifiers{q}.uri"
 
-        self.__payload['buyer']['additionalIdentifiers'] = new_additionalidentifiers_array
+        self.__payload['buyer']['additionalIdentifiers'] = new_additionalIdentifiers_array
 
-    def customize_tender_procuringentity_additionalidentifiers(
-            self, quantity_of_tender_procuringentity_additionalidentifiers):
+    def customize_tender_procuringEntity_additionalIdentifiers(
+            self, quantity_of_tender_procuringEntity_additionalIdentifiers):
 
-        new_additionalidentifiers_array = list()
-        for q in range(quantity_of_tender_procuringentity_additionalidentifiers):
+        new_additionalIdentifiers_array = list()
+        for q in range(quantity_of_tender_procuringEntity_additionalIdentifiers):
 
-            new_additionalidentifiers_array.append(
+            new_additionalIdentifiers_array.append(
                 copy.deepcopy(self.__payload['tender']['procuringEntity']['additionalIdentifiers'][0])
             )
 
-            new_additionalidentifiers_array[q]['id'] = \
+            new_additionalIdentifiers_array[q]['id'] = \
                 f"create fs: tender.procuringEntity.additionalIdentifiers{q}.id"
 
-            new_additionalidentifiers_array[q]['scheme'] = \
+            new_additionalIdentifiers_array[q]['scheme'] = \
                 f"create fs: tender.procuringEntity.additionalIdentifiers{q}.scheme"
 
-            new_additionalidentifiers_array[q]['legalName'] = \
+            new_additionalIdentifiers_array[q]['legalName'] = \
                 f"create fs: tender.procuringEntity.additionalIdentifiers{q}.legalName"
 
-            new_additionalidentifiers_array[q]['uri'] = \
+            new_additionalIdentifiers_array[q]['uri'] = \
                 f"create fs: tender.procuringEntity.additionalIdentifiers{q}.uri"
 
-        self.__payload['tender']['procuringEntity']['additionalIdentifiers'] = new_additionalidentifiers_array
+        self.__payload['tender']['procuringEntity']['additionalIdentifiers'] = new_additionalIdentifiers_array
 
     def __del__(self):
         print(f"The instance of FinancialSourcePayload class: {__name__} was deleted.")

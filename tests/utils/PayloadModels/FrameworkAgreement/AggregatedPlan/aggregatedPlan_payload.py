@@ -11,8 +11,8 @@ class AggregatedPayload:
     def __init__(self, centralPurchasingBody_id, host_to_service, maxDurationOfFA, tenderClassificationId=None,
                  currency=None):
 
-        __pn_period = Date().planning_notice_period()
-        __contact_period = Date().contact_period(maxDurationOfFA)
+        __pn_period = Date().planningNotice_period()
+        __contact_period = Date().contactPeriod(maxDurationOfFA)
 
         __document_one = Document(host=host_to_service, file_name="API.pdf")
         self.__document_one_was_uploaded = __document_one.uploading_document()
@@ -105,7 +105,7 @@ class AggregatedPayload:
         return self.__payload
 
     def delete_optional_fields(
-            self, *args, procuringentity_additionalidentifiers_position=0, document_position=0):
+            self, *args, procuringEntity_additionalIdentifiers_position=0, document_position=0):
         for a in args:
             if a == "tender.procurementMethodRationale":
                 del self.__payload['tender']['procurementMethodRationale']
@@ -116,7 +116,7 @@ class AggregatedPayload:
 
             elif a == "tender.procuringEntity.additionalIdentifiers.uri":
                 del self.__payload['tender']['procuringEntity'][
-                    'additionalIdentifiers'][procuringentity_additionalidentifiers_position]['uri']
+                    'additionalIdentifiers'][procuringEntity_additionalIdentifiers_position]['uri']
 
             elif a == "tender.procuringEntity.address.postalCode":
                 del self.__payload['tender']['procuringEntity']['address']['postalCode']
@@ -135,28 +135,28 @@ class AggregatedPayload:
             else:
                 raise KeyError(f"Impossible to delete attribute by path {a}.")
 
-    def customize_tender_procuringentity_additionalidentifiers(
-            self, quantity_of_tender_procuringentity_additionalidentifiers):
+    def customize_tender_procuringEntity_additionalIdentifiers(
+            self, quantity_of_tender_procuringEntity_additionalIdentifiers):
 
-        new_additionalidentifiers_array = list()
-        for q in range(quantity_of_tender_procuringentity_additionalidentifiers):
-            new_additionalidentifiers_array.append(
+        new_additionalIdentifiers_array = list()
+        for q in range(quantity_of_tender_procuringEntity_additionalIdentifiers):
+            new_additionalIdentifiers_array.append(
                 copy.deepcopy(self.__payload['tender']['procuringEntity']['additionalIdentifiers'][0])
             )
 
-            new_additionalidentifiers_array[q]['id'] = \
+            new_additionalIdentifiers_array[q]['id'] = \
                 f"create fs: tender.procuringEntity.additionalIdentifiers{q}.id"
 
-            new_additionalidentifiers_array[q]['scheme'] = \
+            new_additionalIdentifiers_array[q]['scheme'] = \
                 f"create fs: tender.procuringEntity.additionalIdentifiers{q}.scheme"
 
-            new_additionalidentifiers_array[q]['legalName'] = \
+            new_additionalIdentifiers_array[q]['legalName'] = \
                 f"create fs: tender.procuringEntity.additionalIdentifiers{q}.legalName"
 
-            new_additionalidentifiers_array[q]['uri'] = \
+            new_additionalIdentifiers_array[q]['uri'] = \
                 f"create fs: tender.procuringEntity.additionalIdentifiers{q}.uri"
 
-        self.__payload['tender']['procuringEntity']['additionalIdentifiers'] = new_additionalidentifiers_array
+        self.__payload['tender']['procuringEntity']['additionalIdentifiers'] = new_additionalIdentifiers_array
 
     def customize_tender_documents(self, quantity_of_documents):
 

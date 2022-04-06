@@ -16,7 +16,7 @@ from tests.utils.iStorage import Document
 class PnPreparePayload:
     def __init__(self):
         self.constructor = copy.deepcopy(PayloadLibrary())
-        self.pn_period = Date().planning_notice_period()
+        self.pn_period = Date().planningNotice_period()
         document_one = Document(host=GlobalClassMetadata.host_for_services, file_name="API.pdf")
         self.document_one_was_uploaded = document_one.uploading_document()
 
@@ -96,7 +96,7 @@ class PnPreparePayload:
         del payload['tender']['procuringEntity']['contactPoint']['faxNumber']
         del payload['tender']['procuringEntity']['contactPoint']['url']
 
-        contact_period = Date().contact_period()
+        contact_period = Date().contactPeriod()
         try:
             item_classification_id = None
             tender_classification_id = \
@@ -211,7 +211,7 @@ class PnPreparePayload:
         payload['planning']['budget']['budgetBreakdown'][0].update(
             self.constructor.planning_budget_budget_breakdown_object())
 
-        contact_period = Date().contact_period()
+        contact_period = Date().contactPeriod()
         try:
             item_classification_id = None
             tender_classification_id = \
@@ -374,7 +374,7 @@ class PnPreparePayload:
         del payload['tender']['items'][0]['additionalClassifications']
         del payload['tender']['documents']
 
-        contact_period = Date().contact_period()
+        contact_period = Date().contactPeriod()
         try:
             item_classification_id = None
             tender_classification_id = \
@@ -497,7 +497,7 @@ class PnPreparePayload:
         del payload['tender']['legalBasis']
         del payload['tender']['procuringEntity']
 
-        contact_period = Date().contact_period()
+        contact_period = Date().contactPeriod()
         try:
             item_classification_id = None
             tender_classification_id = \
@@ -662,7 +662,7 @@ class PnPreparePayload:
         del payload['tender']['items'][0]['internalId']
         del payload['tender']['documents']
 
-        contact_period = Date().contact_period()
+        contact_period = Date().contactPeriod()
         try:
             item_classification_id = None
             tender_classification_id = \

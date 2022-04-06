@@ -3,9 +3,9 @@ import json
 import allure
 import requests
 
-from tests.utils.MessageModels.AP.aggregated_plan_message import AggregatedPlanMessage
-from tests.utils.PayloadModels.FrameworkAgreement.Ap.aggregated_plan_payload import AggregatedPayload
-from tests.utils.ReleaseModels.FrameworkAgreement.Ap.aggregated_plan_release import AggregatedPlanRelease
+from tests.utils.MessageModels.FrameworkAgreement.aggregatedPlan_message import AggregatedPlanMessage
+from tests.utils.PayloadModels.FrameworkAgreement.AggregatedPlan.aggregatedPlan_payload import AggregatedPayload
+from tests.utils.ReleaseModels.FrameworkAgreement.AggregatedPlan.aggregatedPlan_release import AggregatedPlanRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
 from tests.utils.platform_query_library import PlatformQueryRequest
@@ -13,13 +13,13 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 @allure.parent_suite('Framework Agreement')
-@allure.suite('Ap')
-@allure.sub_suite('BPE: Create Ap')
+@allure.suite('AggregatedPlan')
+@allure.sub_suite('BPE: Create AggregatedPlan')
 @allure.severity('Critical')
 @allure.testcase(url=None,
                  name=None)
 class TestCreatePn:
-    @allure.title("Check Ap and MS releases after CreateAp process, without optional fields. \n"
+    @allure.title("Check AggregatedPlan and MS releases after CreateAp process, without optional fields. \n"
                   "------------------------------------------------\n"
                   "СreateAp process: required data mode.\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment, connect_to_ocds,
@@ -32,8 +32,8 @@ class TestCreatePn:
             As result get Tender platform's access token and process operation-id.
             """
             platform_one = PlatformAuthorization(get_hosts[1])
-            access_token = platform_one.get_access_token_for_platform_one()
-            ap_operationId = platform_one.get_x_operation_id(access_token)
+            accessToken = platform_one.get_access_token_for_platform_one()
+            ap_operationId = platform_one.get_x_operation_id(accessToken)
 
         step_number += 1
         with allure.step(f'# {step_number}. Send a request to create a CreateAp process.'):
@@ -70,12 +70,12 @@ class TestCreatePn:
             except ValueError:
                 raise ValueError("Impossible to build payload for CreateAp process.")
 
-            synchronous_result = PlatformQueryRequest().create_ap_proces(
+            synchronous_result = PlatformQueryRequest().create_ap_process(
                 host_to_bpe=get_hosts[1],
-                access_token=access_token,
+                access_token=accessToken,
                 x_operation_id=ap_operationId,
                 payload=ap_payload,
-                test_mode=True,
+                testMode=True,
                 country=parse_country,
                 language=parse_language,
                 pmd=parse_pmd
@@ -96,41 +96,41 @@ class TestCreatePn:
                     allure.attach(str(202), "Expected status code.")
                     assert synchronous_result.status_code == 202
 
-            with allure.step(f'# {step_number}.2. Check the ap_message for platform.'):
+            with allure.step(f'# {step_number}.2. Check the message of AggregatedPlan for platform.'):
                 """
-                Check the fs_message for platform.
+                Check the message for platform.
                 """
                 actual_message = get_message_for_platform(ap_operationId)
 
                 try:
                     """
-                    Build expected ap_message for CreatePn process.
+                    Build expected message of AggregatedPlan process.
                     """
                     expected_message = copy.deepcopy(AggregatedPlanMessage(
                         environment=parse_environment,
                         actual_message=actual_message,
                         expected_quantity_of_outcomes_ap=1,
-                        test_mode=True)
+                        testMode=True)
                     )
 
                     expected_message = expected_message.build_expected_message_for_pn_process()
                 except ValueError:
-                    raise ValueError("Impossible to build expected fs_message for CreatePn process.")
+                    raise ValueError("Impossible to build expected message of AggregatedPlan process.")
 
-                with allure.step('Compare actual and expected fs_message for platform.'):
-                    allure.attach(json.dumps(actual_message), "Actual ap_message.")
-                    allure.attach(json.dumps(expected_message), "Expected ap_message.")
+                with allure.step('Compare actual and expected message for platform.'):
+                    allure.attach(json.dumps(actual_message), "Actual message.")
+                    allure.attach(json.dumps(expected_message), "Expected message.")
 
-                    process_id = database.get_processId_by_operationId(connect_to_ocds, ap_operationId)
+                    processId = database.get_processId_by_operationId(connect_to_ocds, ap_operationId)
 
                     assert actual_message == expected_message, \
                         allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
-                                      f"process_id = '{process_id}' ALLOW FILTERING;",
+                                      f"process_id = '{processId}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
-            with allure.step(f'# {step_number}.3. Check AP release.'):
+            with allure.step(f'# {step_number}.3. Check AggregatedPlan release.'):
                 """
-                Compare actual AP release and expected AP release.
+                Compare actual AggregatedPlan release and expected AggregatedPlan release.
                 """
                 ap_url = f"{actual_message['data']['url']}/{actual_message['data']['outcomes']['ap'][0]['id']}"
                 actual_ap_release = requests.get(url=ap_url).json()
@@ -140,7 +140,7 @@ class TestCreatePn:
 
                 try:
                     """
-                    Build expected AP release.
+                    Build expected AggregatedPlan release.
                     """
                     expected_release = copy.deepcopy(AggregatedPlanRelease(
                         environment=parse_environment,
@@ -155,15 +155,15 @@ class TestCreatePn:
 
                     expected_ap_release = expected_release.build_expected_ap_release()
                 except ValueError:
-                    raise ValueError("Impossible to build expected AP release.")
+                    raise ValueError("Impossible to build expected AggregatedPlan release.")
 
-                with allure.step('Compare actual and expected AP release.'):
-                    allure.attach(json.dumps(actual_ap_release), "Actual AP release.")
-                    allure.attach(json.dumps(expected_ap_release), "Expected AP release.")
+                with allure.step('Compare actual and expected AggregatedPlan release.'):
+                    allure.attach(json.dumps(actual_ap_release), "Actual AggregatedPlan release.")
+                    allure.attach(json.dumps(expected_ap_release), "Expected AggregatedPlan release.")
 
                     assert actual_ap_release == expected_ap_release, \
                         allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
-                                      f"process_id = '{process_id}' ALLOW FILTERING;",
+                                      f"process_id = '{processId}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.4. Check MS release.'):
@@ -185,7 +185,7 @@ class TestCreatePn:
 
                 assert actual_ms_release == expected_ms_release, \
                     allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
-                                  f"process_id = '{process_id}' ALLOW FILTERING;",
+                                  f"process_id = '{processId}' ALLOW FILTERING;",
                                   "Cassandra DataBase: steps of process.")
 
                 try:

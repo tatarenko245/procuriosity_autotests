@@ -28,7 +28,7 @@ class CnOnPnPreparePayload:
         self.standard_criteria = MdmService(host_for_service=self.get_hosts[2]).get_standard_criteria(
             country=GlobalClassMetadata.country,
             language=GlobalClassMetadata.language)
-        self.contact_period = Date().contact_period()
+        self.contact_period = Date().contactPeriod()
         self.duration_period = Date().duration_period()
         self.business_function_date = Date().old_period()[0]
 
@@ -182,8 +182,8 @@ class CnOnPnPreparePayload:
         payload['tender']['procurementMethodAdditionalInfo'] = "create cnonpn: tender.procurementMethodAdditionalInfo"
         payload['tender']['awardCriteria'] = "ratedCriteria"
         payload['tender']['awardCriteriaDetails'] = award_criteria_details
-        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiryPeriod_endDate(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tenderPeriod_endDate(
             interval=tender_interval+enquiry_interval)
         payload['tender']['procuringEntity']['id'] = \
             GlobalClassCreatePn.actual_ms_release['releases'][0]['tender']['procuringEntity']['id']
@@ -607,8 +607,8 @@ class CnOnPnPreparePayload:
             raise KeyError("Impossible to update payload dictionary, check 'self.constructor'.")
 
         payload['tender']['awardCriteria'] = "priceOnly"
-        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiryPeriod_endDate(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tenderPeriod_endDate(
             interval=tender_interval + enquiry_interval
         )
 
@@ -1000,8 +1000,8 @@ class CnOnPnPreparePayload:
         payload['tender']['procurementMethodAdditionalInfo'] = "create cnonpn: tender.procurementMethodAdditionalInfo"
         payload['tender']['awardCriteria'] = "ratedCriteria"
         payload['tender']['awardCriteriaDetails'] = "automated"
-        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiryPeriod_endDate(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tenderPeriod_endDate(
             interval=tender_interval + enquiry_interval
         )
         payload['tender']['procuringEntity']['id'] = \
@@ -1720,8 +1720,8 @@ class CnOnPnPreparePayload:
         payload['tender']['awardCriteria'] = "priceOnly"
         payload['tender']['procurementMethodRationale'] = "create cnonpn: tender.procurementMethodRationale"
         payload['tender']['procurementMethodAdditionalInfo'] = "create cnonpn: tender.procurementMethodAdditionalInfo"
-        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiryPeriod_endDate(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tenderPeriod_endDate(
             interval=tender_interval + enquiry_interval
         )
         payload['tender']['procuringEntity'] = \
@@ -2195,8 +2195,8 @@ class CnOnPnPreparePayload:
         payload['planning']['budget']['description'] = "update cnonpn: planning.budget.description"
         payload['tender']['procurementMethodRationale'] = "update cnonpn: tender.procurementMethodRationale"
         payload['tender']['procurementMethodAdditionalInfo'] = "update cnonpn: tender.procurementMethodAdditionalInfo"
-        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiryPeriod_endDate(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tenderPeriod_endDate(
             interval=tender_interval + enquiry_interval
         )
         payload['tender']['procuringEntity'] = \
@@ -2402,8 +2402,8 @@ class CnOnPnPreparePayload:
         payload['tender']['description'] = "This field is redundant"
 
         payload['tender']['awardCriteria'] = "priceOnly"
-        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiryPeriod_endDate(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tenderPeriod_endDate(
             interval=tender_interval + enquiry_interval
         )
 
@@ -2793,8 +2793,8 @@ class CnOnPnPreparePayload:
         payload['planning']['budget']['description'] = "update cnonpn: planning.budget.description"
         payload['tender']['procurementMethodRationale'] = "update cnonpn: tender.procurementMethodRationale"
         payload['tender']['procurementMethodAdditionalInfo'] = "update cnonpn: tender.procurementMethodAdditionalInfo"
-        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiryPeriod_endDate(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tenderPeriod_endDate(
             interval=tender_interval + enquiry_interval
         )
         payload['tender']['procuringEntity'] = \
@@ -3270,8 +3270,8 @@ class CnOnPnPreparePayload:
         payload['tender']['description'] = "This field is redundant"
 
         payload['tender']['awardCriteria'] = "priceOnly"
-        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiryPeriod_endDate(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tenderPeriod_endDate(
             interval=tender_interval + enquiry_interval
         )
 
@@ -3475,8 +3475,8 @@ class CnOnPnPreparePayload:
             raise KeyError("Check tender_classification_id")
 
         payload['tender']['awardCriteria'] = "priceOnly"
-        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiry_period_end_date(interval=enquiry_interval)
-        payload['tender']['tenderPeriod']['endDate'] = Date().tender_period_end_date(
+        payload['tender']['enquiryPeriod']['endDate'] = Date().enquiryPeriod_endDate(interval=enquiry_interval)
+        payload['tender']['tenderPeriod']['endDate'] = Date().tenderPeriod_endDate(
             interval=tender_interval + enquiry_interval
         )
 

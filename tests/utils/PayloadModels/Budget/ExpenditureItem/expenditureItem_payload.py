@@ -2,16 +2,15 @@ import copy
 import random
 
 from tests.utils.functions_collection.functions import generate_items_array, get_locality_id_according_with_region_id
-from tests.utils.data_of_enum import cpv_category_tuple, cpv_goods_high_level_tuple, cpv_works_high_level_tuple, \
-    cpv_services_high_level_tuple, locality_scheme_tuple, typeOfBuyer_tuple, mainGeneralActivity_tuple, mainSectoralActivity_tuple, \
-    region_id_tuple, cpvs_tuple, unit_id_tuple
+from tests.utils.data_of_enum import locality_scheme_tuple, typeOfBuyer_tuple, mainGeneralActivity_tuple, \
+    mainSectoralActivity_tuple, region_id_tuple, cpvs_tuple, unit_id_tuple
 from tests.utils.date_class import Date
 
 
 class ExpenditureItemPayload:
     def __init__(self, buyer_id, tenderClassificationId):
 
-        __ei_period = Date().expenditure_item_period()
+        __ei_period = Date().expenditureItem_period()
         self.__tenderClassificationId = tenderClassificationId
 
         self.__payload = {
@@ -164,7 +163,7 @@ class ExpenditureItemPayload:
             else:
                 raise KeyError(f"Impossible to delete attribute by path {a}.")
 
-    def customize_tender_items(self, quantity_of_items, quantity_of_items_additionalclassifications):
+    def customize_tender_items(self, quantity_of_items, quantity_of_items_additionalClassifications):
         """
         The max quantity of items must be 5, because it depends on cpvs_tuple from data_of_enum.
         """
@@ -203,25 +202,25 @@ class ExpenditureItemPayload:
             new_items_array[q_0]['unit']['id'] = f"{random.choice(unit_id_tuple)}"
 
             list_of_additionalclassification_id = list()
-            for q_1 in range(quantity_of_items_additionalclassifications):
+            for q_1 in range(quantity_of_items_additionalClassifications):
                 new_items_array[q_0]['additionalClassifications'].append(
                     copy.deepcopy(self.__payload['tender']['items'][0]['additionalClassifications'][0]))
 
-                while len(list_of_additionalclassification_id) < quantity_of_items_additionalclassifications:
+                while len(list_of_additionalclassification_id) < quantity_of_items_additionalClassifications:
                     additionalclassification_id = f"{random.choice(cpvs_tuple)}"
                     if additionalclassification_id not in list_of_additionalclassification_id:
                         list_of_additionalclassification_id.append(additionalclassification_id)
 
-            for q_1 in range(quantity_of_items_additionalclassifications):
+            for q_1 in range(quantity_of_items_additionalClassifications):
 
                 new_items_array[q_0]['additionalClassifications'][q_1]['id'] = \
                     list_of_additionalclassification_id[q_1]
 
         self.__payload['tender']['items'] = new_items_array
 
-    def customize_buyer_additionalidentifiers(self, quantity_of_buyer_additionalidentifiers):
+    def customize_buyer_additionalidentifiers(self, quantity_of_buyer_additionalIdentifiers):
         new_additionalidentifiers_array = list()
-        for q in range(quantity_of_buyer_additionalidentifiers):
+        for q in range(quantity_of_buyer_additionalIdentifiers):
             new_additionalidentifiers_array.append(copy.deepcopy(self.__payload['buyer']['additionalIdentifiers'][0]))
             new_additionalidentifiers_array[q]['id'] = f"create ei: buyer.additionalIdentifiers{q}.id"
             new_additionalidentifiers_array[q]['scheme'] = f"create ei: buyer.additionalIdentifiers{q}.scheme"

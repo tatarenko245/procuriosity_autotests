@@ -43,12 +43,20 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_cpid}';")
 
     @staticmethod
-    def cleanup_table_of_services_for_outsourcingPlan(connect_to_ocds, connect_to_access, pn_cpid):
+    def cleanup_table_of_services_for_outsourcingPlanningNotice(connect_to_ocds, connect_to_access, pn_cpid):
         connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{pn_cpid}';")
         connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_cpid}';").one()
         connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_cpid}';")
         connect_to_ocds.execute(f"DELETE FROM notice_offset WHERE cp_id='{pn_cpid}';")
         connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_cpid}';")
+
+    @staticmethod
+    def cleanup_table_of_services_for_relationAggregatedPlan(connect_to_ocds, connect_to_access, ap_cpid):
+        connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{ap_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ap_cpid}';").one()
+        connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{ap_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_offset WHERE cp_id='{ap_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_cpid}';")
 
     @staticmethod
     def cleanup_table_of_services_for_financialSource(connect_to_ocds, cp_id):

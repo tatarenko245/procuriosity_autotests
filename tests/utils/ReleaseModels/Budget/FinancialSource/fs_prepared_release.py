@@ -1,5 +1,5 @@
 import copy
-from tests.utils.ReleaseModels.Budget.Fs.fs_release_library import ReleaseLibrary
+from tests.utils.ReleaseModels.Budget.FinancialSource.fs_release_library import ReleaseLibrary
 from tests.utils.functions_collection import check_uuid_version, get_value_from_country_csv, get_value_from_region_csv, \
     get_value_from_locality_csv
 
@@ -62,7 +62,7 @@ class FsExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
+            raise ValueError("Check your tender_id in FinancialSource release: tender_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -70,7 +70,7 @@ class FsExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
+            raise ValueError("Check your release_id in FinancialSource release: release_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -78,8 +78,8 @@ class FsExpectedRelease:
                 version=1
             )
         except ValueError:
-            raise ValueError("Check your related_processes_id in Fs release: "
-                             "tender_id in Fs release must be uuid version 1")
+            raise ValueError("Check your related_processes_id in FinancialSource release: "
+                             "tender_id in FinancialSource release must be uuid version 1")
 
         try:
             funder_country_data = get_value_from_country_csv(
@@ -338,7 +338,7 @@ class FsExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
+            raise ValueError("Check your tender_id in FinancialSource release: tender_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -346,7 +346,7 @@ class FsExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
+            raise ValueError("Check your release_id in FinancialSource release: release_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -354,8 +354,8 @@ class FsExpectedRelease:
                 version=1
             )
         except ValueError:
-            raise ValueError("Check your related_processes_id in Fs release: "
-                             "tender_id in Fs release must be uuid version 1")
+            raise ValueError("Check your related_processes_id in FinancialSource release: "
+                             "tender_id in FinancialSource release must be uuid version 1")
 
         try:
             payer_country_data = get_value_from_country_csv(
@@ -560,7 +560,7 @@ class FsExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
+            raise ValueError("Check your tender_id in FinancialSource release: tender_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -568,7 +568,7 @@ class FsExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
+            raise ValueError("Check your release_id in FinancialSource release: release_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -576,8 +576,8 @@ class FsExpectedRelease:
                 version=1
             )
         except ValueError:
-            raise ValueError("Check your related_processes_id in Fs release: "
-                             "tender_id in Fs release must be uuid version 1")
+            raise ValueError("Check your related_processes_id in FinancialSource release: "
+                             "tender_id in FinancialSource release must be uuid version 1")
 
         try:
             funder_country_data = get_value_from_country_csv(
@@ -815,7 +815,7 @@ class FsExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
+            raise ValueError("Check your tender_id in FinancialSource release: tender_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -823,7 +823,7 @@ class FsExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
+            raise ValueError("Check your release_id in FinancialSource release: release_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -831,8 +831,8 @@ class FsExpectedRelease:
                 version=1
             )
         except ValueError:
-            raise ValueError("Check your related_processes_id in Fs release: "
-                             "tender_id in Fs release must be uuid version 1")
+            raise ValueError("Check your related_processes_id in FinancialSource release: "
+                             "tender_id in FinancialSource release must be uuid version 1")
 
         try:
             payer_country_data = get_value_from_country_csv(

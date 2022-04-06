@@ -6,8 +6,8 @@ import allure
 import requests
 from deepdiff import DeepDiff
 
-from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.FinancialSource.deldete_financial_source_payload import FinancialSourcePayload
 from tests.utils.PayloadModels.LimitedProcedure.Award.award_payloads import AwardPayloads
 from tests.utils.PayloadModels.LimitedProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModels.LimitedProcedure.Pn.pn_prepared_payload import PnPreparePayload

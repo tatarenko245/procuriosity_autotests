@@ -6,7 +6,7 @@ import pytz
 
 class Date:
     @staticmethod
-    def expenditure_item_period(start=0, end=90):
+    def expenditureItem_period(start=0, end=90):
         date = datetime.datetime.now()
         duration_date_start = date + datetime.timedelta(days=start)
         start_date = duration_date_start.strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -15,7 +15,7 @@ class Date:
         return start_date, end_date
 
     @staticmethod
-    def financial_source_period(start=0, end=89):
+    def financialSource_period(start=0, end=89):
         date = datetime.datetime.now()
         duration_date_start = date + datetime.timedelta(days=start)
         start_date = duration_date_start.strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -34,14 +34,14 @@ class Date:
         return date_now, timestamp_now
 
     @staticmethod
-    def planning_notice_period():
+    def planningNotice_period():
         date = datetime.datetime.now()
         duration_date_start = date + datetime.timedelta(days=31)
         start_date = duration_date_start.strftime('%Y-%m-01T%H:%M:%SZ')
         return start_date
 
     @staticmethod
-    def contact_period(maxDurationOfFA=None):
+    def contactPeriod(maxDurationOfFA=None):
         date = datetime.datetime.now()
         if maxDurationOfFA is None:
             duration_date_start = date + datetime.timedelta(days=60)
@@ -57,7 +57,7 @@ class Date:
         return start_date, end_date
 
     @staticmethod
-    def tender_period_end_date(interval=35):
+    def tenderPeriod_endDate(interval=35):
         date = datetime.datetime.now(pytz.utc)
 
         duration_date_tender_end = date + datetime.timedelta(seconds=interval)
@@ -65,7 +65,7 @@ class Date:
         return end_date
 
     @staticmethod
-    def enquiry_period_end_date(interval=20):
+    def enquiryPeriod_endDate(interval=20):
         date = datetime.datetime.now(pytz.utc)
         duration_date_end = date + datetime.timedelta(seconds=interval)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -105,29 +105,29 @@ class Date:
         return int(difference.total_seconds())
 
     @staticmethod
-    def pre_qualification_period_end_date(interval_seconds: int):
+    def preQualificationPeriod_endDate(interval_seconds: int):
         date = datetime.datetime.now(pytz.utc)
         duration_date_end = date + datetime.timedelta(seconds=interval_seconds)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return end_date
 
     @staticmethod
-    def selective_procedure_enquiry_period_end_date(pre_qualification_period_end_date, interval_seconds: int):
+    def selectiveProcedure_enquiryPeriod_endDate(pre_qualification_period_end_date, interval_seconds: int):
         duration_date_end = datetime.datetime.strptime(
             pre_qualification_period_end_date, '%Y-%m-%dT%H:%M:%SZ') - datetime.timedelta(seconds=interval_seconds)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return end_date
 
     @staticmethod
-    def selective_procedure_enquiry_period_end_date_after_unsuspended(create_answer_date, interval_seconds: int):
+    def selectiveProcedure_enquiryPeriod_endDate_after_unsuspended(create_answer_date, interval_seconds: int):
         duration_date_end = datetime.datetime.strptime(
             create_answer_date, '%Y-%m-%dT%H:%M:%SZ') + datetime.timedelta(seconds=interval_seconds)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return end_date
 
     @staticmethod
-    def selective_procedure_pre_qualification_period_end_date_after_unsuspended(create_answer_date,
-                                                                                interval_seconds: int):
+    def selectiveProcedure_preQualificationPeriod_endDate_after_unsuspended(create_answer_date,
+                                                                            interval_seconds: int):
         duration_date_end = datetime.datetime.strptime(
             create_answer_date, '%Y-%m-%dT%H:%M:%SZ') + datetime.timedelta(seconds=interval_seconds)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')

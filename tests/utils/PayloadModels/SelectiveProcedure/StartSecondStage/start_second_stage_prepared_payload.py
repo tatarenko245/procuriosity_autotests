@@ -6,7 +6,7 @@ from tests.utils.date_class import Date
 class StartSecondStagePreparePayload:
     def __init__(self, tender_period_interval):
         self.constructor = copy.deepcopy(PayloadLibrary())
-        self.tenderPeriodEnd = Date().tender_period_end_date(interval=tender_period_interval)
+        self.tenderPeriodEnd = Date().tenderPeriod_endDate(interval=tender_period_interval)
 
     def create_start_second_stage_data_model(self):
         payload = {

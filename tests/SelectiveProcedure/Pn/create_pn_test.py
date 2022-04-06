@@ -6,8 +6,8 @@ import allure
 import requests
 from deepdiff import DeepDiff
 
-from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.FinancialSource.deldete_financial_source_payload import FinancialSourcePayload
 from tests.utils.PayloadModels.SelectiveProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.ReleaseModels.SelectiveProcedure.Pn.pn_prepared_release import PnExpectedRelease
 from tests.utils.functions_collection import check_uuid_version
@@ -18,11 +18,11 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 class TestCreatePn:
-    @allure.title("Check Pn and MS releases data after Pn creating without optional fields \n"
+    @allure.title("Check PlanningNotice and MS releases data after PlanningNotice creating without optional fields \n"
                   "------------------------------------------------\n"
-                  "create Ei: obligatory data model without items array;\n"
-                  "create Fs: obligatory data model, treasury money;\n"
-                  "create Pn: obligatory data model, without lots and items;\n")
+                  "create ExpenditureItem: obligatory data model without items array;\n"
+                  "create FinancialSource: obligatory data model, treasury money;\n"
+                  "create PlanningNotice: obligatory data model, without lots and items;\n")
     def test_check_pn_ms_releases_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                                       connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
@@ -36,7 +36,7 @@ class TestCreatePn:
             raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -45,7 +45,7 @@ class TestCreatePn:
             ei_operation_id = authorization.get_x_operation_id(ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -68,7 +68,7 @@ class TestCreatePn:
                 url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -77,7 +77,7 @@ class TestCreatePn:
             fs_operation_id = authorization.get_x_operation_id(fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id.
@@ -103,7 +103,7 @@ class TestCreatePn:
                 url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Pn'):
+        with allure.step(f'# {step_number}. Authorization platform one: create PlanningNotice'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -112,7 +112,7 @@ class TestCreatePn:
             pn_operation_id = authorization.get_x_operation_id(pn_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Pn'):
+        with allure.step(f'# {step_number}. Send request to create PlanningNotice'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -193,11 +193,11 @@ class TestCreatePn:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
 
-            with allure.step(f'# {step_number}.3. Check Pn release'):
+            with allure.step(f'# {step_number}.3. Check PlanningNotice release'):
                 """
                 Compare actual planning notice release with expected planning notice release model.
                 """
-                allure.attach(str(json.dumps(actual_pn_release)), "Actual Pn release")
+                allure.attach(str(json.dumps(actual_pn_release)), "Actual PlanningNotice release")
 
                 expected_release_class = copy.deepcopy(PnExpectedRelease(
                     environment=parse_environment,
@@ -210,7 +210,7 @@ class TestCreatePn:
                     expected_release_class.pn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs(
                         actual_pn_release=actual_pn_release
                     )
-                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected Pn release")
+                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected PlanningNotice release")
 
                 compare_releases = dict(DeepDiff(actual_pn_release, expected_pn_release_model))
                 expected_result = {}
@@ -229,12 +229,12 @@ class TestCreatePn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Pn release and expected Pn release and '
-                                 'expected result of comparing Pn release and expected Pn release.'):
+                with allure.step('Compare actual result of comparing PlanningNotice release and expected PlanningNotice release and '
+                                 'expected result of comparing PlanningNotice release and expected PlanningNotice release.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Pn release and expected Pn release.")
+                                  "Actual result of comparing PlanningNotice release and expected PlanningNotice release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Pn release and expected Pn release.")
+                                  "Expected result of comparing PlanningNotice release and expected PlanningNotice release.")
                     assert str(compare_releases) == str(expected_result)
 
             with allure.step(f'# {step_number}.4. Check MS release'):
@@ -269,23 +269,23 @@ class TestCreatePn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ms release and expected Pn release and '
-                                 'expected result of comparing Ms release and expected Pn release.'):
+                with allure.step('Compare actual result of comparing Ms release and expected PlanningNotice release and '
+                                 'expected result of comparing Ms release and expected PlanningNotice release.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ms release and expected Pn release.")
+                                  "Actual result of comparing Ms release and expected PlanningNotice release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ms release and expected Pn release.")
+                                  "Expected result of comparing Ms release and expected PlanningNotice release.")
                     assert str(compare_releases) == str(expected_result)
 
-            with allure.step(f'# {step_number}.5. Check Ei release'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release'):
                 """
                 Compare expenditure item release before pn creating and expenditure item after pn creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_creation)),
-                              "Actual Ei release before pn creating")
+                              "Actual ExpenditureItem release before pn creating")
 
                 allure.attach(str(json.dumps(actual_ei_release_after_pn_creation)),
-                              "Actual Ei release after pn creating")
+                              "Actual ExpenditureItem release after pn creating")
 
                 compare_releases = dict(
                     DeepDiff(actual_ei_release_after_fs_creation, actual_ei_release_after_pn_creation))
@@ -324,7 +324,7 @@ class TestCreatePn:
                     )
                 except ValueError:
                     raise ValueError(
-                        "Check your ['releases'][0]['relatedProcesses'][1]['id'] in Ei release: "
+                        "Check your ['releases'][0]['relatedProcesses'][1]['id'] in ExpenditureItem release: "
                         "id must be uuid version 4")
 
                 try:
@@ -344,20 +344,20 @@ class TestCreatePn:
                 with allure.step('Compare result of comparing expenditure item release before pn creating and '
                                  'expenditure item after pn creating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release and expected Ei release.")
+                                  "Actual result of comparing ExpenditureItem release and expected ExpenditureItem release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release and expected Ei release.")
+                                  "Expected result of comparing ExpenditureItem release and expected ExpenditureItem release.")
                     assert str(compare_releases) == str(expected_result)
 
-            with allure.step(f'# {step_number}.6. Check Fs release'):
+            with allure.step(f'# {step_number}.6. Check FinancialSource release'):
                 """
                 Compare financial source before pn creating release and financial source after pn creating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_pn_creation)),
-                              "Actual Fs release before pn creating")
+                              "Actual FinancialSource release before pn creating")
 
                 allure.attach(str(json.dumps(actual_fs_release_after_pn_creation)),
-                              "Actual Fs release after pn creating")
+                              "Actual FinancialSource release after pn creating")
 
                 compare_releases = dict(
                     DeepDiff(actual_fs_release_before_pn_creation, actual_fs_release_after_pn_creation))
@@ -400,7 +400,7 @@ class TestCreatePn:
                     )
                 except ValueError:
                     raise ValueError(
-                        "Check your ['releases'][0]['relatedProcesses'][1]['id'] in Fs release: "
+                        "Check your ['releases'][0]['relatedProcesses'][1]['id'] in FinancialSource release: "
                         "id must be uuid version 4")
 
                 try:
@@ -445,7 +445,7 @@ class TestCreatePn:
                 with allure.step('Compare result of comparing financial source release before pn creating and '
                                  'financial source after pn creating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release and expected Fs release.")
+                                  "Actual result of comparing FinancialSource release and expected FinancialSource release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release and expected Fs release.")
+                                  "Expected result of comparing FinancialSource release and expected FinancialSource release.")
                     assert str(compare_releases) == str(expected_result)

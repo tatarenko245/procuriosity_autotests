@@ -516,9 +516,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['issuedThought']['name'] = \
             "tenderers.details.permits.permitDetails.issuedThought.id': 0.0"
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][0]['details']['permits'][1]['id'] = \
             "tenderers.details.permits.id': 0.1"
         payload['bid']['tenderers'][0]['details']['permits'][1]['scheme'] = \
@@ -534,9 +534,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['issuedThought']['name'] = \
             "tenderers.details.permits.permitDetails.issuedThought.id': 0.1"
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['description'] = \
             "tenderers.details.bankAccounts.description.: 0.0"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['bankName'] = \
@@ -819,9 +819,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['issuedThought']['name'] = \
             "tenderers.details.permits.permitDetails.issuedThought.id': 1.0"
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][1]['details']['permits'][1]['id'] = \
             "tenderers.details.permits.id': 1.1"
         payload['bid']['tenderers'][1]['details']['permits'][1]['scheme'] = \
@@ -837,9 +837,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['issuedThought']['name'] = \
             "tenderers.details.permits.permitDetails.issuedThought.id': 1.1"
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['description'] = \
             "tenderers.details.bankAccounts.description.: 1.0"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['bankName'] = \
@@ -1436,9 +1436,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['issuedThought']['name'] = \
             "tenderers.details.permits.permitDetails.issuedThought.id': 0.0"
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][0]['details']['permits'][1]['id'] = \
             "tenderers.details.permits.id': 0.1"
         payload['bid']['tenderers'][0]['details']['permits'][1]['scheme'] = \
@@ -1454,9 +1454,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['issuedThought']['name'] = \
             "tenderers.details.permits.permitDetails.issuedThought.id': 0.1"
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['description'] = \
             "tenderers.details.bankAccounts.description.: 0.0"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['bankName'] = \
@@ -1739,9 +1739,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['issuedThought']['name'] = \
             "tenderers.details.permits.permitDetails.issuedThought.id': 1.0"
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][1]['details']['permits'][1]['id'] = \
             "tenderers.details.permits.id': 1.1"
         payload['bid']['tenderers'][1]['details']['permits'][1]['scheme'] = \
@@ -1757,9 +1757,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['issuedThought']['name'] = \
             "tenderers.details.permits.permitDetails.issuedThought.id': 1.1"
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['description'] = \
             "tenderers.details.bankAccounts.description.: 1.0"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['bankName'] = \
@@ -2366,9 +2366,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['issuedThought']['name'] = \
             "2 tenderers.details.permits.permitDetails.issuedThought.id': 0.0"
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][0]['details']['permits'][1]['id'] = \
             "2 tenderers.details.permits.id': 0.1"
         payload['bid']['tenderers'][0]['details']['permits'][1]['scheme'] = \
@@ -2384,9 +2384,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['issuedThought']['name'] = \
             "2 tenderers.details.permits.permitDetails.issuedThought.id': 0.1"
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['description'] = \
             "2 tenderers.details.bankAccounts.description.: 0.0"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['bankName'] = \
@@ -2669,9 +2669,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['issuedThought']['name'] = \
             "2 tenderers.details.permits.permitDetails.issuedThought.id': 1.0"
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][1]['details']['permits'][1]['id'] = \
             "2 tenderers.details.permits.id': 1.1"
         payload['bid']['tenderers'][1]['details']['permits'][1]['scheme'] = \
@@ -2687,9 +2687,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['issuedThought']['name'] = \
             "2 tenderers.details.permits.permitDetails.issuedThought.id': 1.1"
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['description'] = \
             "2 tenderers.details.bankAccounts.description.: 1.0"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['bankName'] = \
@@ -3287,9 +3287,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['issuedThought']['name'] = \
             "2 tenderers.details.permits.permitDetails.issuedThought.id': 0.0"
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][0]['details']['permits'][0]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][0]['details']['permits'][1]['id'] = \
             "2 tenderers.details.permits.id': 0.1"
         payload['bid']['tenderers'][0]['details']['permits'][1]['scheme'] = \
@@ -3305,9 +3305,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['issuedThought']['name'] = \
             "2 tenderers.details.permits.permitDetails.issuedThought.id': 0.1"
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][0]['details']['permits'][1]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['description'] = \
             "2 tenderers.details.bankAccounts.description.: 0.0"
         payload['bid']['tenderers'][0]['details']['bankAccounts'][0]['bankName'] = \
@@ -3590,9 +3590,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['issuedThought']['name'] = \
             "2 tenderers.details.permits.permitDetails.issuedThought.id': 1.0"
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][1]['details']['permits'][0]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][1]['details']['permits'][1]['id'] = \
             "2 tenderers.details.permits.id': 1.1"
         payload['bid']['tenderers'][1]['details']['permits'][1]['scheme'] = \
@@ -3608,9 +3608,9 @@ class BidPreparePayload:
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['issuedThought']['name'] = \
             "2 tenderers.details.permits.permitDetails.issuedThought.id': 1.1"
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['validityPeriod']['startDate'] = \
-            self.date.contact_period()[0]
+            self.date.contactPeriod()[0]
         payload['bid']['tenderers'][1]['details']['permits'][1]['permitDetails']['validityPeriod']['endDate'] = \
-            self.date.contact_period()[1]
+            self.date.contactPeriod()[1]
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['description'] = \
             "2 tenderers.details.bankAccounts.description.: 1.0"
         payload['bid']['tenderers'][1]['details']['bankAccounts'][0]['bankName'] = \

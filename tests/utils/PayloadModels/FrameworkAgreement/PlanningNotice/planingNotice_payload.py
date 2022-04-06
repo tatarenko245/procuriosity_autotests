@@ -18,8 +18,8 @@ from tests.utils.iStorage import Document
 class PlanningNoticePayload:
     def __init__(self, fs_id, amount, currency, tenderClassificationId, host_to_service):
 
-        __pn_period = Date().planning_notice_period()
-        __contact_period = Date().contact_period()
+        __pn_period = Date().planningNotice_period()
+        __contactPeriod = Date().contactPeriod()
 
         __document_one = Document(host=host_to_service, file_name="API.pdf")
         self.__document_one_was_uploaded = __document_one.uploading_document()
@@ -29,34 +29,34 @@ class PlanningNoticePayload:
         self.__tenderClassificationId = tenderClassificationId
         self.__host = host_to_service
         try:
-            item_classification_id = None
+            item_classificationId = None
 
             if tenderClassificationId[0:3] == "031":
-                item_classification_id = random.choice(cpv_goods_low_level_03_tuple)
+                item_classificationId = random.choice(cpv_goods_low_level_03_tuple)
             elif tenderClassificationId[0:3] == "146":
-                item_classification_id = random.choice(cpv_goods_low_level_1_tuple)
+                item_classificationId = random.choice(cpv_goods_low_level_1_tuple)
             elif tenderClassificationId[0:3] == "221":
-                item_classification_id = random.choice(cpv_goods_low_level_2_tuple)
+                item_classificationId = random.choice(cpv_goods_low_level_2_tuple)
             elif tenderClassificationId[0:3] == "301":
-                item_classification_id = random.choice(cpv_goods_low_level_3_tuple)
+                item_classificationId = random.choice(cpv_goods_low_level_3_tuple)
             elif tenderClassificationId[0:3] == "444":
-                item_classification_id = random.choice(cpv_goods_low_level_44_tuple)
+                item_classificationId = random.choice(cpv_goods_low_level_44_tuple)
             elif tenderClassificationId[0:3] == "482":
-                item_classification_id = random.choice(cpv_goods_low_level_48_tuple)
+                item_classificationId = random.choice(cpv_goods_low_level_48_tuple)
             elif tenderClassificationId[0:3] == "451":
-                item_classification_id = random.choice(cpv_works_low_level_45_tuple)
+                item_classificationId = random.choice(cpv_works_low_level_45_tuple)
             elif tenderClassificationId[0:3] == "515":
-                item_classification_id = random.choice(cpv_services_low_level_5_tuple)
+                item_classificationId = random.choice(cpv_services_low_level_5_tuple)
             elif tenderClassificationId[0:3] == "637":
-                item_classification_id = random.choice(cpv_services_low_level_6_tuple)
+                item_classificationId = random.choice(cpv_services_low_level_6_tuple)
             elif tenderClassificationId[0:3] == "713":
-                item_classification_id = random.choice(cpv_services_low_level_7_tuple)
+                item_classificationId = random.choice(cpv_services_low_level_7_tuple)
             elif tenderClassificationId[0:3] == "851":
-                item_classification_id = random.choice(cpv_services_low_level_8_tuple)
+                item_classificationId = random.choice(cpv_services_low_level_8_tuple)
             elif tenderClassificationId[0:3] == "923":
-                item_classification_id = random.choice(cpv_services_low_level_92_tuple)
+                item_classificationId = random.choice(cpv_services_low_level_92_tuple)
             elif tenderClassificationId[0:3] == "983":
-                item_classification_id = random.choice(cpv_services_low_level_98_tuple)
+                item_classificationId = random.choice(cpv_services_low_level_98_tuple)
         except ValueError:
             raise ValueError("Check tender_classification_id")
 
@@ -97,8 +97,8 @@ class PlanningNoticePayload:
                             "currency": currency
                         },
                         "contractPeriod": {
-                            "startDate": __contact_period[0],
-                            "endDate": __contact_period[1]
+                            "startDate": __contactPeriod[0],
+                            "endDate": __contactPeriod[1]
                         },
                         "placeOfPerformance": {
                             "address": {
@@ -128,7 +128,7 @@ class PlanningNoticePayload:
                         "id": "0",
                         "internalId": "create pn: tender.items0.internalId",
                         "classification": {
-                            "id": item_classification_id
+                            "id": item_classificationId
                         },
                         "additionalClassifications": [
                             {
@@ -197,20 +197,20 @@ class PlanningNoticePayload:
             lot_id_list.append(self.__payload['tender']['lots'][q]['id'])
         return lot_id_list
 
-    def customize_planning_budget_budgetbreakdown(self, list_of_fs_id):
+    def customize_planning_budget_budgetBreakdown(self, list_of_fs_id):
 
-        new_budgetbreakdown_array = list()
+        new_budgetBreakdown_array = list()
         for q in range(len(list_of_fs_id)):
-            new_budgetbreakdown_array.append(copy.deepcopy(self.__payload['planning']['budget']['budgetBreakdown'][0]))
-            new_budgetbreakdown_array[q]['id'] = list_of_fs_id[q]
+            new_budgetBreakdown_array.append(copy.deepcopy(self.__payload['planning']['budget']['budgetBreakdown'][0]))
+            new_budgetBreakdown_array[q]['id'] = list_of_fs_id[q]
 
-            new_budgetbreakdown_array[q]['amount']['amount'] = round(self.__amount / len(list_of_fs_id), 2)
+            new_budgetBreakdown_array[q]['amount']['amount'] = round(self.__amount / len(list_of_fs_id), 2)
 
-            new_budgetbreakdown_array[q]['amount']['currency'] = self.__currency
+            new_budgetBreakdown_array[q]['amount']['currency'] = self.__currency
 
-        self.__payload['planning']['budget']['budgetBreakdown'] = new_budgetbreakdown_array
+        self.__payload['planning']['budget']['budgetBreakdown'] = new_budgetBreakdown_array
 
-    def customize_tender_items(self, lot_id_list, quantity_of_items, quantity_of_items_additionalclassifications):
+    def customize_tender_items(self, lot_id_list, quantity_of_items, quantity_of_items_additionalClassifications):
         """
         The max quantity of items must be 5, because it depends on cpvs_tuple from data_of_enum.
         The quantity of lot_id_list must be equal the quantity_of_items.
@@ -227,20 +227,20 @@ class PlanningNoticePayload:
             new_items_array[q_0]['description'] = f"create pn: tender.items{q_0}.description"
             new_items_array[q_0]['unit']['id'] = f"{random.choice(unit_id_tuple)}"
 
-            list_of_additionalclassification_id = list()
-            for q_1 in range(quantity_of_items_additionalclassifications):
+            list_of_additionalClassification_id = list()
+            for q_1 in range(quantity_of_items_additionalClassifications):
                 new_items_array[q_0]['additionalClassifications'].append(
                     copy.deepcopy(self.__payload['tender']['items'][0]['additionalClassifications'][0]))
 
-                while len(list_of_additionalclassification_id) < quantity_of_items_additionalclassifications:
+                while len(list_of_additionalClassification_id) < quantity_of_items_additionalClassifications:
                     additionalclassification_id = f"{random.choice(cpvs_tuple)}"
-                    if additionalclassification_id not in list_of_additionalclassification_id:
-                        list_of_additionalclassification_id.append(additionalclassification_id)
+                    if additionalclassification_id not in list_of_additionalClassification_id:
+                        list_of_additionalClassification_id.append(additionalclassification_id)
 
-            for q_1 in range(quantity_of_items_additionalclassifications):
+            for q_1 in range(quantity_of_items_additionalClassifications):
 
                 new_items_array[q_0]['additionalClassifications'][q_1]['id'] = \
-                    list_of_additionalclassification_id[q_1]
+                    list_of_additionalClassification_id[q_1]
 
             new_items_array[q_0]['relatedLot'] = lot_id_list[q_0]
 
@@ -259,7 +259,7 @@ class PlanningNoticePayload:
             new_lots_array[q_0]['value']['amount'] = round(self.__amount / quantity_of_lots, 2)
             new_lots_array[q_0]['value']['currency'] = self.__currency
 
-            contact_period = Date().contact_period()
+            contact_period = Date().contactPeriod()
             new_lots_array[q_0]['contractPeriod']['startDate'] = contact_period[0]
             new_lots_array[q_0]['contractPeriod']['endDate'] = contact_period[1]
 

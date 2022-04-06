@@ -5,31 +5,31 @@ import time
 import allure
 import requests
 from deepdiff import DeepDiff
-from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.ReleaseModels.Budget.Ei.ei_prepared_release import EiExpectedRelease
+from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.ReleaseModels.Budget.ExpenditureItem.ei_prepared_release import EiExpectedRelease
 from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 
 from tests.utils.platform_query_library import Requests
 
 
-@allure.parent_suite('Pn')
-@allure.suite('Ei')
-@allure.sub_suite('BPE: Update Ei')
+@allure.parent_suite('PlanningNotice')
+@allure.suite('ExpenditureItem')
+@allure.sub_suite('BPE: Update ExpenditureItem')
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/edit#gid=0',
-                 name='Google sheets: Update Ei')
+                 name='Google sheets: Update ExpenditureItem')
 class TestUpdateEi:
-    @allure.title('Warning - payload of updating Ei contains THE CRUTCH '
+    @allure.title('Warning - payload of updating ExpenditureItem contains THE CRUTCH '
                   '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload__.py ->'
                   'def update_ei_full_data_model -> look at comments\n'
-                  'Check status code and message from Kafka topic after Ei updating')
+                  'Check status code and message from Kafka topic after ExpenditureItem updating')
     def test_check_result_of_sending_the_request(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                                                  connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -38,7 +38,7 @@ class TestUpdateEi:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
@@ -60,7 +60,7 @@ class TestUpdateEi:
             ei_token = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['X-TOKEN']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: update ExpenditureItem'):
             """
             Tender platform authorization for update expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -69,7 +69,7 @@ class TestUpdateEi:
             update_ei_operation_id = authorization.get_x_operation_id(update_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Ei'):
+        with allure.step(f'# {step_number}. Send request to update ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item updating.
             """
@@ -87,7 +87,7 @@ class TestUpdateEi:
 
             step_number += 1
 
-        with allure.step(f'# {step_number}. See result: update Ei'):
+        with allure.step(f'# {step_number}. See result: update ExpenditureItem'):
             """
             Check the results of TestCase.
             """
@@ -142,16 +142,16 @@ class TestUpdateEi:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-    @allure.title('Warning - payload of updating Ei contains THE CRUTCH '
+    @allure.title('Warning - payload of updating ExpenditureItem contains THE CRUTCH '
                   '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload__.py ->'
                   'def update_ei_obligatory_data_model -> look at comments\n'
-                  'Check Ei release data after Ei updating with full data model')
+                  'Check ExpenditureItem release data after ExpenditureItem updating with full data model')
     def test_check_ei_release_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                                   connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -160,7 +160,7 @@ class TestUpdateEi:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
@@ -184,7 +184,7 @@ class TestUpdateEi:
                 url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: Update Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: Update ExpenditureItem'):
             """
             Tender platform authorization for update expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -193,7 +193,7 @@ class TestUpdateEi:
             update_ei_operation_id = authorization.get_x_operation_id(update_ei_access_token)
             step_number += 1
 
-        with allure.step('# 4. Send request to update Ei'):
+        with allure.step('# 4. Send request to update ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item updating.
             """
@@ -211,7 +211,7 @@ class TestUpdateEi:
 
             step_number += 1
 
-        with allure.step('# 5. See result: update Ei'):
+        with allure.step('# 5. See result: update ExpenditureItem'):
             """
             Check the results of TestCase.
             """
@@ -260,16 +260,16 @@ class TestUpdateEi:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.3. Check Ei release'):
+            with allure.step(f'# {step_number}.3. Check ExpenditureItem release'):
                 """
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual Ei release before updating")
+                allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual ExpenditureItem release before updating")
 
                 actual_ei_release_after_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
-                allure.attach(str(json.dumps(actual_ei_release_after_updating)), "Actual Ei release after updating")
+                allure.attach(str(json.dumps(actual_ei_release_after_updating)), "Actual ExpenditureItem release after updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_updating, actual_ei_release_after_updating))
 
@@ -315,23 +315,23 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release before updating and after updating.")
+                                  "Actual result of comparing ExpenditureItem release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before updating and after updating.")
+                                  "Expected result of comparing ExpenditureItem release before updating and after updating.")
                     assert compare_releases == expected_result
 
-    @allure.title('Warning - payload of updating Ei contains THE CRUTCH '
+    @allure.title('Warning - payload of updating ExpenditureItem contains THE CRUTCH '
                   '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload__.py ->'
                   'def update_ei_full_data_model -> look at comments\n'
-                  'Check Ei release after Ei updating on model without optional fields')
+                  'Check ExpenditureItem release after ExpenditureItem updating on model without optional fields')
     def test_check_ei_release_two(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                                   connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -340,7 +340,7 @@ class TestUpdateEi:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
@@ -364,7 +364,7 @@ class TestUpdateEi:
                 url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: Update Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: Update ExpenditureItem'):
             """
             Tender platform authorization for update expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -373,7 +373,7 @@ class TestUpdateEi:
             update_ei_operation_id = authorization.get_x_operation_id(update_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Ei'):
+        with allure.step(f'# {step_number}. Send request to update ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item updating.
             """
@@ -393,7 +393,7 @@ class TestUpdateEi:
 
             step_number += 1
 
-        with allure.step(f'# {step_number}. See result: update Ei'):
+        with allure.step(f'# {step_number}. See result: update ExpenditureItem'):
             """
             Check the results of TestCase.
             """
@@ -442,16 +442,16 @@ class TestUpdateEi:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.3. Check Ei release'):
+            with allure.step(f'# {step_number}.3. Check ExpenditureItem release'):
                 """
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual Ei release before updating")
+                allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual ExpenditureItem release before updating")
 
                 actual_ei_release_after_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
-                allure.attach(str(json.dumps(actual_ei_release_after_updating)), "Actual Ei release after updating")
+                allure.attach(str(json.dumps(actual_ei_release_after_updating)), "Actual ExpenditureItem release after updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_updating, actual_ei_release_after_updating))
 
@@ -505,47 +505,47 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release before updating and after updating.")
+                                  "Actual result of comparing ExpenditureItem release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before updating and after updating.")
+                                  "Expected result of comparing ExpenditureItem release before updating and after updating.")
                     assert compare_releases == expected_result
 
-                with allure.step('Check correctness of publication Ei release[releases][tender][description].'):
+                with allure.step('Check correctness of publication ExpenditureItem release[releases][tender][description].'):
                     allure.attach(str(actual_ei_release_after_updating['releases'][0]['tender']['description']),
-                                  "Actual result of publication Ei release[releases][tender][description].")
+                                  "Actual result of publication ExpenditureItem release[releases][tender][description].")
                     allure.attach(str(update_ei_payload['tender']['description']),
-                                  "Expected result of publication Ei release[releases][tender][description].")
+                                  "Expected result of publication ExpenditureItem release[releases][tender][description].")
                     assert actual_ei_release_after_updating['releases'][0]['tender']['description'] == \
                            update_ei_payload['tender']['description']
 
-                with allure.step('Check correctness of publication Ei release[releases][tender][items].'):
+                with allure.step('Check correctness of publication ExpenditureItem release[releases][tender][items].'):
                     allure.attach(str(actual_ei_release_after_updating['releases'][0]['tender']['items']),
-                                  "Actual result of publication Ei release[releases][tender][items].")
+                                  "Actual result of publication ExpenditureItem release[releases][tender][items].")
                     allure.attach(str(expected_items_array_model),
-                                  "Expected result of publication Ei release[releases][tender][items].")
+                                  "Expected result of publication ExpenditureItem release[releases][tender][items].")
                     assert actual_ei_release_after_updating['releases'][0]['tender']['items'] == \
                            expected_items_array_model
 
-                with allure.step('Check correctness of publication Ei release[releases][tender][description].'):
+                with allure.step('Check correctness of publication ExpenditureItem release[releases][tender][description].'):
                     allure.attach(str(actual_ei_release_after_updating['releases'][0]['planning']['rationale']),
-                                  "Actual result of publication Ei release[releases][planning][rationale].")
+                                  "Actual result of publication ExpenditureItem release[releases][planning][rationale].")
                     allure.attach(str(update_ei_payload['planning']['rationale']),
-                                  "Expected result of publication Ei release[releases][planning][rationale].")
+                                  "Expected result of publication ExpenditureItem release[releases][planning][rationale].")
                     assert str(actual_ei_release_after_updating['releases'][0]['planning']['rationale']) == \
                            str(update_ei_payload['planning']['rationale'])
 
-    @allure.title('Warning - payload of updating Ei contains THE CRUTCH '
+    @allure.title('Warning - payload of updating ExpenditureItem contains THE CRUTCH '
                   '(the payload contains tender.classificaion.id and buyer): navigate to expenditure_item_payload__.py ->'
                   'def update_ei_full_data_model -> look at comments\n'
-                  'Check Ei release data after Ei updating based on full data model with 3 items objects')
+                  'Check ExpenditureItem release data after ExpenditureItem updating based on full data model with 3 items objects')
     def test_check_ei_release_three(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                                     connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -554,7 +554,7 @@ class TestUpdateEi:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
@@ -578,7 +578,7 @@ class TestUpdateEi:
                 url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: Update Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: Update ExpenditureItem'):
             """
             Tender platform authorization for update expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -587,7 +587,7 @@ class TestUpdateEi:
             update_ei_operation_id = authorization.get_x_operation_id(update_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Ei'):
+        with allure.step(f'# {step_number}. Send request to update ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item updating.
             """
@@ -607,7 +607,7 @@ class TestUpdateEi:
 
             step_number += 1
 
-        with allure.step(f'# {step_number}. See result: update Ei'):
+        with allure.step(f'# {step_number}. See result: update ExpenditureItem'):
             """
             Check the results of TestCase.
             """
@@ -656,16 +656,16 @@ class TestUpdateEi:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.3. Check Ei release'):
+            with allure.step(f'# {step_number}.3. Check ExpenditureItem release'):
                 """
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual Ei release before updating")
+                allure.attach(str(json.dumps(actual_ei_release_before_updating)), "Actual ExpenditureItem release before updating")
 
                 actual_ei_release_after_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
-                allure.attach(str(json.dumps(actual_ei_release_after_updating)), "Actual Ei release after updating")
+                allure.attach(str(json.dumps(actual_ei_release_after_updating)), "Actual ExpenditureItem release after updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_updating, actual_ei_release_after_updating))
 
@@ -812,33 +812,33 @@ class TestUpdateEi:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ei release before updating and after updating.")
+                                  "Actual result of comparing ExpenditureItem release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before updating and after updating.")
+                                  "Expected result of comparing ExpenditureItem release before updating and after updating.")
                     assert compare_releases == expected_result
 
-                with allure.step('Check correctness of publication Ei release[releases][tender][description].'):
+                with allure.step('Check correctness of publication ExpenditureItem release[releases][tender][description].'):
                     allure.attach(str(actual_ei_release_after_updating['releases'][0]['tender']['description']),
-                                  "Actual result of publication Ei release[releases][tender][description].")
+                                  "Actual result of publication ExpenditureItem release[releases][tender][description].")
                     allure.attach(str(update_ei_payload['tender']['description']),
-                                  "Expected result of publication Ei release[releases][tender][description].")
+                                  "Expected result of publication ExpenditureItem release[releases][tender][description].")
                     assert actual_ei_release_after_updating['releases'][0]['tender']['description'] == \
                            update_ei_payload['tender']['description']
 
-                with allure.step('Check correctness of publication Ei release[releases][tender][items].'):
+                with allure.step('Check correctness of publication ExpenditureItem release[releases][tender][items].'):
                     allure.attach(str(actual_ei_release_after_updating['releases'][0]['tender']['items']),
-                                  "Actual result of publication Ei release[releases][tender][items].")
+                                  "Actual result of publication ExpenditureItem release[releases][tender][items].")
                     allure.attach(str(expected_items_array_model),
-                                  "Expected result of publication Ei release[releases][tender][items].")
+                                  "Expected result of publication ExpenditureItem release[releases][tender][items].")
                     assert actual_ei_release_after_updating['releases'][0]['tender']['items'] == \
                            expected_items_array_model
 
-                with allure.step('Check correctness of publication Ei release[releases][tender][description].'):
+                with allure.step('Check correctness of publication ExpenditureItem release[releases][tender][description].'):
                     allure.attach(str(actual_ei_release_after_updating['releases'][0]['planning']['rationale']),
-                                  "Actual result of publication Ei release[releases][planning][rationale].")
+                                  "Actual result of publication ExpenditureItem release[releases][planning][rationale].")
                     allure.attach(str(update_ei_payload['planning']['rationale']),
-                                  "Expected result of publication Ei release[releases][planning][rationale].")
+                                  "Expected result of publication ExpenditureItem release[releases][planning][rationale].")
                     assert str(actual_ei_release_after_updating['releases'][0]['planning']['rationale']) == \
                            str(update_ei_payload['planning']['rationale'])

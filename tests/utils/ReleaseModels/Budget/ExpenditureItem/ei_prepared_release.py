@@ -1,6 +1,6 @@
 import copy
 
-from tests.utils.ReleaseModels.Budget.Ei.ei_release_library import ReleaseLibrary
+from tests.utils.ReleaseModels.Budget.ExpenditureItem.ei_release_library import ReleaseLibrary
 from tests.utils.functions_collection import check_uuid_version, get_value_from_cpvs_dictionary_csv, get_value_from_country_csv, \
     get_value_from_region_csv, get_value_from_locality_csv, get_value_from_classification_cpv_dictionary_xls, \
     get_value_from_classification_unit_dictionary_csv
@@ -256,7 +256,7 @@ class EiExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your tender_id in Ei release: tender_id in Ei release must be uuid version 4")
+            raise ValueError("Check your tender_id in ExpenditureItem release: tender_id in ExpenditureItem release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -264,7 +264,7 @@ class EiExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your release_id in Ei release: release_id in Ei release must be uuid version 4")
+            raise ValueError("Check your release_id in ExpenditureItem release: release_id in ExpenditureItem release must be uuid version 4")
 
         try:
             if self.ei_payload['tender']['classification']['id'][0:2] == "03" or \
@@ -447,7 +447,7 @@ class EiExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your tender_id in Ei release: tender_id in Ei release must be uuid version 4")
+            raise ValueError("Check your tender_id in ExpenditureItem release: tender_id in ExpenditureItem release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -455,7 +455,7 @@ class EiExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your release_id in Ei release: release_id in Ei release must be uuid version 4")
+            raise ValueError("Check your release_id in ExpenditureItem release: release_id in ExpenditureItem release must be uuid version 4")
 
         try:
 

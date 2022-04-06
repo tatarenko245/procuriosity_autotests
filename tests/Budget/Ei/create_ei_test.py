@@ -6,28 +6,28 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassMetadata
-from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.ReleaseModels.Budget.Ei.ei_prepared_release import EiExpectedRelease
+from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.ReleaseModels.Budget.ExpenditureItem.ei_prepared_release import EiExpectedRelease
 from tests.utils.message_for_platform import KafkaMessage
 from tests.utils.platform_authorization import PlatformAuthorization
 
 from tests.utils.platform_query_library import Requests
 
 
-@allure.parent_suite('Pn')
-@allure.suite('Ei')
-@allure.sub_suite('BPE: Create Ei')
+@allure.parent_suite('PlanningNotice')
+@allure.suite('ExpenditureItem')
+@allure.sub_suite('BPE: Create ExpenditureItem')
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/edit#gid=0',
-                 name='Google sheets: Create Ei')
+                 name='Google sheets: Create ExpenditureItem')
 class TestCreateEi:
-    @allure.title('Check status code and message from Kafka topic after Ei creation')
+    @allure.title('Check status code and message from Kafka topic after ExpenditureItem creation')
     def test_check_result_of_sending_the_request(self, get_hosts, parse_country, parse_language, parse_environment,
                                                  connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -36,7 +36,7 @@ class TestCreateEi:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
@@ -110,13 +110,13 @@ class TestCreateEi:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-    @allure.title('Check Ei release data after Ei creation based on full data model')
+    @allure.title('Check ExpenditureItem release data after ExpenditureItem creation based on full data model')
     def test_check_ei_release_one(self, get_hosts, parse_country, parse_language, parse_environment,
                                   connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -125,7 +125,7 @@ class TestCreateEi:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step('# 2. Send request to create Ei'):
+        with allure.step('# 2. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
@@ -196,12 +196,12 @@ class TestCreateEi:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.3. Check Ei release'):
+            with allure.step(f'# {step_number}.3. Check ExpenditureItem release'):
                 """
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release)), "Actual Ei release")
+                allure.attach(str(json.dumps(actual_ei_release)), "Actual ExpenditureItem release")
 
                 expected_release_class = copy.deepcopy(EiExpectedRelease(
                     environment=parse_environment,
@@ -212,7 +212,7 @@ class TestCreateEi:
 
                 expected_ei_release_model = copy.deepcopy(expected_release_class.ei_release_full_data_model())
 
-                allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
+                allure.attach(str(json.dumps(expected_ei_release_model)), "Expected ExpenditureItem release")
 
                 compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
                 expected_result = {}
@@ -234,21 +234,21 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release and expected EI release and '
+                with allure.step('Compare actual result of comparing ExpenditureItem release and expected EI release and '
                                  'expected result of comparing EI release and expected EI release.'):
                     allure.attach(str(compare_releases),
                                   "Actual result of comparing EI release and expected EI release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing EI release and expected Ei release.")
+                                  "Expected result of comparing EI release and expected ExpenditureItem release.")
                     assert compare_releases == expected_result
 
-    @allure.title('Check Ei release after Ei creation on model without optional fields')
+    @allure.title('Check ExpenditureItem release after ExpenditureItem creation on model without optional fields')
     def test_check_ei_release_two(self, get_hosts, parse_country, parse_language, parse_environment,
                                   connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -257,7 +257,7 @@ class TestCreateEi:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
@@ -328,12 +328,12 @@ class TestCreateEi:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.3. Check Ei release'):
+            with allure.step(f'# {step_number}.3. Check ExpenditureItem release'):
                 """
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release)), "Actual Ei release")
+                allure.attach(str(json.dumps(actual_ei_release)), "Actual ExpenditureItem release")
 
                 expected_release_class = copy.deepcopy(EiExpectedRelease(
                     environment=parse_environment,
@@ -345,7 +345,7 @@ class TestCreateEi:
                 expected_ei_release_model = copy.deepcopy(
                     expected_release_class.ei_release_obligatory_data_model())
 
-                allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
+                allure.attach(str(json.dumps(expected_ei_release_model)), "Expected ExpenditureItem release")
 
                 compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
                 expected_result = {}
@@ -367,21 +367,21 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release and expected EI release and '
+                with allure.step('Compare actual result of comparing ExpenditureItem release and expected EI release and '
                                  'expected result of comparing EI release and expected EI release.'):
                     allure.attach(str(compare_releases),
                                   "Actual result of comparing EI release and expected EI release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing EI release and expected Ei release.")
+                                  "Expected result of comparing EI release and expected ExpenditureItem release.")
                     assert compare_releases == expected_result
 
-    @allure.title('Check Ei release data after Ei creation based on full data model with 3 items objects')
+    @allure.title('Check ExpenditureItem release data after ExpenditureItem creation based on full data model with 3 items objects')
     def test_check_ei_release_three(self, get_hosts, parse_country, parse_language, parse_environment,
                                     connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -390,7 +390,7 @@ class TestCreateEi:
             ei_operation_id = authorization.get_x_operation_id(ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid and ei_token.
@@ -461,12 +461,12 @@ class TestCreateEi:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.3. Check Ei release'):
+            with allure.step(f'# {step_number}.3. Check ExpenditureItem release'):
                 """
                 Compare actual first expenditure item release with expected expenditure item
                 release model.
                 """
-                allure.attach(str(json.dumps(actual_ei_release)), "Actual Ei release")
+                allure.attach(str(json.dumps(actual_ei_release)), "Actual ExpenditureItem release")
 
                 expected_release_class = copy.deepcopy(EiExpectedRelease(
                     environment=parse_environment,
@@ -478,7 +478,7 @@ class TestCreateEi:
                 expected_ei_release_model = copy.deepcopy(
                     expected_release_class.ei_release_full_data_model())
 
-                allure.attach(str(json.dumps(expected_ei_release_model)), "Expected Ei release")
+                allure.attach(str(json.dumps(expected_ei_release_model)), "Expected ExpenditureItem release")
 
                 compare_releases = dict(DeepDiff(actual_ei_release, expected_ei_release_model))
                 expected_result = {}
@@ -500,10 +500,10 @@ class TestCreateEi:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release and expected EI release and '
+                with allure.step('Compare actual result of comparing ExpenditureItem release and expected EI release and '
                                  'expected result of comparing EI release and expected EI release.'):
                     allure.attach(str(compare_releases),
                                   "Actual result of comparing EI release and expected EI release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing EI release and expected Ei release.")
+                                  "Expected result of comparing EI release and expected ExpenditureItem release.")
                     assert compare_releases == expected_result

@@ -8,9 +8,9 @@ import requests
 from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassMetadata, GlobalClassUpdateFs
-from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
-from tests.utils.ReleaseModels.Budget.Fs.fs_prepared_release import FsExpectedRelease
+from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.FinancialSource.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.ReleaseModels.Budget.FinancialSource.fs_prepared_release import FsExpectedRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.environment import Environment
 
@@ -20,23 +20,23 @@ from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.platform_query_library import Requests
 
 
-@allure.parent_suite('Pn')
-@allure.suite('Fs')
-@allure.sub_suite('BPE: Update Fs')
+@allure.parent_suite('PlanningNotice')
+@allure.suite('FinancialSource')
+@allure.sub_suite('BPE: Update FinancialSource')
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/'
                      'edit#gid=344712387',
-                 name='Google sheets: Update Fs')
+                 name='Google sheets: Update FinancialSource')
 class TestUpdateFs:
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check status code and message from Kafka topic after Fs updating')
+                  'Check status code and message from Kafka topic after FinancialSource updating')
     def test_check_result_of_sending_the_request(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                                                  connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -45,7 +45,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -65,7 +65,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -74,7 +74,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step('# 4. Send request to create Fs'):
+        with allure.step('# 4. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -96,7 +96,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -105,7 +105,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step('# 6. Send request to update Fs'):
+        with allure.step('# 6. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -178,10 +178,10 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs updating:'
+                  'Check FinancialSource release data after FinancialSource updating:'
                   'create fs: payload without optional fields treasury money,'
                   'update fs: payload without optional fields treasury money ')
     def test_check_fs_release_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -189,7 +189,7 @@ class TestUpdateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -198,7 +198,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -218,7 +218,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -227,7 +227,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -253,7 +253,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -262,7 +262,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Fs'):
+        with allure.step(f'# {step_number}. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -329,16 +329,16 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.4. Check Fs release.'):
+            with allure.step(f'# {step_number}.4. Check FinancialSource release.'):
                 """
                 Compare actual financial source release after updating with financial source release before updating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_fs_updating)),
-                              "Actual Fs release before updating")
+                              "Actual FinancialSource release before updating")
 
                 actual_fs_release_after_fs_updating = requests.get(
                     url=f"{update_fs_feed_point_message['data']['url']}").json()
-                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual Fs release after updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual FinancialSource release after updating")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_fs_updating,
                                                  actual_fs_release_after_fs_updating))
@@ -383,25 +383,25 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing FinancialSource release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release before updating and after updating.")
+                                  "Actual result of comparing FinancialSource release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release before updating and after updating.")
+                                  "Expected result of comparing FinancialSource release before updating and after updating.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.5. Check Ei release.'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release.'):
                 """
                 Compare expenditure item release before fs updating and 
                 expenditure item release after fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_updating)),
-                              "Actual Ei release before Fs updating")
+                              "Actual ExpenditureItem release before FinancialSource updating")
 
                 actual_ei_release_after_fs_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
-                              "Actual Ei release after Fs updating")
+                              "Actual ExpenditureItem release after FinancialSource updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_fs_updating,
                                                  actual_ei_release_after_fs_updating))
@@ -443,18 +443,18 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs updating and '
-                                 'after Fs updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource updating and '
+                                 'after FinancialSource updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing EI release before Fs updating and after Fs updating.")
+                                  "Actual result of comparing EI release before FinancialSource updating and after FinancialSource updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs updating and after Fs updating.")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource updating and after FinancialSource updating.")
                     assert compare_releases == expected_result
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs updating:'
+                  'Check FinancialSource release data after FinancialSource updating:'
                   'create fs: payload full data model treasury money, '
                   'update fs: payload full data model treasury money ')
     def test_check_fs_release_two(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -462,7 +462,7 @@ class TestUpdateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -471,7 +471,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -491,7 +491,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -500,7 +500,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -525,7 +525,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -534,7 +534,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Fs'):
+        with allure.step(f'# {step_number}. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -601,16 +601,16 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.4. Check Fs release.'):
+            with allure.step(f'# {step_number}.4. Check FinancialSource release.'):
                 """
                 Compare actual financial source release after updating with financial source release before updating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_fs_updating)),
-                              "Actual Fs release before updating")
+                              "Actual FinancialSource release before updating")
 
                 actual_fs_release_after_fs_updating = requests.get(
                     url=f"{update_fs_feed_point_message['data']['url']}").json()
-                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual Fs release after updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual FinancialSource release after updating")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_fs_updating,
                                                  actual_fs_release_after_fs_updating))
@@ -698,25 +698,25 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing FinancialSource release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release before updating and after updating.")
+                                  "Actual result of comparing FinancialSource release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release before updating and after updating.")
+                                  "Expected result of comparing FinancialSource release before updating and after updating.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.5. Check Ei release.'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release.'):
                 """
                 Compare expenditure item release before fs updating and 
                 expenditure item release after fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_updating)),
-                              "Actual Ei release before Fs updating")
+                              "Actual ExpenditureItem release before FinancialSource updating")
 
                 actual_ei_release_after_fs_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
-                              "Actual Ei release after Fs updating")
+                              "Actual ExpenditureItem release after FinancialSource updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_fs_updating,
                                                  actual_ei_release_after_fs_updating))
@@ -758,18 +758,18 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs updating and '
-                                 'after Fs updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource updating and '
+                                 'after FinancialSource updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing EI release before Fs updating and after Fs updating.")
+                                  "Actual result of comparing EI release before FinancialSource updating and after FinancialSource updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs updating and after Fs updating.")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource updating and after FinancialSource updating.")
                     assert compare_releases == expected_result
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs updating:'
+                  'Check FinancialSource release data after FinancialSource updating:'
                   'create fs: payload without optional fields treasury money, '
                   'update fs: payload full data model treasury money ')
     def test_check_fs_release_three(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -777,7 +777,7 @@ class TestUpdateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -786,7 +786,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -806,7 +806,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -815,7 +815,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -841,7 +841,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -850,7 +850,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Fs'):
+        with allure.step(f'# {step_number}. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -917,16 +917,16 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.4. Check Fs release.'):
+            with allure.step(f'# {step_number}.4. Check FinancialSource release.'):
                 """
                 Compare actual financial source release after updating with financial source release before updating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_fs_updating)),
-                              "Actual Fs release before updating")
+                              "Actual FinancialSource release before updating")
 
                 actual_fs_release_after_fs_updating = requests.get(
                     url=f"{update_fs_feed_point_message['data']['url']}").json()
-                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual Fs release after updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual FinancialSource release after updating")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_fs_updating,
                                                  actual_fs_release_after_fs_updating))
@@ -988,90 +988,90 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing FinancialSource release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release before updating and after updating.")
+                                  "Actual result of comparing FinancialSource release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release before updating and after updating.")
+                                  "Expected result of comparing FinancialSource release before updating and after updating.")
                     assert compare_releases == expected_result
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][rationale].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][rationale].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['rationale']),
-                                  "Actual result of publication Fs release[releases][planning][rationale].")
+                                  "Actual result of publication FinancialSource release[releases][planning][rationale].")
                     allure.attach(str(update_fs_payload['planning']['rationale']),
-                                  "Expected result of publication Fs release[releases][planning][rationale].")
+                                  "Expected result of publication FinancialSource release[releases][planning][rationale].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['rationale'] == \
                            update_fs_payload['planning']['rationale']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][id].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][id].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['id']),
-                                  "Actual result of publication Fs release[releases][planning][budget][id].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][id].")
                     allure.attach(str(update_fs_payload['planning']['budget']['id']),
-                                  "Expected result of publication Fs release[releases][planning][budget][id].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][id].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['id'] == \
                            update_fs_payload['planning']['budget']['id']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget]['
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget]['
                                  'description].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'description']),
-                                  "Actual result of publication Fs release[releases][planning][budget][description].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][description].")
                     allure.attach(str(update_fs_payload['planning']['budget']['description']),
-                                  "Expected result of publication Fs release[releases][planning][budget][description].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][description].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['description'] == \
                            update_fs_payload['planning']['budget']['description']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget]['
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget]['
                                  'europeanUnionFunding].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'europeanUnionFunding']),
-                                  "Actual result of publication Fs release[releases][planning][budget]["
+                                  "Actual result of publication FinancialSource release[releases][planning][budget]["
                                   "europeanUnionFunding].")
                     allure.attach(str(update_fs_payload['planning']['budget']['europeanUnionFunding']),
-                                  "Expected result of publication Fs release[releases][planning][budget]["
+                                  "Expected result of publication FinancialSource release[releases][planning][budget]["
                                   "europeanUnionFunding].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                'europeanUnionFunding'] == \
                            update_fs_payload['planning']['budget']['europeanUnionFunding']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][''project].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][''project].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'project']),
-                                  "Actual result of publication Fs release[releases][planning][budget][project].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][project].")
                     allure.attach(str(update_fs_payload['planning']['budget']['project']),
-                                  "Expected result of publication Fs release[releases][planning][budget][project].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][project].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['project'] == \
                            update_fs_payload['planning']['budget']['project']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][projectID].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][projectID].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'projectID']),
-                                  "Actual result of publication Fs release[releases][planning][budget][projectID].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][projectID].")
                     allure.attach(str(update_fs_payload['planning']['budget']['projectID']),
-                                  "Expected result of publication Fs release[releases][planning][budget][projectID].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][projectID].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['projectID'] == \
                            update_fs_payload['planning']['budget']['projectID']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][uri].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][uri].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['uri']),
-                                  "Actual result of publication Fs release[releases][planning][budget][uri].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][uri].")
                     allure.attach(str(update_fs_payload['planning']['budget']['uri']),
-                                  "Expected result of publication Fs release[releases][planning][budget][uri].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][uri].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['uri'] == \
                            update_fs_payload['planning']['budget']['uri']
 
-            with allure.step(f'# {step_number}.5. Check Ei release.'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release.'):
                 """
                 Compare expenditure item release before fs updating and 
                 expenditure item release after fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_updating)),
-                              "Actual Ei release before Fs updating")
+                              "Actual ExpenditureItem release before FinancialSource updating")
 
                 actual_ei_release_after_fs_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
-                              "Actual Ei release after Fs updating")
+                              "Actual ExpenditureItem release after FinancialSource updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_fs_updating,
                                                  actual_ei_release_after_fs_updating))
@@ -1113,18 +1113,18 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs updating and '
-                                 'after Fs updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource updating and '
+                                 'after FinancialSource updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing EI release before Fs updating and after Fs updating.")
+                                  "Actual result of comparing EI release before FinancialSource updating and after FinancialSource updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs updating and after Fs updating.")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource updating and after FinancialSource updating.")
                     assert compare_releases == expected_result
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs updating:'
+                  'Check FinancialSource release data after FinancialSource updating:'
                   'create fs: payload full data model treasury money, '
                   'update fs: payload without optional fields treasury money')
     def test_check_fs_release_four(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -1132,7 +1132,7 @@ class TestUpdateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -1141,7 +1141,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -1161,7 +1161,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -1170,7 +1170,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -1195,7 +1195,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -1204,7 +1204,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Fs'):
+        with allure.step(f'# {step_number}. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -1271,16 +1271,16 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.4. Check Fs release.'):
+            with allure.step(f'# {step_number}.4. Check FinancialSource release.'):
                 """
                 Compare actual financial source release after updating with financial source release before updating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_fs_updating)),
-                              "Actual Fs release before updating")
+                              "Actual FinancialSource release before updating")
 
                 actual_fs_release_after_fs_updating = requests.get(
                     url=f"{update_fs_feed_point_message['data']['url']}").json()
-                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual Fs release after updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual FinancialSource release after updating")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_fs_updating,
                                                  actual_fs_release_after_fs_updating))
@@ -1342,25 +1342,25 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing FinancialSource release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release before updating and after updating.")
+                                  "Actual result of comparing FinancialSource release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release before updating and after updating.")
+                                  "Expected result of comparing FinancialSource release before updating and after updating.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.5. Check Ei release.'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release.'):
                 """
                 Compare expenditure item release before fs updating and 
                 expenditure item release after fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_updating)),
-                              "Actual Ei release before Fs updating")
+                              "Actual ExpenditureItem release before FinancialSource updating")
 
                 actual_ei_release_after_fs_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
-                              "Actual Ei release after Fs updating")
+                              "Actual ExpenditureItem release after FinancialSource updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_fs_updating,
                                                  actual_ei_release_after_fs_updating))
@@ -1402,19 +1402,19 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs updating and '
-                                 'after Fs updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource updating and '
+                                 'after FinancialSource updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing EI release before Fs updating and after Fs updating.")
+                                  "Actual result of comparing EI release before FinancialSource updating and after FinancialSource updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs updating and after Fs updating.")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource updating and after FinancialSource updating.")
                     assert compare_releases == expected_result
 
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs updating:'
+                  'Check FinancialSource release data after FinancialSource updating:'
                   'create fs: payload without optional fields own money,'
                   'update fs: payload without optional fields own money ')
     def test_check_fs_release_five(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -1422,7 +1422,7 @@ class TestUpdateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -1431,7 +1431,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -1451,7 +1451,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -1460,7 +1460,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -1485,7 +1485,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -1494,7 +1494,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Fs'):
+        with allure.step(f'# {step_number}. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -1561,16 +1561,16 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.4. Check Fs release.'):
+            with allure.step(f'# {step_number}.4. Check FinancialSource release.'):
                 """
                 Compare actual financial source release after updating with financial source release before updating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_fs_updating)),
-                              "Actual Fs release before updating")
+                              "Actual FinancialSource release before updating")
 
                 actual_fs_release_after_fs_updating = requests.get(
                     url=f"{update_fs_feed_point_message['data']['url']}").json()
-                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual Fs release after updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual FinancialSource release after updating")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_fs_updating,
                                                  actual_fs_release_after_fs_updating))
@@ -1616,25 +1616,25 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing FinancialSource release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release before updating and after updating.")
+                                  "Actual result of comparing FinancialSource release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release before updating and after updating.")
+                                  "Expected result of comparing FinancialSource release before updating and after updating.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.5. Check Ei release.'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release.'):
                 """
                 Compare expenditure item release before fs updating and 
                 expenditure item release after fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_updating)),
-                              "Actual Ei release before Fs updating")
+                              "Actual ExpenditureItem release before FinancialSource updating")
 
                 actual_ei_release_after_fs_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
-                              "Actual Ei release after Fs updating")
+                              "Actual ExpenditureItem release after FinancialSource updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_fs_updating,
                                                  actual_ei_release_after_fs_updating))
@@ -1676,19 +1676,19 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs updating and '
-                                 'after Fs updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource updating and '
+                                 'after FinancialSource updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing EI release before Fs updating and after Fs updating.")
+                                  "Actual result of comparing EI release before FinancialSource updating and after FinancialSource updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs updating and after Fs updating.")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource updating and after FinancialSource updating.")
                     assert compare_releases == expected_result
 
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs updating:'
+                  'Check FinancialSource release data after FinancialSource updating:'
                   'create fs: payload full data model own money, '
                   'update fs: payload full data model own money ')
     def test_check_fs_release_six(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -1696,7 +1696,7 @@ class TestUpdateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -1705,7 +1705,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -1725,7 +1725,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -1734,7 +1734,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -1759,7 +1759,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -1768,7 +1768,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Fs'):
+        with allure.step(f'# {step_number}. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -1835,16 +1835,16 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.4. Check Fs release.'):
+            with allure.step(f'# {step_number}.4. Check FinancialSource release.'):
                 """
                 Compare actual financial source release after updating with financial source release before updating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_fs_updating)),
-                              "Actual Fs release before updating")
+                              "Actual FinancialSource release before updating")
 
                 actual_fs_release_after_fs_updating = requests.get(
                     url=f"{update_fs_feed_point_message['data']['url']}").json()
-                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual Fs release after updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual FinancialSource release after updating")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_fs_updating,
                                                  actual_fs_release_after_fs_updating))
@@ -1926,25 +1926,25 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing FinancialSource release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release before updating and after updating.")
+                                  "Actual result of comparing FinancialSource release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release before updating and after updating.")
+                                  "Expected result of comparing FinancialSource release before updating and after updating.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.5. Check Ei release.'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release.'):
                 """
                 Compare expenditure item release before fs updating and 
                 expenditure item release after fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_updating)),
-                              "Actual Ei release before Fs updating")
+                              "Actual ExpenditureItem release before FinancialSource updating")
 
                 actual_ei_release_after_fs_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
-                              "Actual Ei release after Fs updating")
+                              "Actual ExpenditureItem release after FinancialSource updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_fs_updating,
                                                  actual_ei_release_after_fs_updating))
@@ -1986,19 +1986,19 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs updating and '
-                                 'after Fs updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource updating and '
+                                 'after FinancialSource updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing EI release before Fs updating and after Fs updating.")
+                                  "Actual result of comparing EI release before FinancialSource updating and after FinancialSource updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs updating and after Fs updating.")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource updating and after FinancialSource updating.")
                     assert compare_releases == expected_result
 
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs updating:'
+                  'Check FinancialSource release data after FinancialSource updating:'
                   'create fs: payload without optional fields own money, '
                   'update fs: payload full data model own money ')
     def test_check_fs_release_seven(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -2006,7 +2006,7 @@ class TestUpdateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -2015,7 +2015,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -2035,7 +2035,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -2044,7 +2044,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -2069,7 +2069,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -2078,7 +2078,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Fs'):
+        with allure.step(f'# {step_number}. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -2145,16 +2145,16 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.4. Check Fs release.'):
+            with allure.step(f'# {step_number}.4. Check FinancialSource release.'):
                 """
                 Compare actual financial source release after updating with financial source release before updating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_fs_updating)),
-                              "Actual Fs release before updating")
+                              "Actual FinancialSource release before updating")
 
                 actual_fs_release_after_fs_updating = requests.get(
                     url=f"{update_fs_feed_point_message['data']['url']}").json()
-                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual Fs release after updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual FinancialSource release after updating")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_fs_updating,
                                                  actual_fs_release_after_fs_updating))
@@ -2215,82 +2215,82 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing FinancialSource release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release before updating and after updating.")
+                                  "Actual result of comparing FinancialSource release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release before updating and after updating.")
+                                  "Expected result of comparing FinancialSource release before updating and after updating.")
                     assert compare_releases == expected_result
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][rationale].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][rationale].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['rationale']),
-                                  "Actual result of publication Fs release[releases][planning][rationale].")
+                                  "Actual result of publication FinancialSource release[releases][planning][rationale].")
                     allure.attach(str(update_fs_payload['planning']['rationale']),
-                                  "Expected result of publication Fs release[releases][planning][rationale].")
+                                  "Expected result of publication FinancialSource release[releases][planning][rationale].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['rationale'] == \
                            update_fs_payload['planning']['rationale']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget]['
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget]['
                                  'description].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'description']),
-                                  "Actual result of publication Fs release[releases][planning][budget][description].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][description].")
                     allure.attach(str(update_fs_payload['planning']['budget']['description']),
-                                  "Expected result of publication Fs release[releases][planning][budget][description].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][description].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['description'] == \
                            update_fs_payload['planning']['budget']['description']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget]['
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget]['
                                  'europeanUnionFunding].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'europeanUnionFunding']),
-                                  "Actual result of publication Fs release[releases][planning][budget]["
+                                  "Actual result of publication FinancialSource release[releases][planning][budget]["
                                   "europeanUnionFunding].")
                     allure.attach(str(update_fs_payload['planning']['budget']['europeanUnionFunding']),
-                                  "Expected result of publication Fs release[releases][planning][budget]["
+                                  "Expected result of publication FinancialSource release[releases][planning][budget]["
                                   "europeanUnionFunding].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                'europeanUnionFunding'] == \
                            update_fs_payload['planning']['budget']['europeanUnionFunding']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][''project].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][''project].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'project']),
-                                  "Actual result of publication Fs release[releases][planning][budget][project].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][project].")
                     allure.attach(str(update_fs_payload['planning']['budget']['project']),
-                                  "Expected result of publication Fs release[releases][planning][budget][project].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][project].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['project'] == \
                            update_fs_payload['planning']['budget']['project']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][projectID].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][projectID].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'projectID']),
-                                  "Actual result of publication Fs release[releases][planning][budget][projectID].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][projectID].")
                     allure.attach(str(update_fs_payload['planning']['budget']['projectID']),
-                                  "Expected result of publication Fs release[releases][planning][budget][projectID].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][projectID].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['projectID'] == \
                            update_fs_payload['planning']['budget']['projectID']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][uri].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][uri].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['uri']),
-                                  "Actual result of publication Fs release[releases][planning][budget][uri].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][uri].")
                     allure.attach(str(update_fs_payload['planning']['budget']['uri']),
-                                  "Expected result of publication Fs release[releases][planning][budget][uri].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][uri].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['uri'] == \
                            update_fs_payload['planning']['budget']['uri']
 
-            with allure.step(f'# {step_number}.5. Check Ei release.'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release.'):
                 """
                 Compare expenditure item release before fs updating and 
                 expenditure item release after fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_updating)),
-                              "Actual Ei release before Fs updating")
+                              "Actual ExpenditureItem release before FinancialSource updating")
 
                 actual_ei_release_after_fs_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
-                              "Actual Ei release after Fs updating")
+                              "Actual ExpenditureItem release after FinancialSource updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_fs_updating,
                                                  actual_ei_release_after_fs_updating))
@@ -2332,19 +2332,19 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs updating and '
-                                 'after Fs updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource updating and '
+                                 'after FinancialSource updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing EI release before Fs updating and after Fs updating.")
+                                  "Actual result of comparing EI release before FinancialSource updating and after FinancialSource updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs updating and after Fs updating.")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource updating and after FinancialSource updating.")
                     assert compare_releases == expected_result
 
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs updating:'
+                  'Check FinancialSource release data after FinancialSource updating:'
                   'create fs: payload full data model own money, '
                   'update fs: payload without optional fields own money')
     def test_check_fs_release_eight(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -2352,7 +2352,7 @@ class TestUpdateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -2361,7 +2361,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -2381,7 +2381,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -2390,7 +2390,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -2415,7 +2415,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -2424,7 +2424,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Fs'):
+        with allure.step(f'# {step_number}. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -2491,16 +2491,16 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.4. Check Fs release.'):
+            with allure.step(f'# {step_number}.4. Check FinancialSource release.'):
                 """
                 Compare actual financial source release after updating with financial source release before updating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_fs_updating)),
-                              "Actual Fs release before updating")
+                              "Actual FinancialSource release before updating")
 
                 actual_fs_release_after_fs_updating = requests.get(
                     url=f"{update_fs_feed_point_message['data']['url']}").json()
-                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual Fs release after updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual FinancialSource release after updating")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_fs_updating,
                                                  actual_fs_release_after_fs_updating))
@@ -2561,25 +2561,25 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing FinancialSource release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release before updating and after updating.")
+                                  "Actual result of comparing FinancialSource release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release before updating and after updating.")
+                                  "Expected result of comparing FinancialSource release before updating and after updating.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.5. Check Ei release.'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release.'):
                 """
                 Compare expenditure item release before fs updating and 
                 expenditure item release after fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_updating)),
-                              "Actual Ei release before Fs updating")
+                              "Actual ExpenditureItem release before FinancialSource updating")
 
                 actual_ei_release_after_fs_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
-                              "Actual Ei release after Fs updating")
+                              "Actual ExpenditureItem release after FinancialSource updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_fs_updating,
                                                  actual_ei_release_after_fs_updating))
@@ -2621,19 +2621,19 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs updating and '
-                                 'after Fs updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource updating and '
+                                 'after FinancialSource updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing EI release before Fs updating and after Fs updating.")
+                                  "Actual result of comparing EI release before FinancialSource updating and after FinancialSource updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs updating and after Fs updating.")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource updating and after FinancialSource updating.")
                     assert compare_releases == expected_result
 
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs updating:'
+                  'Check FinancialSource release data after FinancialSource updating:'
                   'create fs: payload without optional fields treasury money, '
                   'update fs: payload full data model own money ')
     def test_check_fs_release_nine(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -2641,7 +2641,7 @@ class TestUpdateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -2650,7 +2650,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -2670,7 +2670,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -2679,7 +2679,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -2705,7 +2705,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -2714,7 +2714,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Fs'):
+        with allure.step(f'# {step_number}. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -2781,16 +2781,16 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.4. Check Fs release.'):
+            with allure.step(f'# {step_number}.4. Check FinancialSource release.'):
                 """
                 Compare actual financial source release after updating with financial source release before updating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_fs_updating)),
-                              "Actual Fs release before updating")
+                              "Actual FinancialSource release before updating")
 
                 actual_fs_release_after_fs_updating = requests.get(
                     url=f"{update_fs_feed_point_message['data']['url']}").json()
-                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual Fs release after updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual FinancialSource release after updating")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_fs_updating,
                                                  actual_fs_release_after_fs_updating))
@@ -2852,90 +2852,90 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing FinancialSource release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release before updating and after updating.")
+                                  "Actual result of comparing FinancialSource release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release before updating and after updating.")
+                                  "Expected result of comparing FinancialSource release before updating and after updating.")
                     assert compare_releases == expected_result
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][rationale].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][rationale].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['rationale']),
-                                  "Actual result of publication Fs release[releases][planning][rationale].")
+                                  "Actual result of publication FinancialSource release[releases][planning][rationale].")
                     allure.attach(str(update_fs_payload['planning']['rationale']),
-                                  "Expected result of publication Fs release[releases][planning][rationale].")
+                                  "Expected result of publication FinancialSource release[releases][planning][rationale].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['rationale'] == \
                            update_fs_payload['planning']['rationale']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][''id].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][''id].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['id']),
-                                  "Actual result of publication Fs release[releases][planning][budget][id].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][id].")
                     allure.attach(str(update_fs_payload['planning']['budget']['id']),
-                                  "Expected result of publication Fs release[releases][planning][budget][id].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][id].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['id'] == \
                            update_fs_payload['planning']['budget']['id']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget]['
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget]['
                                  'description].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'description']),
-                                  "Actual result of publication Fs release[releases][planning][budget][description].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][description].")
                     allure.attach(str(update_fs_payload['planning']['budget']['description']),
-                                  "Expected result of publication Fs release[releases][planning][budget][description].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][description].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['description'] == \
                            update_fs_payload['planning']['budget']['description']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget]['
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget]['
                                  'europeanUnionFunding].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'europeanUnionFunding']),
-                                  "Actual result of publication Fs release[releases][planning][budget]["
+                                  "Actual result of publication FinancialSource release[releases][planning][budget]["
                                   "europeanUnionFunding].")
                     allure.attach(str(update_fs_payload['planning']['budget']['europeanUnionFunding']),
-                                  "Expected result of publication Fs release[releases][planning][budget]["
+                                  "Expected result of publication FinancialSource release[releases][planning][budget]["
                                   "europeanUnionFunding].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                'europeanUnionFunding'] == \
                            update_fs_payload['planning']['budget']['europeanUnionFunding']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][''project].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][''project].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'project']),
-                                  "Actual result of publication Fs release[releases][planning][budget][project].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][project].")
                     allure.attach(str(update_fs_payload['planning']['budget']['project']),
-                                  "Expected result of publication Fs release[releases][planning][budget][project].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][project].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['project'] == \
                            update_fs_payload['planning']['budget']['project']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][projectID].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][projectID].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'projectID']),
-                                  "Actual result of publication Fs release[releases][planning][budget][projectID].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][projectID].")
                     allure.attach(str(update_fs_payload['planning']['budget']['projectID']),
-                                  "Expected result of publication Fs release[releases][planning][budget][projectID].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][projectID].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['projectID'] == \
                            update_fs_payload['planning']['budget']['projectID']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][uri].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][uri].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['uri']),
-                                  "Actual result of publication Fs release[releases][planning][budget][uri].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][uri].")
                     allure.attach(str(update_fs_payload['planning']['budget']['uri']),
-                                  "Expected result of publication Fs release[releases][planning][budget][uri].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][uri].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['uri'] == \
                            update_fs_payload['planning']['budget']['uri']
 
-            with allure.step(f'# {step_number}.5. Check Ei release.'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release.'):
                 """
                 Compare expenditure item release before fs updating and 
                 expenditure item release after fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_updating)),
-                              "Actual Ei release before Fs updating")
+                              "Actual ExpenditureItem release before FinancialSource updating")
 
                 actual_ei_release_after_fs_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
-                              "Actual Ei release after Fs updating")
+                              "Actual ExpenditureItem release after FinancialSource updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_fs_updating,
                                                  actual_ei_release_after_fs_updating))
@@ -2977,19 +2977,19 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs updating and '
-                                 'after Fs updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource updating and '
+                                 'after FinancialSource updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing EI release before Fs updating and after Fs updating.")
+                                  "Actual result of comparing EI release before FinancialSource updating and after FinancialSource updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs updating and after Fs updating.")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource updating and after FinancialSource updating.")
                     assert compare_releases == expected_result
 
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs updating:'
+                  'Check FinancialSource release data after FinancialSource updating:'
                   'create fs: payload without optional fields own money, '
                   'update fs: payload full data modeltreasury money ')
     def test_check_fs_release_ten(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -2997,7 +2997,7 @@ class TestUpdateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -3006,7 +3006,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -3026,7 +3026,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -3035,7 +3035,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -3060,7 +3060,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -3069,7 +3069,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Fs'):
+        with allure.step(f'# {step_number}. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -3136,16 +3136,16 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.4. Check Fs release.'):
+            with allure.step(f'# {step_number}.4. Check FinancialSource release.'):
                 """
                 Compare actual financial source release after updating with financial source release before updating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_fs_updating)),
-                              "Actual Fs release before updating")
+                              "Actual FinancialSource release before updating")
 
                 actual_fs_release_after_fs_updating = requests.get(
                     url=f"{update_fs_feed_point_message['data']['url']}").json()
-                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual Fs release after updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual FinancialSource release after updating")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_fs_updating,
                                                  actual_fs_release_after_fs_updating))
@@ -3206,82 +3206,82 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing FinancialSource release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release before updating and after updating.")
+                                  "Actual result of comparing FinancialSource release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release before updating and after updating.")
+                                  "Expected result of comparing FinancialSource release before updating and after updating.")
                     assert compare_releases == expected_result
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][rationale].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][rationale].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['rationale']),
-                                  "Actual result of publication Fs release[releases][planning][rationale].")
+                                  "Actual result of publication FinancialSource release[releases][planning][rationale].")
                     allure.attach(str(update_fs_payload['planning']['rationale']),
-                                  "Expected result of publication Fs release[releases][planning][rationale].")
+                                  "Expected result of publication FinancialSource release[releases][planning][rationale].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['rationale'] == \
                            update_fs_payload['planning']['rationale']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget]['
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget]['
                                  'description].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'description']),
-                                  "Actual result of publication Fs release[releases][planning][budget][description].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][description].")
                     allure.attach(str(update_fs_payload['planning']['budget']['description']),
-                                  "Expected result of publication Fs release[releases][planning][budget][description].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][description].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['description'] == \
                            update_fs_payload['planning']['budget']['description']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget]['
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget]['
                                  'europeanUnionFunding].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'europeanUnionFunding']),
-                                  "Actual result of publication Fs release[releases][planning][budget]["
+                                  "Actual result of publication FinancialSource release[releases][planning][budget]["
                                   "europeanUnionFunding].")
                     allure.attach(str(update_fs_payload['planning']['budget']['europeanUnionFunding']),
-                                  "Expected result of publication Fs release[releases][planning][budget]["
+                                  "Expected result of publication FinancialSource release[releases][planning][budget]["
                                   "europeanUnionFunding].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                'europeanUnionFunding'] == \
                            update_fs_payload['planning']['budget']['europeanUnionFunding']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][''project].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][''project].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'project']),
-                                  "Actual result of publication Fs release[releases][planning][budget][project].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][project].")
                     allure.attach(str(update_fs_payload['planning']['budget']['project']),
-                                  "Expected result of publication Fs release[releases][planning][budget][project].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][project].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['project'] == \
                            update_fs_payload['planning']['budget']['project']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][projectID].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][projectID].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget'][
                                           'projectID']),
-                                  "Actual result of publication Fs release[releases][planning][budget][projectID].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][projectID].")
                     allure.attach(str(update_fs_payload['planning']['budget']['projectID']),
-                                  "Expected result of publication Fs release[releases][planning][budget][projectID].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][projectID].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['projectID'] == \
                            update_fs_payload['planning']['budget']['projectID']
 
-                with allure.step('Check correctness of publication Fs release[releases][planning][budget][uri].'):
+                with allure.step('Check correctness of publication FinancialSource release[releases][planning][budget][uri].'):
                     allure.attach(str(actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['uri']),
-                                  "Actual result of publication Fs release[releases][planning][budget][uri].")
+                                  "Actual result of publication FinancialSource release[releases][planning][budget][uri].")
                     allure.attach(str(update_fs_payload['planning']['budget']['uri']),
-                                  "Expected result of publication Fs release[releases][planning][budget][uri].")
+                                  "Expected result of publication FinancialSource release[releases][planning][budget][uri].")
                     assert actual_fs_release_after_fs_updating['releases'][0]['planning']['budget']['uri'] == \
                            update_fs_payload['planning']['budget']['uri']
 
-            with allure.step(f'# {step_number}.5. Check Ei release.'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release.'):
                 """
                 Compare expenditure item release before fs updating and 
                 expenditure item release after fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_updating)),
-                              "Actual Ei release before Fs updating")
+                              "Actual ExpenditureItem release before FinancialSource updating")
 
                 actual_ei_release_after_fs_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
-                              "Actual Ei release after Fs updating")
+                              "Actual ExpenditureItem release after FinancialSource updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_fs_updating,
                                                  actual_ei_release_after_fs_updating))
@@ -3323,19 +3323,19 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs updating and '
-                                 'after Fs updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource updating and '
+                                 'after FinancialSource updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing EI release before Fs updating and after Fs updating.")
+                                  "Actual result of comparing EI release before FinancialSource updating and after FinancialSource updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs updating and after Fs updating.")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource updating and after FinancialSource updating.")
                     assert compare_releases == expected_result
 
 
-    @allure.title('Warning - release of creating Fs contains THE CRUTCH '
+    @allure.title('Warning - release of creating FinancialSource contains THE CRUTCH '
                   '(the release does not contain release.languages): navigate to fs_prepared_release.py ->'
                   ' look at comments\n'
-                  'Check Fs release data after Fs updating:'
+                  'Check FinancialSource release data after FinancialSource updating:'
                   ' create fs: payload full data model treasury money, '
                   'update fs: payload without optional fields own money')
     def test_check_fs_release_eleven(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -3343,7 +3343,7 @@ class TestUpdateFs:
         authorization = PlatformAuthorization(get_hosts[1])
         step_number = 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -3352,7 +3352,7 @@ class TestUpdateFs:
             create_ei_operation_id = authorization.get_x_operation_id(create_ei_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Ei'):
+        with allure.step(f'# {step_number}. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -3372,7 +3372,7 @@ class TestUpdateFs:
             ei_ocid = create_ei_feed_point_message["data"]["outcomes"]["ei"][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -3381,7 +3381,7 @@ class TestUpdateFs:
             create_fs_operation_id = authorization.get_x_operation_id(create_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create Fs'):
+        with allure.step(f'# {step_number}. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -3406,7 +3406,7 @@ class TestUpdateFs:
                 url=f"{create_fs_feed_point_message['data']['url']}/{fs_id}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: update Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: update FinancialSource'):
             """
             Tender platform authorization for update financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -3415,7 +3415,7 @@ class TestUpdateFs:
             update_fs_operation_id = authorization.get_x_operation_id(update_fs_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to update Fs'):
+        with allure.step(f'# {step_number}. Send request to update FinancialSource'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -3482,16 +3482,16 @@ class TestUpdateFs:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert asynchronous_result_of_sending_the_request_was_checked is True
 
-            with allure.step(f'# {step_number}.4. Check Fs release.'):
+            with allure.step(f'# {step_number}.4. Check FinancialSource release.'):
                 """
                 Compare actual financial source release after updating with financial source release before updating.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_fs_updating)),
-                              "Actual Fs release before updating")
+                              "Actual FinancialSource release before updating")
 
                 actual_fs_release_after_fs_updating = requests.get(
                     url=f"{update_fs_feed_point_message['data']['url']}").json()
-                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual Fs release after updating")
+                allure.attach(str(json.dumps(actual_fs_release_after_fs_updating)), "Actual FinancialSource release after updating")
 
                 compare_releases = dict(DeepDiff(actual_fs_release_before_fs_updating,
                                                  actual_fs_release_after_fs_updating))
@@ -3553,25 +3553,25 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Fs release before updating and after updating.'):
+                with allure.step('Compare actual result of comparing FinancialSource release before updating and after updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Fs release before updating and after updating.")
+                                  "Actual result of comparing FinancialSource release before updating and after updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Fs release before updating and after updating.")
+                                  "Expected result of comparing FinancialSource release before updating and after updating.")
                     assert compare_releases == expected_result
 
-            with allure.step(f'# {step_number}.5. Check Ei release.'):
+            with allure.step(f'# {step_number}.5. Check ExpenditureItem release.'):
                 """
                 Compare expenditure item release before fs updating and 
                 expenditure item release after fs creating.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_fs_updating)),
-                              "Actual Ei release before Fs updating")
+                              "Actual ExpenditureItem release before FinancialSource updating")
 
                 actual_ei_release_after_fs_updating = requests.get(
                     url=f"{create_ei_feed_point_message['data']['url']}/{ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_fs_updating)),
-                              "Actual Ei release after Fs updating")
+                              "Actual ExpenditureItem release after FinancialSource updating")
 
                 compare_releases = dict(DeepDiff(actual_ei_release_before_fs_updating,
                                                  actual_ei_release_after_fs_updating))
@@ -3613,10 +3613,10 @@ class TestUpdateFs:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ei release before Fs updating and '
-                                 'after Fs updating.'):
+                with allure.step('Compare actual result of comparing ExpenditureItem release before FinancialSource updating and '
+                                 'after FinancialSource updating.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing EI release before Fs updating and after Fs updating.")
+                                  "Actual result of comparing EI release before FinancialSource updating and after FinancialSource updating.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ei release before Fs updating and after Fs updating.")
+                                  "Expected result of comparing ExpenditureItem release before FinancialSource updating and after FinancialSource updating.")
                     assert compare_releases == expected_result

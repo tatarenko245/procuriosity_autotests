@@ -752,70 +752,70 @@ class PlanningNoticeRelease:
         else:
             del self.__expected_ms_release['releases'][0]['tender']['procurementMethodAdditionalInfo']
 
-        sum_of_budgetbreakdown_amount_list = list()
-        new_budgetbreakdown_array = list()
+        sum_of_budgetBreakdown_amount_list = list()
+        new_budgetBreakdown_array = list()
         for q_0 in range(len(self.__pn_payload['planning']['budget']['budgetBreakdown'])):
 
-            new_budgetbreakdown_array.append(copy.deepcopy(
+            new_budgetBreakdown_array.append(copy.deepcopy(
                 self.__expected_ms_release['releases'][0]['planning']['budget']['budgetBreakdown'][0]))
 
-            new_budgetbreakdown_array[q_0]['id'] = \
+            new_budgetBreakdown_array[q_0]['id'] = \
                 self.__pn_payload['planning']['budget']['budgetBreakdown'][q_0]['id']
 
             # actual_fs_release = requests.get(url=f"{self.metadata_budget_url}/{fs_budget_cpid_ocid_list[q_0]}").json()
             if "description" in fs_payloads_list[q_0]['planning']['budget']:
 
-                new_budgetbreakdown_array[q_0]['description'] = \
+                new_budgetBreakdown_array[q_0]['description'] = \
                     fs_payloads_list[q_0]['planning']['budget']['description']
             else:
-                del new_budgetbreakdown_array[q_0]['description']
+                del new_budgetBreakdown_array[q_0]['description']
 
-            new_budgetbreakdown_array[q_0]['amount']['amount'] = \
+            new_budgetBreakdown_array[q_0]['amount']['amount'] = \
                 round(self.__pn_payload['planning']['budget']['budgetBreakdown'][q_0]['amount']['amount'], 2)
 
-            sum_of_budgetbreakdown_amount_list.append(new_budgetbreakdown_array[q_0]['amount']['amount'])
+            sum_of_budgetBreakdown_amount_list.append(new_budgetBreakdown_array[q_0]['amount']['amount'])
 
-            new_budgetbreakdown_array[q_0]['amount']['currency'] = \
+            new_budgetBreakdown_array[q_0]['amount']['currency'] = \
                 fs_payloads_list[q_0]['planning']['budget']['amount']['currency']
 
-            new_budgetbreakdown_array[q_0]['period']['startDate'] = \
+            new_budgetBreakdown_array[q_0]['period']['startDate'] = \
                 fs_payloads_list[q_0]['planning']['budget']['period']['startDate']
 
-            new_budgetbreakdown_array[q_0]['period']['endDate'] = \
+            new_budgetBreakdown_array[q_0]['period']['endDate'] = \
                 fs_payloads_list[q_0]['planning']['budget']['period']['endDate']
 
             if "buyer" in fs_payloads_list[q_0]:
-                new_budgetbreakdown_array[q_0]['sourceParty']['id'] = \
+                new_budgetBreakdown_array[q_0]['sourceParty']['id'] = \
                     f"{fs_payloads_list[q_0]['buyer']['identifier']['scheme']}-" \
                     f"{fs_payloads_list[q_0]['buyer']['identifier']['id']}"
 
-                new_budgetbreakdown_array[q_0]['sourceParty']['name'] = fs_payloads_list[q_0]['buyer']['name']
+                new_budgetBreakdown_array[q_0]['sourceParty']['name'] = fs_payloads_list[q_0]['buyer']['name']
             else:
 
-                new_budgetbreakdown_array[q_0]['sourceParty']['id'] = \
+                new_budgetBreakdown_array[q_0]['sourceParty']['id'] = \
                     f"{ei_payload['buyer']['identifier']['scheme']}-" \
                     f"{ei_payload['buyer']['identifier']['id']}"
 
-                new_budgetbreakdown_array[q_0]['sourceParty']['name'] = ei_payload['buyer']['name']
+                new_budgetBreakdown_array[q_0]['sourceParty']['name'] = ei_payload['buyer']['name']
 
             if "europeanUnionFunding" in fs_payloads_list[q_0]['planning']['budget']:
 
-                new_budgetbreakdown_array[q_0]['europeanUnionFunding'] = \
+                new_budgetBreakdown_array[q_0]['europeanUnionFunding'] = \
                     fs_payloads_list[q_0]['planning']['budget']['europeanUnionFunding']
 
                 if "uri" in fs_payloads_list[q_0]['planning']['budget']['europeanUnionFunding']:
 
-                    new_budgetbreakdown_array[q_0]['europeanUnionFunding']['uri'] = \
+                    new_budgetBreakdown_array[q_0]['europeanUnionFunding']['uri'] = \
                         fs_payloads_list[q_0]['planning']['budget']['europeanUnionFunding']['uri']
                 else:
-                    del new_budgetbreakdown_array[q_0]['europeanUnionFunding']['uri']
+                    del new_budgetBreakdown_array[q_0]['europeanUnionFunding']['uri']
             else:
-                del new_budgetbreakdown_array[q_0]['europeanUnionFunding']
+                del new_budgetBreakdown_array[q_0]['europeanUnionFunding']
 
-        self.__expected_ms_release['releases'][0]['planning']['budget']['budgetBreakdown'] = new_budgetbreakdown_array
+        self.__expected_ms_release['releases'][0]['planning']['budget']['budgetBreakdown'] = new_budgetBreakdown_array
 
         self.__expected_ms_release['releases'][0]['planning']['budget']['amount']['amount'] = \
-            round(sum(sum_of_budgetbreakdown_amount_list), 2)
+            round(sum(sum_of_budgetBreakdown_amount_list), 2)
 
         self.__expected_ms_release['releases'][0]['planning']['budget']['amount']['currency'] = \
             self.__pn_payload['planning']['budget']['budgetBreakdown'][0]['amount']['currency']
@@ -898,30 +898,30 @@ class PlanningNoticeRelease:
             Enrich procurementMethod and procurementMethodDetails, depends on pmd.
             """
             if self.__pmd == "TEST_DCO":
-                expected_procurementmethod = 'selective'
-                expected_procurementmethoddetails = "testDirectCallOff"
+                expected_procurementMethod = 'selective'
+                expected_procurementMethodDetails = "testDirectCallOff"
             elif self.__pmd == "DCO":
-                expected_procurementmethod = 'selective'
-                expected_procurementmethoddetails = "directCallOff"
+                expected_procurementMethod = 'selective'
+                expected_procurementMethodDetails = "directCallOff"
             elif self.__pmd == "TEST_RFQ":
-                expected_procurementmethod = 'selective'
-                expected_procurementmethoddetails = "testRequestForQuotations"
+                expected_procurementMethod = 'selective'
+                expected_procurementMethodDetails = "testRequestForQuotations"
             elif self.__pmd == "RFQ":
-                expected_procurementmethod = 'selective'
-                expected_procurementmethoddetails = "requestForQuotations"
+                expected_procurementMethod = 'selective'
+                expected_procurementMethodDetails = "requestForQuotations"
             elif self.__pmd == "TEST_MC":
-                expected_procurementmethod = 'selective'
-                expected_procurementmethoddetails = "testMiniCompetition"
+                expected_procurementMethod = 'selective'
+                expected_procurementMethodDetails = "testMiniCompetition"
             elif self.__pmd == "MC":
-                expected_procurementmethod = 'selective'
-                expected_procurementmethoddetails = "miniCompetition"
+                expected_procurementMethod = 'selective'
+                expected_procurementMethodDetails = "miniCompetition"
             else:
                 raise ValueError("Check your pmd: You must use 'TEST_DCO', "
                                  "'TEST_RFQ', 'TEST_MC', 'DCO', 'RFQ', 'MC' in pytest command")
 
-            self.__expected_ms_release['releases'][0]['tender']['procurementMethod'] = expected_procurementmethod
+            self.__expected_ms_release['releases'][0]['tender']['procurementMethod'] = expected_procurementMethod
             self.__expected_ms_release['releases'][0]['tender'][
-                'procurementMethodDetails'] = expected_procurementmethoddetails
+                'procurementMethodDetails'] = expected_procurementMethodDetails
         except KeyError:
             raise KeyError("Could not parse a pmd into pytest command.")
 
@@ -930,12 +930,12 @@ class PlanningNoticeRelease:
             Enrich eligibilityCriteria, depends on language.
             """
             if self.__language == "ro":
-                expected_eligibilitycriteria = "Regulile generale privind naționalitatea și originea, precum și " \
+                expected_eligibilityCriteria = "Regulile generale privind naționalitatea și originea, precum și " \
                                                "alte criterii de eligibilitate sunt enumerate în " \
                                                "Ghidul practic privind procedurile de contractare " \
                                                "a acțiunilor externe ale UE (PRAG)"
             elif self.__language == "en":
-                expected_eligibilitycriteria = "The general rules on nationality and origin, " \
+                expected_eligibilityCriteria = "The general rules on nationality and origin, " \
                                                "as well as other eligibility criteria are listed " \
                                                "in the Practical Guide to Contract Procedures for EU " \
                                                "External Actions (PRAG)"
@@ -943,7 +943,7 @@ class PlanningNoticeRelease:
                 raise ValueError("Check your language: You must use 'ro', "
                                  "'en' in pytest command.")
 
-            self.__expected_ms_release['releases'][0]['tender']['eligibilityCriteria'] = expected_eligibilitycriteria
+            self.__expected_ms_release['releases'][0]['tender']['eligibilityCriteria'] = expected_eligibilityCriteria
         except KeyError:
             raise KeyError("Could not parse a language into pytest command.")
 
@@ -959,17 +959,17 @@ class PlanningNoticeRelease:
                 self.__expected_ms_release['releases'][0]['tender']['value']['currency'] = \
                     self.__pn_payload['tender']['lots'][0]['value']['currency']
 
-                expected_contractperiod = get_contract_period_for_ms_release(
+                expected_contractPeriod = get_contract_period_for_ms_release(
                     lots_array=self.__pn_payload['tender']['lots'])
 
                 self.__expected_ms_release['releases'][0]['tender']['contractPeriod']['startDate'] = \
-                    expected_contractperiod[0]
+                    expected_contractPeriod[0]
 
                 self.__expected_ms_release['releases'][0]['tender']['contractPeriod']['endDate'] = \
-                    expected_contractperiod[1]
+                    expected_contractPeriod[1]
             else:
                 self.__expected_ms_release['releases'][0]['tender']['value']['amount'] = round(
-                    sum(sum_of_budgetbreakdown_amount_list), 2)
+                    sum(sum_of_budgetBreakdown_amount_list), 2)
 
                 self.__expected_ms_release['releases'][0]['tender']['value']['currency'] = \
                     self.__pn_payload['planning']['budget']['budgetBreakdown'][0]['amount']['currency']
@@ -1526,48 +1526,48 @@ class PlanningNoticeRelease:
 
         # Build the releases.relatedProcesses array. Enrich required fields:
 
-        new_relatedprocesses_array = list()
+        new_relatedProcesses_array = list()
         for q_0 in range(2):
-            new_relatedprocesses_array.append(
+            new_relatedProcesses_array.append(
                 copy.deepcopy(self.__expected_ms_release['releases'][0]['relatedProcesses'][0])
             )
 
-        new_relatedprocesses_array[0]['relationship'] = ["planning"]
-        new_relatedprocesses_array[0]['scheme'] = "ocid"
-        new_relatedprocesses_array[0]['identifier'] = self.__pn_message['data']['outcomes']['pn'][0]['id']
+        new_relatedProcesses_array[0]['relationship'] = ["planning"]
+        new_relatedProcesses_array[0]['scheme'] = "ocid"
+        new_relatedProcesses_array[0]['identifier'] = self.__pn_message['data']['outcomes']['pn'][0]['id']
 
-        new_relatedprocesses_array[0]['uri'] = \
+        new_relatedProcesses_array[0]['uri'] = \
             f"{self.__metadata_tender_url}/{self.__pn_message['data']['ocid']}/" \
             f"{self.__pn_message['data']['outcomes']['pn'][0]['id']}"
 
-        new_relatedprocesses_array[1]['relationship'] = ["x_expenditureItem"]
-        new_relatedprocesses_array[1]['scheme'] = "ocid"
-        new_relatedprocesses_array[1]['identifier'] = ei_message['data']['outcomes']['ei'][0]['id']
+        new_relatedProcesses_array[1]['relationship'] = ["x_expenditureItem"]
+        new_relatedProcesses_array[1]['scheme'] = "ocid"
+        new_relatedProcesses_array[1]['identifier'] = ei_message['data']['outcomes']['ei'][0]['id']
 
-        new_relatedprocesses_array[1]['uri'] = \
+        new_relatedProcesses_array[1]['uri'] = \
             f"{self.__metadata_budget_url}/{ei_message['data']['outcomes']['ei'][0]['id']}/" \
             f"{ei_message['data']['outcomes']['ei'][0]['id']}"
 
-        fs_relatedprocesses_array = list()
+        fs_relatedProcesses_array = list()
         for q_0 in range(len(fs_message_list)):
-            fs_relatedprocesses_array.append(
+            fs_relatedProcesses_array.append(
                 copy.deepcopy(self.__expected_ms_release['releases'][0]['relatedProcesses'][0])
             )
 
-            fs_relatedprocesses_array[q_0]['relationship'] = ["x_fundingSource"]
-            fs_relatedprocesses_array[q_0]['scheme'] = "ocid"
+            fs_relatedProcesses_array[q_0]['relationship'] = ["x_fundingSource"]
+            fs_relatedProcesses_array[q_0]['scheme'] = "ocid"
 
-            fs_relatedprocesses_array[q_0]['identifier'] = \
+            fs_relatedProcesses_array[q_0]['identifier'] = \
                 fs_message_list[q_0]['data']['outcomes']['fs'][0]['id']
 
-            fs_relatedprocesses_array[q_0]['uri'] = \
+            fs_relatedProcesses_array[q_0]['uri'] = \
                 f"{self.__metadata_budget_url}/{ei_message['data']['outcomes']['ei'][0]['id']}/" \
                 f"{fs_message_list[q_0]['data']['outcomes']['fs'][0]['id']}"
 
-        expected_relatedprocesses_array = new_relatedprocesses_array + fs_relatedprocesses_array
-        if len(self.__actual_ms_release['releases'][0]['relatedProcesses']) == len(expected_relatedprocesses_array):
+        expected_relatedProcesses_array = new_relatedProcesses_array + fs_relatedProcesses_array
+        if len(self.__actual_ms_release['releases'][0]['relatedProcesses']) == len(expected_relatedProcesses_array):
             for act in range(len(self.__actual_ms_release['releases'][0]['relatedProcesses'])):
-                for exp in range(len(expected_relatedprocesses_array)):
+                for exp in range(len(expected_relatedProcesses_array)):
 
                     is_permanent_releatedprocess_id_correct = is_it_uuid(
                         self.__actual_ms_release['releases'][0]['relatedProcesses'][act]['id'])
@@ -1575,8 +1575,8 @@ class PlanningNoticeRelease:
                     if is_permanent_releatedprocess_id_correct is True:
 
                         if self.__actual_ms_release['releases'][0]['relatedProcesses'][act]['identifier'] == \
-                                expected_relatedprocesses_array[exp]['identifier']:
-                            expected_relatedprocesses_array[exp]['id'] = \
+                                expected_relatedProcesses_array[exp]['identifier']:
+                            expected_relatedProcesses_array[exp]['id'] = \
                                 self.__actual_ms_release['releases'][0]['relatedProcesses'][act]['id']
                     else:
                         raise ValueError(f"The relases0.relatedProcess.id must be uuid.")
@@ -1584,5 +1584,5 @@ class PlanningNoticeRelease:
             raise ValueError("The quantity of actual relatedProcesses array != "
                              "quantity of expected relatedProcess array")
 
-        self.__expected_ms_release['releases'][0]['relatedProcesses'] = expected_relatedprocesses_array
+        self.__expected_ms_release['releases'][0]['relatedProcesses'] = expected_relatedProcesses_array
         return self.__expected_ms_release

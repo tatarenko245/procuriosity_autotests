@@ -14,9 +14,9 @@ from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClass
 from tests.utils.PayloadModels.OpenProcedure.CnOnPn.cnonpn_prepared_payload import CnOnPnPreparePayload
 from tests.utils.PayloadModels.OpenProcedure.DeclareNonConflictInterest.declare_non_conflict_interest_prepared_payload import \
     DeclarePreparePayload
-from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditure_item_payload__ import EiPreparePayload
 from tests.utils.PayloadModels.OpenProcedure.EvaluateAward.evaluate_award_prepared_payload import EvaluateAwardPreparePayload
-from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.Budget.FinancialSource.deldete_financial_source_payload import FinancialSourcePayload
 from tests.utils.PayloadModels.OpenProcedure.Pn.pn_prepared_payload import PnPreparePayload
 from tests.utils.PayloadModels.OpenProcedure.SubmitBid.bid_prepared_payload import BidPreparePayload
 from tests.utils.ReleaseModels.OpenProcedure.Protocol.protocol_release import ProtocolRelease
@@ -68,9 +68,9 @@ class TestProtocol:
 
     @allure.title("create protocol (award.statusDetails=active) to award\n"
                   "------------------------------------------------\n"
-                  "Ei: full data model with items array;\n"
-                  "Fs: full data model, own money;\n"
-                  "Pn: full data model, 1 lots, 1 items;\n"
+                  "ExpenditureItem: full data model with items array;\n"
+                  "FinancialSource: full data model, own money;\n"
+                  "PlanningNotice: full data model, 1 lots, 1 items;\n"
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions, "
                   "awardCriteriaDetails = automated;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
@@ -79,7 +79,7 @@ class TestProtocol:
                   )
     def test_check_result_of_sending_the_request_one(self):
         step_number = 1
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -90,7 +90,7 @@ class TestProtocol:
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
             step_number += 1
-        with allure.step(f'# {step_number}. Send request: create Ei'):
+        with allure.step(f'# {step_number}. Send request: create ExpenditureItem'):
             """
             Send api request to BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -116,7 +116,7 @@ class TestProtocol:
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
             step_number += 1
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -127,7 +127,7 @@ class TestProtocol:
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
             step_number += 1
-        with allure.step(f'# {step_number}. Send request: create Fs'):
+        with allure.step(f'# {step_number}. Send request: create FinancialSource'):
             """
             Send api request to BPE host for financial source creating.
             And save in variable fs_id.
@@ -152,7 +152,7 @@ class TestProtocol:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create Pn'):
+        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -163,7 +163,7 @@ class TestProtocol:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
             step_number += 1
-        with allure.step(f'# {step_number}. Send request: create Pn'):
+        with allure.step(f'# {step_number}. Send request: create PlanningNotice'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.
@@ -926,9 +926,9 @@ class TestProtocol:
 
     @allure.title("create protocol (award.statusDetails=unsuccessful) to award\n"
                   "------------------------------------------------\n"
-                  "Ei: full data model with items array;\n"
-                  "Fs: full data model, own money;\n"
-                  "Pn: full data model, 1 lots, 1 items;\n"
+                  "ExpenditureItem: full data model with items array;\n"
+                  "FinancialSource: full data model, own money;\n"
+                  "PlanningNotice: full data model, 1 lots, 1 items;\n"
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions, "
                   "awardCriteriaDetails = automated;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
@@ -937,7 +937,7 @@ class TestProtocol:
                   )
     def test_check_result_of_sending_the_request_two(self):
         step_number = 1
-        with allure.step(f'# {step_number}. Authorization platform one: create Ei'):
+        with allure.step(f'# {step_number}. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -948,7 +948,7 @@ class TestProtocol:
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
             step_number += 1
-        with allure.step(f'# {step_number}. Send request: create Ei'):
+        with allure.step(f'# {step_number}. Send request: create ExpenditureItem'):
             """
             Send api request to BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -974,7 +974,7 @@ class TestProtocol:
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
             step_number += 1
-        with allure.step(f'# {step_number}. Authorization platform one: create Fs'):
+        with allure.step(f'# {step_number}. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -985,7 +985,7 @@ class TestProtocol:
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
             step_number += 1
-        with allure.step(f'# {step_number}. Send request: create Fs'):
+        with allure.step(f'# {step_number}. Send request: create FinancialSource'):
             """
             Send api request to BPE host for financial source creating.
             And save in variable fs_id.
@@ -1010,7 +1010,7 @@ class TestProtocol:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create Pn'):
+        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -1021,7 +1021,7 @@ class TestProtocol:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
             step_number += 1
-        with allure.step(f'# {step_number}. Send request: create Pn'):
+        with allure.step(f'# {step_number}. Send request: create PlanningNotice'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.

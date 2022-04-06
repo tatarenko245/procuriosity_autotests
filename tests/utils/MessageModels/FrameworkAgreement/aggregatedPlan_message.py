@@ -4,12 +4,12 @@ import fnmatch
 from tests.utils.functions_collection.functions import is_it_uuid
 
 
-class PlanningNoticeMessage:
-    def __init__(self, environment, actual_message, expected_quantity_of_outcomes_pn=1, test_mode=False):
+class AggregatedPlanMessage:
+    def __init__(self, environment, actual_message, expected_quantity_of_outcomes_ap=1, testMode=False):
         self.__environment = environment
         self.__actual_message = actual_message
-        self.__test_mode = test_mode
-        self.__expected_quantity_of_outcomes_pn = expected_quantity_of_outcomes_pn
+        self.__testMode = testMode
+        self.__expected_quantity_of_outcomes_ap = expected_quantity_of_outcomes_ap
 
         if environment == "dev":
             self.tender_url = "http://dev.public.eprocurement.systems/tenders"
@@ -25,7 +25,7 @@ class PlanningNoticeMessage:
                 "url": "",
                 "operationDate": "",
                 "outcomes": {
-                    "pn": [
+                    "ap": [
                         {
                             "id": "",
                             "X-TOKEN": ""
@@ -42,9 +42,9 @@ class PlanningNoticeMessage:
             if is_operation_id_correct is True:
                 self.__message['X-OPERATION-ID'] = self.__actual_message['X-OPERATION-ID']
             else:
-                raise ValueError("The message of CreatePn process is not correct: 'X-OPERATION-ID' must be uuid.")
+                raise ValueError("The message of AggregatedPlan process is not correct: 'X-OPERATION-ID' must be uuid.")
         else:
-            raise KeyError("The message of CreatePn process is not correct: mismatch key 'X-OPERATION-ID'.")
+            raise KeyError("The message of AggregatedPlan process is not correct: mismatch key 'X-OPERATION-ID'.")
 
         if "X-RESPONSE-ID" in self.__actual_message:
             is_process_id_correct = is_it_uuid(self.__actual_message['X-RESPONSE-ID'])
@@ -52,17 +52,17 @@ class PlanningNoticeMessage:
             if is_process_id_correct is True:
                 self.__message['X-RESPONSE-ID'] = self.__actual_message['X-RESPONSE-ID']
             else:
-                raise ValueError("The message of CreatePn process is not correct: 'X-RESPONSE-ID' must be uuid.")
+                raise ValueError("The message of AggregatedPlan process is not correct: 'X-RESPONSE-ID' must be uuid.")
         else:
-            raise KeyError("The message of CreatePn process is not correct: mismatch key 'X-RESPONSE-ID'.")
+            raise KeyError("The message of AggregatedPlan process is not correct: mismatch key 'X-RESPONSE-ID'.")
 
         if "initiator" in self.__actual_message:
             self.__message['initiator'] = "platform"
         else:
-            raise KeyError("The message of CreatePn process is not correct: mismatch key 'initiator'.")
+            raise KeyError("The message of AggregatedPlan process is not correct: mismatch key 'initiator'.")
 
         if "ocid" in self.__actual_message['data']:
-            if self.__test_mode is False:
+            if self.__testMode is False:
                 is_ocid_correct = fnmatch.fnmatch(self.__actual_message["data"]["ocid"], "ocds-t1s2t3-MD-*")
             else:
                 is_ocid_correct = fnmatch.fnmatch(self.__actual_message["data"]["ocid"], "test-t1s2t3-MD-*")
@@ -70,14 +70,14 @@ class PlanningNoticeMessage:
             if is_ocid_correct is True:
                 self.__message['data']['ocid'] = self.__actual_message['data']['ocid']
             else:
-                raise ValueError("The message of CreatePn process is not correct: 'data.ocid'.")
+                raise ValueError("The message of AggregatedPlan process is not correct: 'data.ocid'.")
         else:
-            raise KeyError("The message of CreatePn process is not correct: mismatch key 'data.ocid'.")
+            raise KeyError("The message of AggregatedPlan process is not correct: mismatch key 'data.ocid'.")
 
         if "url" in self.__actual_message['data']:
             self.__message['data']['url'] = f"{self.tender_url}/{self.__message['data']['ocid']}"
         else:
-            raise KeyError("The message of CreatePn process is not correct: mismatch key 'data.url'.")
+            raise KeyError("The message of AggregatedPlan process is not correct: mismatch key 'data.url'.")
 
         if "operationDate" in self.__actual_message['data']:
             is_date_correct = fnmatch.fnmatch(self.__actual_message["data"]["operationDate"], "202*-*-*T*:*:*Z")
@@ -85,34 +85,34 @@ class PlanningNoticeMessage:
             if is_date_correct is True:
                 self.__message['data']['operationDate'] = self.__actual_message['data']['operationDate']
             else:
-                raise ValueError("The message of CreatePn process is not correct: 'data.operationDate'.")
+                raise ValueError("The message of AggregatedPlan process is not correct: 'data.operationDate'.")
         else:
-            raise KeyError("The message of CreatePn process is not correct: mismatch key 'data.operationDate'.")
+            raise KeyError("The message of AggregatedPlan process is not correct: mismatch key 'data.operationDate'.")
 
-        outcomes_pn_array = list()
-        for obj in range(self.__expected_quantity_of_outcomes_pn):
-            outcomes_pn_array.append(copy.deepcopy(self.__message['data']['outcomes']['pn'][0]))
+        outcomes_ap_array = list()
+        for obj in range(self.__expected_quantity_of_outcomes_ap):
+            outcomes_ap_array.append(copy.deepcopy(self.__message['data']['outcomes']['ap'][0]))
 
-            if self.__test_mode is False:
-                is_pn_id_correct = fnmatch.fnmatch(
-                    self.__actual_message["data"]["outcomes"]["pn"][obj]["id"], "ocds-t1s2t3-MD-*-PN-*"
+            if self.__testMode is False:
+                is_ap_id_correct = fnmatch.fnmatch(
+                    self.__actual_message["data"]["outcomes"]["ap"][obj]["id"], "ocds-t1s2t3-MD-*-AggregatedPlan-*"
                 )
             else:
-                is_pn_id_correct = fnmatch.fnmatch(
-                    self.__actual_message["data"]["outcomes"]["pn"][obj]["id"], "test-t1s2t3-MD-*-PN-*"
+                is_ap_id_correct = fnmatch.fnmatch(
+                    self.__actual_message["data"]["outcomes"]["ap"][obj]["id"], "test-t1s2t3-MD-*-AggregatedPlan-*"
                 )
 
-            if is_pn_id_correct is True:
-                outcomes_pn_array[obj]['id'] = self.__actual_message["data"]["outcomes"]["pn"][obj]["id"]
+            if is_ap_id_correct is True:
+                outcomes_ap_array[obj]['id'] = self.__actual_message["data"]["outcomes"]["ap"][obj]["id"]
             else:
-                raise ValueError("The message of CreatePn process is not correct: 'data.outcomes.pn.id'.")
+                raise ValueError("The message of AggregatedPlan process is not correct: 'data.outcomes.ap.id'.")
 
-            is_pn_token_correct = is_it_uuid(self.__actual_message["data"]["outcomes"]["pn"][obj]["X-TOKEN"])
+            is_ap_token_correct = is_it_uuid(self.__actual_message["data"]["outcomes"]["ap"][obj]["X-TOKEN"])
 
-            if is_pn_token_correct is True:
-                outcomes_pn_array[obj]['X-TOKEN'] = self.__actual_message["data"]["outcomes"]["pn"][obj]["X-TOKEN"]
+            if is_ap_token_correct is True:
+                outcomes_ap_array[obj]['X-TOKEN'] = self.__actual_message["data"]["outcomes"]["ap"][obj]["X-TOKEN"]
             else:
-                raise ValueError("The message of CreatePn process is not correct: 'data.outcomes.pn.X-TOKEN'.")
+                raise ValueError("The message of AggregatedPlan process is not correct: 'data.outcomes.ap.X-TOKEN'.")
 
-        self.__message['data']['outcomes']['pn'] = outcomes_pn_array
+        self.__message['data']['outcomes']['ap'] = outcomes_ap_array
         return self.__message

@@ -480,7 +480,7 @@ class PnExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
+            raise ValueError("Check your tender_id in FinancialSource release: tender_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -488,7 +488,7 @@ class PnExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
+            raise ValueError("Check your release_id in FinancialSource release: release_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -496,8 +496,8 @@ class PnExpectedRelease:
                 version=1
             )
         except ValueError:
-            raise ValueError("Check your related_processes_id in Fs release: "
-                             "tender_id in Fs release must be uuid version 1")
+            raise ValueError("Check your related_processes_id in FinancialSource release: "
+                             "tender_id in FinancialSource release must be uuid version 1")
 
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_id}"
         release['version'] = "1.1"
@@ -859,7 +859,7 @@ class PnExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
+            raise ValueError("Check your tender_id in FinancialSource release: tender_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -867,7 +867,7 @@ class PnExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
+            raise ValueError("Check your release_id in FinancialSource release: release_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -875,8 +875,8 @@ class PnExpectedRelease:
                 version=1
             )
         except ValueError:
-            raise ValueError("Check your related_processes_id in Fs release: "
-                             "tender_id in Fs release must be uuid version 1")
+            raise ValueError("Check your related_processes_id in FinancialSource release: "
+                             "tender_id in FinancialSource release must be uuid version 1")
 
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_id}"
         release['version'] = "1.1"
@@ -1231,7 +1231,7 @@ class PnExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your tender_id in Fs release: tender_id in Fs release must be uuid version 4")
+            raise ValueError("Check your tender_id in FinancialSource release: tender_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -1239,7 +1239,7 @@ class PnExpectedRelease:
                 version=4
             )
         except ValueError:
-            raise ValueError("Check your release_id in Fs release: release_id in Fs release must be uuid version 4")
+            raise ValueError("Check your release_id in FinancialSource release: release_id in FinancialSource release must be uuid version 4")
 
         try:
             check_uuid_version(
@@ -1247,8 +1247,8 @@ class PnExpectedRelease:
                 version=1
             )
         except ValueError:
-            raise ValueError("Check your related_processes_id in Fs release: "
-                             "tender_id in Fs release must be uuid version 1")
+            raise ValueError("Check your related_processes_id in FinancialSource release: "
+                             "tender_id in FinancialSource release must be uuid version 1")
 
         release['uri'] = f"{self.metadata_tender_url}/{GlobalClassCreatePn.pn_ocid}/{GlobalClassCreatePn.pn_id}"
         release['version'] = "1.1"

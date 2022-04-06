@@ -8,8 +8,8 @@ from deepdiff import DeepDiff
 
 from tests.conftest import GlobalClassMetadata, GlobalClassCreateEi, GlobalClassCreateFs, GlobalClassCreatePn, \
      GlobalClassCancelPn
-from tests.utils.PayloadModels.Budget.Ei.expenditure_item_payload__ import EiPreparePayload
-from tests.utils.PayloadModels.Budget.Fs.deldete_financial_source_payload import FinancialSourcePayload
+from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditure_item_payload__ import EiPreparePayload
+from tests.utils.PayloadModels.Budget.FinancialSource.deldete_financial_source_payload import FinancialSourcePayload
 from tests.utils.PayloadModels.OpenProcedure.Pn.pn_prepared_payload import PnPreparePayload
 
 from tests.utils.cassandra_session import CassandraSession
@@ -21,12 +21,12 @@ from tests.utils.platform_query_library import Requests
 
 
 @allure.parent_suite('Planning')
-@allure.suite('Pn')
-@allure.sub_suite('BPE: Cancel Pn')
+@allure.suite('PlanningNotice')
+@allure.sub_suite('BPE: Cancel PlanningNotice')
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/'
                      'edit#gid=671883180',
-                 name='Google sheets: Cancel Pn')
+                 name='Google sheets: Cancel PlanningNotice')
 class TestCreatePn:
     def test_setup(self, parse_environment, parse_country, parse_language, parse_pmd, parse_cassandra_username,
                    parse_cassandra_password):
@@ -51,9 +51,9 @@ class TestCreatePn:
             password=GlobalClassMetadata.cassandra_password,
             host=GlobalClassMetadata.cassandra_cluster)
 
-    @allure.title('Check status code and message from Kafka topic after Pn canceling')
+    @allure.title('Check status code and message from Kafka topic after PlanningNotice canceling')
     def test_check_result_of_sending_the_request(self):
-        with allure.step('# 1. Authorization platform one: create Ei'):
+        with allure.step('# 1. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -63,7 +63,7 @@ class TestCreatePn:
 
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Send request to create Ei'):
+        with allure.step('# 2. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -87,7 +87,7 @@ class TestCreatePn:
             GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
-        with allure.step('# 3. Authorization platform one: create Fs'):
+        with allure.step('# 3. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -98,7 +98,7 @@ class TestCreatePn:
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
 
-        with allure.step('# 4. Send request to create Fs'):
+        with allure.step('# 4. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -123,7 +123,7 @@ class TestCreatePn:
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
-        with allure.step('# 5. Authorization platform one: create Pn'):
+        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -134,7 +134,7 @@ class TestCreatePn:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request to create Pn'):
+        with allure.step('# 6. Send request to create PlanningNotice'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -168,7 +168,7 @@ class TestCreatePn:
             GlobalClassCreatePn.pn_token = \
                 GlobalClassCreatePn.feed_point_message['data']['outcomes']['pn'][0]['X-TOKEN']
 
-        with allure.step('# 7. Authorization platform one: cancel Pn'):
+        with allure.step('# 7. Authorization platform one: cancel PlanningNotice'):
             """
             Tender platform authorization for cancel planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -179,7 +179,7 @@ class TestCreatePn:
             GlobalClassCancelPn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCancelPn.access_token)
 
-        with allure.step('# 8. Send request to cancel Pn'):
+        with allure.step('# 8. Send request to cancel PlanningNotice'):
             """
             Send api request on BPE host for planning notice updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -259,10 +259,10 @@ class TestCreatePn:
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
 
-    @allure.title('Check Pn and MS releases data after Pn canceling, pn release with full data model '
+    @allure.title('Check PlanningNotice and MS releases data after PlanningNotice canceling, pn release with full data model '
                   'with 3 lots and 3 items')
     def test_check_pn_ms_releases_one(self):
-        with allure.step('# 1. Authorization platform one: create Ei'):
+        with allure.step('# 1. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -272,7 +272,7 @@ class TestCreatePn:
 
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Send request to create Ei'):
+        with allure.step('# 2. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -296,7 +296,7 @@ class TestCreatePn:
             GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
-        with allure.step('# 3. Authorization platform one: create Fs'):
+        with allure.step('# 3. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -307,7 +307,7 @@ class TestCreatePn:
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
 
-        with allure.step('# 4. Send request to create Fs'):
+        with allure.step('# 4. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -332,7 +332,7 @@ class TestCreatePn:
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
-        with allure.step('# 5. Authorization platform one: create Pn'):
+        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -343,7 +343,7 @@ class TestCreatePn:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request to create Pn'):
+        with allure.step('# 6. Send request to create PlanningNotice'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -394,7 +394,7 @@ class TestCreatePn:
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
 
-        with allure.step('# 7. Authorization platform one: cancel Pn'):
+        with allure.step('# 7. Authorization platform one: cancel PlanningNotice'):
             """
             Tender platform authorization for cancel planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -405,7 +405,7 @@ class TestCreatePn:
             GlobalClassCancelPn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCancelPn.access_token)
 
-        with allure.step('# 8. Send request to cancel Pn'):
+        with allure.step('# 8. Send request to cancel PlanningNotice'):
             """
             Send api request on BPE host for planning notice canceling.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -464,19 +464,19 @@ class TestCreatePn:
                     expected_result=True,
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
-            with allure.step('# 9.3. Check Pn release'):
+            with allure.step('# 9.3. Check PlanningNotice release'):
                 """
                 Compare actual planning notice release before canceling and actual planning release after canceling.
                 """
                 allure.attach(str(json.dumps(actual_pn_release_before_canceling)),
-                              "Actual Pn release before canceling")
+                              "Actual PlanningNotice release before canceling")
 
                 actual_pn_release_after_canceling = requests.get(
                     url=f"{GlobalClassCancelPn.feed_point_message['data']['url']}/"
                         f"{GlobalClassCreatePn.pn_id}").json()
 
                 allure.attach(str(json.dumps(actual_pn_release_after_canceling)),
-                              "Actual Pn release after canceling")
+                              "Actual PlanningNotice release after canceling")
 
                 compare_releases = dict(DeepDiff(
                     actual_pn_release_before_canceling, actual_pn_release_after_canceling))
@@ -601,19 +601,19 @@ class TestCreatePn:
                     actual_result=compare_releases
                 )) == str(True)
 
-            with allure.step('# 9.5. Check Ei release'):
+            with allure.step('# 9.5. Check ExpenditureItem release'):
                 """
                 Compare actual expenditure item release before pn canceling and actual expenditure item release
                 after pn canceling.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_canceling)),
-                              "Actual Ei release before pn canceling")
+                              "Actual ExpenditureItem release before pn canceling")
 
                 actual_ei_release_after_canceling = requests.get(
                     url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                         f"{GlobalClassCreateEi.ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_canceling)),
-                              "Actual Ei release after pn canceling")
+                              "Actual ExpenditureItem release after pn canceling")
 
                 compare_releases = dict(
                     DeepDiff(actual_ei_release_before_canceling, actual_ei_release_after_canceling))
@@ -639,19 +639,19 @@ class TestCreatePn:
                     actual_result=compare_releases
                 )) == str(True)
 
-            with allure.step('# 9.6. Check Fs release'):
+            with allure.step('# 9.6. Check FinancialSource release'):
                 """
                 Compare actual financial source release before pn canceling and actual financial source release
                 after pn canceling.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_canceling)),
-                              "Actual Fs release before pn canceling")
+                              "Actual FinancialSource release before pn canceling")
 
                 actual_fs_release_after_canceling = requests.get(
                     url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                         f"{GlobalClassCreateFs.fs_id}").json()
                 allure.attach(str(json.dumps(actual_fs_release_after_canceling)),
-                              "Actual Fs release after pn canceling")
+                              "Actual FinancialSource release after pn canceling")
 
                 compare_releases = dict(
                     DeepDiff(actual_fs_release_before_canceling, actual_fs_release_after_canceling))
@@ -708,9 +708,9 @@ class TestCreatePn:
                 actual_result=compare_releases
             )) == str(True)
 
-    @allure.title('Check Pn and MS releases data after Pn canceling, pn release  without optional fields')
+    @allure.title('Check PlanningNotice and MS releases data after PlanningNotice canceling, pn release  without optional fields')
     def test_check_pn_ms_releases_two(self):
-        with allure.step('# 1. Authorization platform one: create Ei'):
+        with allure.step('# 1. Authorization platform one: create ExpenditureItem'):
             """
             Tender platform authorization for create expenditure item process.
             As result get Tender platform's access token and process operation-id.
@@ -720,7 +720,7 @@ class TestCreatePn:
 
             GlobalClassCreateEi.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateEi.access_token)
-        with allure.step('# 2. Send request to create Ei'):
+        with allure.step('# 2. Send request to create ExpenditureItem'):
             """
             Send api request on BPE host for expenditure item creation.
             And save in variable ei_ocid.
@@ -744,7 +744,7 @@ class TestCreatePn:
             GlobalClassCreateEi.actual_ei_release = requests.get(
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
-        with allure.step('# 3. Authorization platform one: create Fs'):
+        with allure.step('# 3. Authorization platform one: create FinancialSource'):
             """
             Tender platform authorization for create financial source process.
             As result get Tender platform's access token and process operation-id.
@@ -755,7 +755,7 @@ class TestCreatePn:
             GlobalClassCreateFs.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreateFs.access_token)
 
-        with allure.step('# 4. Send request to create Fs'):
+        with allure.step('# 4. Send request to create FinancialSource'):
             """
             Send api request on BPE host for financial source creating.
             And save in variable fs_id and fs_token.
@@ -782,7 +782,7 @@ class TestCreatePn:
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
-        with allure.step('# 5. Authorization platform one: create Pn'):
+        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -793,7 +793,7 @@ class TestCreatePn:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request to create Pn'):
+        with allure.step('# 6. Send request to create PlanningNotice'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -842,7 +842,7 @@ class TestCreatePn:
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
 
-        with allure.step('# 7. Authorization platform one: cancel Pn'):
+        with allure.step('# 7. Authorization platform one: cancel PlanningNotice'):
             """
             Tender platform authorization for cancel planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -853,7 +853,7 @@ class TestCreatePn:
             GlobalClassCancelPn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCancelPn.access_token)
 
-        with allure.step('# 8. Send request to cancel Pn'):
+        with allure.step('# 8. Send request to cancel PlanningNotice'):
             """
             Send api request on BPE host for planning notice canceling.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -912,19 +912,19 @@ class TestCreatePn:
                     expected_result=True,
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
-            with allure.step('# 9.3. Check Pn release'):
+            with allure.step('# 9.3. Check PlanningNotice release'):
                 """
                 Compare actual planning notice release before canceling and actual planning release after canceling.
                 """
                 allure.attach(str(json.dumps(actual_pn_release_before_canceling)),
-                              "Actual Pn release before canceling")
+                              "Actual PlanningNotice release before canceling")
 
                 actual_pn_release_after_canceling = requests.get(
                     url=f"{GlobalClassCancelPn.feed_point_message['data']['url']}/"
                         f"{GlobalClassCreatePn.pn_id}").json()
 
                 allure.attach(str(json.dumps(actual_pn_release_after_canceling)),
-                              "Actual Pn release after canceling")
+                              "Actual PlanningNotice release after canceling")
 
                 compare_releases = dict(DeepDiff(
                     actual_pn_release_before_canceling, actual_pn_release_after_canceling))
@@ -1037,19 +1037,19 @@ class TestCreatePn:
                     actual_result=compare_releases
                 )) == str(True)
 
-            with allure.step('# 9.5. Check Ei release'):
+            with allure.step('# 9.5. Check ExpenditureItem release'):
                 """
                 Compare actual expenditure item release before pn canceling and actual expenditure item release
                 after pn canceling.
                 """
                 allure.attach(str(json.dumps(actual_ei_release_before_canceling)),
-                              "Actual Ei release before pn canceling")
+                              "Actual ExpenditureItem release before pn canceling")
 
                 actual_ei_release_after_canceling = requests.get(
                     url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                         f"{GlobalClassCreateEi.ei_ocid}").json()
                 allure.attach(str(json.dumps(actual_ei_release_after_canceling)),
-                              "Actual Ei release after pn canceling")
+                              "Actual ExpenditureItem release after pn canceling")
 
                 compare_releases = dict(
                     DeepDiff(actual_ei_release_before_canceling, actual_ei_release_after_canceling))
@@ -1075,19 +1075,19 @@ class TestCreatePn:
                     actual_result=compare_releases
                 )) == str(True)
 
-            with allure.step('# 9.6. Check Fs release'):
+            with allure.step('# 9.6. Check FinancialSource release'):
                 """
                 Compare actual financial source release before pn canceling and actual financial source release
                 after pn canceling.
                 """
                 allure.attach(str(json.dumps(actual_fs_release_before_canceling)),
-                              "Actual Fs release before pn canceling")
+                              "Actual FinancialSource release before pn canceling")
 
                 actual_fs_release_after_canceling = requests.get(
                     url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                         f"{GlobalClassCreateFs.fs_id}").json()
                 allure.attach(str(json.dumps(actual_fs_release_after_canceling)),
-                              "Actual Fs release after pn canceling")
+                              "Actual FinancialSource release after pn canceling")
 
                 compare_releases = dict(
                     DeepDiff(actual_fs_release_before_canceling, actual_fs_release_after_canceling))
