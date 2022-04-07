@@ -95,11 +95,11 @@ class AggregatedPlanMessage:
 
             if self.__testMode is False:
                 is_ap_id_correct = fnmatch.fnmatch(
-                    self.__actual_message["data"]["outcomes"]["ap"][obj]["id"], "ocds-t1s2t3-MD-*-AggregatedPlan-*"
+                    self.__actual_message["data"]["outcomes"]["ap"][obj]["id"], "ocds-t1s2t3-MD-*-AP-*"
                 )
             else:
                 is_ap_id_correct = fnmatch.fnmatch(
-                    self.__actual_message["data"]["outcomes"]["ap"][obj]["id"], "test-t1s2t3-MD-*-AggregatedPlan-*"
+                    self.__actual_message["data"]["outcomes"]["ap"][obj]["id"], "test-t1s2t3-MD-*-AP-*"
                 )
 
             if is_ap_id_correct is True:
