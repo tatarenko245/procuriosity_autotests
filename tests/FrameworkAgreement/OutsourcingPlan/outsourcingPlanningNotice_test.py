@@ -611,7 +611,7 @@ class TestCreatePn:
                     "iterable_item_added": relatedProcess_object_xDemand
                 }
 
-                with allure.step('Check dofferences into actual MS release of CPB before and after '
+                with allure.step('Check differences into actual MS release of CPB before and after '
                                  'OutsourcingPlanningNotice process.'):
 
                     allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
