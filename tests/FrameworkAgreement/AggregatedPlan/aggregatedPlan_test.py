@@ -179,14 +179,14 @@ class TestCreatePn:
                 except ValueError:
                     raise ValueError("Impossible to build expected MS release.")
 
-            with allure.step('Compare actual and expected MS release.'):
-                allure.attach(json.dumps(actual_ms_release), "Actual MS release.")
-                allure.attach(json.dumps(expected_ms_release), "Expected MS release.")
+                with allure.step('Compare actual and expected MS release.'):
+                    allure.attach(json.dumps(actual_ms_release), "Actual MS release.")
+                    allure.attach(json.dumps(expected_ms_release), "Expected MS release.")
 
-                assert actual_ms_release == expected_ms_release, \
-                    allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
-                                  f"process_id = '{processId}' ALLOW FILTERING;",
-                                  "Cassandra DataBase: steps of process.")
+                    assert actual_ms_release == expected_ms_release, \
+                        allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                                      f"process_id = '{processId}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
 
                 try:
                     """

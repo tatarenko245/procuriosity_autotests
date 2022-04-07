@@ -493,9 +493,11 @@ class TestCreatePn:
                     "iterable_item_added": relatedProcess_object_framework
                 }
 
-                with allure.step('Compare actual PN release before and after OutsourcingPlanningNotice process.'):
-                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual release.")
-                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected release.")
+                with allure.step('Check differences into actual PN release before and after '
+                                 'OutsourcingPlanningNotice process.'):
+
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
@@ -515,9 +517,11 @@ class TestCreatePn:
 
                 expected_result_of_comparing_releases = {}
 
-                with allure.step('Compare actual MS release before and after OutsourcingPlanningNotice process.'):
-                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual release.")
-                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected release.")
+                with allure.step('Check differences into actual MS release before and after '
+                                 'OutsourcingPlanningNotice process.'):
+
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
@@ -537,11 +541,11 @@ class TestCreatePn:
 
                 expected_result_of_comparing_releases = {}
 
-            with allure.step('Compare actual AggregatedPlan release before and after OutsourcingPlanningNotice '
-                             'process.'):
+            with allure.step('Check differences into actual AggregatedPlan release before and after '
+                             'OutsourcingPlanningNotice process.'):
 
-                allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual release.")
-                allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected release.")
+                allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
+                allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
 
                 assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                     allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
@@ -607,14 +611,16 @@ class TestCreatePn:
                     "iterable_item_added": relatedProcess_object_xDemand
                 }
 
-            with allure.step('Compare actual MS release of CPB before and after OutsourcingPlanningNotice process.'):
-                allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual release.")
-                allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected release.")
+                with allure.step('Check dofferences into actual MS release of CPB before and after '
+                                 'OutsourcingPlanningNotice process.'):
 
-                assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-                    allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                  f"operation_id = '{outsourcingPn_operationId}' ALLOW FILTERING;",
-                                  "Cassandra DataBase: steps of process.")
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
+
+                    assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"operation_id = '{outsourcingPn_operationId}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
 
                 try:
                     """
