@@ -541,16 +541,16 @@ class TestCreatePn:
 
                 expected_result_of_comparing_releases = {}
 
-            with allure.step('Check differences into actual AggregatedPlan release before and after '
-                             'OutsourcingPlanningNotice process.'):
+                with allure.step('Check differences into actual AggregatedPlan release before and after '
+                                 'OutsourcingPlanningNotice process.'):
 
-                allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-                allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
 
-                assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-                    allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                  f"operation_id = '{outsourcingPn_operationId}' ALLOW FILTERING;",
-                                  "Cassandra DataBase: steps of process.")
+                    assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"operation_id = '{outsourcingPn_operationId}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.6. Check MS release of CPB.'):
                 """
