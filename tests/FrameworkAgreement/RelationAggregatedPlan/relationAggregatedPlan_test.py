@@ -46,7 +46,7 @@ class TestCreatePn:
                   "RelationAggregatedPlan process: payload is not needed;\n"
                   "RelationAggregatedPlan process: payload is not needed.\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
-                    tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator):
+                    prepare_tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator):
 
         metadata_tender_url = None
         try:
@@ -79,7 +79,7 @@ class TestCreatePn:
                 """
                 ei_payload = copy.deepcopy(ExpenditureItemPayload(
                     buyer_id=0,
-                    tenderClassificationId=tenderClassificationId)
+                    tenderClassificationId=prepare_tenderClassificationId)
                 )
 
                 ei_payload.delete_optional_fields(
@@ -255,7 +255,7 @@ class TestCreatePn:
                     fs_id=fs_ocid,
                     amount=910.00,
                     currency=currency,
-                    tenderClassificationId=tenderClassificationId,
+                    tenderClassificationId=prepare_tenderClassificationId,
                     host_to_service=get_hosts[2])
                 )
 
@@ -316,7 +316,7 @@ class TestCreatePn:
                     fs_id=fs_ocid,
                     amount=50.00,
                     currency=currency,
-                    tenderClassificationId=tenderClassificationId,
+                    tenderClassificationId=prepare_tenderClassificationId,
                     host_to_service=get_hosts[2])
                 )
 
@@ -384,7 +384,7 @@ class TestCreatePn:
                     centralPurchasingBody_id=55,
                     host_to_service=get_hosts[2],
                     maxDurationOfFA=maxDurationOfFA,
-                    tenderClassificationId=tenderClassificationId,
+                    tenderClassificationId=prepare_tenderClassificationId,
                     currency=currency)
                 )
 

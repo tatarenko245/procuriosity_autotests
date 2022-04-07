@@ -32,7 +32,7 @@ class TestCreatePn:
                   "СreateFs process: required data model, the treasury money, procuringEntity_id = 1;\n"
                   "СreatePn process: required data model, without lots and items.\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
-                    tenderClassificationId, connect_to_ocds):
+                    prepare_tenderClassificationId, connect_to_ocds):
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateEi process.'):
             """
@@ -55,7 +55,7 @@ class TestCreatePn:
                 """
                 ei_payload = copy.deepcopy(ExpenditureItemPayload(
                     buyer_id=0,
-                    tenderClassificationId=tenderClassificationId)
+                    tenderClassificationId=prepare_tenderClassificationId)
                 )
 
                 ei_payload.delete_optional_fields(
@@ -231,7 +231,7 @@ class TestCreatePn:
                     fs_id=fs_ocid,
                     amount=909.99,
                     currency=currency,
-                    tenderClassificationId=tenderClassificationId,
+                    tenderClassificationId=prepare_tenderClassificationId,
                     host_to_service=get_hosts[2])
                 )
 
@@ -360,7 +360,7 @@ class TestCreatePn:
                         ei_message,
                         fs_payloads_list,
                         fs_message_list,
-                        tenderClassificationId
+                        prepare_tenderClassificationId
                     )
                 except ValueError:
                     raise ValueError("Impossible to build expected MS release.")

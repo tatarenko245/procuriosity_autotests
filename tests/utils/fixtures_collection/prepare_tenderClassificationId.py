@@ -7,7 +7,7 @@ from tests.utils.data_of_enum import cpv_category_tuple, cpv_goods_high_level_tu
 
 
 @pytest.fixture(scope="class")
-def tenderClassificationId():
+def prepare_tenderClassificationId():
     tenderClassificationId = None
     category = random.choice(cpv_category_tuple)
     if category == "goods":
