@@ -4,7 +4,7 @@ import uuid
 
 from tests.conftest import GlobalClassMetadata
 from tests.utils.PayloadModels.OpenProcedure.DeclareNonConflictInterest.declare_non_conflict_interest_library import PayloadLibrary
-from tests.utils.data_of_enum import person_title_tuple, business_function_type_for_declare_tuple
+from tests.utils.data_of_enum import person_title_tuple, business_function_type_2_tuple
 from tests.utils.date_class import Date
 from tests.utils.iStorage import Document
 
@@ -121,7 +121,7 @@ class DeclarePreparePayload:
         payload['requirementResponse']['responder']['businessFunctions'][0][
             'id'] = f"{number_of_iteration} declare new person bf id"
         payload['requirementResponse']['responder']['businessFunctions'][0][
-            'type'] = f"{random.choice(business_function_type_for_declare_tuple)}"
+            'type'] = f"{random.choice(business_function_type_2_tuple)}"
         payload['requirementResponse']['responder']['businessFunctions'][0]['jobTitle'] = \
             f"{number_of_iteration} declare new person bf jobTitle"
         payload['requirementResponse']['responder']['businessFunctions'][0]['period'][
@@ -183,7 +183,7 @@ class DeclarePreparePayload:
         payload['requirementResponse']['responder']['businessFunctions'][0]['id'] = \
             f"{number_of_iteration} declare new value bf id"
         payload['requirementResponse']['responder']['businessFunctions'][0]['type'] = \
-            f"{random.choice(business_function_type_for_declare_tuple)}"
+            f"{random.choice(business_function_type_2_tuple)}"
         payload['requirementResponse']['responder']['businessFunctions'][0]['jobTitle'] = \
             f"{number_of_iteration} declare new value bf jobTitle"
         payload['requirementResponse']['responder']['businessFunctions'][0]['period'][

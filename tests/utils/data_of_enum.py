@@ -299,11 +299,11 @@ person_title_tuple = (
     "Mrs.",
 )
 
-business_function_type_tuple = (
+business_function_type_1_tuple = (
     "authority",
     "contactPoint",)
 
-business_function_type_for_declare_tuple = (
+business_function_type_2_tuple = (
     "chairman",
     "procurementOfficer",
     "contactPoint",
@@ -315,3 +315,13 @@ business_function_type_for_declare_tuple = (
 type_of_supplier_tuple = (
     "company",
     "individual",)
+
+qualificationSystemMethod_tuple = (
+    "automated",
+    "manual",
+)
+
+reductionCriteria_tuple = (
+    "scoring",
+    "none",
+)

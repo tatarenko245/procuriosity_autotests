@@ -163,6 +163,27 @@ class PlatformQueryRequest:
         allure.attach(f"{host_to_bpe}/do/relation/{ap_cpid}/{ap_ocid}", 'URL')
         return request
 
+    @staticmethod
+    @allure.step('# Prepared request: create Framework establishment.')
+    def create_fe_proces(host_to_bpe, access_token, x_operation_id, ap_cpid, ap_ocid, ap_token, payload,
+                         testMode=False):
+
+        request = requests.post(
+            url=f"{host_to_bpe}/do/fe/{ap_cpid}/{ap_ocid}",
+            params={
+                "testMode": testMode
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "X-OPERATION-ID": x_operation_id,
+                "X-TOKEN": ap_token,
+                "Content-Type": "application/json"},
+            json=payload
+        )
+        allure.attach(f"{host_to_bpe}/do/fe/{ap_cpid}/{ap_ocid}", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return request
+
     # @staticmethod
     # @allure.step('Prepared request: create PlanningNotice')
     # def createPn(host_of_request, access_token, x_operation_id, country,

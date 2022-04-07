@@ -13,7 +13,7 @@ class TenderPeriodExpectedChanges:
         self.metadata_tender_url = None
         self.metadata_document_url = None
         self.metadata_auction_url = None
-        self.mdm = MdmService(host_for_service=host_for_services)
+        self.mdm = MdmService(host_to_service=host_for_services)
 
         try:
             if environment == "dev":

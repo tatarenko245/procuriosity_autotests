@@ -101,7 +101,7 @@ class AggregatedPayload:
             }
         }
 
-    def build_aggregated_plan_payload(self):
+    def build_aggregatedPlan_payload(self):
         return self.__payload
 
     def delete_optional_fields(

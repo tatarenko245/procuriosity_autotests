@@ -4,7 +4,7 @@ import uuid
 
 from tests.utils.PayloadModels.SelectiveProcedure.QualificationDeclare.qualification_declare_library import \
     PayloadLibrary
-from tests.utils.data_of_enum import person_title_tuple, business_function_type_for_declare_tuple
+from tests.utils.data_of_enum import person_title_tuple, business_function_type_2_tuple
 from tests.utils.date_class import Date
 from tests.utils.iStorage import Document
 
@@ -39,7 +39,7 @@ class DeclarePreparePayload:
         payload['requirementResponse']['responder']['businessFunctions'][0]['id'] = \
             "responder.businessFunctions.id"
         payload['requirementResponse']['responder']['businessFunctions'][0]['type'] = \
-            random.choice(business_function_type_for_declare_tuple)
+            random.choice(business_function_type_2_tuple)
         payload['requirementResponse']['responder']['businessFunctions'][0]['jobTitle'] = \
             "responder.businessFunctions.jobTitle"
         payload['requirementResponse']['responder']['businessFunctions'][0]['period'][

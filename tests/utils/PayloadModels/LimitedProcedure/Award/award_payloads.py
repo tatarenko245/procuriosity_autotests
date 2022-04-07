@@ -2,7 +2,7 @@ import copy
 import random
 
 from tests.utils.PayloadModels.LimitedProcedure.Award.award_payload_library import PayloadLibrary
-from tests.utils.data_of_enum import scale_tuple, person_title_tuple, business_function_type_tuple, type_of_supplier_tuple, \
+from tests.utils.data_of_enum import scale_tuple, person_title_tuple, business_function_type_1_tuple, type_of_supplier_tuple, \
     documentType_for_create_award_of_limited_procedure_tuple
 from tests.utils.date_class import Date
 from tests.utils.iStorage import Document
@@ -144,7 +144,7 @@ class AwardPayloads:
                         f"businessFunctions{businessFunction}.id"
 
                     payload['award']['suppliers'][supplier]['persones'][person][
-                        'businessFunctions'][businessFunction]['type'] = f"{random.choice(business_function_type_tuple)}"
+                        'businessFunctions'][businessFunction]['type'] = f"{random.choice(business_function_type_1_tuple)}"
 
                     payload['award']['suppliers'][supplier]['persones'][person][
                         'businessFunctions'][businessFunction]['jobTitle'] = \

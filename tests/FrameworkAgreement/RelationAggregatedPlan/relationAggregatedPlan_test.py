@@ -396,7 +396,7 @@ class TestCreatePn:
                     "tender.procuringEntity.contactPoint.url"
                 )
 
-                ap_payload = ap_payload.build_aggregated_plan_payload()
+                ap_payload = ap_payload.build_aggregatedPlan_payload()
             except ValueError:
                 raise ValueError("Impossible to build payload for CreateAp process.")
 

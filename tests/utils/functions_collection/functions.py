@@ -167,18 +167,19 @@ def generate_lots_array(quantity_of_object, lot_object):
     return new_array_lots
 
 
-def generate_criteria_array(host_for_service, country, language, quantity_of_criteria_object, criteria_object,
-                            quantity_of_groups_object,
-                            quantity_of_requirements_object, quantity_of_evidences_object, type_of_standard_criteria):
+def generate_criteria_array(host_to_service, country, language, environment, quantity_of_criteria_object,
+                            criteria_object, quantity_of_groups_object, quantity_of_requirements_object,
+                            quantity_of_evidences_object, type_of_standard_criteria):
+
     copy.deepcopy(criteria_object)
     criteria_array = []
     for i in range(quantity_of_criteria_object):
         criteria_json = copy.deepcopy(criteria_object)
         criteria_json['id'] = str(i).zfill(3)
 
-        criteria_json['requirementGroups'] = generate_criteria_requirement_groups_array(
+        criteria_json['requirementGroups'] = generate_criteria_requirementGroups_array(
             quantity_of_object=quantity_of_groups_object,
-            requirement_groups_object=criteria_json['requirementGroups'][0],
+            requirementGroups_object=criteria_json['requirementGroups'][0],
             quantity_of_requirements_object=quantity_of_requirements_object,
             quantity_of_evidences_object=quantity_of_evidences_object,
         )
@@ -189,7 +190,9 @@ def generate_criteria_array(host_for_service, country, language, quantity_of_cri
                     f"{criteria_json['requirementGroups'][j]['id']}-{y}"
         criteria_array.append(criteria_json)
 
-    standard_criteria = MdmService(host_for_service=host_for_service).get_standard_criteria(
+    standard_criteria = MdmService(
+        host_to_service=host_to_service,
+        environment=environment).get_standard_criteria(
         country=country,
         language=language)
 
@@ -202,37 +205,38 @@ def generate_criteria_array(host_for_service, country, language, quantity_of_cri
     return new_array_criteria
 
 
-def generate_criteria_requirement_groups_array(quantity_of_object, requirement_groups_object,
-                                               quantity_of_requirements_object, quantity_of_evidences_object):
-    copy.deepcopy(requirement_groups_object)
-    requirement_groups_array = []
+def generate_criteria_requirementGroups_array(quantity_of_object, requirementGroups_object,
+                                              quantity_of_requirements_object, quantity_of_evidences_object):
+    copy.deepcopy(requirementGroups_object)
+    requirementGroups_array = []
     for i in range(quantity_of_object):
-        requirement_groups_json = copy.deepcopy(requirement_groups_object)
-        requirement_groups_json['id'] = str(i)
-        requirement_groups_json['requirements'] = generate_criteria_requirement_groups_requirements(
+        requirementGroups_json = copy.deepcopy(requirementGroups_object)
+        requirementGroups_json['id'] = str(i)
+        requirementGroups_json['requirements'] = generate_criteria_requirementGroups_requirements(
             quantity_of_object=quantity_of_requirements_object,
-            requirement_object=requirement_groups_json['requirements'][0],
+            requirement_object=requirementGroups_json['requirements'][0],
             quantity_of_evidences_object=quantity_of_evidences_object)
-        requirement_groups_array.append(requirement_groups_json)
+        requirementGroups_array.append(requirementGroups_json)
 
-    new_array_requirement_groups = []
+    new_array_requirementGroups = []
     for quantity_of_object in range(quantity_of_object):
-        val = requirement_groups_array[quantity_of_object]
-        new_array_requirement_groups.append(copy.deepcopy(val))
-    return new_array_requirement_groups
+        val = requirementGroups_array[quantity_of_object]
+        new_array_requirementGroups.append(copy.deepcopy(val))
+    return new_array_requirementGroups
 
 
-def generate_criteria_requirement_groups_requirements(
+def generate_criteria_requirementGroups_requirements(
         quantity_of_object, requirement_object, quantity_of_evidences_object):
+
     copy.deepcopy(requirement_object)
     requirements_array = []
     for i in range(quantity_of_object):
         requirement_json = copy.deepcopy(requirement_object)
         requirement_json['id'] = str(i)
         requirement_json['eligibleEvidences'] = \
-            generate_criteria_requirement_groups_requirements_eligible_evidences_array(
+            generate_criteria_requirementGroups_requirements_eligibleEvidences_array(
                 quantity_of_object=quantity_of_evidences_object,
-                eligible_evidences_object=requirement_json['eligibleEvidences'][0])
+                eligibleEvidences_object=requirement_json['eligibleEvidences'][0])
         requirements_array.append(requirement_json)
 
     new_array_requirements = []
@@ -242,21 +246,22 @@ def generate_criteria_requirement_groups_requirements(
     return new_array_requirements
 
 
-def generate_criteria_requirement_groups_requirements_eligible_evidences_array(
-        quantity_of_object, eligible_evidences_object):
-    copy.deepcopy(eligible_evidences_object)
-    eligible_evidences_array = []
+def generate_criteria_requirementGroups_requirements_eligibleEvidences_array(
+        quantity_of_object, eligibleEvidences_object):
+
+    copy.deepcopy(eligibleEvidences_object)
+    eligibleEvidences_array = []
     for i in range(quantity_of_object):
-        eligible_evidences_json = copy.deepcopy(eligible_evidences_object)
-        eligible_evidences_json['id'] = str(i)
-        eligible_evidences_array.append(eligible_evidences_json)
+        eligibleEvidences_json = copy.deepcopy(eligibleEvidences_object)
+        eligibleEvidences_json['id'] = str(i)
+        eligibleEvidences_array.append(eligibleEvidences_json)
 
-    new_array_requirement_groups = []
+    new_array_requirementGroups = []
     for quantity_of_object in range(quantity_of_object):
-        val = eligible_evidences_array[quantity_of_object]
-        new_array_requirement_groups.append(copy.deepcopy(val))
+        val = eligibleEvidences_array[quantity_of_object]
+        new_array_requirementGroups.append(copy.deepcopy(val))
 
-    return new_array_requirement_groups
+    return new_array_requirementGroups
 
 
 # def generate_items_array(quantity_of_object, item_object, tender_classification_id):
@@ -896,7 +901,7 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
             choose_the_requirement_group = random.randint(0, quantity_of_requirement_groups - 1)
 
             for y in ev_release_criteria_array[x]['requirementGroups'][choose_the_requirement_group][
-                'requirements']:
+                    'requirements']:
                 if "id" in y and "expectedValue" in y:
                     requirements_id_list.append(y['id'])
                     requirements_expected_value_was_chose.append(copy.deepcopy(
