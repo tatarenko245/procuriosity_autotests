@@ -833,16 +833,16 @@ class TestCreatePn:
 
                 expected_result_of_comparing_releases = {}
 
-            with allure.step('Check differences into actual MS release of CPB before and after '
-                             'RelationAggregatedPlan process.'):
+                with allure.step('Check differences into actual MS release of CPB before and after '
+                                 'RelationAggregatedPlan process.'):
 
-                allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-                allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
 
-                assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-                    allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                  f"operation_id = '{relationAp_1_operationId}' ALLOW FILTERING;",
-                                  "Cassandra DataBase: steps of process.")
+                    assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"operation_id = '{relationAp_1_operationId}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
 
         actual_ap_release_before_relationAggregatedPlan = requests.get(url=ap_url).json()
         cpb_actual_ms_release_before_relationAggregatedPlan = requests.get(url=cpb_ms_url).json()
@@ -1097,16 +1097,16 @@ class TestCreatePn:
 
                 expected_result_of_comparing_releases = {}
 
-            with allure.step('Check differences into actual MS release of CPB before and after '
-                             'RelationAggregatedPlan process.'):
+                with allure.step('Check differences into actual MS release of CPB before and after '
+                                 'RelationAggregatedPlan process.'):
 
-                allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-                allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
 
-                assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-                    allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                  f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
-                                  "Cassandra DataBase: steps of process.")
+                    assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
 
                 try:
                     """
