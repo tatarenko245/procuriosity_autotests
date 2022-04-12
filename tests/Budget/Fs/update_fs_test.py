@@ -20,7 +20,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 from tests.utils.platform_query_library import Requests
 
 
-@allure.parent_suite('PlanningNotice')
+@allure.parent_suite('PN_release')
 @allure.suite('FinancialSource')
 @allure.sub_suite('BPE: Update FinancialSource')
 @allure.severity('Critical')

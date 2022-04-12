@@ -4,7 +4,7 @@ from tests.utils.functions_collection.functions import get_value_from_cpv_dictio
     get_value_from_region_csv, get_value_from_locality_csv, is_it_uuid
 
 
-class AggregatedPlanRelease:
+class CreateAggregatedPlanRelease:
     def __init__(self, environment, host_to_service, language, pmd, ap_payload, ap_message, actual_ap_release,
                  actual_ms_release):
 

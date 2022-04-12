@@ -18,11 +18,11 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 class TestCreatePn:
-    @allure.title("Check PlanningNotice and MS releases data after PlanningNotice creating without optional fields \n"
+    @allure.title("Check PN_release and MS releases data after PN_release creating without optional fields \n"
                   "------------------------------------------------\n"
                   "create ExpenditureItem: obligatory data model without items array;\n"
                   "create FinancialSource: obligatory data model, treasury money;\n"
-                  "create PlanningNotice: obligatory data model, without lots and items;\n")
+                  "create PN_release: obligatory data model, without lots and items;\n")
     def test_check_pn_ms_releases_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                                       connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
@@ -103,7 +103,7 @@ class TestCreatePn:
                 url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create PlanningNotice'):
+        with allure.step(f'# {step_number}. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -112,7 +112,7 @@ class TestCreatePn:
             pn_operation_id = authorization.get_x_operation_id(pn_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create PlanningNotice'):
+        with allure.step(f'# {step_number}. Send request to create PN_release'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -193,11 +193,11 @@ class TestCreatePn:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
 
-            with allure.step(f'# {step_number}.3. Check PlanningNotice release'):
+            with allure.step(f'# {step_number}.3. Check PN_release release'):
                 """
                 Compare actual planning notice release with expected planning notice release model.
                 """
-                allure.attach(str(json.dumps(actual_pn_release)), "Actual PlanningNotice release")
+                allure.attach(str(json.dumps(actual_pn_release)), "Actual PN_release release")
 
                 expected_release_class = copy.deepcopy(PnExpectedRelease(
                     environment=parse_environment,
@@ -210,7 +210,7 @@ class TestCreatePn:
                     expected_release_class.pn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs(
                         actual_pn_release=actual_pn_release
                     )
-                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected PlanningNotice release")
+                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected PN_release release")
 
                 compare_releases = dict(DeepDiff(actual_pn_release, expected_pn_release_model))
                 expected_result = {}
@@ -229,12 +229,12 @@ class TestCreatePn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing PlanningNotice release and expected PlanningNotice release and '
-                                 'expected result of comparing PlanningNotice release and expected PlanningNotice release.'):
+                with allure.step('Compare actual result of comparing PN_release release and expected PN_release release and '
+                                 'expected result of comparing PN_release release and expected PN_release release.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing PlanningNotice release and expected PlanningNotice release.")
+                                  "Actual result of comparing PN_release release and expected PN_release release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing PlanningNotice release and expected PlanningNotice release.")
+                                  "Expected result of comparing PN_release release and expected PN_release release.")
                     assert str(compare_releases) == str(expected_result)
 
             with allure.step(f'# {step_number}.4. Check MS release'):
@@ -269,12 +269,12 @@ class TestCreatePn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing Ms release and expected PlanningNotice release and '
-                                 'expected result of comparing Ms release and expected PlanningNotice release.'):
+                with allure.step('Compare actual result of comparing Ms release and expected PN_release release and '
+                                 'expected result of comparing Ms release and expected PN_release release.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing Ms release and expected PlanningNotice release.")
+                                  "Actual result of comparing Ms release and expected PN_release release.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing Ms release and expected PlanningNotice release.")
+                                  "Expected result of comparing Ms release and expected PN_release release.")
                     assert str(compare_releases) == str(expected_result)
 
             with allure.step(f'# {step_number}.5. Check ExpenditureItem release'):

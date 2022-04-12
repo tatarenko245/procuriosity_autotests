@@ -8,7 +8,7 @@ import requests
 from tests.utils.MessageModels.FrameworkAgreement.planningNotice_message import PlanningNoticeMessage
 from tests.utils.PayloadModels.Budget.FinancialSource.financialSource_payload import FinancialSourcePayload
 from tests.utils.PayloadModels.FrameworkAgreement.PlanningNotice.planingNotice_payload import PlanningNoticePayload
-from tests.utils.ReleaseModels.FrameworkAgreement.PlanningNotice.planningNotice_release import PlanningNoticeRelease
+from tests.utils.ReleaseModels.FrameworkAgreement.PN_release.createPlanningNotice_process import PlanningNoticeRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.data_of_enum import currency_tuple
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
@@ -20,7 +20,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 @allure.parent_suite('Framework Agreement')
 @allure.suite('PN')
-@allure.sub_suite('BPE: Create PlanningNotice')
+@allure.sub_suite('BPE: Create PN_release')
 @allure.severity('Critical')
 @allure.testcase(url=None,
                  name=None)

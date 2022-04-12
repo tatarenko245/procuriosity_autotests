@@ -4,8 +4,9 @@ import allure
 import requests
 
 from tests.utils.MessageModels.FrameworkAgreement.aggregatedPlan_message import AggregatedPlanMessage
-from tests.utils.PayloadModels.FrameworkAgreement.AggregatedPlan.aggregatedPlan_payload import AggregatedPayload
-from tests.utils.ReleaseModels.FrameworkAgreement.AggregatedPlan.aggregatedPlan_release import AggregatedPlanRelease
+from tests.utils.PayloadModels.FrameworkAgreement.AggregatedPlan.aggregatedPlan_payload import AggregatedPlan
+from tests.utils.ReleaseModels.FrameworkAgreement.AP_release.createAggregatedPlan_process import \
+    CreateAggregatedPlanRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
 from tests.utils.platform_query_library import PlatformQueryRequest
@@ -13,13 +14,13 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 @allure.parent_suite('Framework Agreement')
-@allure.suite('AggregatedPlan')
-@allure.sub_suite('BPE: Create AggregatedPlan')
+@allure.suite('AP_release')
+@allure.sub_suite('BPE: Create AP_release')
 @allure.severity('Critical')
 @allure.testcase(url=None,
                  name=None)
 class TestCreatePn:
-    @allure.title("Check AggregatedPlan and MS releases after CreateAp process, without optional fields. \n"
+    @allure.title("Check AP_release and MS releases after CreateAp process, without optional fields. \n"
                   "------------------------------------------------\n"
                   "СreateAp process: required data mode.\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment, connect_to_ocds,
@@ -52,7 +53,7 @@ class TestCreatePn:
                     parse_pmd
                 )
 
-                ap_payload = copy.deepcopy(AggregatedPayload(
+                ap_payload = copy.deepcopy(AggregatedPlan(
                     centralPurchasingBody_id=55,
                     host_to_service=get_hosts[2],
                     maxDurationOfFA=maxDurationOfFA)
@@ -96,7 +97,7 @@ class TestCreatePn:
                     allure.attach(str(202), "Expected status code.")
                     assert synchronous_result.status_code == 202
 
-            with allure.step(f'# {step_number}.2. Check the message of AggregatedPlan for platform.'):
+            with allure.step(f'# {step_number}.2. Check the message of AP_release for platform.'):
                 """
                 Check the message for platform.
                 """
@@ -104,7 +105,7 @@ class TestCreatePn:
 
                 try:
                     """
-                    Build expected message of AggregatedPlan process.
+                    Build expected message of AP_release process.
                     """
                     expected_message = copy.deepcopy(AggregatedPlanMessage(
                         environment=parse_environment,
@@ -115,7 +116,7 @@ class TestCreatePn:
 
                     expected_message = expected_message.build_expected_message_for_pn_process()
                 except ValueError:
-                    raise ValueError("Impossible to build expected message of AggregatedPlan process.")
+                    raise ValueError("Impossible to build expected message of AP_release process.")
 
                 with allure.step('Compare actual and expected message for platform.'):
                     allure.attach(json.dumps(actual_message), "Actual message.")
@@ -128,9 +129,9 @@ class TestCreatePn:
                                       f"process_id = '{processId}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
-            with allure.step(f'# {step_number}.3. Check AggregatedPlan release.'):
+            with allure.step(f'# {step_number}.3. Check AP_release release.'):
                 """
-                Compare actual AggregatedPlan release and expected AggregatedPlan release.
+                Compare actual AP_release release and expected AP_release release.
                 """
                 ap_url = f"{actual_message['data']['url']}/{actual_message['data']['outcomes']['ap'][0]['id']}"
                 actual_ap_release = requests.get(url=ap_url).json()
@@ -140,9 +141,9 @@ class TestCreatePn:
 
                 try:
                     """
-                    Build expected AggregatedPlan release.
+                    Build expected AP_release release.
                     """
-                    expected_release = copy.deepcopy(AggregatedPlanRelease(
+                    expected_release = copy.deepcopy(CreateAggregatedPlanRelease(
                         environment=parse_environment,
                         host_to_service=get_hosts[2],
                         language=parse_language,
@@ -155,11 +156,11 @@ class TestCreatePn:
 
                     expected_ap_release = expected_release.build_expected_ap_release()
                 except ValueError:
-                    raise ValueError("Impossible to build expected AggregatedPlan release.")
+                    raise ValueError("Impossible to build expected AP_release release.")
 
-                with allure.step('Compare actual and expected AggregatedPlan release.'):
-                    allure.attach(json.dumps(actual_ap_release), "Actual AggregatedPlan release.")
-                    allure.attach(json.dumps(expected_ap_release), "Expected AggregatedPlan release.")
+                with allure.step('Compare actual and expected AP_release release.'):
+                    allure.attach(json.dumps(actual_ap_release), "Actual AP_release release.")
+                    allure.attach(json.dumps(expected_ap_release), "Expected AP_release release.")
 
                     assert actual_ap_release == expected_ap_release, \
                         allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "

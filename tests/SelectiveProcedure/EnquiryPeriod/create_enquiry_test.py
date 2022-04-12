@@ -22,7 +22,7 @@ class TestCreateEnquiry:
                   "------------------------------------------------\n"
                   "create ExpenditureItem: obligatory data model without items array;\n"
                   "create FinancialSource: obligatory data model, treasury money;\n"
-                  "create PlanningNotice: obligatory data model, without lots and items;\n"
+                  "create PN_release: obligatory data model, without lots and items;\n"
                   "create CnOnPn: obligatory data model, with lots and items;\n"
                   "create Enquiry: obligatory data model;\n")
     def test_check_pn_ms_releases_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
@@ -99,7 +99,7 @@ class TestCreateEnquiry:
             fs_feed_point_message = KafkaMessage(fs_operation_id).get_message_from_kafka()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create PlanningNotice'):
+        with allure.step(f'# {step_number}. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -108,7 +108,7 @@ class TestCreateEnquiry:
             pn_operation_id = authorization.get_x_operation_id(pn_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create PlanningNotice'):
+        with allure.step(f'# {step_number}. Send request to create PN_release'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.

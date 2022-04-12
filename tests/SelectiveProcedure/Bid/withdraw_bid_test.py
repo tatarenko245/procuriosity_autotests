@@ -28,7 +28,7 @@ class TestWithdrawBid:
                   "------------------------------------------------\n"
                   "create ExpenditureItem: obligatory data model without items array;\n"
                   "create FinancialSource: obligatory data model, treasury money;\n"
-                  "create PlanningNotice: obligatory data model, without lots and items;\n"
+                  "create PN_release: obligatory data model, without lots and items;\n"
                   "create CnOnPn: obligatory data model, with lots and items;\n"
                   "create Submission from Moldova: obligatory data model contains 2 candidates. \n"
                   "create Submission from Belarus: obligatory data model contains 1 candidate \n"
@@ -114,7 +114,7 @@ class TestWithdrawBid:
             fs_feed_point_message = KafkaMessage(create_fs_operation_id).get_message_from_kafka()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create PlanningNotice'):
+        with allure.step(f'# {step_number}. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -123,7 +123,7 @@ class TestWithdrawBid:
             create_pn_operation_id = authorization.get_x_operation_id(create_pn_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create PlanningNotice'):
+        with allure.step(f'# {step_number}. Send request to create PN_release'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.

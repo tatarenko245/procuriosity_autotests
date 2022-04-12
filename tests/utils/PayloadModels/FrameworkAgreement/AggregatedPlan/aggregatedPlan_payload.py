@@ -7,7 +7,7 @@ from tests.utils.date_class import Date
 from tests.utils.iStorage import Document
 
 
-class AggregatedPayload:
+class AggregatedPlan:
     def __init__(self, centralPurchasingBody_id, host_to_service, maxDurationOfFA, tenderClassificationId=None,
                  currency=None):
 
@@ -175,4 +175,4 @@ class AggregatedPayload:
         self.__payload['tender']['documents'] = new_documents_array
 
     def __del__(self):
-        print(f"The instance of AggregatedPayload class: {__name__} was deleted.")
+        print(f"The instance of AggregatedPlan class: {__name__} was deleted.")

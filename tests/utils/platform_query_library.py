@@ -122,6 +122,26 @@ class PlatformQueryRequest:
         return request
 
     @staticmethod
+    @allure.step('# Prepared request: update Aggregated plan.')
+    def update_ap_process(host_to_bpe, ap_cpid, ap_ocid, access_token, x_operation_id, ap_token, payload,
+                          testMode=False):
+
+        request = requests.post(
+            url=f"{host_to_bpe}/do/ap/{ap_cpid}/{ap_ocid}",
+            params={
+                "testMode": testMode
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "X-OPERATION-ID": x_operation_id,
+                "X-TOKEN": ap_token,
+                "Content-Type": "application/json"},
+            json=payload)
+        allure.attach(f"{host_to_bpe}/do/ap/{ap_cpid}/{ap_ocid}", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return request
+
+    @staticmethod
     @allure.step('# Prepared request: do Outsourcing plan.')
     def do_outsourcing_process(host_to_bpe, access_token, x_operation_id, ap_cpid, ap_ocid, pn_cpid, pn_ocid,
                                pn_token, testMode=False):
@@ -185,7 +205,7 @@ class PlatformQueryRequest:
         return request
 
     # @staticmethod
-    # @allure.step('Prepared request: create PlanningNotice')
+    # @allure.step('Prepared request: create PN_release')
     # def createPn(host_of_request, access_token, x_operation_id, country,
     #              language, pmd, payload, test_mode=False):
     #     pn = requests.post(
@@ -207,7 +227,7 @@ class PlatformQueryRequest:
     #     return pn
     #
     # @staticmethod
-    # @allure.step('Prepared request: update PlanningNotice')
+    # @allure.step('Prepared request: update PN_release')
     # def update_pn(host_of_request, access_token, x_operation_id, pn_ocid, pn_id, pn_token, payload, test_mode=False):
     #     pn = requests.post(
     #         url=host_of_request + f"/do/pn/{pn_ocid}/{pn_id}",
@@ -226,7 +246,7 @@ class PlatformQueryRequest:
     #     return pn
     #
     # @staticmethod
-    # @allure.step('Prepared request: cancel PlanningNotice')
+    # @allure.step('Prepared request: cancel PN_release')
     # def cancel_pn(host_of_request, access_token, x_operation_id, pn_ocid, pn_id, pn_token, test_mode=False):
     #     pn = requests.post(
     #         url=host_of_request + f"/cancel/pn/{pn_ocid}/{pn_id}",

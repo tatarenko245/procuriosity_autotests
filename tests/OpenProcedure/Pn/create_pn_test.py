@@ -20,12 +20,12 @@ from tests.utils.platform_query_library import Requests
 
 
 @allure.parent_suite('Planning')
-@allure.suite('PlanningNotice')
-@allure.sub_suite('BPE: Create PlanningNotice')
+@allure.suite('PN_release')
+@allure.sub_suite('BPE: Create PN_release')
 @allure.severity('Critical')
 @allure.testcase(url='https://docs.google.com/spreadsheets/d/1IDNt49YHGJzozSkLWvNl3N4vYRyutDReeOOG2VWAeSQ/'
                      'edit#gid=726248592',
-                 name='Google sheets: Create PlanningNotice')
+                 name='Google sheets: Create PN_release')
 class TestCreatePn:
     def test_setup(self, parse_environment, parse_country, parse_language, parse_pmd, parse_cassandra_username,
                    parse_cassandra_password):
@@ -50,7 +50,7 @@ class TestCreatePn:
             password=GlobalClassMetadata.cassandra_password,
             host=GlobalClassMetadata.cassandra_cluster)
 
-    @allure.title('Check status code and message from Kafka topic after PlanningNotice creating')
+    @allure.title('Check status code and message from Kafka topic after PN_release creating')
     def test_check_result_of_sending_the_request(self):
         with allure.step('# 1. Authorization platform one: create ExpenditureItem'):
             """
@@ -124,7 +124,7 @@ class TestCreatePn:
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
 
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -135,7 +135,7 @@ class TestCreatePn:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request to create PlanningNotice'):
+        with allure.step('# 6. Send request to create PN_release'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -218,7 +218,7 @@ class TestCreatePn:
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
 
-    @allure.title('Check PlanningNotice and MS releases data after PlanningNotice creating with optional fields '
+    @allure.title('Check PN_release and MS releases data after PN_release creating with optional fields '
                   'and 3 lots, 3 items (full data model)')
     def test_check_pn_ms_releases_one(self, parse_pmd):
         with allure.step('# 1. Authorization platform one: create ExpenditureItem'):
@@ -297,7 +297,7 @@ class TestCreatePn:
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
 
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -308,7 +308,7 @@ class TestCreatePn:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request to create PlanningNotice'):
+        with allure.step('# 6. Send request to create PN_release'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -395,19 +395,19 @@ class TestCreatePn:
                     expected_result=True,
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
-            with allure.step('# 7.3. Check PlanningNotice release'):
+            with allure.step('# 7.3. Check PN_release release'):
                 """
                 Compare actual planning notice release with expected planning notice release model.
                 """
                 allure.attach(str(json.dumps(GlobalClassCreatePn.actual_pn_release)),
-                              "Actual PlanningNotice release")
+                              "Actual PN_release release")
 
                 expected_release_class = copy.deepcopy(PnExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_pn_release_model = copy.deepcopy(
                     expected_release_class.pn_release_full_data_model_with_lots_and_items_full_based_on_one_fs())
-                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected PlanningNotice release")
+                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected PN_release release")
 
                 compare_releases = dict(DeepDiff(
                     GlobalClassCreatePn.actual_pn_release, expected_pn_release_model))
@@ -640,7 +640,7 @@ class TestCreatePn:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check PlanningNotice and MS releases data after PlanningNotice creating without optional fields '
+    @allure.title('Check PN_release and MS releases data after PN_release creating without optional fields '
                   'and with lots and items (without optional fields).')
     def test_check_pn_ms_releases_two(self, parse_pmd):
         with allure.step('# 1. Authorization platform one: create ExpenditureItem'):
@@ -719,7 +719,7 @@ class TestCreatePn:
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
 
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -730,7 +730,7 @@ class TestCreatePn:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request to create PlanningNotice'):
+        with allure.step('# 6. Send request to create PN_release'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -815,19 +815,19 @@ class TestCreatePn:
                     expected_result=True,
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
-            with allure.step('# 7.3. Check PlanningNotice release'):
+            with allure.step('# 7.3. Check PN_release release'):
                 """
                 Compare actual planning notice release with expected planning notice release model.
                 """
                 allure.attach(str(json.dumps(GlobalClassCreatePn.actual_pn_release)),
-                              "Actual PlanningNotice release")
+                              "Actual PN_release release")
 
                 expected_release_class = copy.deepcopy(PnExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_pn_release_model = copy.deepcopy(
                     expected_release_class.pn_release_obligatory_data_model_with_lots_and_items_based_on_one_fs())
-                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected PlanningNotice release")
+                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected PN_release release")
 
                 compare_releases = dict(DeepDiff(
                     GlobalClassCreatePn.actual_pn_release, expected_pn_release_model))
@@ -1061,7 +1061,7 @@ class TestCreatePn:
                     actual_result=compare_releases
                 )) == str(True)
 
-    @allure.title('Check PlanningNotice and MS releases data after PlanningNotice creating without optional fields')
+    @allure.title('Check PN_release and MS releases data after PN_release creating without optional fields')
     def test_check_pn_ms_releases_three(self, parse_pmd):
         with allure.step('# 1. Authorization platform one: create ExpenditureItem'):
             """
@@ -1141,7 +1141,7 @@ class TestCreatePn:
                 url=f"{GlobalClassCreateEi.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateEi.ei_ocid}").json()
 
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -1152,7 +1152,7 @@ class TestCreatePn:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request to create PlanningNotice'):
+        with allure.step('# 6. Send request to create PN_release'):
             """
             Send api request on BPE host for financial source updating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -1237,19 +1237,19 @@ class TestCreatePn:
                     expected_result=True,
                     actual_result=asynchronous_result_of_sending_the_request_was_checked
                 )
-            with allure.step('# 7.3. Check PlanningNotice release'):
+            with allure.step('# 7.3. Check PN_release release'):
                 """
                 Compare actual planning notice release with expected planning notice release model.
                 """
                 allure.attach(str(json.dumps(GlobalClassCreatePn.actual_pn_release)),
-                              "Actual PlanningNotice release")
+                              "Actual PN_release release")
 
                 expected_release_class = copy.deepcopy(PnExpectedRelease(
                     environment=GlobalClassMetadata.environment,
                     language=GlobalClassMetadata.language))
                 expected_pn_release_model = copy.deepcopy(
                     expected_release_class.pn_release_obligatory_data_model_without_lots_and_items_based_on_one_fs())
-                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected PlanningNotice release")
+                allure.attach(str(json.dumps(expected_pn_release_model)), "Expected PN_release release")
 
                 compare_releases = dict(DeepDiff(
                     GlobalClassCreatePn.actual_pn_release, expected_pn_release_model))

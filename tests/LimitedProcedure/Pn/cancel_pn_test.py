@@ -16,12 +16,12 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 
 class TestCancelPn:
-    @allure.title("Check PlanningNotice and MS releases data after PlanningNotice cancelling without optional fields. \n"
+    @allure.title("Check PN_release and MS releases data after PN_release cancelling without optional fields. \n"
                   "------------------------------------------------\n"
                   "create ExpenditureItem: obligatory data model without items array;\n"
                   "create FinancialSource: obligatory data model, treasury money;\n"
-                  "create PlanningNotice: obligatory data model, without lots and items;\n"
-                  "Cancel PlanningNotice: payload absences;\n")
+                  "create PN_release: obligatory data model, without lots and items;\n"
+                  "Cancel PN_release: payload absences;\n")
     def test_check_pn_ms_releases_one(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                                       connect_to_database):
         authorization = PlatformAuthorization(get_hosts[1])
@@ -88,7 +88,7 @@ class TestCancelPn:
             fs_id = fs_feed_point_message['data']['outcomes']['fs'][0]['id']
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: create PlanningNotice'):
+        with allure.step(f'# {step_number}. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -97,7 +97,7 @@ class TestCancelPn:
             create_pn_operation_id = authorization.get_x_operation_id(pn_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to create PlanningNotice'):
+        with allure.step(f'# {step_number}. Send request to create PN_release'):
             """
             Send api request on BPE host for planning notice creating.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -135,7 +135,7 @@ class TestCancelPn:
                 url=f"{ei_feed_point_message['data']['url']}/{ei_ocid}").json()
             step_number += 1
 
-        with allure.step(f'# {step_number}. Authorization platform one: cancel PlanningNotice'):
+        with allure.step(f'# {step_number}. Authorization platform one: cancel PN_release'):
             """
             Tender platform authorization for cancel planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -144,7 +144,7 @@ class TestCancelPn:
             cancel_pn_operation_id = authorization.get_x_operation_id(pn_access_token)
             step_number += 1
 
-        with allure.step(f'# {step_number}. Send request to cancel PlanningNotice'):
+        with allure.step(f'# {step_number}. Send request to cancel PN_release'):
             """
             Send api request on BPE host for planning notice canceling.
             Save synchronous result of sending the request and asynchronous result of sending the request.
@@ -215,16 +215,16 @@ class TestCancelPn:
                     allure.attach(str(True), "Expected status code of sending request.")
                     assert str(asynchronous_result_of_sending_the_request_was_checked) == str(True)
 
-            with allure.step(f'# {step_number}.3. Check PlanningNotice release'):
+            with allure.step(f'# {step_number}.3. Check PN_release release'):
                 """
                 Compare actual planning notice release before cancellation and 
                 actual planning release after cancellation.
                 """
                 allure.attach(str(json.dumps(actual_pn_release_before_pn_canceling)),
-                              "Actual PlanningNotice release before canceling")
+                              "Actual PN_release release before canceling")
 
                 allure.attach(str(json.dumps(actual_pn_release_after_pn_canceling)),
-                              "Actual PlanningNotice release after canceling")
+                              "Actual PN_release release after canceling")
 
                 compare_releases = dict(DeepDiff(actual_pn_release_before_pn_canceling,
                                                  actual_pn_release_after_pn_canceling))
@@ -268,12 +268,12 @@ class TestCancelPn:
                 except ValueError:
                     raise ValueError("Can not return BPE operation step")
 
-                with allure.step('Compare actual result of comparing PlanningNotice release before cancellation '
+                with allure.step('Compare actual result of comparing PN_release release before cancellation '
                                  'and after cancellation.'):
                     allure.attach(str(compare_releases),
-                                  "Actual result of comparing PlanningNotice release before cancellation and after cancellation.")
+                                  "Actual result of comparing PN_release release before cancellation and after cancellation.")
                     allure.attach(str(expected_result),
-                                  "Expected result of comparing PlanningNotice release before cancellation and after cancellation.")
+                                  "Expected result of comparing PN_release release before cancellation and after cancellation.")
                     assert str(compare_releases) == str(expected_result)
 
             with allure.step(f'# {step_number}.4. Check MS release'):

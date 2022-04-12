@@ -68,7 +68,7 @@ class TestDeclareNonConflictInterest:
                   "------------------------------------------------\n"
                   "ExpenditureItem: full data model with items array;\n"
                   "FinancialSource: full data model, own money;\n"
-                  "PlanningNotice: full data model, 1 lots, 1 items;\n"
+                  "PN_release: full data model, 1 lots, 1 items;\n"
                   "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "QualificationDeclaration non conflict interest: full data model with old person.\n"
@@ -148,7 +148,7 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -159,7 +159,7 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
             step_number += 1
-        with allure.step(f'# {step_number}. Send request: create PlanningNotice'):
+        with allure.step(f'# {step_number}. Send request: create PN_release'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.
@@ -822,7 +822,7 @@ class TestDeclareNonConflictInterest:
                   "------------------------------------------------\n"
                   "ExpenditureItem: full data model with items array;\n"
                   "FinancialSource: full data model, own money;\n"
-                  "PlanningNotice: full data model, 1 lots, 1 items;\n"
+                  "PN_release: full data model, 1 lots, 1 items;\n"
                   "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
@@ -903,7 +903,7 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -914,7 +914,7 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
             step_number += 1
-        with allure.step(f'# {step_number}. Send request: create PlanningNotice'):
+        with allure.step(f'# {step_number}. Send request: create PN_release'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.
@@ -1727,7 +1727,7 @@ class TestDeclareNonConflictInterest:
                   "------------------------------------------------\n"
                   "ExpenditureItem: full data model with items array;\n"
                   "FinancialSource: full data model, own money;\n"
-                  "PlanningNotice: full data model, 1 lots, 1 items;\n"
+                  "PN_release: full data model, 1 lots, 1 items;\n"
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
@@ -1809,7 +1809,7 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -1820,7 +1820,7 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
             step_number += 1
-        with allure.step(f'# {step_number}. Send request: create PlanningNotice'):
+        with allure.step(f'# {step_number}. Send request: create PN_release'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.
@@ -2621,7 +2621,7 @@ class TestDeclareNonConflictInterest:
                   "------------------------------------------------\n"
                   "ExpenditureItem: full data model with items array;\n"
                   "FinancialSource: full data model, own money;\n"
-                  "PlanningNotice: full data model, 1 lots, 1 items;\n"
+                  "PN_release: full data model, 1 lots, 1 items;\n"
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
@@ -2702,7 +2702,7 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -2713,7 +2713,7 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
             step_number += 1
-        with allure.step(f'# {step_number}. Send request: create PlanningNotice'):
+        with allure.step(f'# {step_number}. Send request: create PN_release'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.
@@ -3468,7 +3468,7 @@ class TestDeclareNonConflictInterest:
                   "------------------------------------------------\n"
                   "ExpenditureItem: full data model with items array;\n"
                   "FinancialSource: full data model, own money;\n"
-                  "PlanningNotice: full data model, 1 lots, 1 items;\n"
+                  "PN_release: full data model, 1 lots, 1 items;\n"
                   "CnOnPn: full data model without auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
@@ -3549,7 +3549,7 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -3560,7 +3560,7 @@ class TestDeclareNonConflictInterest:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
             step_number += 1
-        with allure.step(f'# {step_number}. Send request: create PlanningNotice'):
+        with allure.step(f'# {step_number}. Send request: create PN_release'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.

@@ -157,7 +157,7 @@ class PlanningNoticePayload:
         return self.__payload
 
     def delete_optional_fields(
-            self, *args, lot_position=0, item_position=0, document_position=0):
+            self, *args, lot_position=0, item_position=0, additionalClassification_position=0, document_position=0):
         for a in args:
             if a == "planning.rationale":
                 del self.__payload['planning']['rationale']
@@ -168,6 +168,7 @@ class PlanningNoticePayload:
                 del self.__payload['tender']['procurementMethodRationale']
             elif a == "tender.procurementMethodAdditionalInfo":
                 del self.__payload['tender']['procurementMethodAdditionalInfo']
+
             elif a == "tender.lots":
                 del self.__payload['tender']['lots']
             elif a == "tender.lots.internalId":
@@ -176,12 +177,17 @@ class PlanningNoticePayload:
                 del self.__payload['tender']['lots'][lot_position]['placeOfPerformance']['address']['postalCode']
             elif a == "tender.lots.placeOfPerformance.description":
                 del self.__payload['tender']['lots'][lot_position]['placeOfPerformance']['description']
+
             elif a == "tender.items":
                 del self.__payload['tender']['items']
             elif a == "tender.items.internalId":
                 del self.__payload['tender']['items'][item_position]['internalId']
             elif a == "tender.items.additionalClassifications":
                 del self.__payload['tender']['items'][item_position]['additionalClassifications']
+            elif a == f"tender.items.additionalClassifications[{additionalClassification_position}]":
+
+                del self.__payload['tender']['items'][item_position][
+                    'additionalClassifications'][additionalClassification_position]
             elif a == "tender.documents":
                 del self.__payload['tender']['documents']
             elif a == "tender.documents.description":
@@ -233,9 +239,9 @@ class PlanningNoticePayload:
                     copy.deepcopy(self.__payload['tender']['items'][0]['additionalClassifications'][0]))
 
                 while len(list_of_additionalClassification_id) < quantity_of_items_additionalClassifications:
-                    additionalclassification_id = f"{random.choice(cpvs_tuple)}"
-                    if additionalclassification_id not in list_of_additionalClassification_id:
-                        list_of_additionalClassification_id.append(additionalclassification_id)
+                    additionalClassification_id = f"{random.choice(cpvs_tuple)}"
+                    if additionalClassification_id not in list_of_additionalClassification_id:
+                        list_of_additionalClassification_id.append(additionalClassification_id)
 
             for q_1 in range(quantity_of_items_additionalClassifications):
 

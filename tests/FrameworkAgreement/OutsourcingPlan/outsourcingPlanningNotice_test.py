@@ -9,7 +9,7 @@ from deepdiff import DeepDiff
 from tests.utils.MessageModels.FrameworkAgreement.outsourcingPlanningNotice_message import OutsourcingPnMessage
 from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditureItem_payload import ExpenditureItemPayload
 from tests.utils.PayloadModels.Budget.FinancialSource.financialSource_payload import FinancialSourcePayload
-from tests.utils.PayloadModels.FrameworkAgreement.AggregatedPlan.aggregatedPlan_payload import AggregatedPayload
+from tests.utils.PayloadModels.FrameworkAgreement.AggregatedPlan.aggregatedPlan_payload import AggregatedPlan
 from tests.utils.PayloadModels.FrameworkAgreement.PlanningNotice.planingNotice_payload import PlanningNoticePayload
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.data_of_enum import currency_tuple
@@ -21,12 +21,12 @@ from tests.utils.platform_authorization import PlatformAuthorization
 
 @allure.parent_suite('Framework Agreement')
 @allure.suite('OutsourcingPlanningNotice')
-@allure.sub_suite('BPE: Outsourcing PlanningNotice')
+@allure.sub_suite('BPE: Outsourcing PN_release')
 @allure.severity('Critical')
 @allure.testcase(url=None,
                  name=None)
 class TestCreatePn:
-    @allure.title("Check PN, MS, AggregatedPlan and MS of CPB releases after OutsourcingPlanningNotice process, "
+    @allure.title("Check PN, MS, AP_release and MS of CPB releases after OutsourcingPlanningNotice process, "
                   "without optional fields. \n"
                   "------------------------------------------------\n"
                   "CreateEi process: required data model, without items array, buyer_id = 0;\n"
@@ -309,7 +309,7 @@ class TestCreatePn:
                     parse_pmd
                 )
 
-                ap_payload = copy.deepcopy(AggregatedPayload(
+                ap_payload = copy.deepcopy(AggregatedPlan(
                     centralPurchasingBody_id=55,
                     host_to_service=get_hosts[2],
                     maxDurationOfFA=maxDurationOfFA,
@@ -428,7 +428,7 @@ class TestCreatePn:
 
                     assert actual_message == expected_message, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{outsourcingPn_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{pn_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.3. Check PN release.'):
@@ -501,7 +501,7 @@ class TestCreatePn:
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{outsourcingPn_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{pn_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.4. Check MS release.'):
@@ -525,12 +525,12 @@ class TestCreatePn:
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{outsourcingPn_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{pn_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.5. Check AP release.'):
                 """
-                Compare actual AggregatedPlan release before and after OutsourcingPlanningNotice process.
+                Compare actual AP_release release before and after OutsourcingPlanningNotice process.
                 """
                 actual_ap_release_after_outsourcingPlanningNotice = requests.get(url=ap_url).json()
 
@@ -541,7 +541,7 @@ class TestCreatePn:
 
                 expected_result_of_comparing_releases = {}
 
-                with allure.step('Check differences into actual AggregatedPlan release before and after '
+                with allure.step('Check differences into actual AP_release release before and after '
                                  'OutsourcingPlanningNotice process.'):
 
                     allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
@@ -549,7 +549,7 @@ class TestCreatePn:
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{outsourcingPn_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{pn_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.6. Check MS release of CPB.'):
@@ -619,9 +619,8 @@ class TestCreatePn:
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{outsourcingPn_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{pn_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
-
                 try:
                     """
                     CLean up the database.

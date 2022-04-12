@@ -9,7 +9,7 @@ from deepdiff import DeepDiff
 from tests.utils.MessageModels.FrameworkAgreement.relationAggregatedPlan_message import RelationApMessage
 from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditureItem_payload import ExpenditureItemPayload
 from tests.utils.PayloadModels.Budget.FinancialSource.financialSource_payload import FinancialSourcePayload
-from tests.utils.PayloadModels.FrameworkAgreement.AggregatedPlan.aggregatedPlan_payload import AggregatedPayload
+from tests.utils.PayloadModels.FrameworkAgreement.AggregatedPlan.aggregatedPlan_payload import AggregatedPlan
 from tests.utils.PayloadModels.FrameworkAgreement.PlanningNotice.planingNotice_payload import PlanningNoticePayload
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.data_of_enum import currency_tuple
@@ -27,7 +27,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.testcase(url=None,
                  name=None)
 class TestCreatePn:
-    @allure.title("Check PN, MS, AggregatedPlan and MS of CPB releases after RelationAggregatedPlan process, "
+    @allure.title("Check PN, MS, AP_release and MS of CPB releases after RelationAggregatedPlan process, "
                   "without optional fields. \n"
                   "------------------------------------------------\n"
                   "CreateEi process: required data model, without items array, buyer_id = 0;\n"
@@ -380,7 +380,7 @@ class TestCreatePn:
                     parse_pmd
                 )
 
-                ap_payload = copy.deepcopy(AggregatedPayload(
+                ap_payload = copy.deepcopy(AggregatedPlan(
                     centralPurchasingBody_id=55,
                     host_to_service=get_hosts[2],
                     maxDurationOfFA=maxDurationOfFA,
@@ -566,7 +566,7 @@ class TestCreatePn:
 
                     assert actual_message == expected_message, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{relationAp_1_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.3. Check PN release.'):
@@ -608,7 +608,7 @@ class TestCreatePn:
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{relationAp_1_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.4. Check MS releases.'):
@@ -630,12 +630,12 @@ class TestCreatePn:
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{relationAp_1_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.5. Check AP release.'):
                 """
-                Compare actual AggregatedPlan release before and after RelationAggregatedPlan process.
+                Compare actual AP_release release before and after RelationAggregatedPlan process.
                 """
                 actual_ap_release_after_relationAggregatedPlan = requests.get(url=ap_url).json()
 
@@ -729,26 +729,7 @@ class TestCreatePn:
                     raise ValueError("Impossible to prepare expected 'relatedProcess' object "
                                      "with 'relationship' = ['x_scope'].")
 
-                try:
-                    """
-                    Prepare expected 'tender.value' object.
-                    """
-                    amount_from_first_pn_payload = list()
-                    for budget in range(len(pn_1_payload['planning']['budget']['budgetBreakdown'])):
-                        amount_from_first_pn_payload.append(
-                            pn_1_payload['planning']['budget']['budgetBreakdown'][budget]['amount']['amount'])
-
-                    expected_tender_value_amount = sum(amount_from_first_pn_payload)
-
-                    expected_tender_value_object = {
-                        "amount": expected_tender_value_amount,
-                        "currency": currency
-                    }
-                except ValueError:
-                    raise ValueError("Impossible to prepare expected 'tender.value' object.")
-
                 expected_result_of_comparing_releases = {
-                    "dictionary_item_added": "['releases'][0]['tender']['value']",
                     "values_changed": {
                         "root['releases'][0]['id']": {
                             "new_value":
@@ -801,23 +782,7 @@ class TestCreatePn:
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{relationAp_1_operationId}' ALLOW FILTERING;",
-                                      "Cassandra DataBase: steps of process.")
-
-                with allure.step("Compare actual and expected 'tender.value' object into AP release,"
-                                 " before and after RelationAggregatedPlan process."):
-
-                    allure.attach(json.dumps(
-                        actual_ap_release_after_relationAggregatedPlan['releases'][0]['tender']['value']),
-                        "Actual object.")
-
-                    allure.attach(json.dumps(expected_tender_value_object), "Expected object.")
-
-                    assert \
-                        actual_ap_release_after_relationAggregatedPlan['releases'][0]['tender']['value'] == \
-                        expected_tender_value_object, \
-                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{relationAp_1_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.6. Check MS release of CPB.'):
@@ -831,7 +796,44 @@ class TestCreatePn:
                     cpb_actual_ms_release_after_relationAggregatedPlan)
                 )
 
-                expected_result_of_comparing_releases = {}
+                dictionary_item_added_was_cleaned = \
+                    str(actual_result_of_comparing_releases['dictionary_item_added']).replace('root', '')[1:-1]
+
+                actual_result_of_comparing_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+                actual_result_of_comparing_releases = dict(actual_result_of_comparing_releases)
+
+                try:
+                    """
+                    Prepare expected 'tender.value.amount' attribute.
+                    Sum amount from budgetBreakdown, because lots array wasn't presented into pn_1_payload.
+                    """
+                    amount_from_first_pn_payload = list()
+                    for budget in range(len(pn_1_payload['planning']['budget']['budgetBreakdown'])):
+                        amount_from_first_pn_payload.append(
+                            pn_1_payload['planning']['budget']['budgetBreakdown'][budget]['amount']['amount'])
+
+                    expected_tender_value_amount = sum(amount_from_first_pn_payload)
+                except ValueError:
+                    raise ValueError("Impossible to prepare expected 'tender.value' object.")
+
+                expected_result_of_comparing_releases = {
+                    "dictionary_item_added": "['releases'][0]['tender']['value']",
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{ap_ocid}-"
+                                f"{cpb_actual_ms_release_after_relationAggregatedPlan['releases'][0]['id'][46:59]}",
+
+                            "old_value":
+                                f"{ap_ocid}-"
+                                f"{cpb_actual_ms_release_before_relationAggregatedPlan['releases'][0]['id'][46:59]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": actual_message['data']['operationDate'],
+                            "old_value": cpb_actual_ms_release_before_relationAggregatedPlan['releases'][0]['date']
+                        }
+                    }
+                }
 
                 with allure.step('Check differences into actual MS release of CPB before and after '
                                  'RelationAggregatedPlan process.'):
@@ -841,7 +843,23 @@ class TestCreatePn:
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{relationAp_1_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
+
+                with allure.step("Compare actual and expected 'tender.value.amount' attribute into MS release of CPB,"
+                                 " before and after RelationAggregatedPlan process."):
+
+                    allure.attach(json.dumps(
+                        cpb_actual_ms_release_after_relationAggregatedPlan['releases'][0]['tender']['value']['amount']),
+                        "Actual object.")
+
+                    allure.attach(json.dumps(expected_tender_value_amount), "Expected object.")
+
+                    assert \
+                        actual_ap_release_after_relationAggregatedPlan['releases'][0]['tender']['value']['amount'] == \
+                        expected_tender_value_amount, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
         actual_ap_release_before_relationAggregatedPlan = requests.get(url=ap_url).json()
@@ -918,7 +936,7 @@ class TestCreatePn:
 
                     assert actual_message == expected_message, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.3. Check PN release.'):
@@ -962,7 +980,7 @@ class TestCreatePn:
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.4. Check MS releases.'):
@@ -986,12 +1004,12 @@ class TestCreatePn:
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
             with allure.step(f'# {step_number}.5. Check AP release.'):
                 """
-                Compare actual AggregatedPlan release before and after RelationAggregatedPlan process.
+                Compare actual AP_release release before and after RelationAggregatedPlan process.
                 """
                 actual_ap_release_after_relationAggregatedPlan = requests.get(url=ap_url).json()
 
@@ -1026,9 +1044,54 @@ class TestCreatePn:
                     raise ValueError("Impossible to prepare expected 'relatedProcess' object "
                                      "with 'relationship' = ['x_scope'].")
 
+                expected_result_of_comparing_releases = {
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{ap_ocid}-"
+                                f"{actual_ap_release_after_relationAggregatedPlan['releases'][0]['id'][46:59]}",
+
+                            "old_value":
+                                f"{ap_ocid}-"
+                                f"{actual_ap_release_before_relationAggregatedPlan['releases'][0]['id'][46:59]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": actual_message['data']['operationDate'],
+                            "old_value": actual_ap_release_before_relationAggregatedPlan['releases'][0]['date']
+                        }
+                    },
+                    "iterable_item_added": {
+                        "root['releases'][0]['relatedProcesses'][2]": expected_relatedProcess_object_xScope
+                    }
+                }
+
+                with allure.step('Check differences into actual AP release before and after '
+                                 'RelationAggregatedPlan process.'):
+
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
+
+                    assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
+
+            with allure.step(f'# {step_number}.6. Check MS release of CPB.'):
+                """
+                Compare actual MS release of CPB before and after RelationAggregatedPlan process.
+                """
+                cpb_actual_ms_release_after_relationAggregatedPlan = requests.get(url=cpb_ms_url).json()
+
+                actual_result_of_comparing_releases = dict(DeepDiff(
+                    cpb_actual_ms_release_before_relationAggregatedPlan,
+                    cpb_actual_ms_release_after_relationAggregatedPlan)
+                )
+
                 try:
                     """
                     Prepare expected 'tender.value.amount' attribute.
+                    Sum amount from budgetBreakdown, because lots array wasn't presented into pn_1_payload.
+                    Sum amount from budgetBreakdown, because lots array wasn't presented into pn_2_payload.
                     """
                     amount_from_first_pn_payload = list()
                     for budget in range(len(pn_1_payload['planning']['budget']['budgetBreakdown'])):
@@ -1051,51 +1114,24 @@ class TestCreatePn:
                         "root['releases'][0]['id']": {
                             "new_value":
                                 f"{ap_ocid}-"
-                                f"{actual_ap_release_after_relationAggregatedPlan['releases'][0]['id'][46:59]}",
+                                f"{cpb_actual_ms_release_after_relationAggregatedPlan['releases'][0]['id'][46:59]}",
 
                             "old_value":
                                 f"{ap_ocid}-"
-                                f"{actual_ap_release_before_relationAggregatedPlan['releases'][0]['id'][46:59]}"
+                                f"{cpb_actual_ms_release_before_relationAggregatedPlan['releases'][0]['id'][46:59]}"
                         },
                         "root['releases'][0]['date']": {
                             "new_value": actual_message['data']['operationDate'],
-                            "old_value": actual_ap_release_before_relationAggregatedPlan['releases'][0]['date']
+                            "old_value": cpb_actual_ms_release_before_relationAggregatedPlan['releases'][0]['date']
                         },
                         "root['releases'][0]['tender']['value']['amount']": {
                             "new_value": expected_tender_value_amount,
 
-                            "old_value": actual_ap_release_before_relationAggregatedPlan[
+                            "old_value": cpb_actual_ms_release_before_relationAggregatedPlan[
                                 'releases'][0]['tender']['value']['amount']
                         }
-                    },
-                    "iterable_item_added": {
-                        "root['releases'][0]['relatedProcesses'][2]": expected_relatedProcess_object_xScope
                     }
                 }
-
-                with allure.step('Check differences into actual AP release before and after '
-                                 'RelationAggregatedPlan process.'):
-
-                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
-
-                    assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
-                                      "Cassandra DataBase: steps of process.")
-
-            with allure.step(f'# {step_number}.6. Check MS release of CPB.'):
-                """
-                Compare actual MS release of CPB before and after RelationAggregatedPlan process.
-                """
-                cpb_actual_ms_release_after_relationAggregatedPlan = requests.get(url=cpb_ms_url).json()
-
-                actual_result_of_comparing_releases = dict(DeepDiff(
-                    cpb_actual_ms_release_before_relationAggregatedPlan,
-                    cpb_actual_ms_release_after_relationAggregatedPlan)
-                )
-
-                expected_result_of_comparing_releases = {}
 
                 with allure.step('Check differences into actual MS release of CPB before and after '
                                  'RelationAggregatedPlan process.'):
@@ -1105,7 +1141,7 @@ class TestCreatePn:
 
                     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
                         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                                      f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
                                       "Cassandra DataBase: steps of process.")
 
                 try:

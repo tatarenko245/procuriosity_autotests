@@ -66,7 +66,7 @@ class TestTenderPeriodEndAuction:
                   "------------------------------------------------\n"
                   "ExpenditureItem: full data model with items array;\n "
                   "FinancialSource: full data model, own money;\n"
-                  "PlanningNotice: full data model, 2 lots, 2 items;\n"
+                  "PN_release: full data model, 2 lots, 2 items;\n"
                   "CnOnPn: full data model with auction, 2 lots, 2 items, criteria, conversions.\n"
                   )
     def test_check_result_of_sending_the_request_one(self):
@@ -140,7 +140,7 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -151,7 +151,7 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request for create PlanningNotice'):
+        with allure.step('# 6. Send request for create PN_release'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.
@@ -552,7 +552,7 @@ class TestTenderPeriodEndAuction:
                   "------------------------------------------------\n"
                   "ExpenditureItem: full data model with items array;\n"
                   "FinancialSource: full data model, own money;\n"
-                  "PlanningNotice: full data model, 2 lots, 2 items;\n"
+                  "PN_release: full data model, 2 lots, 2 items;\n"
                   "CnOnPn: full data model with auction, 2 lots, 2 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   )
@@ -625,7 +625,7 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -636,7 +636,7 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request for create PlanningNotice'):
+        with allure.step('# 6. Send request for create PN_release'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.
@@ -1661,7 +1661,7 @@ class TestTenderPeriodEndAuction:
                   "------------------------------------------------\n"
                   "ExpenditureItem: full data model with items array;\n"
                   "FinancialSource: full data model, own money;\n"
-                  "PlanningNotice: full data model, 1 lots, 1 items;\n"
+                  "PN_release: full data model, 1 lots, 1 items;\n"
                   "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot.\n"
                   )
@@ -1734,7 +1734,7 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -1745,7 +1745,7 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request for create PlanningNotice'):
+        with allure.step('# 6. Send request for create PN_release'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.
@@ -2735,7 +2735,7 @@ class TestTenderPeriodEndAuction:
                   "------------------------------------------------\n"
                   "ExpenditureItem: full data model with items array;\n"
                   "FinancialSource: full data model, own money;\n"
-                  "PlanningNotice: full data model, 1 lots, 1 items;\n"
+                  "PN_release: full data model, 1 lots, 1 items;\n"
                   "CnOnPn: full data model with auction, 1 lots, 1 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot;\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n"
@@ -2811,7 +2811,7 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -2822,7 +2822,7 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request for create PlanningNotice'):
+        with allure.step('# 6. Send request for create PN_release'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.
@@ -4101,7 +4101,7 @@ class TestTenderPeriodEndAuction:
                   "------------------------------------------------\n"
                   "ExpenditureItem: full data model with items array;\n"
                   "FinancialSource: full data model, own money;\n"
-                  "PlanningNotice: full data model, 2 lots, 2 items;\n"
+                  "PN_release: full data model, 2 lots, 2 items;\n"
                   "CnOnPn: full data model with auction, 2 lots, 2 items, criteria, conversions;\n"
                   "First Bid: full data model with 2 tenderers, in relation to the first lot;\n"
                   "Second Bid: full data model with 2 tenderers, in relation to the first lot.\n")
@@ -4176,7 +4176,7 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -4187,7 +4187,7 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
 
-        with allure.step('# 6. Send request for create PlanningNotice'):
+        with allure.step('# 6. Send request for create PN_release'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.
@@ -5509,7 +5509,7 @@ class TestTenderPeriodEndAuction:
                   "------------------------------------------------\n"
                   "ExpenditureItem: obligatory data model without items array;\n"
                   "FinancialSource: obligatory data model, treasury money;\n"
-                  "PlanningNotice: obligatory data model;\n"
+                  "PN_release: obligatory data model;\n"
                   "CnOnPn: obligatory data model with auction, 2 lots, 2 items;\n"
                   "First Bid: obligatory data model with 1 tenderers, in relation to the first lot;\n"
                   "Second Bid: obligatory data model with 1 tenderers, in relation to the first lot.\n")
@@ -5586,7 +5586,7 @@ class TestTenderPeriodEndAuction:
             GlobalClassCreateFs.actual_fs_release = requests.get(
                 url=f"{GlobalClassCreateFs.feed_point_message['data']['url']}/"
                     f"{GlobalClassCreateFs.fs_id}").json()
-        with allure.step('# 5. Authorization platform one: create PlanningNotice'):
+        with allure.step('# 5. Authorization platform one: create PN_release'):
             """
             Tender platform authorization for create planning notice process.
             As result get Tender platform's access token and process operation-id.
@@ -5596,7 +5596,7 @@ class TestTenderPeriodEndAuction:
 
             GlobalClassCreatePn.operation_id = PlatformAuthorization(
                 GlobalClassMetadata.host_for_bpe).get_x_operation_id(GlobalClassCreatePn.access_token)
-        with allure.step('# 6. Send request for create PlanningNotice'):
+        with allure.step('# 6. Send request for create PN_release'):
             """
             Send api request to BPE host for planning notice creating.
             Save asynchronous result of sending the request.

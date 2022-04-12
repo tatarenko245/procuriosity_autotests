@@ -122,14 +122,22 @@ class ExpenditureItemPayload:
     def get_tender_classification_id(self):
         return self.__tenderClassificationId
 
-    def delete_optional_fields(self, *args, item_position=0, buyer_additionalidentifiers_position=0):
+    def delete_optional_fields(self, *args, item_position=0, additionalClassification_position=0,
+                               buyer_additionalIdentifiers_position=0):
+
         for a in args:
             if a == "tender.description":
                 del self.__payload['tender']['description']
+
             elif a == "tender.items":
                 del self.__payload['tender']['items']
             elif a == "tender.items.additionalClassifications":
                 del self.__payload['tender']['items'][item_position]['additionalClassifications']
+            elif a == f"tender.items.additionalClassifications[{additionalClassification_position}]":
+
+                del self.__payload['tender']['items'][item_position][
+                    'additionalClassifications'][additionalClassification_position]
+
             elif a == "tender.items.deliveryAddress.postalCode":
                 del self.__payload['tender']['items'][item_position]['deliveryAddress']['postalCode']
             elif a == "tender.items.deliveryAddress.addressDetails.locality.uri":
@@ -146,7 +154,7 @@ class ExpenditureItemPayload:
             elif a == "buyer.additionalIdentifiers":
                 del self.__payload['buyer']['additionalIdentifiers']
             elif a == "buyer.additionalIdentifiers.uri":
-                del self.__payload['buyer']['additionalIdentifiers'][buyer_additionalidentifiers_position]['uri']
+                del self.__payload['buyer']['additionalIdentifiers'][buyer_additionalIdentifiers_position]['uri']
             elif a == "buyer.contactPoint.faxNumber":
                 del self.__payload['buyer']['contactPoint']['faxNumber']
             elif a == "buyer.contactPoint.url":

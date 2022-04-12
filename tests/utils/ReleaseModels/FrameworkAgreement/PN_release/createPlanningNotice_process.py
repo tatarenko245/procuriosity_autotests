@@ -578,9 +578,9 @@ class PlanningNoticeRelease:
                         del new_items_array[q_0]['internalId']
 
                     if "additionalClassifications" in self.__pn_payload['tender']['items'][q_0]:
-                        new_item_additionalclassifications_array = list()
+                        new_item_additionalClassifications_array = list()
                         for q_1 in range(len(self.__pn_payload['tender']['items'][q_0]['additionalClassifications'])):
-                            new_item_additionalclassifications_array.append(copy.deepcopy(
+                            new_item_additionalClassifications_array.append(copy.deepcopy(
                                 self.__expected_pn_release['releases'][0]['tender']['items'][0][
                                     'additionalClassifications'][0]))
 
@@ -589,12 +589,12 @@ class PlanningNoticeRelease:
                                 language=self.__language
                             )
 
-                            new_item_additionalclassifications_array[q_1]['scheme'] = "CPVS"
-                            new_item_additionalclassifications_array[q_1]['id'] = expected_cpvs_data[0]
-                            new_item_additionalclassifications_array[q_1]['description'] = expected_cpvs_data[2]
+                            new_item_additionalClassifications_array[q_1]['scheme'] = "CPVS"
+                            new_item_additionalClassifications_array[q_1]['id'] = expected_cpvs_data[0]
+                            new_item_additionalClassifications_array[q_1]['description'] = expected_cpvs_data[2]
 
                         new_items_array[q_0]['additionalClassifications'] = \
-                            new_item_additionalclassifications_array
+                            new_item_additionalClassifications_array
                     else:
                         del new_items_array[q_0]['additionalClassifications']
 
@@ -606,7 +606,7 @@ class PlanningNoticeRelease:
                         new_items_array[q_0]['id'] = self.__actual_pn_release['releases'][0]['tender']['items'][q_0][
                             'id']
                     else:
-                        raise ValueError(f"The relases0.tender.items{q_0}.id must be uuid.")
+                        raise ValueError(f"The relases[0].tender.items[{q_0}].id must be uuid.")
 
                     new_items_array[q_0]['description'] = self.__pn_payload['tender']['items'][q_0]['description']
 
