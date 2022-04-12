@@ -709,16 +709,16 @@ class TestCreatePn:
                     }
                 }
 
-                # with allure.step("Check differences into actual AP release before and after "
-                #                  "UpdateAggregatedPlan process."):
-                #
-                #     allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-                #     allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
-                #
-                #     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-                #         allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
-                #                       f"process_id = '{processId}' ALLOW FILTERING;",
-                #                       "Cassandra DataBase: steps of process.")
+                with allure.step("Check differences into actual AP release before and after "
+                                 "UpdateAggregatedPlan process."):
+
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
+
+                    assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                        allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                                      f"process_id = '{processId}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
 
                 with allure.step("Compare actual and expected lots array."):
                     allure.attach(json.dumps(
@@ -763,11 +763,11 @@ class TestCreatePn:
 
                 try:
                     """
-                    Prepare expected 'mainProcurementCategory' array.
+                    Prepare expected 'mainProcurementCategory'.
                     """
                     expected_mainProcurementCategory = expected_value.build_expected_mainProcurementCategory()
                 except ValueError:
-                    raise ValueError("Impossible to prepare expected 'mainProcurementCategory' array.")
+                    raise ValueError("Impossible to prepare expected 'mainProcurementCategory'.")
 
                 expected_result_of_comparing_releases = {
                     "dictionary_item_added": "['releases'][0]['tender']['mainProcurementCategory']",
@@ -796,11 +796,6 @@ class TestCreatePn:
                         }
                     }
                 }
-                print("MS")
-                print(json.dumps(actual_result_of_comparing_releases))
-
-                print("expected mainProcurementCategory")
-                print(expected_mainProcurementCategory)
 
                 with allure.step('Check differences into actual MS release of CPB before and after '
                                  'UpdateAggregatedPlan process.'):
