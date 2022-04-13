@@ -25,12 +25,16 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.severity('Critical')
 @allure.testcase(url=None)
 class TestCreatePn:
-    @allure.title("Check PN and MS releases after CreatePlanningNotice process, without optional fields. \n"
-                  "------------------------------------------------\n"
-                  "CreateEi process: required data model, without items array, buyer_id = 0;\n"
-                  "СreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 0;\n"
-                  "СreateFs process: required data model, the treasury money, procuringEntity_id = 1;\n"
-                  "СreatePn process: required data model, without lots and items.\n")
+    @allure.title("\nCheck PN and MS releases after CreatePlanningNotice process, without optional fields. \n"
+                  "\n===================================================================================\n"
+                  "\nCreateEi process: required data model, without items array, buyer_id = 0;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nСreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 0;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nСreateFs process: required data model, the treasury money, procuringEntity_id = 1;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nСreatePn process: required data model, without lots and items.\n"
+                  "\n----------------------------------------------------------------------------------\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                     prepare_tenderClassificationId, connect_to_ocds):
         step_number = 1

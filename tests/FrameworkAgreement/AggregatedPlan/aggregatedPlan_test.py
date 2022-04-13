@@ -20,9 +20,10 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.severity('Critical')
 @allure.testcase(url=None)
 class TestCreatePn:
-    @allure.title("Check AP_release and MS releases after CreateAp process, without optional fields. \n"
-                  "------------------------------------------------\n"
-                  "СreateAp process: required data mode.\n")
+    @allure.title("\nCheck AP_release and MS releases after CreateAp process, without optional fields. \n"
+                  "\n===================================================================================\n"
+                  "\nСreateAp process: required data mode.\n"
+                  "\n----------------------------------------------------------------------------------\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment, connect_to_ocds,
                     connect_to_access):
 

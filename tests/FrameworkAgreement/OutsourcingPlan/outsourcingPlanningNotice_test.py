@@ -26,15 +26,21 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.severity('Critical')
 @allure.testcase(url=None)
 class TestCreatePn:
-    @allure.title("Check PN, MS, AP_release and MS of CPB releases after OutsourcingPlanningNotice process, "
+    @allure.title("\nCheck PN, MS, AP_release and MS of CPB releases after OutsourcingPlanningNotice process, "
                   "without optional fields. \n"
-                  "------------------------------------------------\n"
-                  "CreateEi process: required data model, without items array, buyer_id = 0;\n"
-                  "СreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 1;\n"
-                  "СreateFs process: required data model, the treasury money, procuringEntity_id = 0;\n"
-                  "СreatePn process: required data model, without lots and items.\n"
-                  "СreateAp process: required data mode;\n"
-                  "OutsourcingPlanningNotice process: payload is not needed.\n")
+                  "\n===================================================================================\n"
+                  "\nCreateEi process: required data model, without items array, buyer_id = 0;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nСreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 1;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nСreateFs process: required data model, the treasury money, procuringEntity_id = 0;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nСreatePn process: required data model, without lots and items.\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nСreateAp process: required data mode;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "OutsourcingPlanningNotice process: payload is not needed.\n"
+                  "\n----------------------------------------------------------------------------------\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                     prepare_tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator):
 
@@ -519,7 +525,6 @@ class TestCreatePn:
 
                 with allure.step('Check differences into actual MS release before and after '
                                  'OutsourcingPlanningNotice process.'):
-
                     allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
                     allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
 
@@ -543,7 +548,6 @@ class TestCreatePn:
 
                 with allure.step('Check differences into actual AP_release release before and after '
                                  'OutsourcingPlanningNotice process.'):
-
                     allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
                     allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
 

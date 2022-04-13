@@ -29,24 +29,31 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.severity('Critical')
 @allure.testcase(url=None)
 class TestCreatePn:
-    @allure.title("Check PN, MS, AP_release and MS of CPB releases after RelationAggregatedPlan process, "
+    @allure.title("\nCheck PN, MS, AP_release and MS of CPB releases after RelationAggregatedPlan process, "
                   "without optional fields. \n"
-                  "------------------------------------------------\n"
-                  "CreateEi process: required data model, without items array, buyer_id = 0;\n"
-                  "СreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 1;\n"
-                  "СreateFs process: required data model, the treasury money, procuringEntity_id = 0;\n"
-
-                  "СreatePn process: required data model, without lots and items, with pmd=TEST_DCO, "
+                  "\n===================================================================================\n"
+                  "\nCreateEi process: required data model, without items array, buyer_id = 0;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nСreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 1;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nСreateFs process: required data model, the treasury money, procuringEntity_id = 0;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nСreatePn process: required data model, without lots and items, with pmd=TEST_DCO, "
                   "with amount = 910.00;\n"
-
-                  "СreatePn process: required data model, without lots and items, with pmd=TEST_MC, "
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nСreatePn process: required data model, without lots and items, with pmd=TEST_MC, "
                   "with amount = 50.00;\n"
-
+                  "\n----------------------------------------------------------------------------------\n"
                   "СreateAp process: required data mode;\n"
-                  "OutsourcingPlan process: payload is not needed;\n"
-                  "OutsourcingPlan process: payload is not needed;\n"
-                  "RelationAggregatedPlan process: payload is not needed;\n"
-                  "RelationAggregatedPlan process: payload is not needed.\n")
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nOutsourcingPlan process: payload is not needed;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nOutsourcingPlan process: payload is not needed;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nRelationAggregatedPlan process: payload is not needed;\n"
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nRelationAggregatedPlan process: payload is not needed.\n"
+                  "\n----------------------------------------------------------------------------------\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                     prepare_tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator):
 

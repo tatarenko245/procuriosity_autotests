@@ -28,25 +28,32 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.testcase(url=None)
 class TestCreatePn:
     @allure.title("\nУВАГА! БАГ https://ustudio.atlassian.net/browse/OCDS-148\n"
-                  "\n----------------------------------------------------------------------------------\n"
+                  "\n===================================================================================\n"
                   "\nCheck PN, MS, AP_release and MS of CPB releases after RelationAggregatedPlan process, "
                   "without optional fields. \n"
-                  "\n----------------------------------------------------------------------------------\n"
+                  "\n===================================================================================\n"
                   "\nCreateEi process: required data model, without items array, buyer_id = 0;\n"
+                  "\n----------------------------------------------------------------------------------\n"
                   "\nСreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 1;\n"
+                  "\n----------------------------------------------------------------------------------\n"
                   "\nСreateFs process: required data model, the treasury money, procuringEntity_id = 0;\n"
-
+                  "\n----------------------------------------------------------------------------------\n"
                   "\nСreatePn process: required data model, without lots and items, with pmd=TEST_DCO, "
                   "with amount = 910.00;\n"
-
+                  "\n----------------------------------------------------------------------------------\n"
                   "\nСreatePn process: required data model, without lots and items, with pmd=TEST_MC, "
                   "with amount = 50.00;\n"
-
+                  "\n----------------------------------------------------------------------------------\n"
                   "\nСreateAp process: required data mode;\n"
+                  "\n----------------------------------------------------------------------------------\n"
                   "\nOutsourcingPlan process: payload is not needed;\n"
+                  "\n----------------------------------------------------------------------------------\n"
                   "\nOutsourcingPlan process: payload is not needed;\n"
+                  "\n----------------------------------------------------------------------------------\n"
                   "\nRelationAggregatedPlan process: payload is not needed;\n"
-                  "\nRelationAggregatedPlan process: payload is not needed.\n")
+                  "\n----------------------------------------------------------------------------------\n"
+                  "\nRelationAggregatedPlan process: payload is not needed.\n"
+                  "\n----------------------------------------------------------------------------------\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                     prepare_tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator):
 
