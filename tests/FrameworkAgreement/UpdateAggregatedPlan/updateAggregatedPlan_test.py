@@ -1,14 +1,12 @@
+""" Test of Update Aggregated Plan process for Framework Agreement procedure. """
 import copy
 import json
 import random
 import time
-
 import allure
-import pytest
 import requests
-from deepdiff import DeepDiff
 
-from tests.utils.MessageModels.FrameworkAgreement.relationAggregatedPlan_message import RelationApMessage
+from deepdiff import DeepDiff
 from tests.utils.MessageModels.FrameworkAgreement.updateAggregatedPlan_message import UpdateApMessage
 from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditureItem_payload import ExpenditureItemPayload
 from tests.utils.PayloadModels.Budget.FinancialSource.financialSource_payload import FinancialSourcePayload
@@ -20,8 +18,6 @@ from tests.utils.ReleaseModels.FrameworkAgreement.AP_release.updateAggregatedPla
     UpdateAggregatedPlanRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.data_of_enum import currency_tuple
-from tests.utils.functions_collection.functions import get_value_from_country_csv, get_value_from_region_csv, \
-    get_value_from_locality_csv, is_it_uuid
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
 from tests.utils.platform_query_library import PlatformQueryRequest
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -31,8 +27,8 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.suite('UpdateAggregatedPlan')
 @allure.sub_suite('BPE: Update Aggregated Plan')
 @allure.severity('Critical')
-@allure.testcase(url=None,
-                 name=None)
+@allure.testcase(url="https://ustudio.atlassian.net/browse/OCDS-148",
+                 name="Баг")
 class TestCreatePn:
     @allure.title("Check PN, MS, AP_release and MS of CPB releases after UpdateAggregatedPlan process, "
                   "without optional fields. \n"
@@ -392,7 +388,8 @@ class TestCreatePn:
                     "tender.procuringEntity.additionalIdentifiers",
                     "tender.procuringEntity.address.postalCode",
                     "tender.procuringEntity.contactPoint.faxNumber",
-                    "tender.procuringEntity.contactPoint.url"
+                    "tender.procuringEntity.contactPoint.url",
+                    "tender.documents"
                 )
 
                 create_ap_payload = create_ap_payload.build_aggregatedPlan_payload()
@@ -564,15 +561,15 @@ class TestCreatePn:
                     tenderClassificationId=prepare_tenderClassificationId)
                 )
 
+                # Read rule VR.COM-1.26.14
                 update_ap_payload.delete_optional_fields(
                     "tender.procurementMethodRationale",
                     "tender.lots.internalId",
-                    "tender.lots.placeOfPerformance",
+                    # "tender.lots.placeOfPerformance",
                     "tender.items.internalId",
                     "tender.items.additionalClassifications",
-                    "tender.documents.description",
-                    "tender.documents.relatedLots",
-                    # "tender.documents",
+                    "tender.items.deliveryAddress",
+                    "tender.documents",
                     "tender.value"
                 )
 

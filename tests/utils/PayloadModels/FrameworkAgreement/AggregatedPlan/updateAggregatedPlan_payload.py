@@ -1,3 +1,4 @@
+"""Prepare payload for Update Aggregated Plan procees of Framework Agreement procedure."""
 import copy
 import random
 
@@ -10,13 +11,14 @@ from tests.utils.iStorage import Document
 
 
 class UpdateAggregatedPlan:
+    """This class prepares instance of payload."""
     def __init__(self, host_to_service, currency, createAp_payload,  tenderClassificationId,
                  maxDurationOfFA):
 
         __pn_period = Date().planningNotice_period()
         __contractPeriod = Date().contactPeriod(maxDurationOfFA)
 
-        __document_one = Document(host=host_to_service, file_name="API.pdf")
+        __document_one = Document(host=host_to_service)
         self.__document_one_was_uploaded = __document_one.uploading_document()
         self.__host = host_to_service
         self.__currency = currency
@@ -102,10 +104,10 @@ class UpdateAggregatedPlan:
                 ],
                 "documents": [
                     {
-                        "documentType": f"{random.choice(documentType_tuple)}",
-                        "id": self.__createAp_payload['tender']['documents'][0]['id'],
-                        "title": "update ap: tender.documents[0].title",
-                        "description": "update ap: tender.documents[0].description",
+                        "documentType": "",
+                        "id": "",
+                        "title": "",
+                        "description": "",
                         "relatedLots": ["0"]
                     }],
                 "value": {
@@ -116,10 +118,13 @@ class UpdateAggregatedPlan:
         }
 
     def build_updateAggregatedPlan_payload(self):
+        """Build payload."""
         return self.__payload
 
     def delete_optional_fields(
             self, *args, lot_position=0, item_position=0, additionalClassification_position=0, document_position=0):
+        """Delete optional fields from payload."""
+
         for a in args:
             if a == "tender.procurementMethodRationale":
                 del self.__payload['tender']['procurementMethodRationale']
@@ -203,6 +208,8 @@ class UpdateAggregatedPlan:
         self.__payload['tender']['items'] = new_items_array
 
     def customize_tender_lots(self, quantity_of_lots):
+        """Customize tender.lots array."""
+
         new_lots_array = generate_lots_array(
             quantity_of_object=quantity_of_lots,
             lot_object=copy.deepcopy(self.__payload['tender']['lots'][0])
@@ -240,15 +247,15 @@ class UpdateAggregatedPlan:
 
         self.__payload['tender']['lots'] = new_lots_array
 
-    def customize_tender_documents(self, lot_id_list, quantity_of_documents):
+    def customize_tender_documents(self, lot_id_list, quantity_of_new_documents):
         """
         The quantity of lot_id_list must be equal the quantity_of_documents.
         """
         new_documents_array = list()
-        for q_0 in range(quantity_of_documents):
+        for q_0 in range(quantity_of_new_documents):
             new_documents_array.append(copy.deepcopy(self.__payload['tender']['documents'][0]))
 
-            document_two = Document(host=self.__host, file_name="API.pdf")
+            document_two = Document(host=self.__host)
             document_two_was_uploaded = document_two.uploading_document()
 
             new_documents_array[q_0]['id'] = document_two_was_uploaded[0]["data"]["id"]
@@ -258,20 +265,21 @@ class UpdateAggregatedPlan:
 
             new_documents_array[q_0]['relatedLots'] = [lot_id_list[q_0]]
 
-        for q_1 in range(len(self.__createAp_payload['tender']['documents'])):
-            new_documents_array.append(copy.deepcopy(self.__payload['tender']['documents'][0]))
+        if "documents" in self.__createAp_payload['tender']:
+            for q_1 in range(len(self.__createAp_payload['tender']['documents'])):
+                new_documents_array.append(copy.deepcopy(self.__payload['tender']['documents'][0]))
 
-            new_documents_array[q_1]['id'] = self.__createAp_payload['tender']['documents'][q_1]['id']
-            new_documents_array[q_1]['documentType'] = f"{random.choice(documentType_tuple)}"
-            new_documents_array[q_1]['title'] = f"update ap: tender.documents{q_1}.title"
-            new_documents_array[q_1]['description'] = f"update up: tender.documents{q_1}.description"
+                new_documents_array[q_1]['id'] = self.__createAp_payload['tender']['documents'][q_1]['id']
+                new_documents_array[q_1]['documentType'] = f"{random.choice(documentType_tuple)}"
+                new_documents_array[q_1]['title'] = f"update ap: tender.documents{q_1}.title"
+                new_documents_array[q_1]['description'] = f"update up: tender.documents{q_1}.description"
 
-            if "relatedLots" in self.__createAp_payload['tender']['documents'][q_1]:
+                if "relatedLots" in self.__createAp_payload['tender']['documents'][q_1]:
 
-                new_documents_array[q_1]['relatedLots'] = \
-                    self.__createAp_payload['tender']['documents'][q_1]['relatedLots']
-            else:
-                del self.__createAp_payload['tender']['documents'][q_1]['relatedLots']
+                    new_documents_array[q_1]['relatedLots'] = \
+                        self.__createAp_payload['tender']['documents'][q_1]['relatedLots']
+                else:
+                    del self.__createAp_payload['tender']['documents'][q_1]['relatedLots']
 
         self.__payload['tender']['documents'] = new_documents_array
 

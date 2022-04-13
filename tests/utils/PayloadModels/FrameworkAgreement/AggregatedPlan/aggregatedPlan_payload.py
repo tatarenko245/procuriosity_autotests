@@ -1,3 +1,4 @@
+""" Prepare payload for Aggregated Plan process of Framework Agreement procedure."""
 import copy
 import random
 
@@ -8,13 +9,14 @@ from tests.utils.iStorage import Document
 
 
 class AggregatedPlan:
+    """This class prepares instance of payload."""
     def __init__(self, centralPurchasingBody_id, host_to_service, maxDurationOfFA, tenderClassificationId=None,
                  currency=None):
 
         __pn_period = Date().planningNotice_period()
         __contact_period = Date().contactPeriod(maxDurationOfFA)
 
-        __document_one = Document(host=host_to_service, file_name="API.pdf")
+        __document_one = Document(host=host_to_service)
         self.__document_one_was_uploaded = __document_one.uploading_document()
         self.__host = host_to_service
 
@@ -102,10 +104,13 @@ class AggregatedPlan:
         }
 
     def build_aggregatedPlan_payload(self):
+        """Build payload."""
         return self.__payload
 
     def delete_optional_fields(
             self, *args, procuringEntity_additionalIdentifiers_position=0, document_position=0):
+        """ Delete optional fields from payload."""
+
         for a in args:
             if a == "tender.procurementMethodRationale":
                 del self.__payload['tender']['procurementMethodRationale']
@@ -121,11 +126,9 @@ class AggregatedPlan:
             elif a == "tender.procuringEntity.address.postalCode":
                 del self.__payload['tender']['procuringEntity']['address']['postalCode']
             elif a == "tender.procuringEntity.contactPoint.faxNumber":
-                del self.__payload['tender']['procuringEntity'][
-                    'contactPoint']['faxNumber']
+                del self.__payload['tender']['procuringEntity']['contactPoint']['faxNumber']
             elif a == "tender.procuringEntity.contactPoint.url":
-                del self.__payload['tender']['procuringEntity'][
-                    'contactPoint']['url']
+                del self.__payload['tender']['procuringEntity']['contactPoint']['url']
 
             elif a == "tender.documents":
                 del self.__payload['tender']['documents']
@@ -137,6 +140,7 @@ class AggregatedPlan:
 
     def customize_tender_procuringEntity_additionalIdentifiers(
             self, quantity_of_tender_procuringEntity_additionalIdentifiers):
+        """ Customize tender.procuringEntity.additionalIdentifiers array."""
 
         new_additionalIdentifiers_array = list()
         for q in range(quantity_of_tender_procuringEntity_additionalIdentifiers):
@@ -159,12 +163,13 @@ class AggregatedPlan:
         self.__payload['tender']['procuringEntity']['additionalIdentifiers'] = new_additionalIdentifiers_array
 
     def customize_tender_documents(self, quantity_of_documents):
+        """Customize tender.documents array."""
 
         new_documents_array = list()
         for q_0 in range(quantity_of_documents):
             new_documents_array.append(copy.deepcopy(self.__payload['tender']['documents'][0]))
 
-            document_two = Document(host=self.__host, file_name="API.pdf")
+            document_two = Document(host=self.__host)
             document_two_was_uploaded = document_two.uploading_document()
 
             new_documents_array[q_0]['id'] = document_two_was_uploaded[0]["data"]["id"]

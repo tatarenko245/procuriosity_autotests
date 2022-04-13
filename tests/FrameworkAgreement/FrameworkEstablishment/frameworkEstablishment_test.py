@@ -1,3 +1,4 @@
+""" Test of Framework Establishment process for Framework Agreement procedure. """
 import copy
 import json
 import random
@@ -6,17 +7,17 @@ import allure
 import requests
 from deepdiff import DeepDiff
 
-from tests.utils.MessageModels.FrameworkAgreement.relationAggregatedPlan_message import RelationApMessage
+
 from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditureItem_payload import ExpenditureItemPayload
 from tests.utils.PayloadModels.Budget.FinancialSource.financialSource_payload import FinancialSourcePayload
 from tests.utils.PayloadModels.FrameworkAgreement.AggregatedPlan.aggregatedPlan_payload import AggregatedPlan
+from tests.utils.PayloadModels.FrameworkAgreement.AggregatedPlan.updateAggregatedPlan_payload import \
+    UpdateAggregatedPlan
 from tests.utils.PayloadModels.FrameworkAgreement.FrameworkEstablishment.frameworkEstablishment_payload import \
     FrameworkEstablishmentPayload
 from tests.utils.PayloadModels.FrameworkAgreement.PlanningNotice.planingNotice_payload import PlanningNoticePayload
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.data_of_enum import currency_tuple
-from tests.utils.functions_collection.functions import get_value_from_country_csv, get_value_from_region_csv, \
-    get_value_from_locality_csv, is_it_uuid
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
 from tests.utils.platform_query_library import PlatformQueryRequest
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -26,8 +27,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.suite('RelationAggregatedPlan')
 @allure.sub_suite('BPE: Relation Aggregated Plan')
 @allure.severity('Critical')
-@allure.testcase(url=None,
-                 name=None)
+@allure.testcase(url=None)
 class TestCreatePn:
     @allure.title("Check PN, MS, AP_release and MS of CPB releases after RelationAggregatedPlan process, "
                   "without optional fields. \n"
@@ -49,15 +49,6 @@ class TestCreatePn:
                   "RelationAggregatedPlan process: payload is not needed.\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                     prepare_tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator):
-
-        metadata_tender_url = None
-        try:
-            if parse_environment == "dev":
-                metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
-            elif parse_environment == "sandbox":
-                metadata_tender_url = "http://public.eprocurement.systems/tenders"
-        except ValueError:
-            raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateEi process.'):
@@ -395,7 +386,8 @@ class TestCreatePn:
                     "tender.procuringEntity.additionalIdentifiers",
                     "tender.procuringEntity.address.postalCode",
                     "tender.procuringEntity.contactPoint.faxNumber",
-                    "tender.procuringEntity.contactPoint.url"
+                    "tender.procuringEntity.contactPoint.url",
+                    "tender.documents"
                 )
 
                 ap_payload = ap_payload.build_aggregatedPlan_payload()
@@ -525,6 +517,7 @@ class TestCreatePn:
             )
 
             relationAp_message_1 = get_message_for_platform(relationAp_1_operationId)
+            allure.attach(str(relationAp_message_1), 'Message for platform.')
 
         step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: second RelationAggregatedPlan process.'):
@@ -541,7 +534,7 @@ class TestCreatePn:
             """
             Send api request to BPE host to create a RelationAggregatedPlan process.
             """
-            synchronous_result = PlatformQueryRequest().do_relation_proces(
+            PlatformQueryRequest().do_relation_proces(
                 host_to_bpe=get_hosts[1],
                 access_token=accessToken,
                 x_operation_id=relationAp_2_operationId,
@@ -554,6 +547,65 @@ class TestCreatePn:
             )
 
             relationAp_message_2 = get_message_for_platform(relationAp_2_operationId)
+            allure.attach(str(relationAp_message_2), 'Message for platform.')
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Authorization platform one: UpdateAggregatedPlan process.'):
+            """
+            Tender platform authorization for UpdateAggregatedPlan process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            platform_one = PlatformAuthorization(get_hosts[1])
+            accessToken = platform_one.get_access_token_for_platform_one()
+            updateAp_operationId = platform_one.get_x_operation_id(accessToken)
+
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create a UpdateAggregatedPlan process.'):
+            """
+            Send api request to BPE host to create a UpdateAggregatedPlan process.
+            And save in variable ocid and token..
+            """
+            try:
+                """
+                Build payload for UpdateAggregatedPlan process.
+                """
+                update_ap_payload = copy.deepcopy(UpdateAggregatedPlan(
+                    host_to_service=get_hosts[2],
+                    currency=currency,
+                    createAp_payload=ap_payload,
+                    maxDurationOfFA=maxDurationOfFA,
+                    tenderClassificationId=prepare_tenderClassificationId)
+                )
+
+                # Read the rule VR.COM-1.26.14.
+                update_ap_payload.delete_optional_fields(
+                    "tender.procurementMethodRationale",
+                    "tender.lots.internalId",
+                    # "tender.lots.placeOfPerformance",
+                    "tender.items.internalId",
+                    "tender.items.additionalClassifications",
+                    "tender.items.deliveryAddress",
+                    "tender.documents",
+                    "tender.value"
+                )
+
+                update_ap_payload = update_ap_payload.build_updateAggregatedPlan_payload()
+            except ValueError:
+                raise ValueError("Impossible to build payload for UpdateAggregatedPlan process.")
+
+            PlatformQueryRequest().update_ap_process(
+                host_to_bpe=get_hosts[1],
+                ap_cpid=ap_cpid,
+                ap_ocid=ap_ocid,
+                access_token=accessToken,
+                x_operation_id=updateAp_operationId,
+                ap_token=ap_token,
+                payload=update_ap_payload,
+                testMode=True
+            )
+
+            updateAp_message = get_message_for_platform(updateAp_operationId)
+            allure.attach(str(updateAp_message), 'Message for platform.')
 
         step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateFrameworkEstablishment process.'):
@@ -588,13 +640,14 @@ class TestCreatePn:
                 )
                 fe_payload.customize_tender_criteria()
 
-                fe_payload.customize_tender_documents(quantity_of_documents=2)
+                fe_payload.customize_tender_documents(quantity_of_new_documents=2)
 
                 fe_payload = fe_payload.build_frameworkEstablishment_payload()
-                print("FE payload")
-                print(json.dumps(fe_payload))
             except ValueError:
                 raise ValueError("Impossible to build payload for CreateFe process.")
+
+            print("FE payload")
+            print(json.dumps(fe_payload))
 
             synchronous_result = PlatformQueryRequest().create_fe_proces(
                 host_to_bpe=get_hosts[1],

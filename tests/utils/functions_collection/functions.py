@@ -19,6 +19,7 @@ from tests.utils.data_of_enum import cpv_goods_low_level_03_tuple, cpv_goods_low
     cpv_services_low_level_8_tuple, \
     cpv_services_low_level_92_tuple, cpv_services_low_level_98_tuple, locality_id_tuple
 from tests.utils.date_class import Date
+from tests.utils.iStorage import Document
 from tests.utils.services.e_mdm_service import MdmService
 import time
 
@@ -157,7 +158,10 @@ def generate_lots_array(quantity_of_object, lot_object):
     for i in range(quantity_of_object):
         lot_json = copy.deepcopy(lot_object)
         lot_json['id'] = str(i)
-        lot_json['value']['amount'] = round(float(lot_object['value']['amount'] / quantity_of_object), 2)
+
+        if "value" in lot_object:
+            lot_json['value']['amount'] = round(float(lot_object['value']['amount'] / quantity_of_object), 2)
+
         lots_array.append(lot_json)
 
     new_array_lots = []
@@ -182,6 +186,7 @@ def generate_criteria_array(host_to_service, country, language, environment, qua
             requirementGroups_object=criteria_json['requirementGroups'][0],
             quantity_of_requirements_object=quantity_of_requirements_object,
             quantity_of_evidences_object=quantity_of_evidences_object,
+            host_to_service=host_to_service
         )
         for j in range(quantity_of_groups_object):
             criteria_json['requirementGroups'][j]['id'] = f"{criteria_json['id']}-{j}"
@@ -205,7 +210,7 @@ def generate_criteria_array(host_to_service, country, language, environment, qua
     return new_array_criteria
 
 
-def generate_criteria_requirementGroups_array(quantity_of_object, requirementGroups_object,
+def generate_criteria_requirementGroups_array(quantity_of_object, requirementGroups_object, host_to_service,
                                               quantity_of_requirements_object, quantity_of_evidences_object):
     copy.deepcopy(requirementGroups_object)
     requirementGroups_array = []
@@ -215,7 +220,8 @@ def generate_criteria_requirementGroups_array(quantity_of_object, requirementGro
         requirementGroups_json['requirements'] = generate_criteria_requirementGroups_requirements(
             quantity_of_object=quantity_of_requirements_object,
             requirement_object=requirementGroups_json['requirements'][0],
-            quantity_of_evidences_object=quantity_of_evidences_object)
+            quantity_of_evidences_object=quantity_of_evidences_object,
+            host_to_service=host_to_service)
         requirementGroups_array.append(requirementGroups_json)
 
     new_array_requirementGroups = []
@@ -226,7 +232,7 @@ def generate_criteria_requirementGroups_array(quantity_of_object, requirementGro
 
 
 def generate_criteria_requirementGroups_requirements(
-        quantity_of_object, requirement_object, quantity_of_evidences_object):
+        quantity_of_object, requirement_object, quantity_of_evidences_object, host_to_service):
 
     copy.deepcopy(requirement_object)
     requirements_array = []
@@ -236,7 +242,8 @@ def generate_criteria_requirementGroups_requirements(
         requirement_json['eligibleEvidences'] = \
             generate_criteria_requirementGroups_requirements_eligibleEvidences_array(
                 quantity_of_object=quantity_of_evidences_object,
-                eligibleEvidences_object=requirement_json['eligibleEvidences'][0])
+                eligibleEvidences_object=requirement_json['eligibleEvidences'][0],
+                host_to_service=host_to_service)
         requirements_array.append(requirement_json)
 
     new_array_requirements = []
@@ -247,12 +254,17 @@ def generate_criteria_requirementGroups_requirements(
 
 
 def generate_criteria_requirementGroups_requirements_eligibleEvidences_array(
-        quantity_of_object, eligibleEvidences_object):
+        quantity_of_object, eligibleEvidences_object, host_to_service):
 
     copy.deepcopy(eligibleEvidences_object)
     eligibleEvidences_array = []
     for i in range(quantity_of_object):
         eligibleEvidences_json = copy.deepcopy(eligibleEvidences_object)
+        if "relatedDocument" in eligibleEvidences_json[i]:
+            document_one = Document(host=host_to_service)
+            document_one_was_uploaded = document_one.uploading_document()
+
+            eligibleEvidences_json[i]['relatedDocument']['id'] = document_one_was_uploaded[0]["data"]["id"]
         eligibleEvidences_json['id'] = str(i)
         eligibleEvidences_array.append(eligibleEvidences_json)
 

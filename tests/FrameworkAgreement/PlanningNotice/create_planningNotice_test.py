@@ -1,3 +1,4 @@
+""" Test of Planning Notice process for Framework Agreement procedure. """
 import copy
 import json
 import random
@@ -22,8 +23,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.suite('PN')
 @allure.sub_suite('BPE: Create PN_release')
 @allure.severity('Critical')
-@allure.testcase(url=None,
-                 name=None)
+@allure.testcase(url=None)
 class TestCreatePn:
     @allure.title("Check PN and MS releases after CreatePlanningNotice process, without optional fields. \n"
                   "------------------------------------------------\n"
@@ -290,7 +290,6 @@ class TestCreatePn:
                     expected_message = copy.deepcopy(PlanningNoticeMessage(
                         environment=parse_environment,
                         actual_message=actual_message,
-                        expected_quantity_of_outcomes_pn=1,
                         testMode=True)
                     )
 
@@ -374,47 +373,47 @@ class TestCreatePn:
                 #                                       f"process_id = '{processId}' ALLOW FILTERING;",
                 #                                       "Cassandra DataBase: steps of process.")
 
-                    # try:
-                    #     """
-                    #     CLean up the database.
-                    #     """
-                    #     # Clean after crateEi process:
-                    #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
-                    #         connect_to_ocds,
-                    #         ei_operationId
-                    #     )
-                    #
-                    #     database.cleanup_table_of_services_for_expenditureItem(
-                    #         connect_to_ocds,
-                    #         ei_cpid
-                    #     )
-                    #
-                    #     # Clean after crateFs process:
-                    #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
-                    #         connect_to_ocds,
-                    #         fs_1_operationId
-                    #     )
-                    #
-                    #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
-                    #         connect_to_ocds,
-                    #         fs_2_operationId
-                    #     )
-                    #
-                    #     database.cleanup_table_of_services_for_financialSource(
-                    #         connect_to_ocds,
-                    #         ei_cpid
-                    #     )
-                    #
-                    #     # Clean after cratePn process:
-                    #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
-                    #         connect_to_ocds,
-                    #         pn_operationId
-                    #     )
-                    #
-                    #     database.cleanup_table_of_services_for_planningNotice(
-                    #         connect_to_ocds,
-                    #         connect_to_access,
-                    #         pn_cpid
-                    #     )
-                    # except ValueError:
-                    #     raise ValueError("Impossible to cLean up the database.")
+                # try:
+                #     """
+                #     CLean up the database.
+                #     """
+                #     # Clean after crateEi process:
+                #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                #         connect_to_ocds,
+                #         ei_operationId
+                #     )
+                #
+                #     database.cleanup_table_of_services_for_expenditureItem(
+                #         connect_to_ocds,
+                #         ei_cpid
+                #     )
+                #
+                #     # Clean after crateFs process:
+                #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                #         connect_to_ocds,
+                #         fs_1_operationId
+                #     )
+                #
+                #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                #         connect_to_ocds,
+                #         fs_2_operationId
+                #     )
+                #
+                #     database.cleanup_table_of_services_for_financialSource(
+                #         connect_to_ocds,
+                #         ei_cpid
+                #     )
+                #
+                #     # Clean after cratePn process:
+                #     database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                #         connect_to_ocds,
+                #         pn_operationId
+                #     )
+                #
+                #     database.cleanup_table_of_services_for_planningNotice(
+                #         connect_to_ocds,
+                #         connect_to_access,
+                #         pn_cpid
+                #     )
+                # except ValueError:
+                #     raise ValueError("Impossible to cLean up the database.")

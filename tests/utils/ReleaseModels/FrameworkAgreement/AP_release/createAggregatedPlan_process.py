@@ -1,3 +1,4 @@
+"""Prepare expected releases of Aggregated Plan process of Framework Agreement procedure."""
 import copy
 
 from tests.utils.functions_collection.functions import get_value_from_cpv_dictionary_xls, get_value_from_country_csv, \
@@ -5,6 +6,7 @@ from tests.utils.functions_collection.functions import get_value_from_cpv_dictio
 
 
 class CreateAggregatedPlanRelease:
+    """Class prepares instance of AP and MS releases."""
     def __init__(self, environment, host_to_service, language, pmd, ap_payload, ap_message, actual_ap_release,
                  actual_ms_release):
 
@@ -261,7 +263,7 @@ class CreateAggregatedPlanRelease:
         }
 
     def build_expected_ap_release(self):
-        # Build or delete optional fields.
+        """Build AP release."""
 
         if "documents" in self.__ap_payload['tender']:
             try:
@@ -489,6 +491,7 @@ class CreateAggregatedPlanRelease:
         return self.__expected_ap_release
 
     def build_expected_ms_release(self):
+        """Build MS release."""
 
         # Build the releases.tender object. Enrich or delete optional fields and enrich required fields:
         is_permanent_tender_id_correct = is_it_uuid(

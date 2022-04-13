@@ -1,3 +1,4 @@
+""" Test of Create Aggregated Plan process for Framework Agreement procedure. """
 import copy
 import json
 import allure
@@ -17,8 +18,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.suite('AP_release')
 @allure.sub_suite('BPE: Create AP_release')
 @allure.severity('Critical')
-@allure.testcase(url=None,
-                 name=None)
+@allure.testcase(url=None)
 class TestCreatePn:
     @allure.title("Check AP_release and MS releases after CreateAp process, without optional fields. \n"
                   "------------------------------------------------\n"
@@ -64,7 +64,8 @@ class TestCreatePn:
                     "tender.procuringEntity.additionalIdentifiers",
                     "tender.procuringEntity.address.postalCode",
                     "tender.procuringEntity.contactPoint.faxNumber",
-                    "tender.procuringEntity.contactPoint.url"
+                    "tender.procuringEntity.contactPoint.url",
+                    "tender.documents"
                 )
 
                 ap_payload = ap_payload.build_aggregatedPlan_payload()
@@ -110,7 +111,6 @@ class TestCreatePn:
                     expected_message = copy.deepcopy(AggregatedPlanMessage(
                         environment=parse_environment,
                         actual_message=actual_message,
-                        expected_quantity_of_outcomes_ap=1,
                         testMode=True)
                     )
 

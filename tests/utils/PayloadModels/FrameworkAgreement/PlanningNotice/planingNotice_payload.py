@@ -1,3 +1,4 @@
+"""Prepare payload for Planning NOtice process of Framework Agreement procedure."""
 import copy
 import random
 
@@ -16,12 +17,13 @@ from tests.utils.iStorage import Document
 
 
 class PlanningNoticePayload:
+    """Class prepare instance of payload."""
     def __init__(self, fs_id, amount, currency, tenderClassificationId, host_to_service):
 
         __pn_period = Date().planningNotice_period()
         __contactPeriod = Date().contactPeriod()
 
-        __document_one = Document(host=host_to_service, file_name="API.pdf")
+        __document_one = Document(host=host_to_service)
         self.__document_one_was_uploaded = __document_one.uploading_document()
 
         self.__amount = amount
@@ -154,10 +156,13 @@ class PlanningNoticePayload:
         }
 
     def build_plan_payload(self):
+        """Build payload."""
         return self.__payload
 
     def delete_optional_fields(
             self, *args, lot_position=0, item_position=0, additionalClassification_position=0, document_position=0):
+        """Delete option fields from payload."""
+
         for a in args:
             if a == "planning.rationale":
                 del self.__payload['planning']['rationale']
@@ -198,12 +203,15 @@ class PlanningNoticePayload:
                 raise KeyError(f"Impossible to delete attribute by path {a}.")
 
     def get_lots_id_from_payload(self):
+        """Get lots.id from payload."""
+
         lot_id_list = list()
         for q in range(len(self.__payload['tender']['lots'])):
             lot_id_list.append(self.__payload['tender']['lots'][q]['id'])
         return lot_id_list
 
     def customize_planning_budget_budgetBreakdown(self, list_of_fs_id):
+        """Customize planning.budget.budgetBreakdown array."""
 
         new_budgetBreakdown_array = list()
         for q in range(len(list_of_fs_id)):
@@ -253,6 +261,8 @@ class PlanningNoticePayload:
         self.__payload['tender']['items'] = new_items_array
 
     def customize_tender_lots(self, quantity_of_lots):
+        """Customize tender.lots array."""
+
         new_lots_array = generate_lots_array(
             quantity_of_object=quantity_of_lots,
             lot_object=copy.deepcopy(self.__payload['tender']['lots'][0])
@@ -304,7 +314,7 @@ class PlanningNoticePayload:
         for q_0 in range(quantity_of_documents):
             new_documents_array.append(copy.deepcopy(self.__payload['tender']['documents'][0]))
 
-            document_two = Document(host=self.__host, file_name="API.pdf")
+            document_two = Document(host=self.__host)
             document_two_was_uploaded = document_two.uploading_document()
 
             new_documents_array[q_0]['id'] = document_two_was_uploaded[0]["data"]["id"]

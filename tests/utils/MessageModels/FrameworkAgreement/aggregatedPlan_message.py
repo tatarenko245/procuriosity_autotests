@@ -1,3 +1,4 @@
+""" Prepare expected message of Aggregated Plan process for Framework Agreement procedure, for platform. """
 import copy
 import fnmatch
 
@@ -5,6 +6,7 @@ from tests.utils.functions_collection.functions import is_it_uuid
 
 
 class AggregatedPlanMessage:
+    """ Class create instanse of message for platform."""
     def __init__(self, environment, actual_message, expected_quantity_of_outcomes_ap=1, testMode=False):
         self.__environment = environment
         self.__actual_message = actual_message
@@ -36,6 +38,7 @@ class AggregatedPlanMessage:
         }
 
     def build_expected_message_for_pn_process(self):
+        """ Build message."""
         if "X-OPERATION-ID" in self.__actual_message:
             is_operation_id_correct = is_it_uuid(self.__actual_message['X-OPERATION-ID'])
 

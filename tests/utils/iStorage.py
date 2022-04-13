@@ -1,11 +1,19 @@
+"""Upload and register some document into iStorage."""
 import hashlib
 import os
+from pathlib import Path
+
 import requests
 
-from tests.utils.functions_collection.functions import get_project_root
+
+def get_project_root() -> Path:
+    """This function returns root dir"""
+    return Path(__file__).parent.parent.parent
 
 
 class Document:
+    """This class prepares instance of document."""
+
     def __init__(self, host, file_name="API.pdf"):
         # The 'get_project_root()' get root dir
         self.path = get_project_root() / file_name
@@ -16,6 +24,8 @@ class Document:
         self.host_for_services = host
 
     def uploading_document(self):
+        """Upload some document."""
+
         with open(self.path, 'rb') as f:
             self.m = hashlib.md5()
             while True:

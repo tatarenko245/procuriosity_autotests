@@ -1,18 +1,21 @@
+"""Prepare payload for Framework Establishment process of Framework Agreement procedure."""
 import copy
 import random
 
 from tests.utils.data_of_enum import person_title_tuple, documentType_tuple, business_function_type_2_tuple, \
     qualificationSystemMethod_tuple, reductionCriteria_tuple
 from tests.utils.date_class import Date
-from tests.utils.functions_collection.functions import generate_criteria_array, \
+from tests.utils.functions_collection.functions import \
     set_eligibility_evidences_unique_temporary_id, set_criteria_array_unique_temporary_id
+from tests.utils.functions_collection.generate_criteria_array import CriteriaArray
 from tests.utils.iStorage import Document
 from tests.utils.services.e_mdm_service import MdmService
 
 
 class FrameworkEstablishmentPayload:
+    """This class prepares payload."""
     def __init__(self, ap_payload, host_to_service, country, language, environment):
-        __document_one = Document(host=host_to_service, file_name="API.pdf")
+        __document_one = Document(host=host_to_service)
         self.__document_one_was_uploaded = __document_one.uploading_document()
         self.__document_two_was_uploaded = __document_one.uploading_document()
         self.__host = host_to_service
@@ -74,7 +77,7 @@ class FrameworkEstablishmentPayload:
                     "id": "0",
                     "title": "create fe: tender.criteria[0].title",
                     "description": "create fe: tender.criteria[0].description",
-                    "relatedTo": "tenderer",
+                    "relatesTo": "tenderer",
                     "requirementGroups": [{
                         "id": "0-0",
                         "description": "create fe: tender.criteria[0].requirementGroups[0].description",
@@ -103,9 +106,7 @@ class FrameworkEstablishmentPayload:
 
                                 "type": "document",
                                 "relatedDocument": {
-                                    "id": self.__document_two_was_uploaded[0]['data']['id'],
-                                    "title": "create fe: tender.criteria[0].requirementGroups[0]."
-                                               "requirements[0].eligibleEvidences[0].relatedDocument.title"
+                                    "id": self.__document_two_was_uploaded[0]['data']['id']
                                 }
                             }]
                         }]
@@ -116,7 +117,7 @@ class FrameworkEstablishmentPayload:
                     }
                 }],
                 "otherCriteria": {
-                    "qualificationSystemMethod": f"{random.choice(qualificationSystemMethod_tuple)}",
+                    "qualificationSystemMethods": [f"{random.choice(qualificationSystemMethod_tuple)}"],
                     "reductionCriteria": f"{random.choice(reductionCriteria_tuple)}"
                 },
                 "documents": [{
@@ -129,6 +130,7 @@ class FrameworkEstablishmentPayload:
         }
 
     def build_frameworkEstablishment_payload(self):
+        """Build payload."""
         return self.__payload
 
     def delete_optional_fields(
@@ -139,6 +141,7 @@ class FrameworkEstablishmentPayload:
             tender_criteria_requirementGroups_requirements_position=0,
             tender_criteria_requirementGroups_requirements_eligibleEvidences_position=0,
             tender_documents_position=0):
+        """Delete optional fields from payload."""
 
         for a in args:
             if a == "tender.secondStage":
@@ -214,6 +217,7 @@ class FrameworkEstablishmentPayload:
     def customize_tender_procuringEntity_persones(
             self, quantity_of_persones_objects, quantity_of_businessFunctions_objects,
             quantity_of_businessFunctions_documents_objects):
+        """Customize tender.procuringEntity.persones array."""
 
         new_persones_array = list()
         for q_0 in range(quantity_of_persones_objects):
@@ -224,6 +228,7 @@ class FrameworkEstablishmentPayload:
             new_persones_array[q_0]['title'] = f"{random.choice(person_title_tuple)}"
             new_persones_array[q_0]['name'] = f"create fe: tender.procuringEntity.persones[{q_0}].name"
             new_persones_array[q_0]['identifier']['scheme'] = "MD-IDNO"
+            new_persones_array[q_0]['identifier']['id'] = f"create fe: tender.procuringEntity.persones[{q_0}].id"
             new_persones_array[q_0]['identifier']['uri'] = f"create fe: tender.procuringEntity.persones[{q_0}].uri"
 
             new_persones_array[q_0]['businessFunctions'] = list()
@@ -251,7 +256,7 @@ class FrameworkEstablishmentPayload:
                             'documents'][0])
                     )
 
-                    document_three = Document(host=self.__host, file_name="API.pdf")
+                    document_three = Document(host=self.__host)
                     document_three_was_uploaded = document_three.uploading_document()
 
                     new_persones_array[q_0]['businessFunctions'][q_1]['documents'][q_2]['id'] = \
@@ -271,6 +276,7 @@ class FrameworkEstablishmentPayload:
         self.__payload['tender']['procuringEntity']['persones'] = new_persones_array
 
     def customize_tender_criteria(self):
+        """Customize tender.criteria array."""
 
         # Get all 'standard' criteria from eMDM service.
         mdm_service = MdmService(
@@ -283,62 +289,75 @@ class FrameworkEstablishmentPayload:
         )
 
         # Prepare 'exclusion' criteria for payload.
-        exclusion_criteria_object = copy.deepcopy(self.__payload['tender']['criteria'][0])
-
-        exclusion_criteria_object['requirementGroups'][0]['requirements'][0]['dataType'] = "boolean"
-        exclusion_criteria_object['requirementGroups'][0]['requirements'][0]['expectedValue'] = False
-        del exclusion_criteria_object['requirementGroups'][0]['requirements'][0]['minValue']
-        del exclusion_criteria_object['requirementGroups'][0]['requirements'][0]['maxValue']
-
-        exclusion_criteria_array = generate_criteria_array(
+        some_criteria = CriteriaArray(
             host_to_service=self.__host,
             country=self.__country,
             language=self.__language,
             environment=self.__environment,
-            quantity_of_criteria_object=len(standard_criteria[1]),
-            criteria_object=exclusion_criteria_object,
-            quantity_of_groups_object=1,
-            quantity_of_requirements_object=2,
-            quantity_of_evidences_object=2,
-            type_of_standard_criteria=1
+            quantity_of_criteria_objects=len(standard_criteria[1]),
+            quantity_of_requirementGroups_objects=1,
+            quantity_of_requirements_objects=2,
+            quantity_of_eligibleEvidences_objects=2,
+            type_of_standardCriteria=1
         )
+
+        some_criteria.delete_optional_fields(
+            "criteria.description",
+            "criteria.requirementGroups.description",
+            "criteria.requirementGroups.requirements.description",
+            "criteria.requirementGroups.requirements.period",
+            "criteria.requirementGroups.requirements.minValue",
+            "criteria.requirementGroups.requirements.maxValue",
+            "criteria.requirementGroups.requirements.eligibleEvidences"
+        )
+
+        some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
+        some_criteria.set_unique_temporary_id_for_eligibleEvidences()
+        some_criteria.set_unique_temporary_id_for_criteria()
+        exclusion_criteria_array = some_criteria.build_criteria_array()
 
         # Prepare 'selection' criteria for payload.
-        selection_criteria_object = copy.deepcopy(self.__payload['tender']['criteria'][0])
-
-        selection_criteria_object['requirementGroups'][0]['requirements'][0]['dataType'] = "number"
-        selection_criteria_object['requirementGroups'][0]['requirements'][0]['minValue'] = 0.99
-        selection_criteria_object['requirementGroups'][0]['requirements'][0]['maxValue'] = 99.99
-        del selection_criteria_object['requirementGroups'][0]['requirements'][0]['expectedValue']
-
-        selection_criteria_array = generate_criteria_array(
+        some_criteria = CriteriaArray(
             host_to_service=self.__host,
             country=self.__country,
             language=self.__language,
             environment=self.__environment,
-            quantity_of_criteria_object=len(standard_criteria[2]),
-            criteria_object=selection_criteria_object,
-            quantity_of_groups_object=2,
-            quantity_of_requirements_object=2,
-            quantity_of_evidences_object=2,
-            type_of_standard_criteria=2
+            quantity_of_criteria_objects=len(standard_criteria[2]),
+            quantity_of_requirementGroups_objects=2,
+            quantity_of_requirements_objects=2,
+            quantity_of_eligibleEvidences_objects=2,
+            type_of_standardCriteria=2
         )
+
+        some_criteria.delete_optional_fields(
+            "criteria.description",
+            "criteria.requirementGroups.description",
+            "criteria.requirementGroups.requirements.description",
+            "criteria.requirementGroups.requirements.period",
+            "criteria.requirementGroups.requirements.expectedValue",
+            "criteria.requirementGroups.requirements.eligibleEvidences"
+        )
+
+        some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
+        some_criteria.set_unique_temporary_id_for_eligibleEvidences()
+        some_criteria.set_unique_temporary_id_for_criteria()
+        selection_criteria_array = some_criteria.build_criteria_array()
 
         # Prepare new criteria array.
         new_criteria_array = exclusion_criteria_array + selection_criteria_array
         new_criteria_array = set_eligibility_evidences_unique_temporary_id(new_criteria_array)
-
         new_criteria_array = set_criteria_array_unique_temporary_id(new_criteria_array)
 
         self.__payload['tender']['criteria'] = new_criteria_array
 
-    def customize_tender_documents(self, quantity_of_documents):
+    def customize_tender_documents(self, quantity_of_new_documents):
+        """Customize tender.documents array."""
 
         new_documents_array = list()
-        for q_0 in range(quantity_of_documents):
+        for q_0 in range(quantity_of_new_documents):
             new_documents_array.append(copy.deepcopy(self.__payload['tender']['documents'][0]))
 
-            document_four = Document(host=self.__host, file_name="API.pdf")
+            document_four = Document(host=self.__host)
             document_four_was_uploaded = document_four.uploading_document()
 
             new_documents_array[q_0]['id'] = document_four_was_uploaded[0]["data"]["id"]
@@ -346,7 +365,43 @@ class FrameworkEstablishmentPayload:
             new_documents_array[q_0]['title'] = f"create fe: tender.documents{q_0}.title"
             new_documents_array[q_0]['description'] = f"create fe: tender.documents{q_0}.description"
 
-        self.__payload['tender']['documents'] = new_documents_array
+        eligibleEvidences_documents_array = list()
+        if "criteria" in self.__payload['tender']:
+            for e_0 in range(len(self.__payload['tender']['criteria'])):
+                for e_1 in range(len(self.__payload['tender']['criteria'][e_0]['requirementGroups'])):
+
+                    for e_2 in range(len(self.__payload['tender']['criteria'][e_0]['requirementGroups'][e_1][
+                                             'requirements'])):
+
+                        if "eligibleEvidences" in self.__payload['tender']['criteria'][e_0][
+                                'requirementGroups'][e_1]['requirements'][e_2]:
+
+                            for e_3 in range(len(self.__payload['tender']['criteria'][e_0][
+                                    'requirementGroups'][e_1]['requirements'][e_2]['eligibleEvidences'])):
+
+                                if "relatedDocument" in self.__payload['tender']['criteria'][e_0][
+                                        'requirementGroups'][e_1]['requirements'][e_2]['eligibleEvidences'][e_3]:
+
+                                    eligibleEvidences_document_object = copy.deepcopy(
+                                        self.__payload['tender']['documents'][0])
+
+                                    eligibleEvidences_document_object['id'] = \
+                                        self.__payload['tender']['criteria'][e_0]['requirementGroups'][e_1][
+                                            'requirements'][e_2]['eligibleEvidences'][e_3]['relatedDocument']['id']
+
+                                    eligibleEvidences_document_object['documentType'] = \
+                                        f"{random.choice(documentType_tuple)}"
+
+                                    eligibleEvidences_document_object['title'] = \
+                                        f"create fe: tender.documents{len(eligibleEvidences_documents_array)}.title"
+
+                                    eligibleEvidences_document_object['description'] = \
+                                        f"create fe: tender.documents{len(eligibleEvidences_documents_array)}." \
+                                        f"description"
+
+                                    eligibleEvidences_documents_array.append(eligibleEvidences_document_object)
+
+        self.__payload['tender']['documents'] = new_documents_array + eligibleEvidences_documents_array
 
     def __del__(self):
         print(f"The instance of FrameworkEstablishmentPayload class: {__name__} was deleted.")

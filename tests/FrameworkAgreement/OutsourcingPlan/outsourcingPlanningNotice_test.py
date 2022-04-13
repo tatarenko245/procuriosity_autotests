@@ -1,3 +1,4 @@
+""" Test of Outsourcing Planning Notice process for Framework Agreement procedure. """
 import copy
 import json
 import random
@@ -23,8 +24,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.suite('OutsourcingPlanningNotice')
 @allure.sub_suite('BPE: Outsourcing PN_release')
 @allure.severity('Critical')
-@allure.testcase(url=None,
-                 name=None)
+@allure.testcase(url=None)
 class TestCreatePn:
     @allure.title("Check PN, MS, AP_release and MS of CPB releases after OutsourcingPlanningNotice process, "
                   "without optional fields. \n"

@@ -1,3 +1,4 @@
+"""Prepare PN, MS releases for Planning Notice process of Framework Agreement procedure."""
 import copy
 import json
 
@@ -8,6 +9,7 @@ from tests.utils.functions_collection.functions import get_value_from_cpv_dictio
 
 
 class PlanningNoticeRelease:
+    """Class prepares instance of payload. """
     def __init__(self, environment, host_to_service, language, pmd, pn_payload, pn_message, actual_pn_release,
                  actual_ms_release):
 
@@ -404,6 +406,8 @@ class PlanningNoticeRelease:
         }
 
     def build_expected_pn_release(self):
+        """Build PN release."""
+
         # Build or delete optional fields.
         if "lots" in self.__pn_payload['tender']:
             try:
@@ -723,6 +727,7 @@ class PlanningNoticeRelease:
 
     def build_expected_ms_release(self, ei_payload, ei_message, fs_payloads_list, fs_message_list,
                                   tender_classification_id):
+        """ Build MS release."""
 
         # Build the releases.planning object. Enrich or delete optional fields and enrich required fields:
         if "rationale" in self.__pn_payload['planning']:

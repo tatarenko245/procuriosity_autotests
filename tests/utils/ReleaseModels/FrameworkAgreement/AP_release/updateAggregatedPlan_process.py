@@ -1,5 +1,5 @@
+"""Prepare AP, MS releases of Update Aggregated Plan process for Framework Agreement procedure."""
 import copy
-import json
 
 from tests.utils.functions_collection.functions import get_value_from_country_csv, \
     get_value_from_region_csv, get_value_from_locality_csv, is_it_uuid, get_value_from_cpvs_dictionary_csv, \
@@ -7,6 +7,7 @@ from tests.utils.functions_collection.functions import get_value_from_country_cs
 
 
 class UpdateAggregatedPlanRelease:
+    """This class prepare instance of releases."""
     def __init__(self, language, ap_payload, actual_ap_release, actual_ms_release, tenderClassificationId):
 
         self.__language = language
@@ -103,6 +104,7 @@ class UpdateAggregatedPlanRelease:
         ]
 
     def build_expected_lots_array(self):
+        """Build expected lots array."""
 
         new_lots_array = list()
 
@@ -256,6 +258,7 @@ class UpdateAggregatedPlanRelease:
         return self.__expected_lots_array
 
     def build_expected_items_array(self):
+        """Build expected items array."""
 
         new_items_array = list()
 
@@ -445,6 +448,7 @@ class UpdateAggregatedPlanRelease:
         return self.__expected_items_array
 
     def build_expected_mainProcurementCategory(self):
+        """Build expected mainProcurementCategory."""
 
         try:
             """
