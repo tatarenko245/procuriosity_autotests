@@ -2,12 +2,13 @@
 import copy
 import json
 import random
+import time
 
 import allure
 import requests
 from deepdiff import DeepDiff
 
-
+from tests.utils.MessageModels.FrameworkAgreement.frameworkEstablishment_message import FrameworkEstablishmentMessage
 from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditureItem_payload import ExpenditureItemPayload
 from tests.utils.PayloadModels.Budget.FinancialSource.financialSource_payload import FinancialSourcePayload
 from tests.utils.PayloadModels.FrameworkAgreement.AggregatedPlan.aggregatedPlan_payload import AggregatedPlan
@@ -16,6 +17,8 @@ from tests.utils.PayloadModels.FrameworkAgreement.AggregatedPlan.updateAggregate
 from tests.utils.PayloadModels.FrameworkAgreement.FrameworkEstablishment.frameworkEstablishment_payload import \
     FrameworkEstablishmentPayload
 from tests.utils.PayloadModels.FrameworkAgreement.PlanningNotice.planingNotice_payload import PlanningNoticePayload
+from tests.utils.ReleaseModels.FrameworkAgreement.FE_release.frameworkEstablishment_process import \
+    FrameworkEstablishmentRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.data_of_enum import currency_tuple
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
@@ -55,7 +58,8 @@ class TestCreatePn:
                   "\nRelationAggregatedPlan process: payload is not needed.\n"
                   "\n===================================================================================\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
-                    prepare_tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator):
+                    prepare_tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator,
+                    connect_to_clarification):
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateEi process.'):
@@ -448,12 +452,6 @@ class TestCreatePn:
             outsourcingPn_message_1 = get_message_for_platform(outsourcingPn_1_operationId)
             allure.attach(str(outsourcingPn_message_1), 'Message for platform.')
 
-            pn_url_1 = f"{pn_1_message['data']['url']}/{pn_1_ocid}"
-            actual_pn_release_1_before_relationAggregatedPlan = requests.get(url=pn_url_1).json()
-
-            ms_url_1 = f"{pn_1_message['data']['url']}/{pn_1_cpid}"
-            actual_ms_release_1_before_relationAggregatedPlan = requests.get(url=ms_url_1).json()
-
         step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: second OutsourcingPlan process.'):
             """
@@ -483,18 +481,6 @@ class TestCreatePn:
 
             outsourcingPn_message_2 = get_message_for_platform(outsourcingPn_2_operationId)
             allure.attach(str(outsourcingPn_message_2), 'Message for platform.')
-
-            pn_url_2 = f"{pn_2_message['data']['url']}/{pn_2_ocid}"
-            actual_pn_release_2_before_relationAggregatedPlan = requests.get(url=pn_url_2).json()
-
-            ms_url_2 = f"{pn_2_message['data']['url']}/{pn_2_cpid}"
-            actual_ms_release_2_before_relationAggregatedPlan = requests.get(url=ms_url_2).json()
-
-        ap_url = f"{ap_message['data']['url']}/{ap_ocid}"
-        actual_ap_release_before_relationAggregatedPlan = requests.get(url=ap_url).json()
-
-        cpb_ms_url = f"{ap_message['data']['url']}/{ap_cpid}"
-        cpb_actual_ms_release_before_relationAggregatedPlan = requests.get(url=cpb_ms_url).json()
 
         step_number += 1
         with allure.step(f'# {step_number}. Authorization platform one: first RelationAggregatedPlan process.'):
@@ -614,8 +600,15 @@ class TestCreatePn:
             updateAp_message = get_message_for_platform(updateAp_operationId)
             allure.attach(str(updateAp_message), 'Message for platform.')
 
+        time.sleep(15)
+        ap_url = f"{ap_message['data']['url']}/{ap_ocid}"
+        actual_ap_release_before_frameworkEstablishment = requests.get(url=ap_url).json()
+
+        cpb_ms_url = f"{ap_message['data']['url']}/{ap_cpid}"
+        cpb_actual_ms_release_before_frameworkEstablishment = requests.get(url=cpb_ms_url).json()
+
         step_number += 1
-        with allure.step(f'# {step_number}. Authorization platform one: CreateFrameworkEstablishment process.'):
+        with allure.step(f'# {step_number}. Authorization platform one: Framework Establishment process.'):
             """
             Tender platform authorization for CreateFrameworkEstablishment process.
             As result get Tender platform's access token and process operation-id.
@@ -625,7 +618,7 @@ class TestCreatePn:
             fe_operationId = platform_one.get_x_operation_id(accessToken)
 
         step_number += 1
-        with allure.step(f'# {step_number}. Send a request to create a CreateFrameworkEstablishment process.'):
+        with allure.step(f'# {step_number}. Send a request to create a Framework Establishment process.'):
             """
             Send api request to BPE host to create a CreateFrameworkEstablishment process.
             """
@@ -667,204 +660,82 @@ class TestCreatePn:
                 testMode=True,
             )
 
-        # step_number += 1
-        # with allure.step(f'# {step_number}. See result of FrameworkEstablishment process.'):
-        #     """
-        #     Check the results of TestCase.
-        #     """
-        #
-        #     with allure.step(f'# {step_number}.1. Check status code'):
-        #         """
-        #         Check the status code of sending the request.
-        #         """
-        #         with allure.step('Compare actual status code and expected status code of sending request.'):
-        #             allure.attach(str(synchronous_result.status_code), "Actual status code.")
-        #             allure.attach(str(202), "Expected status code.")
-        #             assert synchronous_result.status_code == 202
-        #
-        #     with allure.step(f'# {step_number}.2. Check the message of RelationAggregatedPlan for platform.'):
-        #         """
-        #         Check the fs_message for platform.
-        #         """
-        #         actual_message = get_message_for_platform(relationAp_2_operationId)
-        #
-        #         try:
-        #             """
-        #             Build expected message of RelationAggregatedPlan process.
-        #             """
-        #             expected_message = copy.deepcopy(RelationApMessage(
-        #
-        #                 environment=parse_environment,
-        #                 actual_message=actual_message,
-        #                 ap_cpid=ap_cpid,
-        #                 ap_ocid=ap_ocid,
-        #                 testMode=True)
-        #             )
-        #
-        #             expected_message = expected_message.build_expected_message_for_relationAp_process()
-        #         except ValueError:
-        #             raise ValueError("Impossible to build expected message of RelationAggregatedPlan process.")
-        #
-        #         with allure.step('Compare actual and expected message for platform.'):
-        #             allure.attach(json.dumps(actual_message), "Actual message.")
-        #             allure.attach(json.dumps(expected_message), "Expected message.")
-        #
-        #             assert actual_message == expected_message, \
-        #                 allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-        #                               f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
-        #                               "Cassandra DataBase: steps of process.")
-        #
-        #     with allure.step(f'# {step_number}.3. Check PN release.'):
-        #         """
-        #         Compare actual PN release before and after RelationAggregatedPlan process.
-        #         """
-        #         actual_pn_release_2_after_relationAggregatedPlan = requests.get(url=pn_url_2).json()
-        #
-        #         actual_result_of_comparing_releases = dict(DeepDiff(
-        #             actual_pn_release_2_before_relationAggregatedPlan,
-        #             actual_pn_release_2_after_relationAggregatedPlan)
-        #         )
-        #
-        #         expected_result_of_comparing_releases = {
-        #             "values_changed": {
-        #                 "root['releases'][0]['id']": {
-        #                     "new_value":
-        #                         f"{pn_2_ocid}-"
-        #                         f"{actual_pn_release_2_after_relationAggregatedPlan['releases'][0]['id'][46:59]}",
-        #
-        #                     "old_value":
-        #                         f"{pn_2_ocid}-"
-        #                         f"{actual_pn_release_2_before_relationAggregatedPlan['releases'][0]['id'][46:59]}"
-        #                 },
-        #                 "root['releases'][0]['date']": {
-        #                     "new_value": actual_message['data']['operationDate'],
-        #                     "old_value": outsourcingPn_message_2['data']['operationDate']
-        #                 },
-        #                 "root['releases'][0]['tender']['statusDetails']": {
-        #                     "new_value": "aggregated",
-        #                     "old_value": "aggregationPending"
-        #                 }
-        #             }
-        #         }
-        #
-        #         with allure.step('Check differences into actual PN release before and after '
-        #                          'RelationAggregatedPlan process.'):
-        #
-        #             allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-        #             allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
-        #
-        #             assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-        #                 allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-        #                               f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
-        #                               "Cassandra DataBase: steps of process.")
-        #
-        #     with allure.step(f'# {step_number}.4. Check MS releases.'):
-        #         """
-        #         Compare actual MS releases before and after RelationAggregatedPlan process.
-        #         """
-        #         actual_ms_release_2_after_relationAggregatedPlan = requests.get(url=ms_url_2).json()
-        #
-        #         actual_result_of_comparing_releases = dict(DeepDiff(
-        #             actual_ms_release_2_before_relationAggregatedPlan,
-        #             actual_ms_release_2_after_relationAggregatedPlan)
-        #         )
-        #
-        #         expected_result_of_comparing_releases = {}
-        #
-        #         with allure.step('Check differences into actual MS release before and after '
-        #                          'RelationAggregatedPlan process.'):
-        #
-        #             allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-        #             allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
-        #
-        #             assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-        #                 allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-        #                               f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
-        #                               "Cassandra DataBase: steps of process.")
-        #
-        #     with allure.step(f'# {step_number}.5. Check AP release.'):
-        #         """
-        #         Compare actual AP_release release before and after RelationAggregatedPlan process.
-        #         """
-        #         actual_ap_release_after_relationAggregatedPlan = requests.get(url=ap_url).json()
-        #
-        #         actual_result_of_comparing_releases = dict(DeepDiff(
-        #             actual_ap_release_before_relationAggregatedPlan,
-        #             actual_ap_release_after_relationAggregatedPlan)
-        #         )
-        #
-        #         try:
-        #             """
-        #             Prepare expected 'relatedProcess' object with 'relationship' = ['x_scope'].
-        #             """
-        #             is_permanent_relatedProcess_id_correct = is_it_uuid(
-        #                 actual_ap_release_after_relationAggregatedPlan['releases'][0]['relatedProcesses'][2]['id']
-        #             )
-        #
-        #             if is_permanent_relatedProcess_id_correct is True:
-        #                 pass
-        #             else:
-        #                 raise ValueError(f"The releases[0].relatedProcess[2].id must be uuid.")
-        #
-        #             expected_relatedProcess_object_xScope = {
-        #                 "id": actual_ap_release_after_relationAggregatedPlan[
-        #                     'releases'][0]['relatedProcesses'][2]['id'],
-        #
-        #                 "relationship": ["x_scope"],
-        #                 "scheme": "ocid",
-        #                 "identifier": pn_2_ocid,
-        #                 "uri": f"{metadata_tender_url}/{pn_2_cpid}/{pn_2_ocid}"
-        #             }
-        #         except ValueError:
-        #             raise ValueError("Impossible to prepare expected 'relatedProcess' object "
-        #                              "with 'relationship' = ['x_scope'].")
-        #
-        #         try:
-        #             """
-        #             Prepare expected 'tender.value.amount' attribute.
-        #             """
-        #             amount_from_first_pn_payload = list()
-        #             for budget in range(len(pn_1_payload['planning']['budget']['budgetBreakdown'])):
-        #                 amount_from_first_pn_payload.append(
-        #                     pn_1_payload['planning']['budget']['budgetBreakdown'][budget]['amount']['amount'])
-        #
-        #             amount_from_second_pn_payload = list()
-        #             for budget in range(len(pn_2_payload['planning']['budget']['budgetBreakdown'])):
-        #                 amount_from_second_pn_payload.append(
-        #                     pn_2_payload['planning']['budget']['budgetBreakdown'][budget]['amount']['amount'])
-        #
-        #             expected_tender_value_amount = sum(
-        #                 amount_from_first_pn_payload + amount_from_second_pn_payload
-        #             )
-        #         except ValueError:
-        #             raise ValueError("Impossible to prepare expected 'tender.value.amount' attribute.")
-        #
-        #         expected_result_of_comparing_releases = {
-        #             "values_changed": {
-        #                 "root['releases'][0]['id']": {
-        #                     "new_value":
-        #                         f"{ap_ocid}-"
-        #                         f"{actual_ap_release_after_relationAggregatedPlan['releases'][0]['id'][46:59]}",
-        #
-        #                     "old_value":
-        #                         f"{ap_ocid}-"
-        #                         f"{actual_ap_release_before_relationAggregatedPlan['releases'][0]['id'][46:59]}"
-        #                 },
-        #                 "root['releases'][0]['date']": {
-        #                     "new_value": actual_message['data']['operationDate'],
-        #                     "old_value": actual_ap_release_before_relationAggregatedPlan['releases'][0]['date']
-        #                 },
-        #                 "root['releases'][0]['tender']['value']['amount']": {
-        #                     "new_value": expected_tender_value_amount,
-        #
-        #                     "old_value": actual_ap_release_before_relationAggregatedPlan[
-        #                         'releases'][0]['tender']['value']['amount']
-        #                 }
-        #             },
-        #             "iterable_item_added": {
-        #                 "root['releases'][0]['relatedProcesses'][2]": expected_relatedProcess_object_xScope
-        #             }
-        #         }
+        step_number += 1
+        with allure.step(f'# {step_number}. See result of FrameworkEstablishment process.'):
+            """
+            Check the results of TestCase.
+            """
+
+            with allure.step(f'# {step_number}.1. Check status code'):
+                """
+                Check the status code of sending the request.
+                """
+                with allure.step('Compare actual status code and expected status code of sending request.'):
+                    allure.attach(str(synchronous_result.status_code), "Actual status code.")
+                    allure.attach(str(202), "Expected status code.")
+                    assert synchronous_result.status_code == 202
+
+            with allure.step(f'# {step_number}.2. Check the message for the platform, '
+                             f'the FrameworkEstablishment process.'):
+                """
+                Check the message for platform.
+                """
+                actual_message = get_message_for_platform(fe_operationId)
+
+                try:
+                    """
+                    Build expected message of Framework Establishment process.
+                    """
+                    expected_message = copy.deepcopy(FrameworkEstablishmentMessage(
+
+                        environment=parse_environment,
+                        actual_message=actual_message,
+                        testMode=True)
+                    )
+
+                    expected_message = expected_message.build_expected_message()
+                except ValueError:
+                    raise ValueError("Impossible to build expected message of Framework Establishment process.")
+
+                with allure.step('Compare actual and expected message for platform.'):
+                    allure.attach(json.dumps(actual_message), "Actual message.")
+                    allure.attach(json.dumps(expected_message), "Expected message.")
+
+                    processId = CassandraSession().get_processId_by_operationId(connect_to_ocds, fe_operationId)
+                    assert actual_message == expected_message, \
+                        allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                                      f"process_id = '{processId}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
+
+            with allure.step(f'# {step_number}.3. Check FE release.'):
+                """
+                Compare actual and expected FE release.
+                """
+                actual_fe_release = requests.get(url=f"{actual_message['data']['url']}/"
+                                                     f"{actual_message['data']['outcomes']['fe'][0]['id']}").json()
+                print("actual_fe_release")
+                print(json.dumps(actual_fe_release))
+                try:
+                    """
+                    Build expected FE release.
+                    """
+                    expected_release = copy.deepcopy(FrameworkEstablishmentRelease(
+                        environment=parse_environment,
+                        host_to_service=get_hosts[2],
+                        language=parse_language,
+                        pmd=parse_pmd,
+                        fe_payload=ap_payload,
+                        fe_message=actual_message,
+                        actual_fe_release=actual_ap_release,
+                        actual_ms_release=actual_ms_release
+                    ))
+
+                    expected_ap_release = expected_release.build_expected_ap_release()
+                except ValueError:
+                    raise ValueError("Impossible to build expected FE release.")
+
+
+
         #
         #         with allure.step('Check differences into actual AP release before and after '
         #                          'RelationAggregatedPlan process.'):

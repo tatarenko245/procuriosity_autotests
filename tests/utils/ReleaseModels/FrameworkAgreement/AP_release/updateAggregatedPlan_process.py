@@ -1,4 +1,4 @@
-"""Prepare AP, MS releases of Update Aggregated Plan process for Framework Agreement procedure."""
+"""Prepare the expected releases of the update aggregated plan process, framework agreement procedures."""
 import copy
 
 from tests.utils.functions_collection.functions import get_value_from_country_csv, \
@@ -7,7 +7,8 @@ from tests.utils.functions_collection.functions import get_value_from_country_cs
 
 
 class UpdateAggregatedPlanRelease:
-    """This class prepare instance of releases."""
+    """This class creates instance of release."""
+
     def __init__(self, language, ap_payload, actual_ap_release, actual_ms_release, tenderClassificationId):
 
         self.__language = language

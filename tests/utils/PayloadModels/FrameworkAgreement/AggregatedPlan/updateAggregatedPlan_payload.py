@@ -1,4 +1,4 @@
-"""Prepare payload for Update Aggregated Plan procees of Framework Agreement procedure."""
+"""Prepare the expected payloads of the update aggregated plan process, framework agreement procedures."""
 import copy
 import random
 
@@ -11,7 +11,8 @@ from tests.utils.iStorage import Document
 
 
 class UpdateAggregatedPlan:
-    """This class prepares instance of payload."""
+    """This class creates instance of payload."""
+
     def __init__(self, host_to_service, currency, createAp_payload,  tenderClassificationId,
                  maxDurationOfFA):
 

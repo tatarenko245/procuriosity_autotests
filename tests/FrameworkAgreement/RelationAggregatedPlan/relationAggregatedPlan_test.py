@@ -546,7 +546,8 @@ class TestCreatePn:
                     allure.attach(str(202), "Expected status code.")
                     assert synchronous_result.status_code == 202
 
-            with allure.step(f'# {step_number}.2. Check the message of RelationAggregatedPlan for platform.'):
+            with allure.step(f'# {step_number}.2. Check the message for the platform, '
+                             f'the RelationAggregatedPlan process.'):
                 """
                 Check the fs_message for platform.
                 """
@@ -565,7 +566,7 @@ class TestCreatePn:
                         testMode=True)
                     )
 
-                    expected_message = expected_message.build_expected_message_for_relationAp_process()
+                    expected_message = expected_message.build_expected_message()
                 except ValueError:
                     raise ValueError("Impossible to build expected message of RelationAggregatedPlan process.")
 
@@ -916,9 +917,10 @@ class TestCreatePn:
                     allure.attach(str(202), "Expected status code.")
                     assert synchronous_result.status_code == 202
 
-            with allure.step(f'# {step_number}.2. Check the message of RelationAggregatedPlan for platform.'):
+            with allure.step(f'# {step_number}.2. Check the message for the platform, '
+                             f'the RelationAggregatedPlan process.'):
                 """
-                Check the fs_message for platform.
+                Check the message for platform.
                 """
                 actual_message = get_message_for_platform(relationAp_2_operationId)
 
@@ -935,7 +937,7 @@ class TestCreatePn:
                         testMode=True)
                     )
 
-                    expected_message = expected_message.build_expected_message_for_relationAp_process()
+                    expected_message = expected_message.build_expected_message()
                 except ValueError:
                     raise ValueError("Impossible to build expected message of RelationAggregatedPlan process.")
 

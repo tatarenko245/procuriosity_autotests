@@ -253,7 +253,7 @@ class TestCreateCn:
                     """
                     Get period_shift value from clarification.rules for this testcase
                     """
-                    period_shift = int(connect_to_database.get_period_shift_rules(
+                    period_shift = int(connect_to_database.get_parameter_from_clarification_rules(
                         country=parse_country,
                         pmd=parse_pmd,
                         operation_type='all',

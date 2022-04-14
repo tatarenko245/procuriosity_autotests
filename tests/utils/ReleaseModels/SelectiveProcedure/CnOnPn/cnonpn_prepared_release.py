@@ -293,7 +293,7 @@ class CnOnPnExpectedRelease:
                         "enquiryPeriod": {
                             "startDate": self.cn_feed_point_message['data']['operationDate'],
                             "endDate": Date().selectiveProcedure_enquiryPeriod_endDate(
-                                pre_qualification_period_end_date=self.cn_payload['preQualification']['period'][
+                                preQualification_period_endDate=self.cn_payload['preQualification']['period'][
                                     'endDate'],
                                 interval_seconds=self.period_shift)
                         },

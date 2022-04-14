@@ -315,7 +315,7 @@ class TestUpdateCn:
                     """
                     Get period_shift value from clarification.rules for this testcase
                     """
-                    period_shift = int(connect_to_database.get_period_shift_rules(
+                    period_shift = int(connect_to_database.get_parameter_from_clarification_rules(
                         country=parse_country,
                         pmd=parse_pmd,
                         operation_type='all',
@@ -442,7 +442,7 @@ class TestUpdateCn:
                         },
                         "root['releases'][0]['tender']['enquiryPeriod']['endDate']": {
                             'new_value': Date().selectiveProcedure_enquiryPeriod_endDate(
-                                pre_qualification_period_end_date=update_cn_payload['preQualification']['period'][
+                                preQualification_period_endDate=update_cn_payload['preQualification']['period'][
                                     'endDate'],
                                 interval_seconds=period_shift),
                             'old_value': actual_tp_release_before_cn_updating['releases'][0]['tender'][

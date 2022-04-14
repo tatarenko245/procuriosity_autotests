@@ -1683,17 +1683,17 @@ class TestCreateAnswer:
                     country=GlobalClassMetadata.country,
                     pmd=GlobalClassMetadata.pmd
                 )
-                new_enquiry_end_date = Date().sum_of_date(
+                new_enquiry_end_date = Date().sum_date(
                     addition_date=GlobalClassCreateAnswer.feed_point_message['data']['operationDate'],
                     addition_seconds=enquiry_offset_extended)
 
-                tender_offset_extended = Date().sub_of_date(
+                tender_offset_extended = Date().sub_date(
                     reduction_date=GlobalClassCreateEnquiry.actual_ev_release['releases'][0]['tender'][
                         'tenderPeriod']['endDate'],
                     subtractor_date=GlobalClassCreateEnquiry.actual_ev_release['releases'][0]['tender'][
                         'tenderPeriod']['startDate'])
 
-                new_tender_end_date = Date().sum_of_date(
+                new_tender_end_date = Date().sum_date(
                     addition_date=new_enquiry_end_date,
                     addition_seconds=tender_offset_extended)
 

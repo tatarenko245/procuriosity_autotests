@@ -599,7 +599,7 @@ class TestCreatePn:
             )
 
         step_number += 1
-        with allure.step(f'# {step_number}. See result of second UpdateAp process.'):
+        with allure.step(f'# {step_number}. See result of UpdateAp process.'):
             """
             Check the results of TestCase.
             """
@@ -613,9 +613,10 @@ class TestCreatePn:
                     allure.attach(str(202), "Expected status code.")
                     assert synchronous_result.status_code == 202
 
-            with allure.step(f'# {step_number}.2. Check the message of UpdateAp for platform.'):
+            with allure.step(f'# {step_number}.2. Check the message for the platform, '
+                             f'the UpdateAggregatedPlan process.'):
                 """
-                Check the fs_message for platform.
+                Check the message for platform.
                 """
                 actual_message = get_message_for_platform(updateAp_operationId)
 
@@ -632,7 +633,7 @@ class TestCreatePn:
                         testMode=True)
                     )
 
-                    expected_message = expected_message.build_expected_message_for_updateAp_process()
+                    expected_message = expected_message.build_expected_message()
                 except ValueError:
                     raise ValueError("Impossible to build expected message of UpdateAp process.")
 

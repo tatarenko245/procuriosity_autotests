@@ -281,9 +281,9 @@ class TestCreatePn:
                     allure.attach(str(202), "Expected status code.")
                     assert synchronous_result.status_code == 202
 
-            with allure.step(f'# {step_number}.2. Check the message of CreatePlanningNotice for platform.'):
+            with allure.step(f'# {step_number}.2. Check the message for the platform, the PlanningNotice process.'):
                 """
-                Check the message of CreatePlanningNotice for platform.
+                Check the message for platform.
                 """
                 actual_message = get_message_for_platform(pn_operationId)
 
@@ -297,7 +297,7 @@ class TestCreatePn:
                         testMode=True)
                     )
 
-                    expected_message = expected_message.build_expected_message_for_pn_process()
+                    expected_message = expected_message.build_expected_message()
                 except ValueError:
                     raise ValueError("Impossible to build expected message of CreatePlanningNotice process.")
 

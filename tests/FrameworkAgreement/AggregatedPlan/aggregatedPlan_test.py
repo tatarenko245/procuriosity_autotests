@@ -99,7 +99,7 @@ class TestCreatePn:
                     allure.attach(str(202), "Expected status code.")
                     assert synchronous_result.status_code == 202
 
-            with allure.step(f'# {step_number}.2. Check the message of AP_release for platform.'):
+            with allure.step(f'# {step_number}.2. Check the message for the platform, the AggregatedPlan process.'):
                 """
                 Check the message for platform.
                 """
@@ -115,7 +115,7 @@ class TestCreatePn:
                         testMode=True)
                     )
 
-                    expected_message = expected_message.build_expected_message_for_pn_process()
+                    expected_message = expected_message.build_expected_message()
                 except ValueError:
                     raise ValueError("Impossible to build expected message of AP_release process.")
 

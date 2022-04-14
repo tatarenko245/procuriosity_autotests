@@ -1,4 +1,4 @@
-"""Prepare PN, MS releases for Planning Notice process of Framework Agreement procedure."""
+"""Prepare the expected releases of the planning notice process, framework agreement procedures."""
 import copy
 import json
 
@@ -9,7 +9,8 @@ from tests.utils.functions_collection.functions import get_value_from_cpv_dictio
 
 
 class PlanningNoticeRelease:
-    """Class prepares instance of payload. """
+    """This class creates instance of release."""
+
     def __init__(self, environment, host_to_service, language, pmd, pn_payload, pn_message, actual_pn_release,
                  actual_ms_release):
 

@@ -90,7 +90,9 @@ class Date:
         return start_date, end_date
 
     @staticmethod
-    def sum_of_date(addition_date, addition_seconds):
+    def sum_date(addition_date, addition_seconds):
+        """Summation the dates."""
+
         first_addition = datetime.datetime.strptime(addition_date, '%Y-%m-%dT%H:%M:%SZ')
         second_addition = int(addition_seconds)
         sum_as_date = datetime.datetime.strftime(first_addition + datetime.timedelta(seconds=second_addition),
@@ -98,7 +100,9 @@ class Date:
         return sum_as_date
 
     @staticmethod
-    def sub_of_date(reduction_date, subtractor_date):
+    def sub_date(reduction_date, subtractor_date):
+        """Subtraction the dates."""
+
         reduction = datetime.datetime.strptime(reduction_date, '%Y-%m-%dT%H:%M:%SZ')
         subtractor = datetime.datetime.strptime(subtractor_date, '%Y-%m-%dT%H:%M:%SZ')
         difference = reduction - subtractor
@@ -112,9 +116,9 @@ class Date:
         return end_date
 
     @staticmethod
-    def selectiveProcedure_enquiryPeriod_endDate(pre_qualification_period_end_date, interval_seconds: int):
+    def selectiveProcedure_enquiryPeriod_endDate(preQualification_period_endDate, interval_seconds: int):
         duration_date_end = datetime.datetime.strptime(
-            pre_qualification_period_end_date, '%Y-%m-%dT%H:%M:%SZ') - datetime.timedelta(seconds=interval_seconds)
+            preQualification_period_endDate, '%Y-%m-%dT%H:%M:%SZ') - datetime.timedelta(seconds=interval_seconds)
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return end_date
 

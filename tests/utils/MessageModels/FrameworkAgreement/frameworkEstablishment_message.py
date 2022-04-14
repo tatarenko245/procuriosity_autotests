@@ -1,18 +1,18 @@
-""" Prepare expected message for platform, the Planning Notice process of Framework Agreement procedure."""
+""" Prepare expected message for platform, the Framework Establishment process of Framework Agreement procedure."""
 import copy
 import fnmatch
 
 from tests.utils.functions_collection.functions import is_it_uuid
 
 
-class PlanningNoticeMessage:
+class FrameworkEstablishmentMessage:
     """ Class create instance of message for platform."""
 
-    def __init__(self, environment, actual_message, expected_quantity_of_outcomes_pn=1, testMode=False):
+    def __init__(self, environment, actual_message, expected_quantity_of_outcomes_ap=1, testMode=False):
         self.__environment = environment
         self.__actual_message = actual_message
         self.__testMode = testMode
-        self.__expected_quantity_of_outcomes_pn = expected_quantity_of_outcomes_pn
+        self.__expected_quantity_of_outcomes_fe = expected_quantity_of_outcomes_ap
 
         if environment == "dev":
             self.tender_url = "http://dev.public.eprocurement.systems/tenders"
@@ -28,10 +28,9 @@ class PlanningNoticeMessage:
                 "url": "",
                 "operationDate": "",
                 "outcomes": {
-                    "pn": [
+                    "fe": [
                         {
-                            "id": "",
-                            "X-TOKEN": ""
+                            "id": ""
                         }
                     ]
                 }
@@ -39,7 +38,7 @@ class PlanningNoticeMessage:
         }
 
     def build_expected_message(self):
-        """Build the message."""
+        """ Build message."""
 
         if "X-OPERATION-ID" in self.__actual_message:
             is_operation_id_correct = is_it_uuid(self.__actual_message['X-OPERATION-ID'])
@@ -94,30 +93,23 @@ class PlanningNoticeMessage:
         else:
             raise KeyError("The message is not correct: mismatch key 'data.operationDate'.")
 
-        outcomes_pn_array = list()
-        for obj in range(self.__expected_quantity_of_outcomes_pn):
-            outcomes_pn_array.append(copy.deepcopy(self.__message['data']['outcomes']['pn'][0]))
+        outcomes_fe_array = list()
+        for obj in range(self.__expected_quantity_of_outcomes_fe):
+            outcomes_fe_array.append(copy.deepcopy(self.__message['data']['outcomes']['fe'][0]))
 
             if self.__testMode is False:
-                is_pn_id_correct = fnmatch.fnmatch(
-                    self.__actual_message["data"]["outcomes"]["pn"][obj]["id"], "ocds-t1s2t3-MD-*-PN-*"
+                is_fe_id_correct = fnmatch.fnmatch(
+                    self.__actual_message["data"]["outcomes"]["fe"][obj]["id"], "ocds-t1s2t3-MD-*-FE-*"
                 )
             else:
-                is_pn_id_correct = fnmatch.fnmatch(
-                    self.__actual_message["data"]["outcomes"]["pn"][obj]["id"], "test-t1s2t3-MD-*-PN-*"
+                is_fe_id_correct = fnmatch.fnmatch(
+                    self.__actual_message["data"]["outcomes"]["fe"][obj]["id"], "test-t1s2t3-MD-*-FE-*"
                 )
 
-            if is_pn_id_correct is True:
-                outcomes_pn_array[obj]['id'] = self.__actual_message["data"]["outcomes"]["pn"][obj]["id"]
+            if is_fe_id_correct is True:
+                outcomes_fe_array[obj]['id'] = self.__actual_message["data"]["outcomes"]["fe"][obj]["id"]
             else:
-                raise ValueError("The message is not correct: 'data.outcomes.pn.id'.")
+                raise ValueError("The message of AP_release process is not correct: 'data.outcomes.ap.id'.")
 
-            is_pn_token_correct = is_it_uuid(self.__actual_message["data"]["outcomes"]["pn"][obj]["X-TOKEN"])
-
-            if is_pn_token_correct is True:
-                outcomes_pn_array[obj]['X-TOKEN'] = self.__actual_message["data"]["outcomes"]["pn"][obj]["X-TOKEN"]
-            else:
-                raise ValueError("The message is not correct: 'data.outcomes.pn.X-TOKEN'.")
-
-        self.__message['data']['outcomes']['pn'] = outcomes_pn_array
+        self.__message['data']['outcomes']['fe'] = outcomes_fe_array
         return self.__message

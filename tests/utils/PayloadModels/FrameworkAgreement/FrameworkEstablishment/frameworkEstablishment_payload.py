@@ -1,4 +1,4 @@
-"""Prepare payload for Framework Establishment process of Framework Agreement procedure."""
+"""Prepare the expected payloads of the framework establishment process, framework agreement procedures."""
 import copy
 import random
 
@@ -13,13 +13,15 @@ from tests.utils.services.e_mdm_service import MdmService
 
 
 class FrameworkEstablishmentPayload:
-    """This class prepares payload."""
+    """This class creates instance of payload."""
+
     def __init__(self, ap_payload, host_to_service, country, language, environment):
         __document_one = Document(host=host_to_service)
         self.__document_one_was_uploaded = __document_one.uploading_document()
         self.__document_two_was_uploaded = __document_one.uploading_document()
         self.__host = host_to_service
 
+        date = Date()
         date = Date()
         self.__businessFunctions_period_startDate = date.old_period()[0]
         self.__requirements_period = date.old_period()
@@ -302,13 +304,13 @@ class FrameworkEstablishmentPayload:
         )
 
         some_criteria.delete_optional_fields(
-            "criteria.description",
-            "criteria.requirementGroups.description",
-            "criteria.requirementGroups.requirements.description",
-            "criteria.requirementGroups.requirements.period",
+            # "criteria.description",
+            # "criteria.requirementGroups.description",
+            # "criteria.requirementGroups.requirements.description",
+            # "criteria.requirementGroups.requirements.period",
             "criteria.requirementGroups.requirements.minValue",
             "criteria.requirementGroups.requirements.maxValue",
-            "criteria.requirementGroups.requirements.eligibleEvidences"
+            # "criteria.requirementGroups.requirements.eligibleEvidences"
         )
 
         some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
@@ -330,12 +332,12 @@ class FrameworkEstablishmentPayload:
         )
 
         some_criteria.delete_optional_fields(
-            "criteria.description",
-            "criteria.requirementGroups.description",
-            "criteria.requirementGroups.requirements.description",
-            "criteria.requirementGroups.requirements.period",
+            # "criteria.description",
+            # "criteria.requirementGroups.description",
+            # "criteria.requirementGroups.requirements.description",
+            # "criteria.requirementGroups.requirements.period",
             "criteria.requirementGroups.requirements.expectedValue",
-            "criteria.requirementGroups.requirements.eligibleEvidences"
+            # "criteria.requirementGroups.requirements.eligibleEvidences"
         )
 
         some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")

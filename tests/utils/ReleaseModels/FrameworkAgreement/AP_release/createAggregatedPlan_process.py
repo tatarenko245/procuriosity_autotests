@@ -1,4 +1,4 @@
-"""Prepare expected releases of Aggregated Plan process of Framework Agreement procedure."""
+"""Prepare the expected releases of the aggregated plan process, framework agreement procedures."""
 import copy
 
 from tests.utils.functions_collection.functions import get_value_from_cpv_dictionary_xls, get_value_from_country_csv, \
@@ -6,7 +6,8 @@ from tests.utils.functions_collection.functions import get_value_from_cpv_dictio
 
 
 class CreateAggregatedPlanRelease:
-    """Class prepares instance of AP and MS releases."""
+    """This class creates instance of release."""
+
     def __init__(self, environment, host_to_service, language, pmd, ap_payload, ap_message, actual_ap_release,
                  actual_ms_release):
 

@@ -83,6 +83,15 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM notice_offset WHERE cp_id='{cp_id}';")
         connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{cp_id}';")
         connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{cp_id}';")
+
+    @staticmethod
+    def get_parameter_from_clarification_rules(connect_to_clarification, country, pmd, operation_type, parameter):
+        """Get some parameter from 'clarification.rules'."""
+
+        value = connect_to_clarification.execute(
+            f"""SELECT "value" FROM rules WHERE "country"='{country}' AND "pmd" = '{pmd}' AND
+            "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
+        return value.value
     #
     # def cnonpn_process_cleanup_table_of_services(self, pn_ocid):
     #     self.ocds_keyspace.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_ocid}';").one()
@@ -308,11 +317,6 @@ class CassandraSession:
     #         "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
     #     return value.value
     #
-    # def get_period_shift_rules(self, country, pmd, operation_type, parameter):
-    #     value = self.clarification_keyspace.execute(
-    #         f"""SELECT "value" FROM rules WHERE "country"='{country}' AND "pmd" = '{pmd}' AND
-    #         "operation_type" = '{operation_type}' AND "parameter" = '{parameter}';""").one()
-    #     return value.value
     #
     # def get_min_submissions_from_dossier_rules(self, country, pmd, operation_type, parameter):
     #     value = self.dossier_keyspace.execute(
