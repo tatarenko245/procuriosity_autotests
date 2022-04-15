@@ -22,7 +22,6 @@ class FrameworkEstablishmentPayload:
         self.__host = host_to_service
 
         date = Date()
-        date = Date()
         self.__businessFunctions_period_startDate = date.old_period()[0]
         self.__requirements_period = date.old_period()
 
@@ -304,13 +303,13 @@ class FrameworkEstablishmentPayload:
         )
 
         some_criteria.delete_optional_fields(
-            # "criteria.description",
-            # "criteria.requirementGroups.description",
-            # "criteria.requirementGroups.requirements.description",
-            # "criteria.requirementGroups.requirements.period",
+            "criteria.description",
+            "criteria.requirementGroups.description",
+            "criteria.requirementGroups.requirements.description",
+            "criteria.requirementGroups.requirements.period",
             "criteria.requirementGroups.requirements.minValue",
             "criteria.requirementGroups.requirements.maxValue",
-            # "criteria.requirementGroups.requirements.eligibleEvidences"
+            "criteria.requirementGroups.requirements.eligibleEvidences"
         )
 
         some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
@@ -332,12 +331,12 @@ class FrameworkEstablishmentPayload:
         )
 
         some_criteria.delete_optional_fields(
-            # "criteria.description",
-            # "criteria.requirementGroups.description",
-            # "criteria.requirementGroups.requirements.description",
-            # "criteria.requirementGroups.requirements.period",
+            "criteria.description",
+            "criteria.requirementGroups.description",
+            "criteria.requirementGroups.requirements.description",
+            "criteria.requirementGroups.requirements.period",
             "criteria.requirementGroups.requirements.expectedValue",
-            # "criteria.requirementGroups.requirements.eligibleEvidences"
+            "criteria.requirementGroups.requirements.eligibleEvidences"
         )
 
         some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")

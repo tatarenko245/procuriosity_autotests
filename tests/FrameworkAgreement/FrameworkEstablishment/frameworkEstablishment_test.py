@@ -32,7 +32,9 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.severity('Critical')
 @allure.testcase(url=None)
 class TestCreatePn:
-    @allure.title("\nCheck PN, MS, AP_release and MS of CPB releases after RelationAggregatedPlan process, "
+    @allure.title("\nУВАГА! БАГ https://ustudio.atlassian.net/browse/ES-6922\n"
+                  "\n===================================================================================\n"
+                  "\nCheck PN, MS, AP_release and MS of CPB releases after RelationAggregatedPlan process, "
                   "without optional fields. \n"
                   "\n===================================================================================\n"
                   "\nCreateEi process: required data model, without items array, buyer_id = 0;\n"
@@ -633,14 +635,23 @@ class TestCreatePn:
                     language=parse_language,
                     environment=parse_environment)
                 )
-                fe_payload.customize_tender_procuringEntity_persones(
-                    quantity_of_persones_objects=3,
-                    quantity_of_businessFunctions_objects=3,
-                    quantity_of_businessFunctions_documents_objects=3
-                )
-                fe_payload.customize_tender_criteria()
+                # fe_payload.customize_tender_procuringEntity_persones(
+                #     quantity_of_persones_objects=3,
+                #     quantity_of_businessFunctions_objects=3,
+                #     quantity_of_businessFunctions_documents_objects=3
+                # )
+                # fe_payload.customize_tender_criteria()
+                #
+                # fe_payload.customize_tender_documents(quantity_of_new_documents=2)
 
-                fe_payload.customize_tender_documents(quantity_of_new_documents=2)
+                fe_payload.delete_optional_fields(
+                    "tender.secondStage",
+                    "tender.procurementMethodModalities",
+                    "tender.procurementMethodRationale",
+                    "tender.procuringEntity",
+                    "tender.criteria",
+                    "tender.documents"
+                )
 
                 fe_payload = fe_payload.build_frameworkEstablishment_payload()
             except ValueError:
@@ -713,6 +724,9 @@ class TestCreatePn:
                 """
                 actual_fe_release = requests.get(url=f"{actual_message['data']['url']}/"
                                                      f"{actual_message['data']['outcomes']['fe'][0]['id']}").json()
+
+                cpb_actual_ms_release_after_frameworkEstablishment = requests.get(url=cpb_ms_url).json()
+
                 print("actual_fe_release")
                 print(json.dumps(actual_fe_release))
                 try:
@@ -722,18 +736,27 @@ class TestCreatePn:
                     expected_release = copy.deepcopy(FrameworkEstablishmentRelease(
                         environment=parse_environment,
                         host_to_service=get_hosts[2],
+                        country=parse_country,
                         language=parse_language,
                         pmd=parse_pmd,
-                        fe_payload=ap_payload,
+                        fe_payload=fe_payload,
                         fe_message=actual_message,
-                        actual_fe_release=actual_ap_release,
-                        actual_ms_release=actual_ms_release
+                        actual_fe_release=actual_fe_release,
+                        actual_ms_release=cpb_actual_ms_release_after_frameworkEstablishment,
+                        actual_ap_release=actual_ap_release_before_frameworkEstablishment,
+                        connect_to_clarification=connect_to_clarification,
+                        operation_type="all",
+                        parameter="period_shift",
+                        ap_cpid=ap_cpid,
+                        ap_ocid=ap_ocid
                     ))
 
-                    expected_ap_release = expected_release.build_expected_ap_release()
+                    expected_ap_release = expected_release.build_expected_fe_release()
                 except ValueError:
                     raise ValueError("Impossible to build expected FE release.")
 
+                print("expected_fe_release")
+                print(json.dumps(expected_ap_release))
 
 
         #
