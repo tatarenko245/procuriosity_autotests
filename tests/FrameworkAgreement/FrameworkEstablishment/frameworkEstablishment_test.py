@@ -21,6 +21,7 @@ from tests.utils.ReleaseModels.FrameworkAgreement.FE_release.frameworkEstablishm
     FrameworkEstablishmentRelease
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.data_of_enum import currency_tuple
+from tests.utils.functions_collection.functions import is_it_uuid
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
 from tests.utils.platform_query_library import PlatformQueryRequest
 from tests.utils.platform_authorization import PlatformAuthorization
@@ -33,6 +34,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.testcase(url=None)
 class TestCreatePn:
     @allure.title("\nУВАГА! БАГ https://ustudio.atlassian.net/browse/ES-6922\n"
+                  "\nУВАГА! БАГ https://ustudio.atlassian.net/browse/OCDS-225\n"
                   "\n===================================================================================\n"
                   "\nCheck PN, MS, AP_release and MS of CPB releases after RelationAggregatedPlan process, "
                   "without optional fields. \n"
@@ -49,7 +51,7 @@ class TestCreatePn:
                   "\nСreatePn process: required data model, without lots and items, with pmd=TEST_MC, "
                   "with amount = 50.00;\n"
                   "\n===================================================================================\n"
-                  "СreateAp process: required data mode;\n"
+                  "\nСreateAp process: required data mode;\n"
                   "\n===================================================================================\n"
                   "\nOutsourcingPlan process: payload is not needed;\n"
                   "\n===================================================================================\n"
@@ -58,10 +60,24 @@ class TestCreatePn:
                   "\nRelationAggregatedPlan process: payload is not needed;\n"
                   "\n===================================================================================\n"
                   "\nRelationAggregatedPlan process: payload is not needed.\n"
-                  "\n===================================================================================\n")
+                  "\n===================================================================================\n"
+                  "\nUpdateAggregatedPlan process: required data model.\n"
+                  "\n===================================================================================\n"
+                  "\nFrameworkEstablishment process: required data model.\n"
+                  "\n===================================================================================\n"
+                  )
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                     prepare_tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator,
-                    connect_to_clarification):
+                    connect_to_clarification, connect_to_dossier):
+
+        metadata_tender_url = None
+        try:
+            if parse_environment == "dev":
+                metadata_tender_url = "http://dev.public.eprocurement.systems/tenders"
+            elif parse_environment == "sandbox":
+                metadata_tender_url = "http://public.eprocurement.systems/tenders"
+        except ValueError:
+            raise ValueError("Check your environment: You must use 'dev' or 'sandbox' environment in pytest command")
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateEi process.'):
@@ -626,7 +642,7 @@ class TestCreatePn:
             """
             try:
                 """
-                Build payload for CreateFe process.
+                Build payload for CreateFe process. Attention: check optional fields for criteria array. 
                 """
                 fe_payload = copy.deepcopy(FrameworkEstablishmentPayload(
                     ap_payload=ap_payload,
@@ -635,14 +651,14 @@ class TestCreatePn:
                     language=parse_language,
                     environment=parse_environment)
                 )
-                # fe_payload.customize_tender_procuringEntity_persones(
-                #     quantity_of_persones_objects=3,
-                #     quantity_of_businessFunctions_objects=3,
-                #     quantity_of_businessFunctions_documents_objects=3
-                # )
-                # fe_payload.customize_tender_criteria()
-                #
-                # fe_payload.customize_tender_documents(quantity_of_new_documents=2)
+                fe_payload.customize_tender_procuringEntity_persones(
+                    quantity_of_persones_objects=3,
+                    quantity_of_businessFunctions_objects=3,
+                    quantity_of_businessFunctions_documents_objects=3
+                )
+                fe_payload.customize_tender_criteria()
+
+                fe_payload.customize_tender_documents(quantity_of_new_documents=2)
 
                 fe_payload.delete_optional_fields(
                     "tender.secondStage",
@@ -656,9 +672,6 @@ class TestCreatePn:
                 fe_payload = fe_payload.build_frameworkEstablishment_payload()
             except ValueError:
                 raise ValueError("Impossible to build payload for CreateFe process.")
-
-            print("FE payload")
-            print(json.dumps(fe_payload))
 
             synchronous_result = PlatformQueryRequest().create_fe_proces(
                 host_to_bpe=get_hosts[1],
@@ -727,8 +740,6 @@ class TestCreatePn:
 
                 cpb_actual_ms_release_after_frameworkEstablishment = requests.get(url=cpb_ms_url).json()
 
-                print("actual_fe_release")
-                print(json.dumps(actual_fe_release))
                 try:
                     """
                     Build expected FE release.
@@ -751,149 +762,305 @@ class TestCreatePn:
                         ap_ocid=ap_ocid
                     ))
 
-                    expected_ap_release = expected_release.build_expected_fe_release()
+                    expected_fe_release = expected_release.build_expected_fe_release()
                 except ValueError:
                     raise ValueError("Impossible to build expected FE release.")
 
-                print("expected_fe_release")
-                print(json.dumps(expected_ap_release))
+                with allure.step("'Compare actual and expected FE release."):
 
+                    allure.attach(json.dumps(actual_fe_release), "Actual result.")
+                    allure.attach(json.dumps(expected_fe_release), "Expected result.")
 
-        #
-        #         with allure.step('Check differences into actual AP release before and after '
-        #                          'RelationAggregatedPlan process.'):
-        #
-        #             allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-        #             allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
-        #
-        #             assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-        #                 allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-        #                               f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
-        #                               "Cassandra DataBase: steps of process.")
-        #
-        #     with allure.step(f'# {step_number}.6. Check MS release of CPB.'):
-        #         """
-        #         Compare actual MS release of CPB before and after RelationAggregatedPlan process.
-        #         """
-        #         cpb_actual_ms_release_after_relationAggregatedPlan = requests.get(url=cpb_ms_url).json()
-        #
-        #         actual_result_of_comparing_releases = dict(DeepDiff(
-        #             cpb_actual_ms_release_before_relationAggregatedPlan,
-        #             cpb_actual_ms_release_after_relationAggregatedPlan)
-        #         )
-        #
-        #         expected_result_of_comparing_releases = {}
-        #
-        #         with allure.step('Check differences into actual MS release of CPB before and after '
-        #                          'RelationAggregatedPlan process.'):
-        #
-        #             allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-        #             allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
-        #
-        #             assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-        #                 allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-        #                               f"operation_id = '{relationAp_2_operationId}' ALLOW FILTERING;",
-        #                               "Cassandra DataBase: steps of process.")
-        #
-        #         try:
-        #             """
-        #             CLean up the database.
-        #             """
-        #             # Clean after crateEi process:
-        #             database.cleanup_ocds_orchestratorOperationStep_by_operationId(
-        #                 connect_to_ocds,
-        #                 ei_operationId
-        #             )
-        #
-        #             database.cleanup_table_of_services_for_expenditureItem(
-        #                 connect_to_ocds,
-        #                 ei_cpid
-        #             )
-        #
-        #             # Clean after crateFs process:
-        #             database.cleanup_ocds_orchestratorOperationStep_by_operationId(
-        #                 connect_to_ocds,
-        #                 fs_1_operationId
-        #             )
-        #
-        #             database.cleanup_ocds_orchestratorOperationStep_by_operationId(
-        #                 connect_to_ocds,
-        #                 fs_2_operationId
-        #             )
-        #
-        #             database.cleanup_table_of_services_for_financialSource(
-        #                 connect_to_ocds,
-        #                 ei_cpid
-        #             )
-        #
-        #             # Clean after cratePn process:
-        #             database.cleanup_ocds_orchestratorOperationStep_by_operationId(
-        #                 connect_to_ocds,
-        #                 pn_1_operationId
-        #             )
-        #
-        #             database.cleanup_ocds_orchestratorOperationStep_by_operationId(
-        #                 connect_to_ocds,
-        #                 pn_2_operationId
-        #             )
-        #
-        #             database.cleanup_table_of_services_for_planningNotice(
-        #                 connect_to_ocds,
-        #                 connect_to_access,
-        #                 pn_1_cpid
-        #             )
-        #
-        #             database.cleanup_table_of_services_for_planningNotice(
-        #                 connect_to_ocds,
-        #                 connect_to_access,
-        #                 pn_2_cpid
-        #             )
-        #
-        #             # Clean after aggregatedPlan process:
-        #             database.cleanup_ocds_orchestratorOperationStep_by_operationId(
-        #                 connect_to_ocds,
-        #                 ap_operationId
-        #             )
-        #
-        #             database.cleanup_table_of_services_for_aggregatedPlan(
-        #                 connect_to_ocds,
-        #                 connect_to_access,
-        #                 ap_cpid
-        #             )
-        #
-        #             # Clean after outsourcingPlan process:
-        #             database.cleanup_orchestrator_steps_by_cpid(
-        #                 connect_to_orchestrator,
-        #                 pn_1_cpid
-        #             )
-        #
-        #             database.cleanup_orchestrator_steps_by_cpid(
-        #                 connect_to_orchestrator,
-        #                 pn_2_cpid
-        #             )
-        #
-        #             database.cleanup_table_of_services_for_outsourcingPlanningNotice(
-        #                 connect_to_ocds,
-        #                 connect_to_access,
-        #                 pn_1_cpid
-        #             )
-        #
-        #             database.cleanup_table_of_services_for_outsourcingPlanningNotice(
-        #                 connect_to_ocds,
-        #                 connect_to_access,
-        #                 pn_2_cpid
-        #             )
-        #
-        #             # Clean after relationAggregatedPlan process:
-        #             database.cleanup_orchestrator_steps_by_cpid(
-        #                 connect_to_orchestrator,
-        #                 ap_cpid
-        #             )
-        #
-        #             database.cleanup_table_of_services_for_relationAggregatedPlan(
-        #                 connect_to_ocds,
-        #                 connect_to_access,
-        #                 ap_cpid
-        #             )
-        #         except ValueError:
-        #             raise ValueError("Impossible to cLean up the database.")
+                    assert actual_fe_release == expected_fe_release, \
+                        allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                                      f"process_id = '{processId}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
+
+            with allure.step(f'# {step_number}.4. Check AP release.'):
+                """
+                Compare actual AP release before and after Framework Establishment process.
+                """
+                actual_ap_release_after_frameworkEstablishment = requests.get(url=ap_url).json()
+
+                actual_result_of_comparing_releases = dict(DeepDiff(
+                    actual_ap_release_before_frameworkEstablishment,
+                    actual_ap_release_after_frameworkEstablishment)
+                )
+
+                # FR-5.0.1 - FR-5.0.3, FR.COM-3.2.11 - FR.COM-3.2.14
+                expected_result_of_comparing_releases = {
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{ap_ocid}-"
+                                f"{actual_ap_release_after_frameworkEstablishment['releases'][0]['id'][46:59]}",
+                            "old_value":
+                                f"{ap_ocid}-"
+                                f"{actual_ap_release_before_frameworkEstablishment['releases'][0]['id'][46:59]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": actual_message['data']['operationDate'],
+                            "old_value": actual_ap_release_before_frameworkEstablishment['releases'][0]['date']
+                        },
+                        "root['releases'][0]['tender']['status']": {
+                            "new_value": "planned",
+                            "old_value": actual_ap_release_before_frameworkEstablishment[
+                                'releases'][0]['tender']['status']
+                        },
+                        "root['releases'][0]['tender']['statusDetails']": {
+                            "new_value": "aggregated",
+                            "old_value": actual_ap_release_before_frameworkEstablishment[
+                                'releases'][0]['tender']['statusDetails']
+                        }
+                    }
+                }
+
+                with allure.step('Check differences into actual AP release before and after '
+                                 'Framework Establishment process.'):
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
+
+                    assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                        allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                                      f"process_id = '{processId}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
+
+            with allure.step(f'# {step_number}.4. Check MS release of CPB.'):
+                """
+                 Compare actual MS release of CPB before and after Framework Establishment process.
+                """
+                cpb_actual_ms_release_after_frameworkEstablishment = requests.get(url=cpb_ms_url).json()
+
+                actual_result_of_comparing_releases = dict(DeepDiff(
+                    cpb_actual_ms_release_before_frameworkEstablishment,
+                    cpb_actual_ms_release_after_frameworkEstablishment)
+                )
+
+                dictionary_item_added_was_cleaned = \
+                    str(actual_result_of_comparing_releases['dictionary_item_added']).replace('root', '')[1:-1]
+
+                actual_result_of_comparing_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
+                actual_result_of_comparing_releases = dict(actual_result_of_comparing_releases)
+
+                # FR.COM-3.2.15 - FR.COM-3.2.19, FR-5.0.1 - FR-5.0.2, FR-5.0.4, BR-1.0.1.4.2, FR.COM-1.28.1
+                try:
+                    """
+                    Prepare expected 'relatedProcess' object with 'relationship' = ['x_establishment'].
+                    """
+                    is_permanent_relatedProcess_id_correct = is_it_uuid(
+                        cpb_actual_ms_release_after_frameworkEstablishment['releases'][0]['relatedProcesses'][3]['id']
+                    )
+
+                    if is_permanent_relatedProcess_id_correct is True:
+                        pass
+                    else:
+                        raise ValueError(f"The releases[0].relatedProcess[3].id must be uuid.")
+
+                    expected_relatedProcess_object_xEstablishment = {
+                        "id": cpb_actual_ms_release_after_frameworkEstablishment[
+                            'releases'][0]['relatedProcesses'][3]['id'],
+
+                        "relationship": ["x_establishment"],
+                        "scheme": "ocid",
+                        "identifier": actual_message['data']['outcomes']['fe'][0]['id'],
+                        "uri": f"{metadata_tender_url}/{ap_cpid}/{actual_message['data']['outcomes']['fe'][0]['id']}"
+                    }
+                except ValueError:
+                    raise ValueError("Impossible to prepare expected 'relatedProcess' object "
+                                     "with 'relationship' = ['x_establishment'].")
+
+                try:
+                    """
+                    Prepare expected 'procuringEntity' object.
+                    """
+                    for q_0 in range(len(expected_fe_release['releases'][0]['parties'])):
+                        if expected_fe_release['releases'][0]['parties'][q_0]['roles'] == ["procuringEntity"]:
+
+                            expected_procuringEntity_object = {
+                                "id": expected_fe_release['releases'][0]['parties'][q_0]['id'],
+                                "name": expected_fe_release['releases'][0]['parties'][q_0]['name']
+                            }
+                except ValueError:
+                    raise ValueError("Impossible to prepare expected 'procuringEntity' object.")
+
+                expected_result_of_comparing_releases = {
+                    "dictionary_item_added": "['releases'][0]['tender']['procuringEntity']",
+                    "values_changed": {
+                        "root['releases'][0]['id']": {
+                            "new_value":
+                                f"{ap_cpid}-"
+                                f"{cpb_actual_ms_release_after_frameworkEstablishment['releases'][0]['id'][29:42]}",
+                            "old_value":
+                                f"{ap_cpid}-"
+                                f"{cpb_actual_ms_release_before_frameworkEstablishment['releases'][0]['id'][29:42]}"
+                        },
+                        "root['releases'][0]['date']": {
+                            "new_value": actual_message['data']['operationDate'],
+                            "old_value": cpb_actual_ms_release_before_frameworkEstablishment['releases'][0]['date']
+                        },
+                        "root['releases'][0]['tender']['status']": {
+                            "new_value": "active",
+                            "old_value": cpb_actual_ms_release_before_frameworkEstablishment[
+                                'releases'][0]['tender']['status']
+                        },
+                        "root['releases'][0]['tender']['statusDetails']": {
+                            "new_value": "establishment",
+                            "old_value": cpb_actual_ms_release_before_frameworkEstablishment[
+                                'releases'][0]['tender']['statusDetails']
+                        }
+                    },
+                    "iterable_item_added": {
+                        "root['releases'][0]['relatedProcesses'][3]": expected_relatedProcess_object_xEstablishment
+                    }
+                }
+
+                with allure.step('Check differences into actual MS release before and after '
+                                 'Framework Establishment process.'):
+                    allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
+                    allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
+
+                    assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
+                        allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                                      f"process_id = '{processId}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
+
+                with allure.step("Compare actual and expected 'releases[0].tender.procuringEntity' object."):
+                    allure.attach(json.dumps(
+                        cpb_actual_ms_release_after_frameworkEstablishment['releases'][0]['tender']['procuringEntity']),
+                        "Actual result.")
+
+                    allure.attach(json.dumps(expected_procuringEntity_object), "Expected result.")
+
+                    assert cpb_actual_ms_release_after_frameworkEstablishment[
+                               'releases'][0]['tender']['procuringEntity'] == expected_procuringEntity_object, \
+                        allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
+                                      f"process_id = '{processId}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
+                try:
+                    """
+                    CLean up the database.
+                    """
+                    # Clean after crateEi process:
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        ei_operationId
+                    )
+
+                    database.cleanup_table_of_services_for_expenditureItem(
+                        connect_to_ocds,
+                        ei_cpid
+                    )
+
+                    # Clean after crateFs process:
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        fs_1_operationId
+                    )
+
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        fs_2_operationId
+                    )
+
+                    database.cleanup_table_of_services_for_financialSource(
+                        connect_to_ocds,
+                        ei_cpid
+                    )
+
+                    # Clean after cratePn process:
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        pn_1_operationId
+                    )
+
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        pn_2_operationId
+                    )
+
+                    database.cleanup_table_of_services_for_planningNotice(
+                        connect_to_ocds,
+                        connect_to_access,
+                        pn_1_cpid
+                    )
+
+                    database.cleanup_table_of_services_for_planningNotice(
+                        connect_to_ocds,
+                        connect_to_access,
+                        pn_2_cpid
+                    )
+
+                    # Clean after aggregatedPlan process:
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        ap_operationId
+                    )
+
+                    database.cleanup_table_of_services_for_aggregatedPlan(
+                        connect_to_ocds,
+                        connect_to_access,
+                        ap_cpid
+                    )
+
+                    # Clean after outsourcingPlan process:
+                    database.cleanup_orchestrator_steps_by_cpid(
+                        connect_to_orchestrator,
+                        pn_1_cpid
+                    )
+
+                    database.cleanup_orchestrator_steps_by_cpid(
+                        connect_to_orchestrator,
+                        pn_2_cpid
+                    )
+
+                    database.cleanup_table_of_services_for_outsourcingPlanningNotice(
+                        connect_to_ocds,
+                        connect_to_access,
+                        pn_1_cpid
+                    )
+
+                    database.cleanup_table_of_services_for_outsourcingPlanningNotice(
+                        connect_to_ocds,
+                        connect_to_access,
+                        pn_2_cpid
+                    )
+
+                    # Clean after relationAggregatedPlan process:
+                    database.cleanup_orchestrator_steps_by_cpid(
+                        connect_to_orchestrator,
+                        ap_cpid
+                    )
+
+                    database.cleanup_table_of_services_for_relationAggregatedPlan(
+                        connect_to_ocds,
+                        connect_to_access,
+                        ap_cpid
+                    )
+
+                    # Clean after updateAggregatedPlan process:
+                    database.cleanup_orchestrator_steps_by_cpid(
+                        connect_to_orchestrator,
+                        ap_cpid
+                    )
+
+                    database.cleanup_table_of_services_for_updateAggregatedPlan(
+                        connect_to_ocds,
+                        connect_to_access,
+                        ap_cpid
+                    )
+
+                    # Clean after Framework Establishment process:
+                    database.cleanup_orchestrator_steps_by_cpid(
+                        connect_to_orchestrator,
+                        ap_cpid
+                    )
+
+                    database.cleanup_table_of_services_for_frameworkEstablishment(
+                        connect_to_ocds,
+                        connect_to_access,
+                        connect_to_clarification,
+                        connect_to_dossier,
+                        ap_cpid
+                    )
+                except ValueError:
+                    raise ValueError("Impossible to cLean up the database.")

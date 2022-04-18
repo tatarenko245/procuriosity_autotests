@@ -60,3 +60,13 @@ def connect_to_clarification(log_in_database):
     yield clarification_keyspace
     clarification_keyspace.shutdown()
     print(f"The connection to {clarification_keyspace} has been disconnected.")
+
+
+@pytest.fixture(scope="class")
+def connect_to_dossier(log_in_database):
+    """Connect to 'dossier' keyspace."""
+
+    dossier_keyspace = log_in_database.connect('dossier')
+    yield dossier_keyspace
+    dossier_keyspace.shutdown()
+    print(f"The connection to {dossier_keyspace} has been disconnected.")

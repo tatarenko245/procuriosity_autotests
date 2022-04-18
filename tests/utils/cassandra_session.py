@@ -67,6 +67,19 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_cpid}';")
 
     @staticmethod
+    def cleanup_table_of_services_for_frameworkEstablishment(
+            connect_to_ocds, connect_to_access, connect_to_clarification, connect_to_dossier, ap_cpid):
+        """ CLean up the tables of process."""
+
+        connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{ap_cpid}';")
+        connect_to_dossier.execute(f"DELETE FROM period WHERE cpid='{ap_cpid}';")
+        connect_to_clarification.execute(f"DELETE FROM periods WHERE cpid='{ap_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ap_cpid}';").one()
+        connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{ap_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_offset WHERE cp_id='{ap_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_cpid}';")
+
+    @staticmethod
     def cleanup_table_of_services_for_financialSource(connect_to_ocds, cp_id):
         connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{cp_id}';").one()
         connect_to_ocds.execute(f"DELETE FROM budget_ei WHERE cp_id='{cp_id}';")
