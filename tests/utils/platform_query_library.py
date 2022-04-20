@@ -101,7 +101,7 @@ class PlatformQueryRequest:
         return request
 
     @staticmethod
-    @allure.step('# Prepared request: create Aggregated plan.')
+    @allure.step('# Prepared request: create Aggregated Plan.')
     def create_ap_process(host_to_bpe, access_token, x_operation_id, payload, country, language, pmd, testMode=False):
 
         request = requests.post(
@@ -122,7 +122,7 @@ class PlatformQueryRequest:
         return request
 
     @staticmethod
-    @allure.step('# Prepared request: update Aggregated plan.')
+    @allure.step('# Prepared request: update Aggregated Plan.')
     def update_ap_process(host_to_bpe, ap_cpid, ap_ocid, access_token, x_operation_id, ap_token, payload,
                           testMode=False):
 
@@ -142,7 +142,7 @@ class PlatformQueryRequest:
         return request
 
     @staticmethod
-    @allure.step('# Prepared request: do Outsourcing plan.')
+    @allure.step('# Prepared request: do Outsourcing Plan.')
     def do_outsourcing_process(host_to_bpe, access_token, x_operation_id, ap_cpid, ap_ocid, pn_cpid, pn_ocid,
                                pn_token, testMode=False):
 
@@ -163,7 +163,7 @@ class PlatformQueryRequest:
         return request
 
     @staticmethod
-    @allure.step('# Prepared request: do Relation aggregated plan.')
+    @allure.step('# Prepared request: do Relation Aggregated Plan.')
     def do_relation_proces(host_to_bpe, access_token, x_operation_id, pn_cpid, pn_ocid, ap_cpid, ap_ocid,
                            ap_token, testMode=False):
 
@@ -184,9 +184,10 @@ class PlatformQueryRequest:
         return request
 
     @staticmethod
-    @allure.step('# Prepared request: create Framework establishment.')
-    def create_fe_proces(host_to_bpe, access_token, x_operation_id, ap_cpid, ap_ocid, ap_token, payload,
-                         testMode=False):
+    @allure.step('# Prepared request: create Framework Establishment.')
+    def create_fe_process(host_to_bpe, access_token, x_operation_id, ap_cpid, ap_ocid, ap_token, payload,
+                          testMode=False):
+        """Send request for 'FE process'."""
 
         request = requests.post(
             url=f"{host_to_bpe}/do/fe/{ap_cpid}/{ap_ocid}",
@@ -201,6 +202,29 @@ class PlatformQueryRequest:
             json=payload
         )
         allure.attach(f"{host_to_bpe}/do/fe/{ap_cpid}/{ap_ocid}", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return request
+
+    @staticmethod
+    @allure.step('# Prepared request: Amend Framework Establishment.')
+    def amend_fe_process(host_to_bpe, access_token, x_operation_id, ap_cpid, ap_ocid, ap_token, payload,
+                         testMode=False):
+        """Send request for 'Amend FE process'."""
+
+        request = requests.post(
+            url=f"{host_to_bpe}/amend/fe/{ap_cpid}/{ap_ocid}",
+            params={
+                "testMode": testMode
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "X-OPERATION-ID": x_operation_id,
+                "X-TOKEN": ap_token,
+                "Content-Type": "application/json"},
+            json=payload
+        )
+
+        allure.attach(f"{host_to_bpe}/amend/fe/{ap_cpid}/{ap_ocid}", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return request
 

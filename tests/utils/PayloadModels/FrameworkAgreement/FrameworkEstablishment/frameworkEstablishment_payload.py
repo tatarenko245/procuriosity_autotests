@@ -15,7 +15,9 @@ from tests.utils.services.e_mdm_service import MdmService
 class FrameworkEstablishmentPayload:
     """This class creates instance of payload."""
 
-    def __init__(self, ap_payload, host_to_service, country, language, environment):
+    def __init__(self, ap_payload, host_to_service, country, language, environment, persones_title=None,
+                 businessFunctions_type=None, tender_documents_type=None):
+
         __document_one = Document(host=host_to_service)
         self.__document_one_was_uploaded = __document_one.uploading_document()
         self.__document_two_was_uploaded = __document_one.uploading_document()
@@ -28,6 +30,21 @@ class FrameworkEstablishmentPayload:
         self.__country = country
         self.__language = language
         self.__environment = environment
+
+        if persones_title is None:
+            self.__persones_title = f"{random.choice(person_title_tuple)}"
+        else:
+            self.__persones_title = persones_title
+
+        if businessFunctions_type is None:
+            self.__businessFunctions_type = f"{random.choice(business_function_type_2_tuple)}"
+        else:
+            self.__businessFunctions_type = businessFunctions_type
+
+        if tender_documents_type is None:
+            self.__tender_documents_type = f"{random.choice(documentType_tuple)}"
+        else:
+            self.__tender_documents_type = tender_documents_type
 
         self.__payload = {
             "preQualification": {
@@ -47,7 +64,7 @@ class FrameworkEstablishmentPayload:
                           f"{ap_payload['tender']['procuringEntity']['identifier']['id']}",
 
                     "persones": [{
-                        "title": f"{random.choice(person_title_tuple)}",
+                        "title": self.__persones_title,
                         "name": "create fe: tender.procuringEntity.persones[0].name",
                         "identifier": {
                             "scheme": "MD-IDNO",
@@ -56,7 +73,7 @@ class FrameworkEstablishmentPayload:
                         },
                         "businessFunctions": [{
                             "id": "0",
-                            "type": f"{random.choice(business_function_type_2_tuple)}",
+                            "type": self.__businessFunctions_type,
                             "jobTitle": "create fe: tender.procuringEntity.persones[0].businessFunctions[0].jobTitle",
                             "period": {
                                 "startDate": self.__businessFunctions_period_startDate
@@ -122,7 +139,7 @@ class FrameworkEstablishmentPayload:
                     "reductionCriteria": f"{random.choice(reductionCriteria_tuple)}"
                 },
                 "documents": [{
-                    "documentType": f"{random.choice(documentType_tuple)}",
+                    "documentType": self.__tender_documents_type,
                     "id": self.__document_one_was_uploaded[0]['data']['id'],
                     "title": "create fe: tender.document[0].title",
                     "description": "create fe: tender.document[0].description"
@@ -160,6 +177,7 @@ class FrameworkEstablishmentPayload:
 
             elif a == "tender.procuringEntity":
                 del self.__payload['tender']['procuringEntity']
+
             elif a == "tender.procuringEntity.persones.identifier.uri":
 
                 del self.__payload['tender']['procuringEntity'][
@@ -226,7 +244,7 @@ class FrameworkEstablishmentPayload:
                 self.__payload['tender']['procuringEntity']['persones'][0])
             )
 
-            new_persones_array[q_0]['title'] = f"{random.choice(person_title_tuple)}"
+            new_persones_array[q_0]['title'] = self.__persones_title
             new_persones_array[q_0]['name'] = f"create fe: tender.procuringEntity.persones[{q_0}].name"
             new_persones_array[q_0]['identifier']['scheme'] = "MD-IDNO"
             new_persones_array[q_0]['identifier']['id'] = f"create fe: tender.procuringEntity.persones[{q_0}].id"
@@ -241,8 +259,7 @@ class FrameworkEstablishmentPayload:
 
                 new_persones_array[q_0]['businessFunctions'][q_1]['id'] = f"{q_1}"
 
-                new_persones_array[q_0]['businessFunctions'][q_1]['type'] = \
-                    f"{random.choice(business_function_type_2_tuple)}"
+                new_persones_array[q_0]['businessFunctions'][q_1]['type'] = self.__businessFunctions_type
 
                 new_persones_array[q_0]['businessFunctions'][q_1]['jobTitle'] = \
                     f"create fe: tender.procuringEntity.persones[{q_0}].['businessFunctions'][{q_1}].jobTitle"
@@ -362,7 +379,7 @@ class FrameworkEstablishmentPayload:
             document_four_was_uploaded = document_four.uploading_document()
 
             new_documents_array[q_0]['id'] = document_four_was_uploaded[0]["data"]["id"]
-            new_documents_array[q_0]['documentType'] = f"{random.choice(documentType_tuple)}"
+            new_documents_array[q_0]['documentType'] = self.__tender_documents_type
             new_documents_array[q_0]['title'] = f"create fe: tender.documents{q_0}.title"
             new_documents_array[q_0]['description'] = f"create fe: tender.documents{q_0}.description"
 
@@ -390,8 +407,7 @@ class FrameworkEstablishmentPayload:
                                         self.__payload['tender']['criteria'][e_0]['requirementGroups'][e_1][
                                             'requirements'][e_2]['eligibleEvidences'][e_3]['relatedDocument']['id']
 
-                                    eligibleEvidences_document_object['documentType'] = \
-                                        f"{random.choice(documentType_tuple)}"
+                                    eligibleEvidences_document_object['documentType'] = self.__tender_documents_type
 
                                     eligibleEvidences_document_object['title'] = \
                                         f"create fe: tender.documents{len(eligibleEvidences_documents_array)}.title"
