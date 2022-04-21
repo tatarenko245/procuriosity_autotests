@@ -2,8 +2,6 @@
 import copy
 import random
 
-from tests.utils.PayloadModels.FrameworkAgreement.FrameworkEstablishment.frameworkEstablishment_payload import \
-    FrameworkEstablishmentPayload
 from tests.utils.data_of_enum import person_title_tuple, documentType_tuple, business_function_type_2_tuple
 from tests.utils.date_class import Date
 from tests.utils.iStorage import Document
@@ -27,41 +25,33 @@ class AmendFrameworkEstablishmentPayload:
         self.__language = language
         self.__environment = environment
 
-        self.__ap_payload = ap_payload
-        self.__fe_release = fe_payload
-        self.__fe_release = fe_release
-
-        fe_payload_class = (copy.deepcopy(FrameworkEstablishmentPayload(
-            ap_payload=self.__ap_payload,
-            host_to_service=self.__host,
-            country=self.__country,
-            language=self.__language,
-            environment=self.__environment
-        )))
-        self.__fe_payload_model = fe_payload_class.build_frameworkEstablishment_payload()
+        self.__ap_payload = copy.deepcopy(ap_payload)
+        self.__fe_release = copy.deepcopy(fe_payload)
+        self.__fe_release = copy.deepcopy(fe_release)
 
         for q_0 in range(len(self.__fe_release['releases'][0]['parties'])):
+            if "procuringEntity" in fe_payload['tender']:
+                if fe_payload['tender']['procuringEntity']['id'] == \
+                        self.__fe_release['releases'][0]['parties'][q_0]['id']:
 
-            if fe_payload['tender']['procuringEntity']['id'] == self.__fe_release['releases'][0]['parties'][q_0]['id']:
+                    for q_1 in range(len(self.__fe_release['releases'][0]['parties'][q_0]['persones'])):
 
-                for q_1 in range(len(self.__fe_release['releases'][0]['parties'][q_0]['persones'])):
+                        del self.__fe_release['releases'][0]['parties'][q_0]['persones'][q_1]['id']
 
-                    del self.__fe_release['releases'][0]['parties'][q_0]['persones'][q_1]['id']
-
-                    for q_2 in range(len(
-                            self.__fe_release['releases'][0]['parties'][q_0]['persones'][q_1]['businessFunctions']
-                    )):
-                        for q_3 in range(len(
-                                self.__fe_release['releases'][0]['parties'][q_0]['persones'][q_1][
-                                    'businessFunctions'][q_2]['documents']
+                        for q_2 in range(len(
+                                self.__fe_release['releases'][0]['parties'][q_0]['persones'][q_1]['businessFunctions']
                         )):
-                            del self.__fe_release['releases'][0]['parties'][q_0]['persones'][q_1][
-                                'businessFunctions'][q_2]['documents'][q_3]['url']
+                            for q_3 in range(len(
+                                    self.__fe_release['releases'][0]['parties'][q_0]['persones'][q_1][
+                                        'businessFunctions'][q_2]['documents']
+                            )):
+                                del self.__fe_release['releases'][0]['parties'][q_0]['persones'][q_1][
+                                    'businessFunctions'][q_2]['documents'][q_3]['url']
 
-                            del self.__fe_release['releases'][0]['parties'][q_0]['persones'][q_1][
-                                'businessFunctions'][q_2]['documents'][q_3]['datePublished']
+                                del self.__fe_release['releases'][0]['parties'][q_0]['persones'][q_1][
+                                    'businessFunctions'][q_2]['documents'][q_3]['datePublished']
 
-                self.__old_persones_array = self.__fe_release['releases'][0]['parties'][q_0]['persones']
+                    self.__old_persones_array = self.__fe_release['releases'][0]['parties'][q_0]['persones']
 
         self.__payload = {
             "preQualification": {
@@ -71,11 +61,43 @@ class AmendFrameworkEstablishmentPayload:
             },
             "tender": {
                 "procuringEntity": {
-                    "id": fe_payload['tender']['procuringEntity']['id'],
-                    "persones": self.__old_persones_array
+                    "id": f"{ap_payload['tender']['procuringEntity']['identifier']['scheme']}-"
+                          f"{ap_payload['tender']['procuringEntity']['identifier']['id']}",
+                    "persones": [{
+                        "title": f"{random.choice(person_title_tuple)}",
+                        "name": "amend fe: tender.procuringEntity.persones[0].name",
+                        "identifier": {
+                            "scheme": "MD-IDNO",
+                            "id": "amend fe: tender.procuringEntity.persones[0].identifier.id",
+                            "uri": "amend fe: tender.procuringEntity.persones[0].identifier.uri"
+                        },
+                        "businessFunctions": [{
+                            "id": "0",
+                            "type": f"{random.choice(business_function_type_2_tuple)}",
+                            "jobTitle": "amend fe: tender.procuringEntity.persones[0].businessFunctions[0].jobTitle",
+                            "period": {
+                                "startDate": self.__businessFunctions_period_startDate
+                            },
+                            "documents": [{
+                                "id": self.__document_one_was_uploaded[0]["data"]["id"],
+                                "documentType": "regulatoryDocument",
+
+                                "title": "amend fe: tender.procuringEntity.persones[0].businessFunctions[0]."
+                                         "documents[0].title",
+
+                                "description": "amend fe: tender.procuringEntity.persones[0].businessFunctions[0]."
+                                               "documents[0].description"
+                            }]
+                        }]
+                    }]
 
                 },
-                "documents": fe_payload['tender']['documents'],
+                "documents":  [{
+                    "documentType": f"{random.choice(documentType_tuple)}",
+                    "id": self.__document_one_was_uploaded[0]['data']['id'],
+                    "title": "amend fe: tender.document[0].title",
+                    "description": "amend fe: tender.document[0].description"
+                }],
                 "procurementMethodRationale": "amend fe: tender.procurementMethodRationale"
             }
         }
@@ -132,7 +154,7 @@ class AmendFrameworkEstablishmentPayload:
                 if a == f"{self.__old_persones_array[p]['identifier']['scheme']}-" \
                         f"{self.__old_persones_array[p]['identifier']['id']}":
 
-                    persones_object = copy.deepcopy(self.__fe_payload_model['tender']['procuringEntity']['persones'][0])
+                    persones_object = copy.deepcopy(self.__payload['tender']['procuringEntity']['persones'][0])
 
                     persones_object['title'] = "Ms."
                     persones_object['name'] = f"amend fe: new value for old person, " \
@@ -148,7 +170,7 @@ class AmendFrameworkEstablishmentPayload:
                     for q_0 in range(len(self.__old_persones_array[p]['businessFunctions'])):
 
                         businessFunctions_array.append(copy.deepcopy(
-                            self.__fe_payload_model['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]
+                            self.__payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0]
                         ))
 
                         businessFunctions_array[q_0]['id'] = \
@@ -166,7 +188,7 @@ class AmendFrameworkEstablishmentPayload:
                         if "documents" in self.__old_persones_array[p]['businessFunctions'][q_0]:
                             for q_1 in range(len(self.__old_persones_array[p]['businessFunctions'][q_0]['documents'])):
                                 documents_array.append(copy.deepcopy(
-                                    self.__fe_payload_model['tender']['procuringEntity']['persones'][0][
+                                    self.__payload['tender']['procuringEntity']['persones'][0][
                                         'businessFunctions'][0]['documents'][0]
                                 ))
                                 documents_array[q_1]['id'] = \
@@ -187,7 +209,7 @@ class AmendFrameworkEstablishmentPayload:
                             for n_1 in range(quantity_of_new_documents_objects):
 
                                 new_documents_array.append(copy.deepcopy(
-                                    self.__fe_payload_model['tender']['procuringEntity']['persones'][0][
+                                    self.__payload['tender']['procuringEntity']['persones'][0][
                                         'businessFunctions'][0]['documents'][0]
                                 ))
 
@@ -215,7 +237,7 @@ class AmendFrameworkEstablishmentPayload:
                         for n_0 in range(quantity_of_new_businessFunctions_objects):
 
                             new_businessFunctions_array.append(copy.deepcopy(
-                                self.__fe_payload_model['tender']['procuringEntity']['persones'][0][
+                                self.__payload['tender']['procuringEntity']['persones'][0][
                                     'businessFunctions'][0]
                             ))
 
@@ -234,7 +256,7 @@ class AmendFrameworkEstablishmentPayload:
                             new_businessFunctions_array[n_0]['documents'] = list()
                             for d in range(quantity_of_new_documents_objects):
                                 new_businessFunctions_array[n_0]['documents'].append(copy.deepcopy(
-                                    self.__fe_payload_model['tender']['procuringEntity']['persones'][0][
+                                    self.__payload['tender']['procuringEntity']['persones'][0][
                                         'businessFunctions'][0]['documents'][0]
                                 ))
 
@@ -269,7 +291,7 @@ class AmendFrameworkEstablishmentPayload:
         new_persones_array = list()
         for q_0 in range(quantity_of_persones_objects):
             new_persones_array.append(copy.deepcopy(
-                self.__fe_payload_model['tender']['procuringEntity']['persones'][0]
+                self.__payload['tender']['procuringEntity']['persones'][0]
             ))
 
             new_persones_array[q_0]['title'] = f"{random.choice(person_title_tuple)}"
@@ -282,7 +304,7 @@ class AmendFrameworkEstablishmentPayload:
             for q_1 in range(quantity_of_businessFunctions_objects):
 
                 new_persones_array[q_0]['businessFunctions'].append(copy.deepcopy(
-                    self.__fe_payload_model['tender']['procuringEntity']['persones'][0]['businessFunctions'][0])
+                    self.__payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0])
                 )
 
                 new_persones_array[q_0]['businessFunctions'][q_1]['id'] = f"{q_1}"
@@ -299,7 +321,7 @@ class AmendFrameworkEstablishmentPayload:
                 new_persones_array[q_0]['businessFunctions'][q_1]['documents'] = list()
                 for q_2 in range(quantity_of_documents_objects):
                     new_persones_array[q_0]['businessFunctions'][q_1]['documents'].append(copy.deepcopy(
-                        self.__fe_payload_model['tender']['procuringEntity']['persones'][0]['businessFunctions'][0][
+                        self.__payload['tender']['procuringEntity']['persones'][0]['businessFunctions'][0][
                             'documents'][0])
                     )
 
@@ -328,7 +350,7 @@ class AmendFrameworkEstablishmentPayload:
         for a in list_of_documents_id:
             for d in range(len(self.__fe_release['releases'][0]['tender']['documents'])):
                 if a == self.__fe_release['releases'][0]['tender']['documents'][d]['id']:
-                    documents_object = copy.deepcopy(self.__fe_payload_model['tender']['documents'][0])
+                    documents_object = copy.deepcopy(self.__payload['tender']['documents'][0])
 
                     documents_object['id'] = self.__fe_release['releases'][0]['tender']['documents'][d]['id']
                     documents_object['documentType'] = "clarifications"
@@ -344,7 +366,7 @@ class AmendFrameworkEstablishmentPayload:
 
         new_documents_array = list()
         for q_0 in range(quantity_of_new_documents):
-            new_documents_array.append(copy.deepcopy(self.__fe_payload_model['tender']['documents'][0]))
+            new_documents_array.append(copy.deepcopy(self.__payload['tender']['documents'][0]))
 
             document_four = Document(host=self.__host)
             document_four_was_uploaded = document_four.uploading_document()

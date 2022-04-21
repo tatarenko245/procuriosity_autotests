@@ -6,7 +6,7 @@ from tests.utils.functions_collection.functions import is_it_uuid
 
 
 class PlanningNoticeMessage:
-    """ Class create instance of message for platform."""
+    """ Class creates instance of message for platform."""
 
     def __init__(self, environment, actual_message, expected_quantity_of_outcomes_pn=1, testMode=False):
         self.__environment = environment

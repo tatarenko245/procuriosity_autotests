@@ -5,7 +5,7 @@ from tests.utils.functions_collection.functions import is_it_uuid
 
 
 class OutsourcingPnMessage:
-    """ Class create instance of message for platform."""
+    """ Class creates instance of message for platform."""
 
     def __init__(self, environment, actual_message, pn_cpid, pn_ocid, testMode=False):
 

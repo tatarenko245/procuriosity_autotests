@@ -933,9 +933,9 @@ class TestCreatePn:
                     )
 
                     # Clean after updateAggregatedPlan process:
-                    database.cleanup_orchestrator_steps_by_cpid(
-                        connect_to_orchestrator,
-                        ap_cpid
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        updateAp_operationId
                     )
 
                     database.cleanup_table_of_services_for_updateAggregatedPlan(

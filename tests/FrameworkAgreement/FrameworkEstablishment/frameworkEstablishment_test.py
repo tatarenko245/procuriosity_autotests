@@ -842,7 +842,7 @@ class TestCreatePn:
                 actual_result_of_comparing_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
                 actual_result_of_comparing_releases = dict(actual_result_of_comparing_releases)
 
-                # FR.COM-3.2.15 - FR.COM-3.2.19, FR-5.0.1 - FR-5.0.2, FR-5.0.4, BR-1.0.1.4.2, FR.COM-1.28.1
+                # FR.COM-3.2.15 - FR.COM-3.2.19, FR-5.0.8 - FR-5.0.2, FR-5.0.4, BR-1.0.1.4.2, FR.COM-1.28.1
                 try:
                     """
                     Prepare expected 'relatedProcess' object with 'relationship' = ['x_establishment'].
@@ -1038,9 +1038,9 @@ class TestCreatePn:
                     )
 
                     # Clean after updateAggregatedPlan process:
-                    database.cleanup_orchestrator_steps_by_cpid(
-                        connect_to_orchestrator,
-                        ap_cpid
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        updateAp_operationId
                     )
 
                     database.cleanup_table_of_services_for_updateAggregatedPlan(
@@ -1050,9 +1050,9 @@ class TestCreatePn:
                     )
 
                     # Clean after Framework Establishment process:
-                    database.cleanup_orchestrator_steps_by_cpid(
-                        connect_to_orchestrator,
-                        ap_cpid
+                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        connect_to_ocds,
+                        fe_operationId
                     )
 
                     database.cleanup_table_of_services_for_frameworkEstablishment(

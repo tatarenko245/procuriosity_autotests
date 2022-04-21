@@ -1,18 +1,23 @@
-""" Prepare expected message for platform, the Aggregated Plan process of Framework Agreement procedure."""
-import copy
+""" Prepare expected message for platform, the Amend Framework Establishment process of
+Framework Agreement procedure."""
+
 import fnmatch
 
 from tests.utils.functions_collection.functions import is_it_uuid
 
 
-class AggregatedPlanMessage:
+class AmendFrameworkEstablishmentMessage:
     """ Class creates instance of message for platform."""
 
-    def __init__(self, environment, actual_message, expected_quantity_of_outcomes_ap=1, testMode=False):
+    def __init__(self, environment, actual_message, ap_cpid, fe_ocid, expected_quantity_of_outcomes_ap=1,
+                 testMode=False):
+
         self.__environment = environment
         self.__actual_message = actual_message
         self.__testMode = testMode
-        self.__expected_quantity_of_outcomes_ap = expected_quantity_of_outcomes_ap
+        self.__expected_quantity_of_outcomes_fe = expected_quantity_of_outcomes_ap
+        self.__ap_cpid = ap_cpid
+        self.__fe_ocid = fe_ocid
 
         if environment == "dev":
             self.tender_url = "http://dev.public.eprocurement.systems/tenders"
@@ -26,15 +31,7 @@ class AggregatedPlanMessage:
             "data": {
                 "ocid": "",
                 "url": "",
-                "operationDate": "",
-                "outcomes": {
-                    "ap": [
-                        {
-                            "id": "",
-                            "X-TOKEN": ""
-                        }
-                    ]
-                }
+                "operationDate": ""
             }
         }
 
@@ -80,7 +77,7 @@ class AggregatedPlanMessage:
             raise KeyError("The message is not correct: mismatch key 'data.ocid'.")
 
         if "url" in self.__actual_message['data']:
-            self.__message['data']['url'] = f"{self.tender_url}/{self.__message['data']['ocid']}"
+            self.__message['data']['url'] = f"{self.tender_url}/{self.__ap_cpid}/{self.__fe_ocid}"
         else:
             raise KeyError("The message is not correct: mismatch key 'data.url'.")
 
@@ -94,30 +91,4 @@ class AggregatedPlanMessage:
         else:
             raise KeyError("The message is not correct: mismatch key 'data.operationDate'.")
 
-        outcomes_ap_array = list()
-        for obj in range(self.__expected_quantity_of_outcomes_ap):
-            outcomes_ap_array.append(copy.deepcopy(self.__message['data']['outcomes']['ap'][0]))
-
-            if self.__testMode is False:
-                is_ap_id_correct = fnmatch.fnmatch(
-                    self.__actual_message["data"]["outcomes"]["ap"][obj]["id"], "ocds-t1s2t3-MD-*-AP-*"
-                )
-            else:
-                is_ap_id_correct = fnmatch.fnmatch(
-                    self.__actual_message["data"]["outcomes"]["ap"][obj]["id"], "test-t1s2t3-MD-*-AP-*"
-                )
-
-            if is_ap_id_correct is True:
-                outcomes_ap_array[obj]['id'] = self.__actual_message["data"]["outcomes"]["ap"][obj]["id"]
-            else:
-                raise ValueError("The message is not correct: 'data.outcomes.ap.id'.")
-
-            is_ap_token_correct = is_it_uuid(self.__actual_message["data"]["outcomes"]["ap"][obj]["X-TOKEN"])
-
-            if is_ap_token_correct is True:
-                outcomes_ap_array[obj]['X-TOKEN'] = self.__actual_message["data"]["outcomes"]["ap"][obj]["X-TOKEN"]
-            else:
-                raise ValueError("The message is not correct: 'data.outcomes.ap.X-TOKEN'.")
-
-        self.__message['data']['outcomes']['ap'] = outcomes_ap_array
         return self.__message

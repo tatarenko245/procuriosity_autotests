@@ -6,7 +6,7 @@ from tests.utils.functions_collection.functions import is_it_uuid
 
 
 class FrameworkEstablishmentMessage:
-    """ Class create instance of message for platform."""
+    """ Class creates instance of message for platform."""
 
     def __init__(self, environment, actual_message, expected_quantity_of_outcomes_ap=1, testMode=False):
         self.__environment = environment
@@ -109,7 +109,7 @@ class FrameworkEstablishmentMessage:
             if is_fe_id_correct is True:
                 outcomes_fe_array[obj]['id'] = self.__actual_message["data"]["outcomes"]["fe"][obj]["id"]
             else:
-                raise ValueError("The message of AP_release process is not correct: 'data.outcomes.ap.id'.")
+                raise ValueError("The message of AP_release process is not correct: 'data.outcomes.fe.id'.")
 
         self.__message['data']['outcomes']['fe'] = outcomes_fe_array
         return self.__message
