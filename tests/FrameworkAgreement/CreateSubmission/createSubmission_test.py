@@ -843,6 +843,8 @@ class TestCreatePn:
 
                 print("createSubmission_payload")
                 print(json.dumps(createSubmission_payload))
+                print("createSubmission_payload")
+                print(json.dumps(createSubmission_payload))
 
             except ValueError:
                 raise ValueError("Impossible to build payload for Create Submission process.")
