@@ -7,9 +7,7 @@ from tests.utils.data_of_enum import person_title_tuple, documentType_tuple, bus
 from tests.utils.date_class import Date
 from tests.utils.functions_collection.functions import \
     set_eligibility_evidences_unique_temporary_id, set_criteria_array_unique_temporary_id
-from tests.utils.functions_collection.generate_criteria_array import CriteriaArray
 from tests.utils.iStorage import Document
-from tests.utils.services.e_mdm_service import MdmService
 
 
 class FrameworkEstablishmentPayload:
@@ -293,73 +291,8 @@ class FrameworkEstablishmentPayload:
 
         self.__payload['tender']['procuringEntity']['persones'] = new_persones_array
 
-    def customize_tender_criteria(self):
+    def customize_tender_criteria(self, exclusion_criteria_array, selection_criteria_array):
         """Customize tender.criteria array."""
-
-        # Get all 'standard' criteria from eMDM service.
-        mdm_service = MdmService(
-            host_to_service=self.__host,
-            environment=self.__environment)
-
-        standard_criteria = mdm_service.get_standard_criteria(
-            self.__country,
-            self.__language
-        )
-
-        # Prepare 'exclusion' criteria for payload.
-        some_criteria = CriteriaArray(
-            host_to_service=self.__host,
-            country=self.__country,
-            language=self.__language,
-            environment=self.__environment,
-            quantity_of_criteria_objects=len(standard_criteria[1]),
-            quantity_of_requirementGroups_objects=1,
-            quantity_of_requirements_objects=2,
-            quantity_of_eligibleEvidences_objects=2,
-            type_of_standardCriteria=1
-        )
-
-        some_criteria.delete_optional_fields(
-            "criteria.description",
-            "criteria.requirementGroups.description",
-            "criteria.requirementGroups.requirements.description",
-            "criteria.requirementGroups.requirements.period",
-            "criteria.requirementGroups.requirements.minValue",
-            "criteria.requirementGroups.requirements.maxValue",
-            "criteria.requirementGroups.requirements.eligibleEvidences"
-        )
-
-        some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
-        some_criteria.set_unique_temporary_id_for_eligibleEvidences()
-        some_criteria.set_unique_temporary_id_for_criteria()
-        exclusion_criteria_array = some_criteria.build_criteria_array()
-
-        # Prepare 'selection' criteria for payload.
-        some_criteria = CriteriaArray(
-            host_to_service=self.__host,
-            country=self.__country,
-            language=self.__language,
-            environment=self.__environment,
-            quantity_of_criteria_objects=len(standard_criteria[2]),
-            quantity_of_requirementGroups_objects=2,
-            quantity_of_requirements_objects=2,
-            quantity_of_eligibleEvidences_objects=2,
-            type_of_standardCriteria=2
-        )
-
-        some_criteria.delete_optional_fields(
-            "criteria.description",
-            "criteria.requirementGroups.description",
-            "criteria.requirementGroups.requirements.description",
-            "criteria.requirementGroups.requirements.period",
-            "criteria.requirementGroups.requirements.expectedValue",
-            "criteria.requirementGroups.requirements.eligibleEvidences"
-        )
-
-        some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
-        some_criteria.set_unique_temporary_id_for_eligibleEvidences()
-        some_criteria.set_unique_temporary_id_for_criteria()
-        selection_criteria_array = some_criteria.build_criteria_array()
 
         # Prepare new criteria array.
         new_criteria_array = exclusion_criteria_array + selection_criteria_array

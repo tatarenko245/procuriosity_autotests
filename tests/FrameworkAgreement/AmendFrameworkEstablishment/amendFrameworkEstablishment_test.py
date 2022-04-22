@@ -433,6 +433,8 @@ class TestCreatePn:
             ap_cpid = ap_message['data']['ocid']
             ap_ocid = ap_message['data']['outcomes']['ap'][0]['id']
             ap_token = ap_message['data']['outcomes']['ap'][0]['X-TOKEN']
+            ap_url = f"{ap_message['data']['url']}/{ap_ocid}"
+            cpb_ms_url = f"{ap_message['data']['url']}/{ap_cpid}"
             allure.attach(str(ap_message), "Message for platform.")
 
         step_number += 1
@@ -637,21 +639,81 @@ class TestCreatePn:
                     host_to_service=get_hosts[2],
                     country=parse_country,
                     language=parse_language,
-                    environment=parse_environment,
-                    persones_title="Mr.",
-                    businessFunctions_type="procurementOfficer",
-                    tender_documents_type="tenderNotice"
-                ))
+                    environment=parse_environment)
+                )
+                fe_payload.customize_tender_procuringEntity_persones(
+                    quantity_of_persones_objects=3,
+                    quantity_of_businessFunctions_objects=3,
+                    quantity_of_businessFunctions_documents_objects=3
+                )
 
-                # fe_payload.customize_tender_procuringEntity_persones(
-                #     quantity_of_persones_objects=2,
-                #     quantity_of_businessFunctions_objects=1,
-                #     quantity_of_businessFunctions_documents_objects=1
+                # # Get all 'standard' criteria from eMDM service.
+                # mdm_service = MdmService(
+                #     host_to_service=get_hosts[2],
+                #     environment=parse_environment)
+                #
+                # standard_criteria = mdm_service.get_standard_criteria(
+                #     parse_country,
+                #     parse_language
                 # )
-                # fe_payload.customize_tender_criteria()
-
-                # fe_payload.customize_tender_documents(quantity_of_new_documents=2)
-
+                #
+                # # Prepare 'exclusion' criteria for payload.
+                # some_criteria = CriteriaArray(
+                #     host_to_service=get_hosts[2],
+                #     country=parse_country,
+                #     language=parse_language,
+                #     environment=parse_environment,
+                #     quantity_of_criteria_objects=len(standard_criteria[1]),
+                #     quantity_of_requirementGroups_objects=1,
+                #     quantity_of_requirements_objects=2,
+                #     quantity_of_eligibleEvidences_objects=2,
+                #     type_of_standardCriteria=1
+                # )
+                #
+                # some_criteria.delete_optional_fields(
+                #     "criteria.description",
+                #     "criteria.requirementGroups.description",
+                #     "criteria.requirementGroups.requirements.description",
+                #     "criteria.requirementGroups.requirements.period",
+                #     "criteria.requirementGroups.requirements.minValue",
+                #     "criteria.requirementGroups.requirements.maxValue",
+                #     "criteria.requirementGroups.requirements.eligibleEvidences"
+                # )
+                #
+                # some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
+                # some_criteria.set_unique_temporary_id_for_eligibleEvidences()
+                # some_criteria.set_unique_temporary_id_for_criteria()
+                # exclusion_criteria_array = some_criteria.build_criteria_array()
+                #
+                # # Prepare 'selection' criteria for payload.
+                # some_criteria = CriteriaArray(
+                #     host_to_service=get_hosts[2],
+                #     country=parse_country,
+                #     language=parse_language,
+                #     environment=parse_environment,
+                #     quantity_of_criteria_objects=len(standard_criteria[2]),
+                #     quantity_of_requirementGroups_objects=2,
+                #     quantity_of_requirements_objects=2,
+                #     quantity_of_eligibleEvidences_objects=2,
+                #     type_of_standardCriteria=2
+                # )
+                #
+                # some_criteria.delete_optional_fields(
+                #     "criteria.description",
+                #     "criteria.requirementGroups.description",
+                #     "criteria.requirementGroups.requirements.description",
+                #     "criteria.requirementGroups.requirements.period",
+                #     "criteria.requirementGroups.requirements.expectedValue",
+                #     "criteria.requirementGroups.requirements.eligibleEvidences"
+                # )
+                #
+                # some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
+                # some_criteria.set_unique_temporary_id_for_eligibleEvidences()
+                # some_criteria.set_unique_temporary_id_for_criteria()
+                # selection_criteria_array = some_criteria.build_criteria_array()
+                #
+                # fe_payload.customize_tender_criteria(exclusion_criteria_array, selection_criteria_array)
+                # fe_payload.customize_tender_documents(quantity_of_new_documents=0)
                 fe_payload.delete_optional_fields(
                     "tender.secondStage",
                     "tender.procurementMethodModalities",
@@ -677,17 +739,13 @@ class TestCreatePn:
             )
 
             fe_message = get_message_for_platform(fe_operationId)
+            fe_ocid = fe_message['data']['outcomes']['fe'][0]['id']
+            fe_url = f"{fe_message['data']['url']}/{fe_ocid}"
             allure.attach(str(fe_message), 'Message for platform.')
 
         time.sleep(15)
-        fe_ocid = fe_message['data']['outcomes']['fe'][0]['id']
-        fe_url = f"{fe_message['data']['url']}/{fe_ocid}"
         actual_fe_release_before_amendFrameworkEstablishment = requests.get(url=fe_url).json()
-
-        ap_url = f"{ap_message['data']['url']}/{ap_ocid}"
         actual_ap_release_before_amendFrameworkEstablishment = requests.get(url=ap_url).json()
-
-        cpb_ms_url = f"{ap_message['data']['url']}/{ap_cpid}"
         cpb_actual_ms_release_before_amendFrameworkEstablishment = requests.get(url=cpb_ms_url).json()
 
         step_number += 1
@@ -718,26 +776,6 @@ class TestCreatePn:
                     language=parse_language,
                     environment=parse_environment)
                 )
-
-                # amendFe_payload.customize_old_persones(
-                #     "MD-IDNO-create fe: tender.procuringEntity.persones[1].id",
-                #     need_to_add_new_businessFunctions=True,
-                #     quantity_of_new_businessFunctions_objects=1,
-                #     need_to_add_new_document=True,
-                #     quantity_of_new_documents_objects=1
-                # )
-                #
-                # amendFe_payload.add_new_persones(
-                #     quantity_of_persones_objects=1,
-                #     quantity_of_businessFunctions_objects=1,
-                #     quantity_of_documents_objects=1
-                # )
-                #
-                # amendFe_payload.customize_old_tender_documents(
-                #     fe_payload['tender']['documents'][0]['id']
-                # )
-
-                # amendFe_payload.add_new_tender_documents(quantity_of_new_documents=1)
 
                 amendFe_payload.delete_optional_fields(
                     "tender.procuringEntity",
@@ -905,11 +943,6 @@ class TestCreatePn:
                  Compare actual MS release of CPB before and after Amend Framework Establishment process.
                 """
                 cpb_actual_ms_release_after_amendFrameworkEstablishment = requests.get(url=cpb_ms_url).json()
-
-                print("cpb_actual_ms_release_before_amendFrameworkEstablishment")
-                print(json.dumps(cpb_actual_ms_release_before_amendFrameworkEstablishment))
-                print("cpb_actual_ms_release_after_amendFrameworkEstablishment")
-                print(json.dumps(cpb_actual_ms_release_after_amendFrameworkEstablishment))
 
                 actual_result_of_comparing_releases = dict(DeepDiff(
                     cpb_actual_ms_release_before_amendFrameworkEstablishment,
