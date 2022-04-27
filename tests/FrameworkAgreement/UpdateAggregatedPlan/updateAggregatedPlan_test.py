@@ -60,7 +60,7 @@ class TestCreatePn:
                   "\nUpdateAggregatedPlan process: required data model.\n"
                   "\n===================================================================================\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
-                    prepare_tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator):
+                    prepare_tender_classification_id, connect_to_ocds, connect_to_access, connect_to_orchestrator):
 
         step_number = 1
         with allure.step(f'# {step_number}. Authorization platform one: CreateEi process.'):
@@ -84,7 +84,7 @@ class TestCreatePn:
                 """
                 ei_payload = copy.deepcopy(ExpenditureItemPayload(
                     buyer_id=0,
-                    tenderClassificationId=prepare_tenderClassificationId)
+                    tenderClassificationId=prepare_tender_classification_id)
                 )
 
                 ei_payload.delete_optional_fields(
@@ -260,7 +260,7 @@ class TestCreatePn:
                     fs_id=fs_ocid,
                     amount=910.00,
                     currency=currency,
-                    tenderClassificationId=prepare_tenderClassificationId,
+                    tenderClassificationId=prepare_tender_classification_id,
                     host_to_service=get_hosts[2])
                 )
 
@@ -321,7 +321,7 @@ class TestCreatePn:
                     fs_id=fs_ocid,
                     amount=50.00,
                     currency=currency,
-                    tenderClassificationId=prepare_tenderClassificationId,
+                    tenderClassificationId=prepare_tender_classification_id,
                     host_to_service=get_hosts[2])
                 )
 
@@ -389,7 +389,7 @@ class TestCreatePn:
                     centralPurchasingBody_id=55,
                     host_to_service=get_hosts[2],
                     maxDurationOfFA=maxDurationOfFA,
-                    tenderClassificationId=prepare_tenderClassificationId,
+                    tenderClassificationId=prepare_tender_classification_id,
                     currency=currency)
                 )
 
@@ -568,7 +568,7 @@ class TestCreatePn:
                     currency=currency,
                     createAp_payload=create_ap_payload,
                     maxDurationOfFA=maxDurationOfFA,
-                    tenderClassificationId=prepare_tenderClassificationId)
+                    tenderClassificationId=prepare_tender_classification_id)
                 )
 
                 # Read rule VR.COM-1.26.14
@@ -674,7 +674,7 @@ class TestCreatePn:
                         ap_payload=update_ap_payload,
                         actual_ap_release=actual_ap_release_after_updateAggregatedPlan,
                         actual_ms_release=cpb_actual_ms_release_after_updateAggregatedPlan,
-                        tenderClassificationId=prepare_tenderClassificationId
+                        tenderClassificationId=prepare_tender_classification_id
                     ))
 
                     expected_lots_array = expected_value.build_expected_lots_array()

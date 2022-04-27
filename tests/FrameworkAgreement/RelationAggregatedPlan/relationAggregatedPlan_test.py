@@ -55,7 +55,7 @@ class TestCreatePn:
                   "\nRelationAggregatedPlan process: payload is not needed.\n"
                   "\n===================================================================================\n")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
-                    prepare_tenderClassificationId, connect_to_ocds, connect_to_access, connect_to_orchestrator):
+                    prepare_tender_classification_id, connect_to_ocds, connect_to_access, connect_to_orchestrator):
 
         metadata_tender_url = None
         try:
@@ -88,7 +88,7 @@ class TestCreatePn:
                 """
                 ei_payload = copy.deepcopy(ExpenditureItemPayload(
                     buyer_id=0,
-                    tenderClassificationId=prepare_tenderClassificationId)
+                    tenderClassificationId=prepare_tender_classification_id)
                 )
 
                 ei_payload.delete_optional_fields(
@@ -264,7 +264,7 @@ class TestCreatePn:
                     fs_id=fs_ocid,
                     amount=910.00,
                     currency=currency,
-                    tenderClassificationId=prepare_tenderClassificationId,
+                    tenderClassificationId=prepare_tender_classification_id,
                     host_to_service=get_hosts[2])
                 )
 
@@ -325,7 +325,7 @@ class TestCreatePn:
                     fs_id=fs_ocid,
                     amount=50.00,
                     currency=currency,
-                    tenderClassificationId=prepare_tenderClassificationId,
+                    tenderClassificationId=prepare_tender_classification_id,
                     host_to_service=get_hosts[2])
                 )
 
@@ -393,7 +393,7 @@ class TestCreatePn:
                     centralPurchasingBody_id=55,
                     host_to_service=get_hosts[2],
                     maxDurationOfFA=maxDurationOfFA,
-                    tenderClassificationId=prepare_tenderClassificationId,
+                    tenderClassificationId=prepare_tender_classification_id,
                     currency=currency)
                 )
 

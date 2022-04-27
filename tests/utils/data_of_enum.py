@@ -267,6 +267,13 @@ documentType_for_create_award_of_limited_procedure_tuple = (
     "contractSchedule",
     "shortlistedFirms",)
 
+documentType_for_create_submission_framework_agreement = (
+    "illustration",
+    "submissionDocuments",
+    "x_qualificationDocuments",
+    "x_eligibilityDocuments",
+    "x_technicalDocuments",
+)
 scale_tuple = (
     "micro",
     "sme",

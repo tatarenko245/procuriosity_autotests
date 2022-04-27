@@ -174,7 +174,6 @@ def generate_lots_array(quantity_of_object, lot_object):
 def generate_criteria_array(host_to_service, country, language, environment, quantity_of_criteria_object,
                             criteria_object, quantity_of_groups_object, quantity_of_requirements_object,
                             quantity_of_evidences_object, type_of_standard_criteria):
-
     copy.deepcopy(criteria_object)
     criteria_array = []
     for i in range(quantity_of_criteria_object):
@@ -233,7 +232,6 @@ def generate_criteria_requirementGroups_array(quantity_of_object, requirementGro
 
 def generate_criteria_requirementGroups_requirements(
         quantity_of_object, requirement_object, quantity_of_evidences_object, host_to_service):
-
     copy.deepcopy(requirement_object)
     requirements_array = []
     for i in range(quantity_of_object):
@@ -255,7 +253,6 @@ def generate_criteria_requirementGroups_requirements(
 
 def generate_criteria_requirementGroups_requirements_eligibleEvidences_array(
         quantity_of_object, eligibleEvidences_object, host_to_service):
-
     copy.deepcopy(eligibleEvidences_object)
     eligibleEvidences_array = []
     for i in range(quantity_of_object):
@@ -913,7 +910,7 @@ def generate_requirement_response_array(ev_release_criteria_array, payload):
             choose_the_requirement_group = random.randint(0, quantity_of_requirement_groups - 1)
 
             for y in ev_release_criteria_array[x]['requirementGroups'][choose_the_requirement_group][
-                    'requirements']:
+                'requirements']:
                 if "id" in y and "expectedValue" in y:
                     requirements_id_list.append(y['id'])
                     requirements_expected_value_was_chose.append(copy.deepcopy(
@@ -1156,3 +1153,25 @@ def get_unique_party_from_list_by_id(parties_array):
     for q in set_of_party_id:
         unique_parties_array.append(dictionary_of_all_parties[q])
     return unique_parties_array
+
+
+def set_unique_temporary_id_for_requirement_responses_evidences(payload_requirement_responses_array):
+    """
+    This function returns
+    'submission.requirementResponses[*].evidences[*].id' as temporary id.
+    """
+    quantity_of_id_list = list()
+    for q_0 in payload_requirement_responses_array:
+        for q_1 in q_0['evidences']:
+            if "id" in q_1:
+                quantity_of_id_list.append(q_1['id'])
+
+    test = make_unique_numbers(len(quantity_of_id_list))
+    iterator = len(test)
+    if len(quantity_of_id_list) == len(test):
+        for q_0 in payload_requirement_responses_array:
+            for q_1 in q_0['evidences']:
+                if "id" in q_1:
+                    q_1['id'] = str(iterator)
+                    iterator -= 1
+    return payload_requirement_responses_array

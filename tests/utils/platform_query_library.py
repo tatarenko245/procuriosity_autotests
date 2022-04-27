@@ -7,7 +7,6 @@ class PlatformQueryRequest:
     @staticmethod
     @allure.step('# Prepared request: create Expenditure item.')
     def create_ei_process(host_to_bpe, access_token, x_operation_id, country, language, payload, testMode=False):
-
         request = requests.post(
             url=f"{host_to_bpe}/do/ei",
             headers={
@@ -45,7 +44,6 @@ class PlatformQueryRequest:
     @staticmethod
     @allure.step('# Prepared request: create Financial source.')
     def create_fs_process(host_to_bpe, ei_cpid, access_token, x_operation_id, payload, testMode=False):
-
         request = requests.post(
             url=f"{host_to_bpe}/do/fs/{ei_cpid}",
             params={
@@ -82,7 +80,6 @@ class PlatformQueryRequest:
     @staticmethod
     @allure.step('# Prepared request: create Planing notice.')
     def create_pn_process(host_to_bpe, access_token, x_operation_id, payload, country, language, pmd, testMode=False):
-
         request = requests.post(
             url=f"{host_to_bpe}/do/pn",
             params={
@@ -103,7 +100,6 @@ class PlatformQueryRequest:
     @staticmethod
     @allure.step('# Prepared request: create Aggregated Plan.')
     def create_ap_process(host_to_bpe, access_token, x_operation_id, payload, country, language, pmd, testMode=False):
-
         request = requests.post(
             url=f"{host_to_bpe}/do/ap",
             params={
@@ -125,7 +121,6 @@ class PlatformQueryRequest:
     @allure.step('# Prepared request: update Aggregated Plan.')
     def update_ap_process(host_to_bpe, ap_cpid, ap_ocid, access_token, x_operation_id, ap_token, payload,
                           testMode=False):
-
         request = requests.post(
             url=f"{host_to_bpe}/do/ap/{ap_cpid}/{ap_ocid}",
             params={
@@ -145,7 +140,6 @@ class PlatformQueryRequest:
     @allure.step('# Prepared request: do Outsourcing Plan.')
     def do_outsourcing_process(host_to_bpe, access_token, x_operation_id, ap_cpid, ap_ocid, pn_cpid, pn_ocid,
                                pn_token, testMode=False):
-
         request = requests.post(
             url=f"{host_to_bpe}/do/outsourcing/{pn_cpid}/{pn_ocid}",
             params={
@@ -166,7 +160,6 @@ class PlatformQueryRequest:
     @allure.step('# Prepared request: do Relation Aggregated Plan.')
     def do_relation_proces(host_to_bpe, access_token, x_operation_id, pn_cpid, pn_ocid, ap_cpid, ap_ocid,
                            ap_token, testMode=False):
-
         request = requests.post(
             url=f"{host_to_bpe}/do/relation/{ap_cpid}/{ap_ocid}",
             params={
@@ -225,6 +218,28 @@ class PlatformQueryRequest:
         )
 
         allure.attach(f"{host_to_bpe}/amend/fe/{ap_cpid}/{ap_ocid}", 'URL')
+        allure.attach(json.dumps(payload), 'Prepared payload')
+        return request
+
+    @staticmethod
+    @allure.step('# Prepared request: Create Submission .')
+    def create_submission_process(host_to_bpe, access_token, x_operation_id, ap_cpid, ap_ocid, payload,
+                                  test_mode=False):
+        """Send request for 'Create Submission process'."""
+
+        request = requests.post(
+            url=f"{host_to_bpe}/do/submission/{ap_cpid}/{ap_ocid}",
+            params={
+                "testMode": test_mode
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "X-OPERATION-ID": x_operation_id,
+                "Content-Type": "application/json"},
+            json=payload
+        )
+
+        allure.attach(f"{host_to_bpe}/do/submission/{ap_cpid}/{ap_ocid}", 'URL')
         allure.attach(json.dumps(payload), 'Prepared payload')
         return request
 
