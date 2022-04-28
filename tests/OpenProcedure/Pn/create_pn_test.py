@@ -188,7 +188,7 @@ class TestCreatePn:
                     If TestCase was failed, then return process steps by operation-id.
                     """
                     if asynchronous_result_of_sending_the_request_was_checked is True:
-                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditureItem(
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
                             cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
@@ -197,13 +197,13 @@ class TestCreatePn:
                         GlobalClassMetadata.database.pn_process_cleanup_table_of_services(
                             pn_ocid=GlobalClassCreatePn.pn_ocid)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreatePn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -613,19 +613,19 @@ class TestCreatePn:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditureItem(
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
                             cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreatePn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -1034,19 +1034,19 @@ class TestCreatePn:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditureItem(
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
                             cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreatePn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):
@@ -1454,19 +1454,19 @@ class TestCreatePn:
                         If TestCase was failed, then return process steps by operation-id.
                         """
                     if compare_releases == expected_result:
-                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditureItem(
+                        GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
                             cp_id=GlobalClassCreateEi.ei_ocid)
 
                         GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
                             ei_id=GlobalClassCreateEi.ei_ocid)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreateEi.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreateFs.operation_id)
 
-                        GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                        GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                             operation_id=GlobalClassCreatePn.operation_id)
                     else:
                         with allure.step('# Steps from Casandra DataBase'):

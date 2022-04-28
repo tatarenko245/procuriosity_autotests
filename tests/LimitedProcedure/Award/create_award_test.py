@@ -421,7 +421,7 @@ class TestCreateAward:
                             If TestCase was failed, then return process steps by operation-id.
                             """
                         if compare_releases == expected_result:
-                            connect_to_database.cleanup_table_of_services_for_expenditureItem(cp_id=ei_ocid)
+                            connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
 
                             connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
 
@@ -431,13 +431,13 @@ class TestCreateAward:
 
                             connect_to_database.createAward_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                            connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=createEi_operationId)
+                            connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(operation_id=createEi_operationId)
 
-                            connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=createFs_operationId)
+                            connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(operation_id=createFs_operationId)
 
-                            connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=createPn_operationId)
+                            connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(operation_id=createPn_operationId)
 
-                            connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=createCn_operationId)
+                            connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(operation_id=createCn_operationId)
 
                             connect_to_database.cleanup_orchestrator_steps_by_cpid(
                                 cpid=pn_ocid)

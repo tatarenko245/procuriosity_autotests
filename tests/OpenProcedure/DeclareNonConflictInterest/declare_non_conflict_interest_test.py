@@ -757,7 +757,7 @@ class TestDeclareNonConflictInterest:
             If TestCase was failed, then return process steps by operation-id.
             """
             if compare_releases == expected_result:
-                GlobalClassMetadata.database.cleanup_table_of_services_for_expenditureItem(
+                GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
                     cp_id=GlobalClassCreateEi.ei_ocid)
 
                 GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
@@ -779,26 +779,26 @@ class TestDeclareNonConflictInterest:
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
                     ev_id=GlobalClassCreateCnOnPn.ev_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateEi.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateFs.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreatePn.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateCnOnPn.operation_id)
 
                 GlobalClassMetadata.database.cleanup_orchestrator_steps_by_cpid(
                     operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
             else:
@@ -1661,7 +1661,7 @@ class TestDeclareNonConflictInterest:
             If TestCase was failed, then return process steps by operation-id.
             """
             if compare_releases == expected_result:
-                GlobalClassMetadata.database.cleanup_table_of_services_for_expenditureItem(
+                GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
                     cp_id=GlobalClassCreateEi.ei_ocid)
 
                 GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
@@ -1683,26 +1683,26 @@ class TestDeclareNonConflictInterest:
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
                     ev_id=GlobalClassCreateCnOnPn.ev_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateEi.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateFs.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreatePn.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateCnOnPn.operation_id)
 
                 GlobalClassMetadata.database.cleanup_orchestrator_steps_by_cpid(
                     operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[1][
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
             else:
@@ -2553,7 +2553,7 @@ class TestDeclareNonConflictInterest:
             If TestCase was failed, then return process steps by operation-id.
             """
             if compare_releases == expected_result:
-                GlobalClassMetadata.database.cleanup_table_of_services_for_expenditureItem(
+                GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
                     cp_id=GlobalClassCreateEi.ei_ocid)
 
                 GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
@@ -2575,26 +2575,26 @@ class TestDeclareNonConflictInterest:
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
                     ev_id=GlobalClassCreateCnOnPn.ev_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateEi.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateFs.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreatePn.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateCnOnPn.operation_id)
 
                 GlobalClassMetadata.database.cleanup_orchestrator_steps_by_cpid(
                     operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
             else:
@@ -3401,7 +3401,7 @@ class TestDeclareNonConflictInterest:
             If TestCase was failed, then return process steps by operation-id.
             """
             if compare_releases == expected_result:
-                GlobalClassMetadata.database.cleanup_table_of_services_for_expenditureItem(
+                GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
                     cp_id=GlobalClassCreateEi.ei_ocid)
 
                 GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
@@ -3423,26 +3423,26 @@ class TestDeclareNonConflictInterest:
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
                     ev_id=GlobalClassCreateCnOnPn.ev_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateEi.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateFs.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreatePn.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateCnOnPn.operation_id)
 
                 GlobalClassMetadata.database.cleanup_orchestrator_steps_by_cpid(
                     operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
 
@@ -4698,7 +4698,7 @@ class TestDeclareNonConflictInterest:
             If TestCase was failed, then return process steps by operation-id.
             """
             if compare_releases == expected_result:
-                GlobalClassMetadata.database.cleanup_table_of_services_for_expenditureItem(
+                GlobalClassMetadata.database.cleanup_table_of_services_for_expenditure_item(
                     cp_id=GlobalClassCreateEi.ei_ocid)
 
                 GlobalClassMetadata.database.fs_process_cleanup_table_of_services(
@@ -4720,30 +4720,30 @@ class TestDeclareNonConflictInterest:
                     pn_ocid=GlobalClassCreatePn.pn_ocid,
                     ev_id=GlobalClassCreateCnOnPn.ev_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateEi.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateFs.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreatePn.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateCnOnPn.operation_id)
 
                 GlobalClassMetadata.database.cleanup_orchestrator_steps_by_cpid(
                     operation_id=GlobalClassCreateFirstBid.operation_id)
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassTenderPeriodEndAuction.feed_point_message[0][
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassCreateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
 
-                GlobalClassMetadata.database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                GlobalClassMetadata.database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                     operation_id=GlobalClassUpdateDeclareNonConflict.feed_point_message[
                         'X-OPERATION-ID'])
             else:

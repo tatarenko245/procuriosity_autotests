@@ -383,7 +383,7 @@ class TestCreatePn:
                 Build payload for CreateAp process.
                 """
                 database = CassandraSession()
-                maxDurationOfFA = database.get_maxDurationOfFA_from_access_rules(
+                maxDurationOfFA = database.get_max_duration_of_fa_from_access_rules(
                     connect_to_access,
                     parse_country,
                     parse_pmd
@@ -1160,62 +1160,62 @@ class TestCreatePn:
                     CLean up the database.
                     """
                     # Clean after crateEi process:
-                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                    database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                         connect_to_ocds,
                         ei_operationId
                     )
 
-                    database.cleanup_table_of_services_for_expenditureItem(
+                    database.cleanup_table_of_services_for_expenditure_item(
                         connect_to_ocds,
                         ei_cpid
                     )
 
                     # Clean after crateFs process:
-                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                    database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                         connect_to_ocds,
                         fs_1_operationId
                     )
 
-                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                    database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                         connect_to_ocds,
                         fs_2_operationId
                     )
 
-                    database.cleanup_table_of_services_for_financialSource(
+                    database.cleanup_table_of_services_for_financial_source(
                         connect_to_ocds,
                         ei_cpid
                     )
 
                     # Clean after cratePn process:
-                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                    database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                         connect_to_ocds,
                         pn_1_operationId
                     )
 
-                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                    database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                         connect_to_ocds,
                         pn_2_operationId
                     )
 
-                    database.cleanup_table_of_services_for_planningNotice(
+                    database.cleanup_table_of_services_for_planning_notice(
                         connect_to_ocds,
                         connect_to_access,
                         pn_1_cpid
                     )
 
-                    database.cleanup_table_of_services_for_planningNotice(
+                    database.cleanup_table_of_services_for_planning_notice(
                         connect_to_ocds,
                         connect_to_access,
                         pn_2_cpid
                     )
 
                     # Clean after aggregatedPlan process:
-                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                    database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                         connect_to_ocds,
                         ap_operationId
                     )
 
-                    database.cleanup_table_of_services_for_aggregatedPlan(
+                    database.cleanup_table_of_services_for_aggregated_plan(
                         connect_to_ocds,
                         connect_to_access,
                         ap_cpid
@@ -1232,13 +1232,13 @@ class TestCreatePn:
                         pn_2_cpid
                     )
 
-                    database.cleanup_table_of_services_for_outsourcingPlanningNotice(
+                    database.cleanup_table_of_services_for_outsourcing_planning_notice(
                         connect_to_ocds,
                         connect_to_access,
                         pn_1_cpid
                     )
 
-                    database.cleanup_table_of_services_for_outsourcingPlanningNotice(
+                    database.cleanup_table_of_services_for_outsourcing_planning_notice(
                         connect_to_ocds,
                         connect_to_access,
                         pn_2_cpid
@@ -1250,7 +1250,7 @@ class TestCreatePn:
                         ap_cpid
                     )
 
-                    database.cleanup_table_of_services_for_relationAggregatedPlan(
+                    database.cleanup_table_of_services_for_relation_aggregated_plan(
                         connect_to_ocds,
                         connect_to_access,
                         ap_cpid

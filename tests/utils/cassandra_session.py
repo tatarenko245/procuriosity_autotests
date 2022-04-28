@@ -1,6 +1,6 @@
 class CassandraSession:
     @staticmethod
-    def cleanup_table_of_services_for_expenditureItem(connect_to_ocds, cp_id):
+    def cleanup_table_of_services_for_expenditure_item(connect_to_ocds, cp_id):
         connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{cp_id}';").one()
         connect_to_ocds.execute(f"DELETE FROM budget_ei WHERE cp_id='{cp_id}';")
         connect_to_ocds.execute(f"DELETE FROM notice_budget_release WHERE cp_id='{cp_id}';")
@@ -8,14 +8,14 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM notice_budget_compiled_release WHERE cp_id='{cp_id}';")
 
     @staticmethod
-    def get_processId_by_operationId(connect_to_ocds, operation_id):
+    def get_process_id_by_operation_id(connect_to_ocds, operation_id):
         get_process_id = connect_to_ocds.execute(
             f"SELECT * FROM orchestrator_operation WHERE operation_id = '{operation_id}';").one()
         process_id = get_process_id.process_id
         return process_id
 
     @staticmethod
-    def cleanup_ocds_orchestratorOperationStep_by_operationId(connect_to_ocds, operation_id):
+    def cleanup_ocds_orchestrator_operation_step_by_operation_id(connect_to_ocds, operation_id):
         get_process_id = connect_to_ocds.execute(
             f"SELECT * FROM orchestrator_operation WHERE operation_id = '{operation_id}';").one()
 
@@ -27,7 +27,7 @@ class CassandraSession:
         connect_to_orchestrator.execute(f"DELETE FROM steps WHERE cpid = '{cpid}';")
 
     @staticmethod
-    def get_maxDurationOfFA_from_access_rules(connect_to_access, country, pmd):
+    def get_max_duration_of_fa_from_access_rules(connect_to_access, country, pmd):
         value = connect_to_access.execute(
             f"""SELECT value FROM access.rules WHERE 
             country ='{country}' and pmd='{pmd}' and operation_type='all' and parameter ='maxDurationOfFA' 
@@ -35,7 +35,7 @@ class CassandraSession:
         return value.value
 
     @staticmethod
-    def cleanup_table_of_services_for_aggregatedPlan(connect_to_ocds, connect_to_access, ap_cpid):
+    def cleanup_table_of_services_for_aggregated_plan(connect_to_ocds, connect_to_access, ap_cpid):
         connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{ap_cpid}';")
         connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ap_cpid}';").one()
         connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{ap_cpid}';")
@@ -43,7 +43,7 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_cpid}';")
 
     @staticmethod
-    def cleanup_table_of_services_for_outsourcingPlanningNotice(connect_to_ocds, connect_to_access, pn_cpid):
+    def cleanup_table_of_services_for_outsourcing_planning_notice(connect_to_ocds, connect_to_access, pn_cpid):
         connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{pn_cpid}';")
         connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{pn_cpid}';").one()
         connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{pn_cpid}';")
@@ -51,7 +51,7 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{pn_cpid}';")
 
     @staticmethod
-    def cleanup_table_of_services_for_relationAggregatedPlan(connect_to_ocds, connect_to_access, ap_cpid):
+    def cleanup_table_of_services_for_relation_aggregated_plan(connect_to_ocds, connect_to_access, ap_cpid):
         connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{ap_cpid}';")
         connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ap_cpid}';").one()
         connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{ap_cpid}';")
@@ -59,7 +59,7 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_cpid}';")
 
     @staticmethod
-    def cleanup_table_of_services_for_updateAggregatedPlan(connect_to_ocds, connect_to_access, ap_cpid):
+    def cleanup_table_of_services_for_update_aggregated_plan(connect_to_ocds, connect_to_access, ap_cpid):
         connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{ap_cpid}';")
         connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ap_cpid}';").one()
         connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{ap_cpid}';")
@@ -67,7 +67,7 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_cpid}';")
 
     @staticmethod
-    def cleanup_table_of_services_for_frameworkEstablishment(
+    def cleanup_table_of_services_for_framework_establishment(
             connect_to_ocds, connect_to_access, connect_to_clarification, connect_to_dossier, ap_cpid):
         """ CLean up the tables of process."""
 
@@ -80,7 +80,16 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM notice_compiled_release WHERE cp_id='{ap_cpid}';")
 
     @staticmethod
-    def cleanup_table_of_services_for_financialSource(connect_to_ocds, cp_id):
+    def cleanup_table_of_services_for_create_submission(
+            connect_to_ocds, connect_to_access, connect_to_dossier, ap_cpid):
+        """ CLean up the tables of process."""
+
+        connect_to_access.execute(f"DELETE FROM tenders WHERE cpid='{ap_cpid}';")
+        connect_to_dossier.execute(f"DELETE FROM period WHERE cpid='{ap_cpid}';")
+        connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{ap_cpid}';").one()
+
+    @staticmethod
+    def cleanup_table_of_services_for_financial_source(connect_to_ocds, cp_id):
         connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{cp_id}';").one()
         connect_to_ocds.execute(f"DELETE FROM budget_ei WHERE cp_id='{cp_id}';")
         connect_to_ocds.execute(f"DELETE FROM budget_fs WHERE cp_id='{cp_id}';")
@@ -89,7 +98,7 @@ class CassandraSession:
         connect_to_ocds.execute(f"DELETE FROM notice_budget_compiled_release WHERE cp_id='{cp_id}';")
 
     @staticmethod
-    def cleanup_table_of_services_for_planningNotice(connect_to_ocds, connect_to_access, cp_id):
+    def cleanup_table_of_services_for_planning_notice(connect_to_ocds, connect_to_access, cp_id):
         connect_to_ocds.execute(f"DELETE FROM orchestrator_context WHERE cp_id='{cp_id}';").one()
         connect_to_ocds.execute(f"DELETE FROM budget_fs WHERE cp_id='{cp_id}';")
         connect_to_ocds.execute(f"DELETE FROM notice_release WHERE cp_id='{cp_id}';")

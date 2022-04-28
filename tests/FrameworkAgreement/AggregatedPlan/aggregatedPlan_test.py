@@ -48,7 +48,7 @@ class TestCreatePn:
                 Build payload for CreateAp process.
                 """
                 database = CassandraSession()
-                maxDurationOfFA = database.get_maxDurationOfFA_from_access_rules(
+                maxDurationOfFA = database.get_max_duration_of_fa_from_access_rules(
                     connect_to_access,
                     parse_country,
                     parse_pmd
@@ -123,7 +123,7 @@ class TestCreatePn:
                     allure.attach(json.dumps(actual_message), "Actual message.")
                     allure.attach(json.dumps(expected_message), "Expected message.")
 
-                    processId = database.get_processId_by_operationId(connect_to_ocds, ap_operationId)
+                    processId = database.get_process_id_by_operation_id(connect_to_ocds, ap_operationId)
 
                     assert actual_message == expected_message, \
                         allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
@@ -195,12 +195,12 @@ class TestCreatePn:
                     CLean up the database.
                     """
                     # Clean after aggregatedPlan process:
-                    database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                    database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                         connect_to_ocds,
                         ap_operationId
                     )
 
-                    database.cleanup_table_of_services_for_aggregatedPlan(
+                    database.cleanup_table_of_services_for_aggregated_plan(
                         connect_to_ocds,
                         connect_to_access,
                         ap_cpid=actual_message['data']['ocid']

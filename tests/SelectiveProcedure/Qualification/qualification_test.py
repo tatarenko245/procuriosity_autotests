@@ -576,7 +576,7 @@ class TestQualification:
                             """
                             if compare_releases == expected_result:
 
-                                connect_to_database.cleanup_table_of_services_for_expenditureItem(cp_id=ei_ocid)
+                                connect_to_database.cleanup_table_of_services_for_expenditure_item(cp_id=ei_ocid)
 
                                 connect_to_database.fs_process_cleanup_table_of_services(ei_id=ei_ocid)
 
@@ -594,27 +594,27 @@ class TestQualification:
 
                                 connect_to_database.qualification_process_cleanup_table_of_services(pn_ocid=pn_ocid)
 
-                                connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_ei_operation_id)
+                                connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(operation_id=create_ei_operation_id)
 
-                                connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_fs_operation_id)
+                                connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(operation_id=create_fs_operation_id)
 
-                                connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_pn_operation_id)
+                                connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(operation_id=create_pn_operation_id)
 
-                                connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(operation_id=create_cn_operation_id)
+                                connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(operation_id=create_cn_operation_id)
 
-                                connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                                connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                                     operation_id=create_submission_belarus_operation_id)
 
-                                connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                                connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                                     operation_id=create_submission_moldova_operation_id)
 
-                                connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                                connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                                     operation_id=submission_period_end_feed_point_message['X-OPERATION-ID'])
 
-                                connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                                connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                                     operation_id=create_qualification_declaration_operation_id)
 
-                                connect_to_database.cleanup_ocds_orchestratorOperationStep_by_operationId(
+                                connect_to_database.cleanup_ocds_orchestrator_operation_step_by_operation_id(
                                     operation_id=create_qualification_consideration_operation_id)
 
                             else:

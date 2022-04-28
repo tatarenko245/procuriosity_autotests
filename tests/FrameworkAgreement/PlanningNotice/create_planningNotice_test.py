@@ -305,7 +305,7 @@ class TestCreatePn:
                     allure.attach(json.dumps(actual_message), "Actual message.")
                     allure.attach(json.dumps(expected_message), "Expected message.")
 
-                    processId = CassandraSession().get_processId_by_operationId(connect_to_ocds, pn_operationId)
+                    processId = CassandraSession().get_process_id_by_operation_id(connect_to_ocds, pn_operationId)
 
                     assert actual_message == expected_message, \
                         allure.attach(f"SELECT * FROM ocds.orchestrator_operation_step WHERE "
