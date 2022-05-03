@@ -64,7 +64,7 @@ class SubmissionPeriodEndRelease:
             },
             "license": "http://opendefinition.org/licenses/",
             "publicationPolicy": "http://opendefinition.org/licenses/",
-            "publishedDate": self.__actual_fe_release['publisherDate'],
+            "publishedDate": self.__actual_fe_release['publishedDate'],
             "releases": [
                 {
                     "ocid": "",
