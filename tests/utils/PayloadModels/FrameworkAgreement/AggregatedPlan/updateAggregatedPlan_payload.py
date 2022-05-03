@@ -267,21 +267,22 @@ class UpdateAggregatedPlan:
             new_documents_array[q_0]['relatedLots'] = [lot_id_list[q_0]]
 
         if "documents" in self.__createAp_payload['tender']:
+            old_documents_array = list()
             for q_1 in range(len(self.__createAp_payload['tender']['documents'])):
-                new_documents_array.append(copy.deepcopy(self.__payload['tender']['documents'][0]))
+                old_documents_array.append(copy.deepcopy(self.__payload['tender']['documents'][0]))
 
-                new_documents_array[q_1]['id'] = self.__createAp_payload['tender']['documents'][q_1]['id']
-                new_documents_array[q_1]['documentType'] = f"{random.choice(documentType_tuple)}"
-                new_documents_array[q_1]['title'] = f"update ap: tender.documents{q_1}.title"
-                new_documents_array[q_1]['description'] = f"update up: tender.documents{q_1}.description"
+                old_documents_array[q_1]['id'] = self.__createAp_payload['tender']['documents'][q_1]['id']
+                old_documents_array[q_1]['documentType'] = f"{random.choice(documentType_tuple)}"
+                old_documents_array[q_1]['title'] = f"update ap: tender.documents{q_1}.title"
+                old_documents_array[q_1]['description'] = f"update up: tender.documents{q_1}.description"
 
                 if "relatedLots" in self.__createAp_payload['tender']['documents'][q_1]:
 
-                    new_documents_array[q_1]['relatedLots'] = \
+                    old_documents_array[q_1]['relatedLots'] = \
                         self.__createAp_payload['tender']['documents'][q_1]['relatedLots']
                 else:
-                    del self.__createAp_payload['tender']['documents'][q_1]['relatedLots']
-
+                    del old_documents_array[q_1]['relatedLots']
+            new_documents_array += old_documents_array
         self.__payload['tender']['documents'] = new_documents_array
 
     def __del__(self):

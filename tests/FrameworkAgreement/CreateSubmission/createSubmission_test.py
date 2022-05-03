@@ -3,11 +3,10 @@ import copy
 import json
 import random
 import time
-
 import allure
 import requests
-from deepdiff import DeepDiff
 
+from deepdiff import DeepDiff
 from tests.utils.MessageModels.FrameworkAgreement.createSubmission_message import CreateSubmissionMessage
 from tests.utils.PayloadModels.Budget.ExpenditureItem.expenditureItem_payload import ExpenditureItemPayload
 from tests.utils.PayloadModels.Budget.FinancialSource.financialSource_payload import FinancialSourcePayload
@@ -22,11 +21,9 @@ from tests.utils.PayloadModels.FrameworkAgreement.PlanningNotice.planingNotice_p
 from tests.utils.PayloadModels.FrameworkAgreement.Submission.createSubmission_payload import CreateSubmissionPayload
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.data_of_enum import currency_tuple
-from tests.utils.functions_collection.generate_criteria_array import CriteriaArray
 from tests.utils.functions_collection.get_message_for_platform import get_message_for_platform
 from tests.utils.platform_query_library import PlatformQueryRequest
 from tests.utils.platform_authorization import PlatformAuthorization
-from tests.utils.services.e_mdm_service import MdmService
 
 
 @allure.parent_suite('Framework Agreement')
@@ -34,7 +31,7 @@ from tests.utils.services.e_mdm_service import MdmService
 @allure.sub_suite('BPE: Create Submission')
 @allure.severity('Critical')
 @allure.testcase(url=None)
-class TestCreatePn:
+class TestCreateSubmission:
     @allure.title("\n===================================================================================\n"
                   "\nCheck PN, MS, AP_release and MS of CPB releases after RelationAggregatedPlan process, "
                   "without optional fields. \n"
@@ -641,88 +638,15 @@ class TestCreatePn:
                     language=parse_language,
                     environment=parse_environment)
                 )
-                fe_payload.customize_tender_procuringEntity_persones(
-                    quantity_of_persones_objects=3,
-                    quantity_of_businessFunctions_objects=3,
-                    quantity_of_businessFunctions_documents_objects=3
+
+                fe_payload.delete_optional_fields(
+                    "tender.secondStage",
+                    "tender.procurementMethodModalities",
+                    "tender.procurementMethodRationale",
+                    "tender.procuringEntity",
+                    "tender.criteria",
+                    "tender.documents"
                 )
-
-                # Get all 'standard' criteria from eMDM service.
-                mdm_service = MdmService(
-                    host_to_service=get_hosts[2],
-                    environment=parse_environment)
-
-                standard_criteria = mdm_service.get_standard_criteria(
-                    parse_country,
-                    parse_language
-                )
-
-                # Prepare 'exclusion' criteria for payload.
-                some_criteria = CriteriaArray(
-                    host_to_service=get_hosts[2],
-                    country=parse_country,
-                    language=parse_language,
-                    environment=parse_environment,
-                    quantity_of_criteria_objects=len(standard_criteria[1]),
-                    quantity_of_requirementGroups_objects=1,
-                    quantity_of_requirements_objects=2,
-                    quantity_of_eligibleEvidences_objects=2,
-                    type_of_standardCriteria=1
-                )
-
-                some_criteria.delete_optional_fields(
-                    # "criteria.description",
-                    # "criteria.requirementGroups.description",
-                    # "criteria.requirementGroups.requirements.description",
-                    # "criteria.requirementGroups.requirements.period",
-                    "criteria.requirementGroups.requirements.minValue",
-                    "criteria.requirementGroups.requirements.maxValue",
-                    # "criteria.requirementGroups.requirements.eligibleEvidences"
-                )
-
-                some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
-                some_criteria.set_unique_temporary_id_for_eligibleEvidences()
-                some_criteria.set_unique_temporary_id_for_criteria()
-                exclusion_criteria_array = some_criteria.build_criteria_array()
-
-                # Prepare 'selection' criteria for payload.
-                some_criteria = CriteriaArray(
-                    host_to_service=get_hosts[2],
-                    country=parse_country,
-                    language=parse_language,
-                    environment=parse_environment,
-                    quantity_of_criteria_objects=len(standard_criteria[2]),
-                    quantity_of_requirementGroups_objects=2,
-                    quantity_of_requirements_objects=2,
-                    quantity_of_eligibleEvidences_objects=2,
-                    type_of_standardCriteria=2
-                )
-
-                some_criteria.delete_optional_fields(
-                    # "criteria.description",
-                    # "criteria.requirementGroups.description",
-                    # "criteria.requirementGroups.requirements.description",
-                    # "criteria.requirementGroups.requirements.period",
-                    "criteria.requirementGroups.requirements.expectedValue",
-                    # "criteria.requirementGroups.requirements.eligibleEvidences"
-                )
-
-                some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
-                some_criteria.set_unique_temporary_id_for_eligibleEvidences()
-                some_criteria.set_unique_temporary_id_for_criteria()
-                selection_criteria_array = some_criteria.build_criteria_array()
-
-                fe_payload.customize_tender_criteria(exclusion_criteria_array, selection_criteria_array)
-                fe_payload.customize_tender_documents(quantity_of_new_documents=0)
-
-                # fe_payload.delete_optional_fields(
-                #     "tender.secondStage",
-                #     "tender.procurementMethodModalities",
-                #     "tender.procurementMethodRationale",
-                #     "tender.procuringEntity",
-                #     "tender.criteria",
-                #     "tender.documents"
-                # )
 
                 fe_payload = fe_payload.build_frameworkEstablishment_payload()
             except ValueError:
@@ -828,31 +752,22 @@ class TestCreatePn:
                     host_to_service=get_hosts[2],
                     actual_fe_release=actual_fe_release_before_create_submission
                 )
-                # create_submission_payload.delete_optional_fields(
-                #     "submission.requirementResponses",
-                #     "submission.candidates.identifier.uri",
-                #     "submission.candidates.additionalIdentifiers",
-                #     "submission.candidates.address.postalCode",
-                #     "submission.candidates.contactPoint.faxNumber",
-                #     "submission.candidates.contactPoint.url",
-                #     "submission.candidates.persones",
-                #     "submission.candidates.details.typeOfSupplier",
-                #     "submission.candidates.details.mainEconomicActivities",
-                #     "submission.candidates.details.bankAccounts",
-                #     "submission.candidates.details.legalForm.uri",
-                #     "submission.documents"
-                # )
+                create_submission_payload.delete_optional_fields(
+                    "submission.requirementResponses",
+                    "submission.candidates.identifier.uri",
+                    "submission.candidates.additionalIdentifiers",
+                    "submission.candidates.address.postalCode",
+                    "submission.candidates.contactPoint.faxNumber",
+                    "submission.candidates.contactPoint.url",
+                    "submission.candidates.persones",
+                    "submission.candidates.details.typeOfSupplier",
+                    "submission.candidates.details.mainEconomicActivities",
+                    "submission.candidates.details.bankAccounts",
+                    "submission.candidates.details.legalForm.uri",
+                    "submission.documents"
+                )
                 create_submission_payload.prepare_submission_object(
-                    quantity_of_candidates=3,
-                    quantity_of_additional_identifiers=3,
-                    quantity_of_persones=3,
-                    quantity_of_evidences=3,
-                    quantity_of_business_functions=3,
-                    quantity_of_bf_documents=3,
-                    quantity_of_main_economic_activities=3,
-                    quantity_of_bank_accounts=3,
-                    quantity_of_additional_account_identifiers=3,
-                    quantity_of_documents=3
+                    quantity_of_candidates=1
                 )
                 create_submission_payload = create_submission_payload.build_create_submission_payload()
             except ValueError:

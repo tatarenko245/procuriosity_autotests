@@ -1,14 +1,12 @@
 import datetime
 import time
 
-
 import requests
 
 from tests.utils.functions_collection.functions import time_bot
 
 
 def get_message_for_platform(operation_id=None, ocid=None, initiator=None):
-
     host = "http://82.144.223.29"
     port = "5000"
     url = None
@@ -39,5 +37,9 @@ def get_message_for_platform(operation_id=None, ocid=None, initiator=None):
         if str(message) == str([]):
             raise ValueError("The message was not found in Kafka topic")
 
-    del message['_id']
+    if type(message) is list:
+        for i in range(len(message)):
+            del message[i]['_id']
+    elif type(message) is dict:
+        del message['_id']
     return message

@@ -25,22 +25,22 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.sub_suite('BPE: Outsourcing PN_release')
 @allure.severity('Critical')
 @allure.testcase(url=None)
-class TestCreatePn:
+class TestOutsourcingPlanningNotice:
     @allure.title("\nCheck PN, MS, AP_release and MS of CPB releases after OutsourcingPlanningNotice process, "
                   "without optional fields. \n"
-                  "\n===================================================================================\n"
-                  "\nCreateEi process: required data model, without items array, buyer_id = 0;\n"
-                  "\n===================================================================================\n"
-                  "\nСreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 1;\n"
-                  "\n===================================================================================\n"
-                  "\nСreateFs process: required data model, the treasury money, procuringEntity_id = 0;\n"
-                  "\n===================================================================================\n"
-                  "\nСreatePn process: required data model, without lots and items.\n"
-                  "\n===================================================================================\n"
-                  "\nСreateAp process: required data mode;\n"
-                  "\n===================================================================================\n"
-                  "OutsourcingPlanningNotice process: payload is not needed.\n"
-                  "\n===================================================================================\n")
+                  "\n==================================================================================="
+                  "\nCreateEi process: required data model, without items array, buyer_id = 0;"
+                  "\n==================================================================================="
+                  "\nСreateFs process: full data model, the own money, procuringEntity_id = 1, buyer_id = 1;"
+                  "\n==================================================================================="
+                  "\nСreateFs process: required data model, the treasury money, procuringEntity_id = 0;"
+                  "\n==================================================================================="
+                  "\nСreatePn process: required data model, without lots and items."
+                  "\n==================================================================================="
+                  "\nСreateAp process: required data mode;"
+                  "\n==================================================================================="
+                  "OutsourcingPlanningNotice process: payload is not needed."
+                  "\n===================================================================================")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment,
                     prepare_tender_classification_id, connect_to_ocds, connect_to_access, connect_to_orchestrator):
 

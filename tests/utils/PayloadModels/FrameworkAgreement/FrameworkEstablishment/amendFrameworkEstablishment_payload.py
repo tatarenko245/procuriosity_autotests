@@ -10,7 +10,8 @@ from tests.utils.iStorage import Document
 class AmendFrameworkEstablishmentPayload:
     """This class creates instance of payload."""
 
-    def __init__(self, ap_payload, fe_payload, fe_release, host_to_service, country, language, environment):
+    def __init__(self, ap_payload, fe_payload, fe_release, host_to_service, country, language, environment,
+                 pre_qualification_sec=960):
 
         __document_one = Document(host=host_to_service)
         self.__document_one_was_uploaded = __document_one.uploading_document()
@@ -56,7 +57,7 @@ class AmendFrameworkEstablishmentPayload:
         self.__payload = {
             "preQualification": {
                 "period": {
-                    "endDate": self.__date.preQualificationPeriod_endDate(960)
+                    "endDate": self.__date.preQualificationPeriod_endDate(pre_qualification_sec)
                 }
             },
             "tender": {

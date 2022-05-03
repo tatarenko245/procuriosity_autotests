@@ -19,11 +19,11 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.sub_suite('BPE: Create AP_release')
 @allure.severity('Critical')
 @allure.testcase(url=None)
-class TestCreatePn:
-    @allure.title("\nCheck AP_release and MS releases after CreateAp process, without optional fields. \n"
-                  "\n===================================================================================\n"
+class TestAggregatedPlan:
+    @allure.title("\nCheck AP_release and MS releases after CreateAp process, without optional fields. "
+                  "\n==================================================================================="
                   "\nСreateAp process: required data mode.\n"
-                  "\n===================================================================================\n")
+                  "\n===================================================================================")
     def test_case_1(self, get_hosts, parse_country, parse_language, parse_pmd, parse_environment, connect_to_ocds,
                     connect_to_access):
 

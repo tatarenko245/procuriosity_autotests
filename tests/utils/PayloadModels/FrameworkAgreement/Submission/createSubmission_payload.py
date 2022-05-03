@@ -167,7 +167,11 @@ class CreateSubmissionPayload:
                                     "accountIdentification": {
                                         "scheme": "",
                                         "id": ""
-                                    }
+                                    },
+                                    "additionalAccountIdentifiers": [{
+                                        "scheme": "",
+                                        "id": ""
+                                    }]
                                 }
                             ],
                             "legalForm": {
@@ -196,9 +200,10 @@ class CreateSubmissionPayload:
 
     def delete_optional_fields(
             self, *args, requirement_responses_position=0, candidates_position=0,
-            candidates_additional_identifiers_position=0, persones_position=0, business_functions_documents_position=0,
+            candidates_additional_identifiers_position=0, persones_position=0, business_functions_position=0,
+            business_functions_documents_position=0,
             main_economic_activities_position=0, bank_accounts_position=0, submission_documents=0):
-        """Delete optional fields from payload."""
+        """Call this method last! Delete optional fields from payload."""
 
         for a in args:
             if a == "submission.requirementResponses":
@@ -243,7 +248,12 @@ class CreateSubmissionPayload:
 
             elif a == "submission.candidates.persones.businessFunctions.documents":
                 del self.__payload['submission']['candidates'][candidates_position]['persones'][persones_position][
-                    'businessFunctions'][business_functions_documents_position]['description']
+                    'businessFunctions'][business_functions_position]['documents']
+
+            elif a == "submission.candidates.persones.businessFunctions.documents.description":
+                del self.__payload['submission']['candidates'][candidates_position]['persones'][persones_position][
+                    'businessFunctions'][business_functions_position][
+                    'documents'][business_functions_documents_position]['description']
 
             elif a == "submission.candidates.details.typeOfSupplier":
                 del self.__payload['submission']['candidates'][candidates_position]['details']['typeOfSupplier']
@@ -506,7 +516,7 @@ class CreateSubmissionPayload:
 
                     bank_accounts_array[d_1]['address']['addressDetails']['locality']['id'] = \
                         get_locality_id_according_with_region_id(
-                            candidates_array[c_0]['address']['addressDetails']['region']['id']
+                            bank_accounts_array[d_1]['address']['addressDetails']['region']['id']
                         )
 
                     bank_accounts_array[d_1]['address']['addressDetails']['locality']['description'] = \
@@ -525,7 +535,8 @@ class CreateSubmissionPayload:
                         additional_account_identifiers_array = list()
                         for d_2 in range(quantity_of_additional_account_identifiers):
                             additional_account_identifiers_array.append(copy.deepcopy(
-                                self.__payload['submission']['candidates'][0]['details']['additionalAccountIdentifiers']
+                                self.__payload['submission']['candidates'][0]['details'][
+                                    'bankAccounts'][0]['additionalAccountIdentifiers'][0]
                             ))
 
                             bank_accounts_array[d_1]['additionalAccountIdentifiers'][d_2]['scheme'] = "fiscal"

@@ -32,7 +32,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.sub_suite('BPE: Framework Establishment')
 @allure.severity('Critical')
 @allure.testcase(url=None)
-class TestCreatePn:
+class TestFrameworkEstablishment:
     @allure.title("\nУВАГА! БАГ https://ustudio.atlassian.net/browse/ES-6922\n"
                   "\nУВАГА! БАГ https://ustudio.atlassian.net/browse/OCDS-225\n"
                   "\n===================================================================================\n"

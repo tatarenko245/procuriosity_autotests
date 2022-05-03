@@ -26,7 +26,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.sub_suite('BPE: Relation Aggregated Plan')
 @allure.severity('Critical')
 @allure.testcase(url=None)
-class TestCreatePn:
+class TestRelationAggregatedPlan:
     @allure.title("\nУВАГА! БАГ https://ustudio.atlassian.net/browse/OCDS-148\n"
                   "\n===================================================================================\n"
                   "\nCheck PN, MS, AP_release and MS of CPB releases after RelationAggregatedPlan process, "

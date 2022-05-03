@@ -1,9 +1,12 @@
 """Prepare the expected releases of the framework establishment process, framework agreement procedures."""
 import copy
+import json
 
 from tests.utils.cassandra_session import CassandraSession
 from tests.utils.date_class import Date
-from tests.utils.functions_collection.functions import is_it_uuid
+from tests.utils.functions_collection.functions import is_it_uuid, get_value_from_locality_csv, \
+    get_value_from_country_csv, get_value_from_region_csv
+from tests.utils.services.e_mdm_service import MdmService
 
 
 class FrameworkEstablishmentRelease:
@@ -16,6 +19,7 @@ class FrameworkEstablishmentRelease:
         self.__environment = environment
         self.__host = host_to_service
         self.__language = language
+        self.__country = country
         self.__pmd = pmd
         self.__fe_payload = fe_payload
         self.__fe_message = fe_message
@@ -28,6 +32,8 @@ class FrameworkEstablishmentRelease:
         database = CassandraSession()
         self.__period_shift = database.get_parameter_from_clarification_rules(
             connect_to_clarification, country, pmd, operation_type, parameter)
+
+        self.__mdm_class = MdmService(host_to_service, environment)
 
         extensions = None
         publisher_name = None

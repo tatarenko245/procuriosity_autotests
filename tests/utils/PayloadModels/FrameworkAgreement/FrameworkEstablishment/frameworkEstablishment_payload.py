@@ -14,7 +14,7 @@ class FrameworkEstablishmentPayload:
     """This class creates instance of payload."""
 
     def __init__(self, ap_payload, host_to_service, country, language, environment, persones_title=None,
-                 businessFunctions_type=None, tender_documents_type=None):
+                 businessFunctions_type=None, tender_documents_type=None, pre_qualification_sec=900):
 
         __document_one = Document(host=host_to_service)
         self.__document_one_was_uploaded = __document_one.uploading_document()
@@ -47,7 +47,7 @@ class FrameworkEstablishmentPayload:
         self.__payload = {
             "preQualification": {
                 "period": {
-                    "endDate": date.preQualificationPeriod_endDate(900)
+                    "endDate": date.preQualificationPeriod_endDate(pre_qualification_sec)
                 }
             },
             "tender": {

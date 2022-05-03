@@ -24,7 +24,7 @@ from tests.utils.platform_authorization import PlatformAuthorization
 @allure.sub_suite('BPE: Create PN_release')
 @allure.severity('Critical')
 @allure.testcase(url=None)
-class TestCreatePn:
+class TestCreatePlanningNotice:
     @allure.title("\nCheck PN and MS releases after CreatePlanningNotice process, without optional fields. \n"
                   "\n===================================================================================\n"
                   "\nCreateEi process: required data model, without items array, buyer_id = 0;\n"
