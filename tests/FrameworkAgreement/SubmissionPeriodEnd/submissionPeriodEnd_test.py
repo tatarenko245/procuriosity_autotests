@@ -846,6 +846,7 @@ class TestCreateSubmission:
                 #     "submission.documents"
                 # )
                 create_submission_payload.prepare_submission_object(
+                    position=0,
                     quantity_of_candidates=3,
                     quantity_of_business_functions=3
                 )
@@ -865,7 +866,66 @@ class TestCreateSubmission:
             create_submission_message = get_message_for_platform(create_submission_operation_id)
             submission_id = create_submission_message['data']['outcomes']['submissions'][0]['id']
             allure.attach(str(create_submission_message), 'Message for platform.')
+        # -----------------------------------
+        step_number += 1
+        with allure.step(f'# {step_number}. Authorization platform one: Create Submission process.'):
+            """
+            Tender platform authorization for CreateSubmission process.
+            As result get Tender platform's access token and process operation-id.
+            """
+            platform_one = PlatformAuthorization(get_hosts[1])
+            access_token = platform_one.get_access_token_for_platform_one()
+            create_submission_operation_id = platform_one.get_x_operation_id(access_token)
 
+        step_number += 1
+        with allure.step(f'# {step_number}. Send a request to create an Create Submission process.'):
+            """
+            Send api request to BPE host to create an CreateSubmission process.
+            """
+            try:
+                """
+                Build payload for Create Submission process.
+                """
+                create_2_submission_payload = CreateSubmissionPayload(
+                    host_to_service=get_hosts[2],
+                    actual_fe_release=actual_fe_release_before_create_submission
+                )
+                # create_submission_payload.delete_optional_fields(
+                #     "submission.requirementResponses",
+                #     "submission.candidates.identifier.uri",
+                #     "submission.candidates.additionalIdentifiers",
+                #     "submission.candidates.address.postalCode",
+                #     "submission.candidates.contactPoint.faxNumber",
+                #     "submission.candidates.contactPoint.url",
+                #     "submission.candidates.persones",
+                #     "submission.candidates.details.typeOfSupplier",
+                #     "submission.candidates.details.mainEconomicActivities",
+                #     "submission.candidates.details.bankAccounts",
+                #     "submission.candidates.details.legalForm.uri",
+                #     "submission.documents"
+                # )
+                create_2_submission_payload.prepare_submission_object(
+                    position=1,
+                    quantity_of_candidates=3,
+                    quantity_of_business_functions=3
+                )
+                create_2_submission_payload = create_2_submission_payload.build_create_submission_payload()
+            except ValueError:
+                raise ValueError("Impossible to build payload for Create Submission process.")
+
+            synchronous_result = PlatformQueryRequest().create_submission_process(
+                host_to_bpe=get_hosts[1],
+                access_token=access_token,
+                x_operation_id=create_submission_operation_id,
+                ap_cpid=ap_cpid,
+                ap_ocid=fe_ocid,
+                payload=create_2_submission_payload,
+                test_mode=True,
+            )
+            create_2_submission_message = get_message_for_platform(create_submission_operation_id)
+            submission_id = create_2_submission_message['data']['outcomes']['submissions'][0]['id']
+            allure.attach(str(create_2_submission_message), 'Message for platform.')
+        # ===================================
         time.sleep(15)
         actual_fe_release_before_submission_period_end = requests.get(url=fe_url).json()
         actual_ap_release_before_submission_period_end = requests.get(url=ap_url).json()
@@ -904,7 +964,8 @@ class TestCreateSubmission:
                         actual_message=actual_message,
                         ap_cpid=ap_cpid,
                         fe_ocid=fe_ocid,
-                        test_mode=True)
+                        test_mode=True,
+                        expected_quantity_of_outcomes_submission=2)
                     )
 
                     expected_message = expected_message.build_expected_message()
@@ -944,7 +1005,9 @@ class TestCreateSubmission:
                         cpid=ap_cpid,
                         ocid=fe_ocid,
                         previous_fe_release=actual_fe_release_before_submission_period_end,
-                        list_of_submission_payloads=[create_submission_payload],
+                        list_of_submission_payloads=[create_submission_payload, create_2_submission_payload],
+                        list_of_submission_messages=[create_submission_message, create_2_submission_message],
+                        list_of_withdrawn_submission_id=[],
                         actual_fe_release=actual_fe_release_after_submission_period_end,
                         actual_message=actual_message
                     ))
@@ -953,6 +1016,7 @@ class TestCreateSubmission:
                     print(json.dumps(expected_fe_release))
                 except ValueError:
                     raise ValueError("Impossible to build expected FE release.")
+
 
                 # actual_result_of_comparing_releases = dict(DeepDiff(
                 #     actual_fe_release_before_submission_period_end,

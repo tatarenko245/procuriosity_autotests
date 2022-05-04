@@ -10,7 +10,8 @@ class SubmissionPeriodEndRelease:
     """This class creates instance of release."""
 
     def __init__(self, environment, host_to_service, country, language, pmd, cpid, ocid, previous_fe_release,
-                 list_of_submission_payloads, actual_fe_release, actual_message):
+                 list_of_submission_payloads, list_of_submission_messages, list_of_withdrawn_submission_id,
+                 actual_fe_release, actual_message):
 
         self.__host = host_to_service
         self.__country = country
@@ -20,6 +21,8 @@ class SubmissionPeriodEndRelease:
         self.__ocid = ocid
         self.__previous_fe_release = previous_fe_release
         self.__list_of_submission_payloads = list_of_submission_payloads
+        self.__list_of_submission_messages = list_of_submission_messages
+        self.__list_of_withdrawn_submission_id = list_of_withdrawn_submission_id
         self.__actual_fe_release = actual_fe_release
         self.__actual_message = actual_message
 
@@ -238,25 +241,7 @@ class SubmissionPeriodEndRelease:
                                                 "dataType": "",
                                                 "status": "",
                                                 "datePublished": "",
-                                                "description": "",
-                                                "period": {
-                                                    "startDate": "",
-                                                    "endDate": ""
-                                                },
-                                                "eligibleEvidences": [
-                                                    {
-                                                        "id": "",
-                                                        "title": "",
-                                                        "type": "",
-                                                        "description": "",
-                                                        "relatedDocument": {
-                                                            "id": ""
-                                                        }
-                                                    }
-                                                ],
-                                                "expectedValue": "",
-                                                "minValue": "",
-                                                "maxValue": ""
+                                                "description": ""
                                             }
                                         ]
                                     }
@@ -389,8 +374,7 @@ class SubmissionPeriodEndRelease:
     def build_expected_fe_release(self):
         """Build FE release."""
 
-        # Enrich 'releases[0]' section:
-
+        # Build 'releases[0]' section:
         # FR.COM-3.2.5 (https://ustudio.atlassian.net/wiki/spaces/ES/pages/1258717251/R10.3.2+eNotice+Create+FE+v1):
         self.__expected_fe_release['releases'][0]['ocid'] = self.__previous_fe_release['releases'][0]['ocid']
 
@@ -416,7 +400,7 @@ class SubmissionPeriodEndRelease:
         else:
             raise ValueError("Incorrect value for 'releases[0].tag' of previous fe release.")
 
-        # Enrich 'releases[0].parties' section:
+        # Build 'releases[0].parties' section:
         old_parties_array = list()
 
         for p_0 in range(len(self.__actual_fe_release['releases'][0]['parties'])):
@@ -427,34 +411,35 @@ class SubmissionPeriodEndRelease:
 
         new_parties_array = list()
         for p_0 in range(len(self.__list_of_submission_payloads)):
+            temp_new_parties_array = list()
             for p_1 in range(len(self.__list_of_submission_payloads[p_0]['submission']['candidates'])):
-                new_parties_array.append(copy.deepcopy(self.__expected_fe_release['releases'][0]['parties'][0]))
+                temp_new_parties_array.append(copy.deepcopy(self.__expected_fe_release['releases'][0]['parties'][0]))
                 candidate_from_payload = self.__list_of_submission_payloads[p_0]['submission']['candidates'][p_1]
 
-                new_parties_array[p_1]['id'] = \
+                temp_new_parties_array[p_1]['id'] = \
                     f"{candidate_from_payload['identifier']['scheme']}-{candidate_from_payload['identifier']['id']}"
 
-                new_parties_array[p_1]['name'] = candidate_from_payload['name']
+                temp_new_parties_array[p_1]['name'] = candidate_from_payload['name']
 
                 # Prepare 'identifier' object:
-                new_parties_array[p_1]['identifier']['scheme'] = candidate_from_payload['identifier']['scheme']
-                new_parties_array[p_1]['identifier']['id'] = candidate_from_payload['identifier']['id']
-                new_parties_array[p_1]['identifier']['legalName'] = candidate_from_payload['identifier']['legalName']
+                temp_new_parties_array[p_1]['identifier']['scheme'] = candidate_from_payload['identifier']['scheme']
+                temp_new_parties_array[p_1]['identifier']['id'] = candidate_from_payload['identifier']['id']
+                temp_new_parties_array[p_1]['identifier']['legalName'] = candidate_from_payload['identifier']['legalName']
                 if "uri" in candidate_from_payload['identifier']:
-                    new_parties_array[p_1]['identifier']['uri'] = candidate_from_payload['identifier']['uri']
+                    temp_new_parties_array[p_1]['identifier']['uri'] = candidate_from_payload['identifier']['uri']
                 else:
-                    del new_parties_array[p_1]['identifier']['uri']
+                    del temp_new_parties_array[p_1]['identifier']['uri']
 
                 # Prepare 'address' object:
-                new_parties_array[p_1]['address']['streetAddress'] = candidate_from_payload['address']['streetAddress']
+                temp_new_parties_array[p_1]['address']['streetAddress'] = candidate_from_payload['address']['streetAddress']
                 if "postalCode" in candidate_from_payload['address']:
-                    new_parties_array[p_1]['address']['postalCode'] = candidate_from_payload['address']['postalCode']
+                    temp_new_parties_array[p_1]['address']['postalCode'] = candidate_from_payload['address']['postalCode']
                 else:
-                    del new_parties_array[p_1]['address']['postalCode']
+                    del temp_new_parties_array[p_1]['address']['postalCode']
 
                 try:
-                    """
-                    Prepare 'addressDetails' object for new_parties_array[p_1]['address'].
+                    f"""
+                    Prepare 'addressDetails' object for temp_new_parties_array[{p_1}]['address'].
                     """
                     country_data = get_value_from_country_csv(
                         country=candidate_from_payload['address']['addressDetails']['country']['id'],
@@ -501,12 +486,12 @@ class SubmissionPeriodEndRelease:
                                 'description']
                         }]
 
-                    new_parties_array[p_1]['address']['addressDetails']['country'] = expected_country_object[0]
-                    new_parties_array[p_1]['address']['addressDetails']['region'] = expected_region_object[0]
-                    new_parties_array[p_1]['address']['addressDetails']['locality'] = expected_locality_object[0]
+                    temp_new_parties_array[p_1]['address']['addressDetails']['country'] = expected_country_object[0]
+                    temp_new_parties_array[p_1]['address']['addressDetails']['region'] = expected_region_object[0]
+                    temp_new_parties_array[p_1]['address']['addressDetails']['locality'] = expected_locality_object[0]
                 except ValueError:
-                    raise ValueError("Impossible to prepare Prepare 'addressDetails' object for "
-                                     "new_parties_array[p_1]['address']")
+                    raise ValueError(f"Impossible to prepare Prepare 'addressDetails' object for "
+                                     f"temp_new_parties_array[{p_0 + p_1}]['address']")
 
                 # Prepare 'additionalIdentifiers' array:
                 if "additionalIdentifiers" in candidate_from_payload:
@@ -530,35 +515,35 @@ class SubmissionPeriodEndRelease:
                                 candidate_from_payload['additionalIdentifiers'][p_2]['uri']
                         else:
                             del additional_identifiers_array[p_2]['uri']
-                    new_parties_array[p_1]['additionalIdentifiers'] = additional_identifiers_array
+                    temp_new_parties_array[p_1]['additionalIdentifiers'] = additional_identifiers_array
                 else:
-                    del new_parties_array[p_1]['additionalIdentifiers']
+                    del temp_new_parties_array[p_1]['additionalIdentifiers']
 
                 # Prepare 'contactPoint' object:
-                new_parties_array[p_1]['contactPoint']['name'] = candidate_from_payload['contactPoint']['name']
-                new_parties_array[p_1]['contactPoint']['email'] = candidate_from_payload['contactPoint']['email']
+                temp_new_parties_array[p_1]['contactPoint']['name'] = candidate_from_payload['contactPoint']['name']
+                temp_new_parties_array[p_1]['contactPoint']['email'] = candidate_from_payload['contactPoint']['email']
 
-                new_parties_array[p_1]['contactPoint']['telephone'] = \
+                temp_new_parties_array[p_1]['contactPoint']['telephone'] = \
                     candidate_from_payload['contactPoint']['telephone']
 
                 if "faxNumber" in candidate_from_payload['contactPoint']:
-                    new_parties_array[p_1]['contactPoint']['faxNumber'] = \
+                    temp_new_parties_array[p_1]['contactPoint']['faxNumber'] = \
                         candidate_from_payload['contactPoint']['faxNumber']
                 else:
-                    del new_parties_array[p_1]['contactPoint']['faxNumber']
+                    del temp_new_parties_array[p_1]['contactPoint']['faxNumber']
 
                 if "url" in candidate_from_payload['contactPoint']:
-                    new_parties_array[p_1]['contactPoint']['url'] = \
+                    temp_new_parties_array[p_1]['contactPoint']['url'] = \
                         candidate_from_payload['contactPoint']['url']
                 else:
-                    del new_parties_array[p_1]['contactPoint']['url']
+                    del temp_new_parties_array[p_1]['contactPoint']['url']
 
                 # Prepare 'details' object:
                 if "typeOfSupplier" in candidate_from_payload['details']:
-                    new_parties_array[p_1]['details']['typeOfSupplier'] = \
+                    temp_new_parties_array[p_1]['details']['typeOfSupplier'] = \
                         candidate_from_payload['details']['typeOfSupplier']
                 else:
-                    del new_parties_array[p_1]['details']['typeOfSupplier']
+                    del temp_new_parties_array[p_1]['details']['typeOfSupplier']
 
                 if "mainEconomicActivities" in candidate_from_payload['details']:
                     main_economic_activities_array = list()
@@ -582,9 +567,9 @@ class SubmissionPeriodEndRelease:
                                 candidate_from_payload['details']['mainEconomicActivities'][m_0]['uri']
                         else:
                             del main_economic_activities_array[m_0]['uri']
-                    new_parties_array[p_1]['details']['mainEconomicActivities'] = main_economic_activities_array
+                    temp_new_parties_array[p_1]['details']['mainEconomicActivities'] = main_economic_activities_array
                 else:
-                    del new_parties_array[p_1]['details']['mainEconomicActivities']
+                    del temp_new_parties_array[p_1]['details']['mainEconomicActivities']
 
                 if "bankAccounts" in candidate_from_payload['details']:
                     bank_accounts_array = list()
@@ -717,26 +702,26 @@ class SubmissionPeriodEndRelease:
                         else:
                             del bank_accounts_array[b_0]['additionalAccountIdentifiers']
 
-                    new_parties_array[p_1]['details']['bankAccounts'] = bank_accounts_array
+                    temp_new_parties_array[p_1]['details']['bankAccounts'] = bank_accounts_array
                 else:
-                    del new_parties_array[p_1]['details']['bankAccounts']
+                    del temp_new_parties_array[p_1]['details']['bankAccounts']
 
-                new_parties_array[p_1]['details']['legalForm']['id'] = \
+                temp_new_parties_array[p_1]['details']['legalForm']['id'] = \
                     candidate_from_payload['details']['legalForm']['id']
 
-                new_parties_array[p_1]['details']['legalForm']['scheme'] = \
+                temp_new_parties_array[p_1]['details']['legalForm']['scheme'] = \
                     candidate_from_payload['details']['legalForm']['scheme']
 
-                new_parties_array[p_1]['details']['legalForm']['description'] = \
+                temp_new_parties_array[p_1]['details']['legalForm']['description'] = \
                     candidate_from_payload['details']['legalForm']['description']
 
                 if "uri" in candidate_from_payload['details']['legalForm']:
-                    new_parties_array[p_1]['details']['legalForm']['uri'] = \
+                    temp_new_parties_array[p_1]['details']['legalForm']['uri'] = \
                         candidate_from_payload['details']['legalForm']['uri']
                 else:
-                    del new_parties_array[p_1]['details']['legalForm']['uri']
+                    del temp_new_parties_array[p_1]['details']['legalForm']['uri']
 
-                new_parties_array[p_1]['details']['scale'] = candidate_from_payload['details']['scale']
+                temp_new_parties_array[p_1]['details']['scale'] = candidate_from_payload['details']['scale']
 
                 # Prepare 'persones' array:
                 if "persones" in candidate_from_payload:
@@ -778,7 +763,7 @@ class SubmissionPeriodEndRelease:
                                     if self.__actual_fe_release['releases'][0]['parties'][apwcr_0]['roles'] == \
                                             ["candidate"]:
                                         if self.__actual_fe_release['releases'][0]['parties'][apwcr_0]['id'] == \
-                                                new_parties_array[p_1]['id']:
+                                                temp_new_parties_array[p_1]['id']:
 
                                             is_permanent_id_correct = is_it_uuid(
                                                 self.__actual_fe_release['releases'][0]['parties'][apwcr_0][
@@ -843,316 +828,705 @@ class SubmissionPeriodEndRelease:
                                 del business_functions[cp_1]['documents']
 
                         persones[cp_0]['businessFunctions'] = business_functions
-                    new_parties_array[p_1]['persones'] = persones
+                    temp_new_parties_array[p_1]['persones'] = persones
                 else:
                     del candidate_from_payload['persones']
-                new_parties_array[p_1]['roles'] = ["candidate"]
-        expected_parties_array = old_parties_array + new_parties_array
+                temp_new_parties_array[p_1]['roles'] = ["candidate"]
+
+            new_parties_array += temp_new_parties_array
+
+        # Sort 'releases[0].parties' array:
+        temp_array = old_parties_array + new_parties_array
+        expected_parties_array = list()
+        if len(self.__actual_fe_release['releases'][0]['parties']) == len(temp_array):
+            for act in range(len(self.__actual_fe_release['releases'][0]['parties'])):
+                for exp in range(len(temp_array)):
+                    if temp_array[exp]['id'] == self.__actual_fe_release['releases'][0]['parties'][act]['id']:
+                        expected_parties_array.append(temp_array[exp])
+        else:
+            raise ValueError("The quantity of actual 'releases[0].parties' array != expected 'releases[0].parties'.")
         self.__expected_fe_release['releases'][0]['parties'] = expected_parties_array
+
+        # Build 'releases[0].tender' object:
+        # FR.COM-3.2.3 (https://ustudio.atlassian.net/wiki/spaces/ES/pages/1266286655/R10.3.2+eNotice+Amend+FE+v1):
+        self.__expected_fe_release['releases'][0]['tender']['id'] = \
+            self.__previous_fe_release['releases'][0]['tender']['id']
+
+        # (https://ustudio.atlassian.net/wiki/spaces/ES/pages/2736128006/10.0.0.2+Modify+Tender):
+        if "qualifications" in self.__expected_fe_release['releases'][0]:
+            self.__expected_fe_release['releases'][0]['tender']['status'] = "active"
+            self.__expected_fe_release['releases'][0]['tender']['statusDetails'] = "qualification"
+        else:
+            self.__expected_fe_release['releases'][0]['tender']['status'] = "unsuccessful"
+            self.__expected_fe_release['releases'][0]['tender']['statusDetails'] = "lackOfSubmissions"
+
+        # Prepare 'releases[0].tender.criteria' array:
+        old_criteria_array = list()
+        if "criteria" in self.__previous_fe_release['releases'][0]['tender']:
+            old_criteria_array = self.__previous_fe_release['releases'][0]['tender']['criteria']
+
+        # FR.COM-3.2.3 (https://ustudio.atlassian.net/wiki/spaces/ES/pages/1266286655/R10.3.2+eNotice+Amend+FE+v1):
+        criteria_from_mdm = self.__mdm_class.get_criteria(
+            language=self.__language,
+            country=self.__country,
+            pmd=self.__pmd,
+            phase="qualification"
+        )
+        # (https://ustudio.atlassian.net/wiki/spaces/ES/pages/2739142677/10.0.0.13+Create+Criteria+For+
+        # Procuring+Entity)
+        new_criteria_array = list()
+        if len(criteria_from_mdm['data']) > 0:
+            for ec_0 in range(len(criteria_from_mdm['data'])):
+                new_criteria_array.append(copy.deepcopy(
+                    self.__expected_fe_release['releases'][0]['tender']['criteria'][0]
+                ))
+
+                new_criteria_array[ec_0]['id'] = criteria_from_mdm['data'][ec_0]['id']
+                new_criteria_array[ec_0]['title'] = criteria_from_mdm['data'][ec_0]['title']
+
+                # (https://ustudio.atlassian.net/wiki/spaces/ES/pages/915275865/R10.1.12+eAccess+
+                # Create+Criteria+For+Procuring+Entity):
+                # # FR.COM-1.12.1
+                new_criteria_array[ec_0]['source'] = "procuringEntity"
+
+                # FR.COM-1.12.5:
+                new_criteria_array[ec_0]['relatesTo'] = "qualification"
+
+                if "description" in criteria_from_mdm['data'][ec_0]:
+                    new_criteria_array[ec_0]['description'] = \
+                        criteria_from_mdm['data'][ec_0]['description']
+                else:
+                    del new_criteria_array[ec_0]['description']
+
+                # FR.COM-1.12.6:
+                new_criteria_array[ec_0]['classification'] = \
+                    criteria_from_mdm['data'][ec_0]['classification']
+
+                criteria_groups_from_mdm = self.__mdm_class.get_requirement_groups(
+                    language=self.__language,
+                    country=self.__country,
+                    pmd=self.__pmd,
+                    phase="qualification",
+                    criterion_id=new_criteria_array[ec_0]['id']
+                )
+                del new_criteria_array[ec_0]['requirementGroups'][0]
+                if len(criteria_groups_from_mdm['data']) > 0:
+                    for ec_1 in range(len(criteria_groups_from_mdm['data'])):
+                        new_criteria_array[ec_0]['requirementGroups'].append(copy.deepcopy(
+                            self.__expected_fe_release['releases'][0]['tender']['criteria'][0]['requirementGroups'][0]
+                        ))
+
+                        new_criteria_array[ec_0]['requirementGroups'][ec_1]['id'] = \
+                            criteria_groups_from_mdm['data'][ec_1]['id']
+
+                        if "description" in criteria_groups_from_mdm['data'][ec_1]:
+                            new_criteria_array[ec_0]['requirementGroups'][ec_1]['description'] = \
+                                criteria_groups_from_mdm['data'][ec_1]['description']
+                        else:
+                            del new_criteria_array[ec_0]['requirementGroups'][ec_1]['description']
+
+                        requirements_from_mdm = self.__mdm_class.get_requirements(
+                            language=self.__language,
+                            country=self.__country,
+                            pmd=self.__pmd,
+                            phase="qualification",
+                            requirement_group_id=new_criteria_array[ec_0]['requirementGroups'][ec_1]['id']
+                        )
+                        del new_criteria_array[ec_0]['requirementGroups'][ec_1]['requirements'][0]
+                        if len(requirements_from_mdm['data']) > 0:
+                            for ec_2 in range(len(requirements_from_mdm['data'])):
+                                new_criteria_array[ec_0]['requirementGroups'][ec_1]['requirements'].append(
+                                    copy.deepcopy(self.__expected_fe_release['releases'][0]['tender']['criteria'][0][
+                                                      'requirementGroups'][0]['requirements'][0]
+                                                  )
+                                )
+
+                                new_criteria_array[ec_0]['requirementGroups'][ec_1]['requirements'][ec_2]['id'] = \
+                                    requirements_from_mdm['data'][ec_2]['id']
+
+                                if "description" in requirements_from_mdm['data'][ec_2]:
+
+                                    new_criteria_array[ec_0]['requirementGroups'][ec_1]['requirements'][ec_2][
+                                        'description'] = requirements_from_mdm['data'][ec_2]['description']
+                                else:
+                                    del new_criteria_array[ec_0]['requirementGroups'][ec_1]['requirements'][ec_2][
+                                        'description']
+
+                                new_criteria_array[ec_0]['requirementGroups'][ec_1]['requirements'][ec_2]['title'] = \
+                                    requirements_from_mdm['data'][ec_2]['title']
+
+                                # FR.COM-1.12.2:
+                                new_criteria_array[ec_0]['requirementGroups'][ec_1]['requirements'][ec_2][
+                                    'dataType'] = "boolean"
+
+                                # FR.COM-1.12.7:
+                                new_criteria_array[ec_0]['requirementGroups'][ec_1]['requirements'][ec_2][
+                                    'status'] = "active"
+
+                                # FR.COM-1.12.8:
+                                new_criteria_array[ec_0]['requirementGroups'][ec_1]['requirements'][ec_2][
+                                    'datePublished'] = self.__actual_message['data']['operationDate']
+
+                        else:
+                            raise ValueError(f"Empty array from MDM database: 'criteria[{ec_0}]."
+                                             f"requirementGroups[{ec_1}].requirements[*]'.")
+                else:
+                    raise ValueError(f"Empty array from MDM database: 'criteria[{ec_0}].requirementGroups[*]'.")
+
+        if len(old_criteria_array + new_criteria_array) > 0:
+            self.__expected_fe_release['releases'][0]['tender']['criteria'] = old_criteria_array + new_criteria_array
+        else:
+            del self.__expected_fe_release['releases'][0]['tender']['criteria']
+
+        # (https://ustudio.atlassian.net/wiki/spaces/ES/pages/1266286655/R10.3.2+eNotice+Amend+FE+v1):
+        # FR.COM-3.2.3:
+        self.__expected_fe_release['releases'][0]['tender']['otherCriteria']['reductionCriteria'] = \
+            self.__previous_fe_release['releases'][0]['tender']['otherCriteria']['reductionCriteria']
+
+        self.__expected_fe_release['releases'][0]['tender']['otherCriteria']['qualificationSystemMethods'] = \
+            self.__previous_fe_release['releases'][0]['tender']['otherCriteria']['qualificationSystemMethods']
+
+        self.__expected_fe_release['releases'][0]['tender']['enquiryPeriod']['startDate'] = \
+            self.__previous_fe_release['releases'][0]['tender']['enquiryPeriod']['startDate']
+
+        self.__expected_fe_release['releases'][0]['tender']['enquiryPeriod']['endDate'] = \
+            self.__previous_fe_release['releases'][0]['tender']['enquiryPeriod']['endDate']
+
+        self.__expected_fe_release['releases'][0]['tender']['hasEnquiries'] = \
+            self.__previous_fe_release['releases'][0]['tender']['hasEnquiries']
+
+        self.__expected_fe_release['releases'][0]['tender']['documents'] = \
+            self.__previous_fe_release['releases'][0]['tender']['documents']
+
+        self.__expected_fe_release['releases'][0]['tender']['submissionMethod'] = \
+            self.__previous_fe_release['releases'][0]['tender']['submissionMethod']
+
+        self.__expected_fe_release['releases'][0]['tender']['submissionMethodDetails'] = \
+            self.__previous_fe_release['releases'][0]['tender']['submissionMethodDetails']
+
+        self.__expected_fe_release['releases'][0]['tender']['submissionMethodRationale'] = \
+            self.__previous_fe_release['releases'][0]['tender']['submissionMethodRationale']
+
+        self.__expected_fe_release['releases'][0]['tender']['requiresElectronicCatalogue'] = \
+            self.__previous_fe_release['releases'][0]['tender']['requiresElectronicCatalogue']
+
+        self.__expected_fe_release['releases'][0]['tender']['procurementMethodModalities'] = \
+            self.__previous_fe_release['releases'][0]['tender']['procurementMethodModalities']
+
+        self.__expected_fe_release['releases'][0]['tender']['secondStage'] = \
+            self.__previous_fe_release['releases'][0]['tender']['secondStage']
+
+        # Build 'releases[0].submissions' object:
+        # (https://ustudio.atlassian.net/wiki/spaces/ES/pages/875036832)
+        # FR.COM-5.8.8, FR.COM-5.8.9:
+        for s_withdrawn in range(len(self.__list_of_withdrawn_submission_id)):
+            for s_some in range(len(self.__list_of_submission_messages)):
+                if self.__list_of_withdrawn_submission_id[s_withdrawn] == \
+                        self.__list_of_submission_messages[s_some]['data']['outcomes']['submissions'][0]['id']:
+                    del self.__list_of_submission_messages[s_some]
+
+        submission_details = list()
+        if len(self.__actual_fe_release['releases'][0]['submissions']['details']) == \
+                len(self.__list_of_submission_messages):
+
+            for act_s in range(len(self.__actual_fe_release['releases'][0]['submissions']['details'])):
+                for exp_s in range(len(self.__list_of_submission_messages)):
+
+                    if self.__list_of_submission_messages[exp_s]['data']['outcomes']['submissions'][0]['id'] == \
+                            self.__actual_fe_release['releases'][0]['submissions']['details'][act_s]['id']:
+
+                        for q_0 in range(len(self.__list_of_submission_payloads)):
+                            candidates_array = list()
+                            for q_1 in range(len(self.__list_of_submission_payloads[q_0]['submission']['candidates'])):
+                                candidates_array.append(
+                                    copy.deepcopy(self.__expected_fe_release['releases'][0]['submissions'][
+                                                      'details'][0]['candidates'][0]
+                                                  )
+                                )
+
+                                candidate_scheme = \
+                                    self.__list_of_submission_payloads[q_0]['submission']['candidates'][q_1][
+                                        'identifier']['scheme']
+
+                                candidate_id = \
+                                    self.__list_of_submission_payloads[q_0]['submission']['candidates'][q_1][
+                                        'identifier']['id']
+
+                                candidates_array[q_1]['id'] = f"{candidate_scheme}-{candidate_id}"
+
+                                candidates_array[q_1]['name'] = \
+                                    self.__list_of_submission_payloads[q_0]['submission']['candidates'][q_1]['name']
+
+                            if self.__actual_fe_release['releases'][0]['submissions']['details'][act_s][
+                                    'candidates'] == candidates_array:
+
+                                submission_details.append(copy.deepcopy(
+                                    self.__expected_fe_release['releases'][0]['submissions']['details'][0]
+                                ))
+                                submission_details[act_s]['id'] = \
+                                    self.__list_of_submission_messages[exp_s]['data']['outcomes'][
+                                        'submissions'][0]['id']
+
+                                # FR.COM-5.8.2:
+                                submission_details[act_s]['date'] = \
+                                    self.__list_of_submission_messages[exp_s]['data']['operationDate']
+
+                                # FR.COM-5.8.1:
+                                submission_details[act_s]['status'] = "pending"
+
+                                # FR.COM-5.8.5:
+                                submission_details[act_s]['candidates'] = candidates_array
+
+                                del submission_details[act_s]['requirementResponses'][0]
+                                if "requirementResponses" in self.__list_of_submission_payloads[q_0]['submission']:
+                                    requirement_responses = list()
+                                    for r_0 in range(len(self.__list_of_submission_payloads[q_0]['submission'][
+                                                             'requirementResponses'])):
+                                        requirement_responses.append(copy.deepcopy(
+                                            self.__expected_fe_release['releases'][0]['submissions']['details'][0][
+                                                'requirementResponses'][0]
+                                        ))
+
+                                        try:
+                                            """Set permanent id."""
+                                            is_permanent_id_correct = is_it_uuid(
+                                                self.__actual_fe_release['releases'][0]['submissions'][
+                                                    'details'][act_s]['requirementResponses'][r_0]['id']
+                                            )
+                                            if is_permanent_id_correct is True:
+
+                                                requirement_responses[r_0]['id'] = \
+                                                    self.__actual_fe_release['releases'][0]['submissions'][
+                                                        'details'][act_s]['requirementResponses'][r_0]['id']
+                                            else:
+                                                raise ValueError(
+                                                    f"The 'self.__actual_fe_release['releases'][0]['submissions']"
+                                                    f"['details'][{act_s}]['requirementResponses']"
+                                                    f"[{r_0}]['id']' must be uuid.")
+                                        except KeyError:
+                                            raise KeyError(
+                                                f"Mismatch key into path 'self.__actual_fe_release['releases'][0]"
+                                                f"['submissions']['details'][{act_s}]['requirementResponses']"
+                                                f"[{r_0}]['id']'")
+
+                                        requirement_responses[r_0]['value'] = \
+                                            self.__list_of_submission_payloads[q_0]['submission'][
+                                                'requirementResponses'][r_0]['value']
+
+                                        requirement_responses[r_0]['requirement']['id'] = \
+                                            self.__list_of_submission_payloads[q_0]['submission'][
+                                                'requirementResponses'][r_0]['requirement']['id']
+
+                                        del requirement_responses[r_0]['evidences'][0]
+                                        if "evidences" in self.__list_of_submission_payloads[q_0]['submission'][
+                                                'requirementResponses'][r_0]:
+
+                                            evidences = list()
+                                            for r_1 in range(len(self.__list_of_submission_payloads[q_0]['submission'][
+                                                                     'requirementResponses'][r_0]['evidences'])):
+
+                                                evidences.append(copy.deepcopy(
+                                                    self.__expected_fe_release['releases'][0]['submissions'][
+                                                        'details'][0]['requirementResponses'][0]['evidences'][0]
+                                                ))
+
+                                                try:
+                                                    """Set permanent id."""
+                                                    is_permanent_id_correct = is_it_uuid(
+                                                        self.__actual_fe_release['releases'][0]['submissions'][
+                                                            'details'][act_s]['requirementResponses'][r_0][
+                                                            'evidences'][r_1]['id']
+                                                    )
+                                                    if is_permanent_id_correct is True:
+
+                                                        evidences[r_1]['id'] = \
+                                                            self.__actual_fe_release['releases'][0]['submissions'][
+                                                                'details'][act_s]['requirementResponses'][r_0][
+                                                                'evidences'][r_1]['id']
+                                                    else:
+                                                        raise ValueError(
+                                                            f"The 'self.__actual_fe_release['releases'][0]"
+                                                            f"['submissions']['details'][{act_s}]"
+                                                            f"['requirementResponses'][{r_0}]['evidences']"
+                                                            f"[{r_1}]['id']' must be uuid.")
+                                                except KeyError:
+                                                    raise KeyError(f"Mismatch key into path "
+                                                                   f"'self.__actual_fe_release['releases'][0]"
+                                                                   f"['submissions']['details'][{act_s}]"
+                                                                   f"['requirementResponses'][{r_0}]['evidences']"
+                                                                   f"[{r_1}]['id']'")
+
+                                                evidences[r_1]['title'] = self.__list_of_submission_payloads[q_0][
+                                                    'submission']['requirementResponses'][r_0]['evidences'][r_1][
+                                                    'title']
+
+                                                if "description" in self.__list_of_submission_payloads[q_0][
+                                                        'submission']['requirementResponses'][r_0]['evidences'][r_1]:
+
+                                                    evidences[r_1]['description'] = \
+                                                        self.__list_of_submission_payloads[q_0]['submission'][
+                                                            'requirementResponses'][r_0]['evidences'][r_1][
+                                                            'description']
+                                                else:
+                                                    del evidences[r_1]['description']
+
+                                                if "relatedDocument" in self.__list_of_submission_payloads[q_0][
+                                                        'submission']['requirementResponses'][r_0]['evidences'][r_1]:
+
+                                                    evidences[r_1]['relatedDocument']['id'] = \
+                                                        self.__list_of_submission_payloads[q_0]['submission'][
+                                                            'requirementResponses'][r_0]['evidences'][r_1][
+                                                            'relatedDocument']['id']
+                                                else:
+                                                    del evidences[r_1]['relatedDocument']
+
+                                            requirement_responses[r_0]['evidences'] = evidences
+
+                                        else:
+                                            del requirement_responses[r_0]['evidences']
+
+                                    submission_details[act_s]['requirementResponses'] = requirement_responses
+                                else:
+                                    del submission_details[act_s]['requirementResponses']
+
+                                del submission_details[act_s]['documents'][0]
+                                if "documents" in self.__list_of_submission_payloads[q_0]['submission']:
+                                    documents = list()
+                                    for d_0 in range(len(
+                                            self.__list_of_submission_payloads[q_0]['submission']['documents'])):
+
+                                        documents.append(copy.deepcopy(
+                                            self.__expected_fe_release['releases'][0]['submissions']['details'][0][
+                                                'documents'][0]
+                                        ))
+
+                                        documents[d_0]['id'] = self.__list_of_submission_payloads[q_0]['submission'][
+                                            'documents'][d_0]['id']
+
+                                        documents[d_0]['documentType'] = self.__list_of_submission_payloads[q_0][
+                                            'submission']['documents'][d_0]['documentType']
+
+                                        documents[d_0]['title'] = self.__list_of_submission_payloads[q_0][
+                                            'submission']['documents'][d_0]['title']
+
+                                        if "description" in self.__list_of_submission_payloads[q_0][
+                                                'submission']['documents'][d_0]:
+
+                                            documents[d_0]['description'] = self.__list_of_submission_payloads[q_0][
+                                                'submission']['documents'][d_0]['description']
+                                        else:
+                                            del documents[d_0]['description']
+
+                                        documents[d_0]['url'] = f"{self.__metadata_document_url}/{documents[d_0]['id']}"
+                                        documents[d_0]['datePublished'] = self.__actual_message['data']['operationDate']
+
+                                    submission_details[act_s]['documents'] = documents
+                                else:
+                                    del submission_details[act_s]['documents']
+        self.__expected_fe_release['releases'][0]['submissions']['details'] = submission_details
         return self.__expected_fe_release
 
-
-    # def prepare_criteria_object_source_procuring_entity(self, phase, submission_period_end_message):
-    #     expected_criteria_array_source_procuring_entity = {}
-    #
-    #     criteria_from_mdm = self.__mdm_class.get_criteria(
-    #         language=self.__language,
-    #         country=self.__country,
-    #         pmd=self.__pmd,
-    #         phase=phase
-    #     )
-    #
-    #     try:
-    #         """
-    #         Check how many quantity of objects are contained into criteria_from_mdm.
-    #         """
-    #         list_of_mdm_tender_criteria_id = list()
-    #         for criteria_object in criteria_from_mdm['data']:
-    #             for i in criteria_object:
-    #                 if i == "id":
-    #                     list_of_mdm_tender_criteria_id.append(i)
-    #         quantity_of_criteria_object_into_mdm = len(list_of_mdm_tender_criteria_id)
-    #     except Exception:
-    #         raise Exception("Impossible to check how many quantity of objects are contained into criteria_from_mdm.")
-    #
-    #     for c in range(quantity_of_criteria_object_into_mdm):
-    #         criteria_framework = {
-    #             "id": criteria_from_mdm['data'][c]['id'],
-    #             "title": criteria_from_mdm['data'][c]['title'],
-    #             "source": "procuringEntity",
-    #             "relatesTo": "qualification",
-    #             "description": criteria_from_mdm['data'][c]['description'],
-    #             "classification": criteria_from_mdm['data'][c]['classification'],
-    #             "requirementGroups": []
-    #         }
-    #
-    #         criteria_groups_from_mdm = self.__mdm_class.get_requirement_groups(
-    #             language=self.__language,
-    #             country=self.__country,
-    #             pmd=self.__pmd,
-    #             phase=phase,
-    #             criterion_id=criteria_from_mdm['data'][c]['id'])
-    #
-    #         try:
-    #             """
-    #             Check how many quantity of objects are contained into criteria_groups_from_mdm.
-    #             """
-    #             list_of_mdm_tender_criteria_groups_id = list()
-    #             for group_object in criteria_groups_from_mdm['data']:
-    #                 for i in group_object:
-    #                     if i == "id":
-    #                         list_of_mdm_tender_criteria_groups_id.append(i)
-    #             quantity_of_criteria_groups_object_into_mdm = len(list_of_mdm_tender_criteria_groups_id)
-    #         except Exception:
-    #             raise Exception("Impossible to check how many quantity of objects are "
-    #                             "contained into criteria_groups_from_mdm.")
-    #
-    #         for g in range(quantity_of_criteria_groups_object_into_mdm):
-    #             requirement_groups_framework = {
-    #                 "id": criteria_groups_from_mdm['data'][g]['id'],
-    #                 "requirements": []
-    #             }
-    #             criteria_framework['requirementGroups'].append(requirement_groups_framework)
-    #
-    #             criteria_groups_requirements_from_mdm = self.__mdm_class.get_requirements(
-    #                 language=self.__language,
-    #                 country=self.__country,
-    #                 pmd=self.__pmd,
-    #                 phase=phase,
-    #                 requirement_group_id=criteria_groups_from_mdm['data'][g]['id'])
-    #
-    #             try:
-    #                 """
-    #                 Check how many quantity of objects are contained into criteria_groups_requirements_from_mdm.
-    #                 """
-    #                 list_of_mdm_tender_criteria_groups_requirement_id = list()
-    #                 for requirement_object in criteria_groups_requirements_from_mdm['data']:
-    #                     for i in requirement_object:
-    #                         if i == "id":
-    #                             list_of_mdm_tender_criteria_groups_requirement_id.append(i)
-    #                 quantity_of_criteria_groups_requirement_object_into_mdm = \
-    #                     len(list_of_mdm_tender_criteria_groups_requirement_id)
-    #             except Exception:
-    #                 raise Exception("Impossible to check how many quantity of objects are "
-    #                                 "contained into criteria_groups_requirements_from_mdm.")
-    #
-    #             for r in range(quantity_of_criteria_groups_requirement_object_into_mdm):
-    #                 requirements_framework = {
-    #                     "id": criteria_groups_requirements_from_mdm['data'][r]['id'],
-    #                     "title": criteria_groups_requirements_from_mdm['data'][r]['title'],
-    #                     "dataType": "boolean",
-    #                     "status": "active",
-    #                     "datePublished": submission_period_end_message['data']['operationDate']
-    #                 }
-    #                 criteria_framework['requirementGroups'][g]['requirements'].append(requirements_framework)
-    #
-    #                 expected_criteria_array_source_procuring_entity.update(criteria_framework)
-    #
-    #     return expected_criteria_array_source_procuring_entity
-    #
-    # def prepare_submission_object(self, submission_payload, create_submission_feed_point_message):
-    #     final_submission_mapper = None
-    #     correct_submission_id = None
-    #     for i in self.__actual_fe_release['releases'][0]['submissions']['details']:
-    #         if i['date'] == create_submission_feed_point_message['data']['operationDate']:
-    #             try:
-    #                 is_it_uuid(i['id'])
-    #             except ValueError:
-    #                 raise ValueError("Check your actual_tp_release['releases'][0]['submissions']['details'][i]['id']: "
-    #                                  "id must be uuid.")
-    #             correct_submission_id = i['id']
-    #
-    #     final_submissions_details_object = {
-    #         "id": correct_submission_id,
-    #         "date": create_submission_feed_point_message['data']['operationDate'],
-    #         "status": "pending",
-    #         "candidates": []
-    #     }
-    #
-    #     try:
-    #         """
-    #         Calculate how many candidates contains into payload
-    #         """
-    #         candidates_identifier_id_list = list()
-    #         for i in submission_payload['submission']['candidates']:
-    #             for i_1 in i:
-    #                 if i_1 == "identifier":
-    #                     candidates_identifier_id_list.append(i['identifier']['id'])
-    #     except Exception:
-    #         raise Exception("Impossible to check calculate how many candidates contains into payload")
-    #
-    #     for i in range(len(candidates_identifier_id_list)):
-    #         submission_details_candidates_object = {
-    #             "id": f"{submission_payload['submission']['candidates'][i]['identifier']['scheme']}-"
-    #                   f"{submission_payload['submission']['candidates'][i]['identifier']['id']}",
-    #             "name": submission_payload['submission']['candidates'][i]['name']
-    #         }
-    #
-    #         final_submissions_details_object['candidates'].append(submission_details_candidates_object)
-    #
-    #         final_submission_mapper = {
-    #             "id": final_submissions_details_object['id'],
-    #             "value": final_submissions_details_object
-    #         }
-    #     return final_submission_mapper
-    #
-    # def prepare_qualification_object(self, fe_payload, submission_id, submission_period_end_feed_point_message):
-    #     status_details = None
-    #     final_qualification_mapper = None
-    #
-    #     is_criteria_source_procuring_entity = False
-    #     try:
-    #         """
-    #         FR.COM-7.13.1
-    #         """
-    #         if "criteria" in self.__actual_fe_release['releases'][0]['tender']:
-    #             for c_0 in range(len(self.__actual_fe_release['releases'][0]['tender']['criteria'])):
-    #                 if self.__actual_fe_release['releases'][0]['tender']['criteria'][c_0][
-    #                         'source'] == "procuringEntity":
-    #
-    #                     is_criteria_source_procuring_entity = True
-    #
-    #         if fe_payload['tender']['otherCriteria']['reductionCriteria'] == "scoring" and \
-    #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["automated"] and \
-    #                 is_criteria_source_procuring_entity is True:
-    #             status_details = "awaiting"
-    #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "scoring" and \
-    #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["manual"] and \
-    #                 is_criteria_source_procuring_entity is True:
-    #             status_details = "awaiting"
-    #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "none" and \
-    #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["automated"] and \
-    #                 is_criteria_source_procuring_entity is True:
-    #             status_details = "awaiting"
-    #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "none" and \
-    #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["manual"] and \
-    #                 is_criteria_source_procuring_entity is True:
-    #             status_details = "awaiting"
-    #
-    #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "scoring" and \
-    #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["automated"] and \
-    #                 is_criteria_source_procuring_entity is False:
-    #             status_details = "consideration"
-    #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "scoring" and \
-    #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["manual"] and \
-    #                 is_criteria_source_procuring_entity is False:
-    #             status_details = "consideration"
-    #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "none" and \
-    #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["automated"] and \
-    #                 is_criteria_source_procuring_entity is False:
-    #             status_details = "consideration"
-    #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "none" and \
-    #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["manual"] and \
-    #                 is_criteria_source_procuring_entity is False:
-    #             status_details = "consideration"
-    #     except Exception:
-    #         raise Exception("Impossible to set correct statusDetails for qualification")
-    #
-    #     for i in self.__actual_fe_release['releases'][0]['qualifications']:
-    #         for i_1 in i:
-    #             if i_1 == "relatedSubmission":
-    #                 if i['relatedSubmission'] == submission_id:
-    #                     try:
-    #                         is_it_uuid(i['id'])
-    #                     except ValueError:
-    #                         raise ValueError("Check your qualification['id']: id must be uuid.")
-    #
-    #                     qualification_object = {
-    #                         "id": i['id'],
-    #                         "date": submission_period_end_feed_point_message['data']['operationDate'],
-    #                         "status": "pending",
-    #                         "statusDetails": status_details,
-    #                         "relatedSubmission": submission_id
-    #                     }
-    #
-    #                     final_qualification_mapper = {
-    #                         "id": qualification_object['id'],
-    #                         "value": qualification_object
-    #                     }
-    #     return final_qualification_mapper
-    #
-    # def prepare_parties_object(self, submission_payload):
-    #     final_parties_mapper = []
-    #     for i in range(len(submission_payload['submission']['candidates'])):
-    #         parties_object = {
-    #             "id": f"{submission_payload['submission']['candidates'][i]['identifier']['scheme']}-"
-    #                   f"{submission_payload['submission']['candidates'][i]['identifier']['id']}",
-    #             "name": submission_payload['submission']['candidates'][i]['name'],
-    #             "identifier": submission_payload['submission']['candidates'][i]['identifier'],
-    #             "address": submission_payload['submission']['candidates'][i]['address'],
-    #             "contactPoint": submission_payload['submission']['candidates'][i]['contactPoint'],
-    #             "details": submission_payload['submission']['candidates'][i]['details'],
-    #             "roles": ["candidate"]
-    #         }
-    #
-    #         country_data = get_value_from_country_csv(
-    #             country=submission_payload['submission']['candidates'][i]['address']['addressDetails']['country']['id'],
-    #             language=self.__language
-    #         )
-    #         country_object = [{
-    #             "scheme": country_data[2],
-    #             "id": submission_payload['submission']['candidates'][i]['address']['addressDetails']['country']['id'],
-    #             "description": country_data[1],
-    #             "uri": country_data[3]
-    #         }]
-    #
-    #         region_data = get_value_from_region_csv(
-    #             region=submission_payload['submission']['candidates'][i]['address']['addressDetails']['region']['id'],
-    #             country=submission_payload['submission']['candidates'][i]['address']['addressDetails']['country']['id'],
-    #             language=self.__language
-    #         )
-    #         region_object = [{
-    #             "scheme": region_data[2],
-    #             "id": submission_payload['submission']['candidates'][i]['address']['addressDetails']['region']['id'],
-    #             "description": region_data[1],
-    #             "uri": region_data[3]
-    #         }]
-    #
-    #         if \
-    #                 submission_payload['submission']['candidates'][i]['address']['addressDetails']['locality'][
-    #                     'scheme'] == "CUATM":
-    #             locality_data = get_value_from_locality_csv(
-    #                 locality=submission_payload['submission']['candidates'][i]['address']['addressDetails'][
-    #                     'locality']['id'],
-    #                 region=submission_payload['submission']['candidates'][i]['address']['addressDetails'][
-    #                     'region']['id'],
-    #                 country=submission_payload['submission']['candidates'][i]['address']['addressDetails'][
-    #                     'country']['id'],
-    #                 language=self.__language
-    #             )
-    #             locality_object = [{
-    #                 "scheme": locality_data[3],
-    #                 "id": submission_payload['submission']['candidates'][i]['address']['addressDetails'][
-    #                     'locality']['id'],
-    #                 "description": locality_data[1],
-    #                 "uri": locality_data[2]
-    #             }]
-    #         else:
-    #             locality_object = [{
-    #                 "scheme": submission_payload['submission']['candidates'][i]['address']['addressDetails'][
-    #                     'locality']['scheme'],
-    #                 "id": submission_payload['submission']['candidates'][i]['address']['addressDetails'][
-    #                     'locality']['id'],
-    #                 "description": submission_payload['submission']['candidates'][i]['address']['addressDetails'][
-    #                     'locality']['description']
-    #             }]
-    #
-    #         parties_object['address']['addressDetails']['country'] = country_object[0]
-    #         parties_object['address']['addressDetails']['region'] = region_object[0]
-    #         parties_object['address']['addressDetails']['locality'] = locality_object[0]
-    #
-    #         parties_mapper = {
-    #             "id": parties_object['id'],
-    #             "value": parties_object
-    #         }
-    #
-    #         final_parties_mapper.append(parties_mapper)
-    #
-    #     return final_parties_mapper
-    #
-    # @staticmethod
-    # def prepare_pre_qualification_qualification_period_object(submission_period_end_feed_point_message):
-    #     qualification_period_object = {
-    #         "startDate": submission_period_end_feed_point_message['data']['operationDate']
-    #     }
-    #     return qualification_period_object
+        # def prepare_criteria_object_source_procuring_entity(self, phase, submission_period_end_message):
+        #     expected_criteria_array_source_procuring_entity = {}
+        #
+        #     criteria_from_mdm = self.__mdm_class.get_criteria(
+        #         language=self.__language,
+        #         country=self.__country,
+        #         pmd=self.__pmd,
+        #         phase=phase
+        #     )
+        #
+        #     try:
+        #         """
+        #         Check how many quantity of objects are contained into criteria_from_mdm.
+        #         """
+        #         list_of_mdm_tender_criteria_id = list()
+        #         for criteria_object in criteria_from_mdm['data']:
+        #             for i in criteria_object:
+        #                 if i == "id":
+        #                     list_of_mdm_tender_criteria_id.append(i)
+        #         quantity_of_criteria_object_into_mdm = len(list_of_mdm_tender_criteria_id)
+        #     except Exception:
+        #         raise Exception("Impossible to check how many quantity of objects are contained into criteria_from_mdm.")
+        #
+        #     for c in range(quantity_of_criteria_object_into_mdm):
+        #         criteria_framework = {
+        #             "id": criteria_from_mdm['data'][c]['id'],
+        #             "title": criteria_from_mdm['data'][c]['title'],
+        #             "source": "procuringEntity",
+        #             "relatesTo": "qualification",
+        #             "description": criteria_from_mdm['data'][c]['description'],
+        #             "classification": criteria_from_mdm['data'][c]['classification'],
+        #             "requirementGroups": []
+        #         }
+        #
+        #         criteria_groups_from_mdm = self.__mdm_class.get_requirement_groups(
+        #             language=self.__language,
+        #             country=self.__country,
+        #             pmd=self.__pmd,
+        #             phase=phase,
+        #             criterion_id=criteria_from_mdm['data'][c]['id'])
+        #
+        #         try:
+        #             """
+        #             Check how many quantity of objects are contained into criteria_groups_from_mdm.
+        #             """
+        #             list_of_mdm_tender_criteria_groups_id = list()
+        #             for group_object in criteria_groups_from_mdm['data']:
+        #                 for i in group_object:
+        #                     if i == "id":
+        #                         list_of_mdm_tender_criteria_groups_id.append(i)
+        #             quantity_of_criteria_groups_object_into_mdm = len(list_of_mdm_tender_criteria_groups_id)
+        #         except Exception:
+        #             raise Exception("Impossible to check how many quantity of objects are "
+        #                             "contained into criteria_groups_from_mdm.")
+        #
+        #         for g in range(quantity_of_criteria_groups_object_into_mdm):
+        #             requirement_groups_framework = {
+        #                 "id": criteria_groups_from_mdm['data'][g]['id'],
+        #                 "requirements": []
+        #             }
+        #             criteria_framework['requirementGroups'].append(requirement_groups_framework)
+        #
+        #             criteria_groups_requirements_from_mdm = self.__mdm_class.get_requirements(
+        #                 language=self.__language,
+        #                 country=self.__country,
+        #                 pmd=self.__pmd,
+        #                 phase=phase,
+        #                 requirement_group_id=criteria_groups_from_mdm['data'][g]['id'])
+        #
+        #             try:
+        #                 """
+        #                 Check how many quantity of objects are contained into criteria_groups_requirements_from_mdm.
+        #                 """
+        #                 list_of_mdm_tender_criteria_groups_requirement_id = list()
+        #                 for requirement_object in criteria_groups_requirements_from_mdm['data']:
+        #                     for i in requirement_object:
+        #                         if i == "id":
+        #                             list_of_mdm_tender_criteria_groups_requirement_id.append(i)
+        #                 quantity_of_criteria_groups_requirement_object_into_mdm = \
+        #                     len(list_of_mdm_tender_criteria_groups_requirement_id)
+        #             except Exception:
+        #                 raise Exception("Impossible to check how many quantity of objects are "
+        #                                 "contained into criteria_groups_requirements_from_mdm.")
+        #
+        #             for r in range(quantity_of_criteria_groups_requirement_object_into_mdm):
+        #                 requirements_framework = {
+        #                     "id": criteria_groups_requirements_from_mdm['data'][r]['id'],
+        #                     "title": criteria_groups_requirements_from_mdm['data'][r]['title'],
+        #                     "dataType": "boolean",
+        #                     "status": "active",
+        #                     "datePublished": submission_period_end_message['data']['operationDate']
+        #                 }
+        #                 criteria_framework['requirementGroups'][g]['requirements'].append(requirements_framework)
+        #
+        #                 expected_criteria_array_source_procuring_entity.update(criteria_framework)
+        #
+        #     return expected_criteria_array_source_procuring_entity
+        #
+        # def prepare_submission_object(self, submission_payload, create_submission_feed_point_message):
+        #     final_submission_mapper = None
+        #     correct_submission_id = None
+        #     for i in self.__actual_fe_release['releases'][0]['submissions']['details']:
+        #         if i['date'] == create_submission_feed_point_message['data']['operationDate']:
+        #             try:
+        #                 is_it_uuid(i['id'])
+        #             except ValueError:
+        #                 raise ValueError("Check your actual_tp_release['releases'][0]['submissions']['details'][i]['id']: "
+        #                                  "id must be uuid.")
+        #             correct_submission_id = i['id']
+        #
+        #     final_submissions_details_object = {
+        #         "id": correct_submission_id,
+        #         "date": create_submission_feed_point_message['data']['operationDate'],
+        #         "status": "pending",
+        #         "candidates": []
+        #     }
+        #
+        #     try:
+        #         """
+        #         Calculate how many candidates contains into payload
+        #         """
+        #         candidates_identifier_id_list = list()
+        #         for i in submission_payload['submission']['candidates']:
+        #             for i_1 in i:
+        #                 if i_1 == "identifier":
+        #                     candidates_identifier_id_list.append(i['identifier']['id'])
+        #     except Exception:
+        #         raise Exception("Impossible to check calculate how many candidates contains into payload")
+        #
+        #     for i in range(len(candidates_identifier_id_list)):
+        #         submission_details_candidates_object = {
+        #             "id": f"{submission_payload['submission']['candidates'][i]['identifier']['scheme']}-"
+        #                   f"{submission_payload['submission']['candidates'][i]['identifier']['id']}",
+        #             "name": submission_payload['submission']['candidates'][i]['name']
+        #         }
+        #
+        #         final_submissions_details_object['candidates'].append(submission_details_candidates_object)
+        #
+        #         final_submission_mapper = {
+        #             "id": final_submissions_details_object['id'],
+        #             "value": final_submissions_details_object
+        #         }
+        #     return final_submission_mapper
+        #
+        # def prepare_qualification_object(self, fe_payload, submission_id, submission_period_end_feed_point_message):
+        #     status_details = None
+        #     final_qualification_mapper = None
+        #
+        #     is_criteria_source_procuring_entity = False
+        #     try:
+        #         """
+        #         FR.COM-7.13.1
+        #         """
+        #         if "criteria" in self.__actual_fe_release['releases'][0]['tender']:
+        #             for c_0 in range(len(self.__actual_fe_release['releases'][0]['tender']['criteria'])):
+        #                 if self.__actual_fe_release['releases'][0]['tender']['criteria'][c_0][
+        #                         'source'] == "procuringEntity":
+        #
+        #                     is_criteria_source_procuring_entity = True
+        #
+        #         if fe_payload['tender']['otherCriteria']['reductionCriteria'] == "scoring" and \
+        #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["automated"] and \
+        #                 is_criteria_source_procuring_entity is True:
+        #             status_details = "awaiting"
+        #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "scoring" and \
+        #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["manual"] and \
+        #                 is_criteria_source_procuring_entity is True:
+        #             status_details = "awaiting"
+        #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "none" and \
+        #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["automated"] and \
+        #                 is_criteria_source_procuring_entity is True:
+        #             status_details = "awaiting"
+        #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "none" and \
+        #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["manual"] and \
+        #                 is_criteria_source_procuring_entity is True:
+        #             status_details = "awaiting"
+        #
+        #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "scoring" and \
+        #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["automated"] and \
+        #                 is_criteria_source_procuring_entity is False:
+        #             status_details = "consideration"
+        #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "scoring" and \
+        #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["manual"] and \
+        #                 is_criteria_source_procuring_entity is False:
+        #             status_details = "consideration"
+        #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "none" and \
+        #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["automated"] and \
+        #                 is_criteria_source_procuring_entity is False:
+        #             status_details = "consideration"
+        #         elif fe_payload['tender']['otherCriteria']['reductionCriteria'] == "none" and \
+        #                 fe_payload['tender']['otherCriteria']['qualificationSystemMethods'] == ["manual"] and \
+        #                 is_criteria_source_procuring_entity is False:
+        #             status_details = "consideration"
+        #     except Exception:
+        #         raise Exception("Impossible to set correct statusDetails for qualification")
+        #
+        #     for i in self.__actual_fe_release['releases'][0]['qualifications']:
+        #         for i_1 in i:
+        #             if i_1 == "relatedSubmission":
+        #                 if i['relatedSubmission'] == submission_id:
+        #                     try:
+        #                         is_it_uuid(i['id'])
+        #                     except ValueError:
+        #                         raise ValueError("Check your qualification['id']: id must be uuid.")
+        #
+        #                     qualification_object = {
+        #                         "id": i['id'],
+        #                         "date": submission_period_end_feed_point_message['data']['operationDate'],
+        #                         "status": "pending",
+        #                         "statusDetails": status_details,
+        #                         "relatedSubmission": submission_id
+        #                     }
+        #
+        #                     final_qualification_mapper = {
+        #                         "id": qualification_object['id'],
+        #                         "value": qualification_object
+        #                     }
+        #     return final_qualification_mapper
+        #
+        # def prepare_parties_object(self, submission_payload):
+        #     final_parties_mapper = []
+        #     for i in range(len(submission_payload['submission']['candidates'])):
+        #         parties_object = {
+        #             "id": f"{submission_payload['submission']['candidates'][i]['identifier']['scheme']}-"
+        #                   f"{submission_payload['submission']['candidates'][i]['identifier']['id']}",
+        #             "name": submission_payload['submission']['candidates'][i]['name'],
+        #             "identifier": submission_payload['submission']['candidates'][i]['identifier'],
+        #             "address": submission_payload['submission']['candidates'][i]['address'],
+        #             "contactPoint": submission_payload['submission']['candidates'][i]['contactPoint'],
+        #             "details": submission_payload['submission']['candidates'][i]['details'],
+        #             "roles": ["candidate"]
+        #         }
+        #
+        #         country_data = get_value_from_country_csv(
+        #             country=submission_payload['submission']['candidates'][i]['address']['addressDetails']['country']['id'],
+        #             language=self.__language
+        #         )
+        #         country_object = [{
+        #             "scheme": country_data[2],
+        #             "id": submission_payload['submission']['candidates'][i]['address']['addressDetails']['country']['id'],
+        #             "description": country_data[1],
+        #             "uri": country_data[3]
+        #         }]
+        #
+        #         region_data = get_value_from_region_csv(
+        #             region=submission_payload['submission']['candidates'][i]['address']['addressDetails']['region']['id'],
+        #             country=submission_payload['submission']['candidates'][i]['address']['addressDetails']['country']['id'],
+        #             language=self.__language
+        #         )
+        #         region_object = [{
+        #             "scheme": region_data[2],
+        #             "id": submission_payload['submission']['candidates'][i]['address']['addressDetails']['region']['id'],
+        #             "description": region_data[1],
+        #             "uri": region_data[3]
+        #         }]
+        #
+        #         if \
+        #                 submission_payload['submission']['candidates'][i]['address']['addressDetails']['locality'][
+        #                     'scheme'] == "CUATM":
+        #             locality_data = get_value_from_locality_csv(
+        #                 locality=submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+        #                     'locality']['id'],
+        #                 region=submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+        #                     'region']['id'],
+        #                 country=submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+        #                     'country']['id'],
+        #                 language=self.__language
+        #             )
+        #             locality_object = [{
+        #                 "scheme": locality_data[3],
+        #                 "id": submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+        #                     'locality']['id'],
+        #                 "description": locality_data[1],
+        #                 "uri": locality_data[2]
+        #             }]
+        #         else:
+        #             locality_object = [{
+        #                 "scheme": submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+        #                     'locality']['scheme'],
+        #                 "id": submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+        #                     'locality']['id'],
+        #                 "description": submission_payload['submission']['candidates'][i]['address']['addressDetails'][
+        #                     'locality']['description']
+        #             }]
+        #
+        #         parties_object['address']['addressDetails']['country'] = country_object[0]
+        #         parties_object['address']['addressDetails']['region'] = region_object[0]
+        #         parties_object['address']['addressDetails']['locality'] = locality_object[0]
+        #
+        #         parties_mapper = {
+        #             "id": parties_object['id'],
+        #             "value": parties_object
+        #         }
+        #
+        #         final_parties_mapper.append(parties_mapper)
+        #
+        #     return final_parties_mapper
+        #
+        # @staticmethod
+        # def prepare_pre_qualification_qualification_period_object(submission_period_end_feed_point_message):
+        #     qualification_period_object = {
+        #         "startDate": submission_period_end_feed_point_message['data']['operationDate']
+        #     }
+        #     return qualification_period_object

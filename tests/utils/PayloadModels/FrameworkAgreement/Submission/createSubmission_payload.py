@@ -289,7 +289,7 @@ class CreateSubmissionPayload:
                 raise KeyError(f"Impossible to delete attribute by path {a}.")
 
     def prepare_submission_object(
-            self, quantity_of_candidates=1, quantity_of_additional_identifiers=1, quantity_of_persones=1,
+                self, position, quantity_of_candidates=1, quantity_of_additional_identifiers=1, quantity_of_persones=1,
             quantity_of_evidences=1, quantity_of_business_functions=1, quantity_of_bf_documents=1,
             quantity_of_main_economic_activities=1, quantity_of_bank_accounts=1,
             quantity_of_additional_account_identifiers=1, quantity_of_documents=1):
@@ -300,17 +300,17 @@ class CreateSubmissionPayload:
         for c_0 in range(quantity_of_candidates):
             candidates_array.append(copy.deepcopy(self.__payload['submission']['candidates'][0]))
 
-            candidates_array[c_0]['name'] = f"create submission: submission.candidates[{c_0}].name"
-            candidates_array[c_0]['identifier']['id'] = f"create submission: submission.candidates[{c_0}].identifier.id"
+            candidates_array[c_0]['name'] = f"create submission[{position}]: submission.candidates[{c_0}].name"
+            candidates_array[c_0]['identifier']['id'] = f"create submission[{position}]: submission.candidates[{c_0}].identifier.id"
 
             candidates_array[c_0]['identifier']['legalName'] = \
-                f"create submission: submission.candidates[{c_0}].identifier.legalName"
+                f"create submission[{position}]: submission.candidates[{c_0}].identifier.legalName"
 
             candidates_array[c_0]['identifier']['scheme'] = "MD-IDNO"
 
             if "uri" in candidates_array[c_0]['identifier']:
                 candidates_array[c_0]['identifier']['uri'] = \
-                    f"create submission: submission.candidates[{c_0}].identifier.uri"
+                    f"create submission[{position}]: submission.candidates[{c_0}].identifier.uri"
 
             if "additionalIdentifiers" in candidates_array[c_0]:
                 additional_identifier_array = list()
@@ -321,38 +321,38 @@ class CreateSubmissionPayload:
                     ))
 
                     additional_identifier_array[q_0]['id'] = \
-                        f"create submission: submission.candidates[{c_0}].additionalIdentifiers[{q_0}]['id']"
+                        f"create submission[{position}]: submission.candidates[{c_0}].additionalIdentifiers[{q_0}]['id']"
 
                     additional_identifier_array[q_0]['legalName'] = \
-                        f"create submission: submission.candidates[{c_0}].additionalIdentifiers[{q_0}]['legalName']"
+                        f"create submission[{position}]: submission.candidates[{c_0}].additionalIdentifiers[{q_0}]['legalName']"
 
                     additional_identifier_array[q_0]['scheme'] = \
-                        f"create submission: submission.candidates[{c_0}].additionalIdentifiers[{q_0}]['scheme']"
+                        f"create submission[{position}]: submission.candidates[{c_0}].additionalIdentifiers[{q_0}]['scheme']"
 
                     if "uri" in additional_identifier_array[q_0]:
                         additional_identifier_array[q_0]['uri'] = \
-                            f"create submission: submission.candidates[{c_0}].additionalIdentifiers[{q_0}]['uri']"
+                            f"create submission[{position}]: submission.candidates[{c_0}].additionalIdentifiers[{q_0}]['uri']"
 
                 candidates_array[c_0]['additionalIdentifiers'] = additional_identifier_array
 
             candidates_array[c_0]['address']['streetAddress'] = \
-                f"create submission: submission.candidates[{c_0}].address.streetAddress"
+                f"create submission[{position}]: submission.candidates[{c_0}].address.streetAddress"
 
             if "postalCode" in candidates_array[c_0]['address']:
                 candidates_array[c_0]['address']['postalCode'] = \
-                    f"create submission: submission.candidates[{c_0}].address.postalCode"
+                    f"create submission[{position}]: submission.candidates[{c_0}].address.postalCode"
 
             candidates_array[c_0]['address']['addressDetails']['country']['id'] = "MD"
             candidates_array[c_0]['address']['addressDetails']['country']['scheme'] = "ISO-ALPHA2"
 
             candidates_array[c_0]['address']['addressDetails']['country']['description'] = \
-                f"create submission: submission.candidates[{c_0}].address.addressDetails.country.description"
+                f"create submission[{position}]: submission.candidates[{c_0}].address.addressDetails.country.description"
 
             candidates_array[c_0]['address']['addressDetails']['region']['id'] = f"{random.choice(region_id_tuple)}"
             candidates_array[c_0]['address']['addressDetails']['region']['scheme'] = "CUATM"
 
             candidates_array[c_0]['address']['addressDetails']['region']['description'] = \
-                f"create submission: submission.candidates[{c_0}].address.addressDetails.region.description"
+                f"create submission[{position}]: submission.candidates[{c_0}].address.addressDetails.region.description"
 
             candidates_array[c_0]['address']['addressDetails']['locality']['id'] = \
                 get_locality_id_according_with_region_id(
@@ -363,24 +363,25 @@ class CreateSubmissionPayload:
                 f"{random.choice(locality_scheme_tuple)}"
 
             candidates_array[c_0]['address']['addressDetails']['locality']['description'] = \
-                f"create submission: submission.candidates[{c_0}].address.addressDetails.locality.description"
+                f"create submission[{position}]: submission.candidates[{c_0}].address.addressDetails.locality." \
+                f"description"
 
             candidates_array[c_0]['contactPoint']['name'] = \
-                f"create submission: submission.candidates[{c_0}].contactPoint.name"
+                f"create submission[{position}]: submission.candidates[{c_0}].contactPoint.name"
 
             candidates_array[c_0]['contactPoint']['email'] = \
-                f"create submission: submission.candidates[{c_0}].contactPoint.email"
+                f"create submission[{position}]: submission.candidates[{c_0}].contactPoint.email"
 
             candidates_array[c_0]['contactPoint']['telephone'] = \
-                f"create submission: submission.candidates[{c_0}].contactPoint.telephone"
+                f"create submission[{position}]: submission.candidates[{c_0}].contactPoint.telephone"
 
             if "faxNumber" in candidates_array[c_0]['contactPoint']:
                 candidates_array[c_0]['contactPoint']['faxNumber'] = \
-                    f"create submission: submission.candidates[{c_0}].contactPoint.faxNumber"
+                    f"create submission[{position}]: submission.candidates[{c_0}].contactPoint.faxNumber"
 
             if "url" in candidates_array[c_0]['contactPoint']:
                 candidates_array[c_0]['contactPoint']['url'] = \
-                    f"create submission: submission.candidates[{c_0}].contactPoint.url"
+                    f"create submission[{position}]: submission.candidates[{c_0}].contactPoint.url"
 
             if "persones" in candidates_array[c_0]:
                 persones_array = list()
@@ -393,21 +394,22 @@ class CreateSubmissionPayload:
                     persones_array[p_0]['id'] = f"{c_0 + p_0}"
 
                     persones_array[p_0]['title'] = \
-                        f"create submission: submission.candidates[{c_0}].persones[{p_0}].title"
+                        f"create submission[{position}]: submission.candidates[{c_0}].persones[{p_0}].title"
 
                     persones_array[p_0]['title'] = f"{random.choice(person_title_tuple)}"
 
-                    persones_array[p_0]['name'] = f"create submission: submission.candidates[{c_0}].perones[{p_0}].name"
+                    persones_array[p_0]['name'] = f"create submission[{position}]: submission.candidates[{c_0}]." \
+                                                  f"perones[{p_0}].name"
 
                     persones_array[p_0]['identifier']['scheme'] = \
-                        f"create submission: submission.candidates[{c_0}].perones[{p_0}].identifier.scheme"
+                        f"create submission[{position}]: submission.candidates[{c_0}].perones[{p_0}].identifier.scheme"
 
                     persones_array[p_0]['identifier']['id'] = \
-                        f"create submission: submission.candidates[{c_0}].perones[{p_0}].identifier.id"
+                        f"create submission[{position}]: submission.candidates[{c_0}].perones[{p_0}].identifier.id"
 
                     if "uri" in persones_array[p_0]['identifier']:
                         persones_array[p_0]['identifier']['uri'] = \
-                            f"create submission: submission.candidates[{c_0}].perones[{p_0}].identifier.uri"
+                            f"create submission[{position}]: submission.candidates[{c_0}].perones[{p_0}].identifier.uri"
 
                     business_functions_array = list()
                     for bf_0 in range(quantity_of_business_functions):
@@ -419,7 +421,7 @@ class CreateSubmissionPayload:
                         business_functions_array[bf_0]['type'] = f"{random.choice(business_function_type_1_tuple)}"
 
                         business_functions_array[bf_0]['jobTitle'] = \
-                            f"create submission: submission.candidates[{c_0}].perones[{p_0}]." \
+                            f"create submission[{position}]: submission.candidates[{c_0}].perones[{p_0}]." \
                             f"businessFunctions[{bf_0}].jobTitle"
 
                         business_functions_array[bf_0]['period']['startDate'] = self.__date.old_period()[0]
@@ -437,12 +439,12 @@ class CreateSubmissionPayload:
                                 bf_documents_array[bf_1]['documentType'] = "regulatoryDocument"
 
                                 bf_documents_array[bf_1]['title'] = \
-                                    f"create submission: submission.candidates[{c_0}].perones[{p_0}]." \
+                                    f"create submission[{position}]n: submission.candidates[{c_0}].perones[{p_0}]." \
                                     f"businessFunctions[{bf_0}].documents[{bf_1}].title"
 
                                 if "description" in bf_documents_array[bf_1]:
                                     bf_documents_array[bf_1]['description'] = \
-                                        f"create submission: submission.candidates[{c_0}].perones[{p_0}]." \
+                                        f"create submission[{position}]: submission.candidates[{c_0}].perones[{p_0}]." \
                                         f"businessFunctions[{bf_0}].documents[{bf_1}].description"
 
                             business_functions_array[bf_0]['documents'] = bf_documents_array
@@ -462,13 +464,13 @@ class CreateSubmissionPayload:
                     main_economic_activities_array[d_0]['id'] = f"{c_0 + d_0}"
 
                     main_economic_activities_array[d_0]['description'] = \
-                        f"create submission: submission.candidates[{c_0}].details." \
+                        f"create submission[{position}]: submission.candidates[{c_0}].details." \
                         f"mainEconomicActivities[{d_0}].description"
 
                     if "uri" in main_economic_activities_array[d_0]:
 
                         main_economic_activities_array[d_0]['uri'] = \
-                            f"create submission: submission.candidates[{c_0}].details." \
+                            f"create submission[{position}]: submission.candidates[{c_0}].details." \
                             f"mainEconomicActivities[{d_0}].uri"
 
                 candidates_array[c_0]['details']['mainEconomicActivities'] = main_economic_activities_array
@@ -483,24 +485,24 @@ class CreateSubmissionPayload:
                     ))
 
                     bank_accounts_array[d_1]['description'] = \
-                        f"create submission: submission.candidates[{c_0}].details.bankAccounts[{d_1}].description"
+                        f"create submission[{position}]: submission.candidates[{c_0}].details.bankAccounts[{d_1}].description"
 
                     bank_accounts_array[d_1]['bankName'] = \
-                        f"create submission: submission.candidates[{c_0}].details.bankAccounts[{d_1}].bankName"
+                        f"create submission[{position}]: submission.candidates[{c_0}].details.bankAccounts[{d_1}].bankName"
 
                     bank_accounts_array[d_1]['address']['streetAddress'] = \
-                        f"create submission: submission.candidates[{c_0}].details.bankAccounts[{d_1}].address." \
+                        f"create submission[{position}]: submission.candidates[{c_0}].details.bankAccounts[{d_1}].address." \
                         f"streetAddress"
 
                     if "postalCode" in bank_accounts_array[d_1]['address']:
                         bank_accounts_array[d_1]['address']['postalCode'] = \
-                            f"create submission: submission.candidates[{c_0}].details.bankAccounts[{d_1}].address." \
+                            f"create submission[{position}]: submission.candidates[{c_0}].details.bankAccounts[{d_1}].address." \
                             f"postalCode"
 
                     bank_accounts_array[d_1]['address']['addressDetails']['country']['id'] = "MD"
 
                     bank_accounts_array[d_1]['address']['addressDetails']['country']['description'] = \
-                        f"create submission: submission.candidates[{c_0}].details.bankAccounts[{d_1}].address." \
+                        f"create submission[{position}]: submission.candidates[{c_0}].details.bankAccounts[{d_1}].address." \
                         f"addressDetails.country.description"
 
                     bank_accounts_array[d_1]['address']['addressDetails']['country']['scheme'] = "ISO-ALPHA2"
@@ -509,7 +511,7 @@ class CreateSubmissionPayload:
                         'id'] = f"{random.choice(region_id_tuple)}"
 
                     bank_accounts_array[d_1]['address']['addressDetails']['region']['description'] = \
-                        f"create submission: submission.candidates[{c_0}].details.bankAccounts[{d_1}].address." \
+                        f"create submission[{position}]: submission.candidates[{c_0}].details.bankAccounts[{d_1}].address." \
                         f"addressDetails.region.description"
 
                     bank_accounts_array[d_1]['address']['addressDetails']['region']['scheme'] = "CUATM"
@@ -520,7 +522,7 @@ class CreateSubmissionPayload:
                         )
 
                     bank_accounts_array[d_1]['address']['addressDetails']['locality']['description'] = \
-                        f"create submission: submission.candidates[{c_0}].details.bankAccounts[{d_1}].address." \
+                        f"create submission[{position}]: submission.candidates[{c_0}].details.bankAccounts[{d_1}].address." \
                         f"addressDetails.locality.description"
 
                     bank_accounts_array[d_1]['address']['addressDetails']['locality']['scheme'] = "CUATM"
@@ -547,11 +549,11 @@ class CreateSubmissionPayload:
             candidates_array[c_0]['details']['legalForm']['id'] = f"{c_0}"
 
             candidates_array[c_0]['details']['legalForm']['description'] = \
-                f"create submission: submission.candidates[{c_0}].details.legalForm.description"
+                f"create submission[{position}]: submission.candidates[{c_0}].details.legalForm.description"
 
             if "uri" in candidates_array[c_0]['details']['legalForm']:
                 candidates_array[c_0]['details']['legalForm']['uri'] = \
-                    f"create submission: submission.candidates[{c_0}].details.legalForm.uri"
+                    f"create submission[{position}]: submission.candidates[{c_0}].details.legalForm.uri"
 
         self.__payload['submission']['candidates'] = candidates_array
 
@@ -609,10 +611,10 @@ class CreateSubmissionPayload:
                                 evidences_array[q_2]['id'] = f"{c_0+q_0+q_1+q_2}"
 
                                 evidences_array[q_2]['title'] = \
-                                    f"create submission: submission.requirementResponses[{q_0}].evidences[{q_2}].title"
+                                    f"create submission[{position}]: submission.requirementResponses[{q_0}].evidences[{q_2}].title"
 
                                 evidences_array[q_2]['description'] = \
-                                    f"create submission: submission.requirementResponses[{q_0}].evidences[{q_2}]." \
+                                    f"create submission[{position}]: submission.requirementResponses[{q_0}].evidences[{q_2}]." \
                                     f"description"
 
                                 document_was_uploaded = self.__document.uploading_document()
@@ -638,11 +640,11 @@ class CreateSubmissionPayload:
                     f"{random.choice(documentType_for_create_submission_framework_agreement)}"
 
                 documents_array[sd_0]['id'] = self.__document.uploading_document()[0]["data"]["id"]
-                documents_array[sd_0]['title'] = f"create submission: submission.documents[{sd_0}].title"
+                documents_array[sd_0]['title'] = f"create submission[{position}]: submission.documents[{sd_0}].title"
                 if "description" in documents_array[sd_0]:
 
                     documents_array[sd_0]['description'] = \
-                        f"create submission: submission.documents[{sd_0}].description"
+                        f"create submission[{position}]: submission.documents[{sd_0}].description"
 
             evidences_documents_array = list()
             if "requirementResponses" in self.__payload['submission']:

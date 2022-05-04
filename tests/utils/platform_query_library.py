@@ -243,6 +243,26 @@ class PlatformQueryRequest:
         allure.attach(json.dumps(payload), 'Prepared payload')
         return request
 
+    @staticmethod
+    @allure.step('# Prepared request: Withdraw Submission .')
+    def withdraw_submission_process(host_to_bpe, access_token, x_operation_id, ap_cpid, ap_ocid, submission_id,
+                                    test_mode=False):
+        """Send request for 'Withdraw Submission process'."""
+
+        request = requests.post(
+            url=f"{host_to_bpe}/cancel/submission/{ap_cpid}/{ap_ocid}/{submission_id}",
+            params={
+                "testMode": test_mode
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "X-OPERATION-ID": x_operation_id,
+                "Content-Type": "application/json"}
+        )
+
+        allure.attach(f"{host_to_bpe}/cancel/submission/{ap_cpid}/{ap_ocid}/{submission_id}", 'URL')
+        return request
+
     # @staticmethod
     # @allure.step('Prepared request: create PN_release')
     # def createPn(host_of_request, access_token, x_operation_id, country,
