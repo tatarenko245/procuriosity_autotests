@@ -137,5 +137,13 @@ class Date:
         end_date = duration_date_end.strftime('%Y-%m-%dT%H:%M:%SZ')
         return end_date
 
+    @staticmethod
+    def get_min_date(dates_list):
+        new_dates_list = list()
+        for d in range(len(dates_list)):
+            new_dates_list.append(datetime.datetime.strptime(dates_list[d], "%Y-%m-%dT%H:%M:%SZ"))
+        min_date = min(new_dates_list)
+        return min_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+
     def __del__(self):
         print(f"The instance of Date class {__name__} was deleted.")

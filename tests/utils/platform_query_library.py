@@ -246,7 +246,7 @@ class PlatformQueryRequest:
     @staticmethod
     @allure.step('# Prepared request: Withdraw Submission .')
     def withdraw_submission_process(host_to_bpe, access_token, x_operation_id, ap_cpid, ap_ocid, submission_id,
-                                    test_mode=False):
+                                    submission_token, test_mode=False):
         """Send request for 'Withdraw Submission process'."""
 
         request = requests.post(
@@ -257,7 +257,8 @@ class PlatformQueryRequest:
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "X-OPERATION-ID": x_operation_id,
-                "Content-Type": "application/json"}
+                "Content-Type": "application/json",
+                "X-TOKEN": submission_token}
         )
 
         allure.attach(f"{host_to_bpe}/cancel/submission/{ap_cpid}/{ap_ocid}/{submission_id}", 'URL')
