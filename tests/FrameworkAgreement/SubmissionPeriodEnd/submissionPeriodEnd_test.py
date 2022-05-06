@@ -1016,7 +1016,6 @@ class TestCreateSubmission:
                 print("\nactual_fe_release_after_submission_period_end")
                 print(json.dumps(actual_fe_release_after_submission_period_end))
 
-
                 try:
                     """
                     Build expected FE release.
@@ -1028,7 +1027,8 @@ class TestCreateSubmission:
                         language=parse_language,
                         pmd=parse_pmd,
                         cpid=ap_cpid,
-                        ocid=fe_ocid,
+                        ap_ocid=ap_ocid,
+                        fe_ocid=fe_ocid,
                         previous_fe_release=actual_fe_release_before_submission_period_end,
                         list_of_submission_payloads=[create_submission_payload, create_2_submission_payload],
                         list_of_submission_messages=[create_submission_message, create_2_submission_message],
