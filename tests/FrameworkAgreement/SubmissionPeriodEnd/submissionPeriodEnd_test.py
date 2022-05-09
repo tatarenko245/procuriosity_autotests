@@ -651,82 +651,82 @@ class TestCreateSubmission:
                     quantity_of_businessFunctions_objects=1,
                     quantity_of_businessFunctions_documents_objects=1)
 
-                # fe_payload.delete_optional_fields(
-                #     "tender.secondStage",
-                #     "tender.procurementMethodModalities",
-                #     "tender.procurementMethodRationale",
-                #     "tender.procuringEntity",
-                #     "tender.criteria",
-                #     "tender.documents"
+                fe_payload.delete_optional_fields(
+                    "tender.secondStage",
+                    "tender.procurementMethodModalities",
+                    "tender.procurementMethodRationale",
+                    "tender.procuringEntity",
+                    "tender.criteria",
+                    "tender.documents"
+                )
+
+                # # Get all 'standard' criteria from eMDM service.
+                # mdm_service = MdmService(
+                #     host_to_service=get_hosts[2],
+                #     environment=parse_environment)
+                #
+                # standard_criteria = mdm_service.get_standard_criteria(
+                #     parse_country,
+                #     parse_language
                 # )
-
-                # Get all 'standard' criteria from eMDM service.
-                mdm_service = MdmService(
-                    host_to_service=get_hosts[2],
-                    environment=parse_environment)
-
-                standard_criteria = mdm_service.get_standard_criteria(
-                    parse_country,
-                    parse_language
-                )
-
-                # Prepare 'exclusion' criteria for payload.
-                some_criteria = CriteriaArray(
-                    host_to_service=get_hosts[2],
-                    country=parse_country,
-                    language=parse_language,
-                    environment=parse_environment,
-                    quantity_of_criteria_objects=len(standard_criteria[1]),
-                    quantity_of_requirementGroups_objects=1,
-                    quantity_of_requirements_objects=2,
-                    quantity_of_eligibleEvidences_objects=2,
-                    type_of_standardCriteria=1
-                )
-
-                some_criteria.delete_optional_fields(
-                    # "criteria.description",
-                    # "criteria.requirementGroups.description",
-                    # "criteria.requirementGroups.requirements.description",
-                    # "criteria.requirementGroups.requirements.period",
-                    "criteria.requirementGroups.requirements.minValue",
-                    "criteria.requirementGroups.requirements.maxValue",
-                    # "criteria.requirementGroups.requirements.eligibleEvidences"
-                )
-
-                some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
-                some_criteria.set_unique_temporary_id_for_eligibleEvidences()
-                some_criteria.set_unique_temporary_id_for_criteria()
-                exclusion_criteria_array = some_criteria.build_criteria_array()
-
-                # Prepare 'selection' criteria for payload.
-                some_criteria = CriteriaArray(
-                    host_to_service=get_hosts[2],
-                    country=parse_country,
-                    language=parse_language,
-                    environment=parse_environment,
-                    quantity_of_criteria_objects=len(standard_criteria[2]),
-                    quantity_of_requirementGroups_objects=2,
-                    quantity_of_requirements_objects=2,
-                    quantity_of_eligibleEvidences_objects=2,
-                    type_of_standardCriteria=2
-                )
-
-                some_criteria.delete_optional_fields(
-                    # "criteria.description",
-                    # "criteria.requirementGroups.description",
-                    # "criteria.requirementGroups.requirements.description",
-                    # "criteria.requirementGroups.requirements.period",
-                    "criteria.requirementGroups.requirements.expectedValue",
-                    # "criteria.requirementGroups.requirements.eligibleEvidences"
-                )
-
-                some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
-                some_criteria.set_unique_temporary_id_for_eligibleEvidences()
-                some_criteria.set_unique_temporary_id_for_criteria()
-                selection_criteria_array = some_criteria.build_criteria_array()
-
-                fe_payload.customize_tender_criteria(exclusion_criteria_array, selection_criteria_array)
-                fe_payload.customize_tender_documents(quantity_of_new_documents=1)
+                #
+                # # Prepare 'exclusion' criteria for payload.
+                # some_criteria = CriteriaArray(
+                #     host_to_service=get_hosts[2],
+                #     country=parse_country,
+                #     language=parse_language,
+                #     environment=parse_environment,
+                #     quantity_of_criteria_objects=len(standard_criteria[1]),
+                #     quantity_of_requirementGroups_objects=1,
+                #     quantity_of_requirements_objects=2,
+                #     quantity_of_eligibleEvidences_objects=2,
+                #     type_of_standardCriteria=1
+                # )
+                #
+                # some_criteria.delete_optional_fields(
+                #     # "criteria.description",
+                #     # "criteria.requirementGroups.description",
+                #     # "criteria.requirementGroups.requirements.description",
+                #     # "criteria.requirementGroups.requirements.period",
+                #     "criteria.requirementGroups.requirements.minValue",
+                #     "criteria.requirementGroups.requirements.maxValue",
+                #     # "criteria.requirementGroups.requirements.eligibleEvidences"
+                # )
+                #
+                # some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
+                # some_criteria.set_unique_temporary_id_for_eligibleEvidences()
+                # some_criteria.set_unique_temporary_id_for_criteria()
+                # exclusion_criteria_array = some_criteria.build_criteria_array()
+                #
+                # # Prepare 'selection' criteria for payload.
+                # some_criteria = CriteriaArray(
+                #     host_to_service=get_hosts[2],
+                #     country=parse_country,
+                #     language=parse_language,
+                #     environment=parse_environment,
+                #     quantity_of_criteria_objects=len(standard_criteria[2]),
+                #     quantity_of_requirementGroups_objects=2,
+                #     quantity_of_requirements_objects=2,
+                #     quantity_of_eligibleEvidences_objects=2,
+                #     type_of_standardCriteria=2
+                # )
+                #
+                # some_criteria.delete_optional_fields(
+                #     # "criteria.description",
+                #     # "criteria.requirementGroups.description",
+                #     # "criteria.requirementGroups.requirements.description",
+                #     # "criteria.requirementGroups.requirements.period",
+                #     "criteria.requirementGroups.requirements.expectedValue",
+                #     # "criteria.requirementGroups.requirements.eligibleEvidences"
+                # )
+                #
+                # some_criteria.prepare_criteria_array(criteria_relatesTo="tenderer")
+                # some_criteria.set_unique_temporary_id_for_eligibleEvidences()
+                # some_criteria.set_unique_temporary_id_for_criteria()
+                # selection_criteria_array = some_criteria.build_criteria_array()
+                #
+                # fe_payload.customize_tender_criteria(exclusion_criteria_array, selection_criteria_array)
+                # fe_payload.customize_tender_documents(quantity_of_new_documents=1)
 
                 fe_payload = fe_payload.build_frameworkEstablishment_payload()
             except ValueError:
@@ -781,11 +781,11 @@ class TestCreateSubmission:
                     pre_qualification_sec=200
                 ))
 
-                # amend_fe_payload.delete_optional_fields(
-                #     "tender.procuringEntity",
-                #     "tender.documents",
-                #     "tender.procurementMethodRationale"
-                # )
+                amend_fe_payload.delete_optional_fields(
+                    "tender.procuringEntity",
+                    "tender.documents",
+                    "tender.procurementMethodRationale"
+                )
                 amend_fe_payload = amend_fe_payload.build_amendFrameworkEstablishment_payload()
 
             except ValueError:
@@ -831,20 +831,20 @@ class TestCreateSubmission:
                     host_to_service=get_hosts[2],
                     actual_fe_release=actual_fe_release_before_create_submission
                 )
-                # create_submission_payload.delete_optional_fields(
-                #     "submission.requirementResponses",
-                #     "submission.candidates.identifier.uri",
-                #     "submission.candidates.additionalIdentifiers",
-                #     "submission.candidates.address.postalCode",
-                #     "submission.candidates.contactPoint.faxNumber",
-                #     "submission.candidates.contactPoint.url",
-                #     "submission.candidates.persones",
-                #     "submission.candidates.details.typeOfSupplier",
-                #     "submission.candidates.details.mainEconomicActivities",
-                #     "submission.candidates.details.bankAccounts",
-                #     "submission.candidates.details.legalForm.uri",
-                #     "submission.documents"
-                # )
+                create_submission_payload.delete_optional_fields(
+                    "submission.requirementResponses",
+                    "submission.candidates.identifier.uri",
+                    "submission.candidates.additionalIdentifiers",
+                    "submission.candidates.address.postalCode",
+                    "submission.candidates.contactPoint.faxNumber",
+                    "submission.candidates.contactPoint.url",
+                    "submission.candidates.persones",
+                    "submission.candidates.details.typeOfSupplier",
+                    "submission.candidates.details.mainEconomicActivities",
+                    "submission.candidates.details.bankAccounts",
+                    "submission.candidates.details.legalForm.uri",
+                    "submission.documents"
+                )
                 create_submission_payload.prepare_submission_object(
                     position=0,
                     quantity_of_candidates=3,
@@ -890,20 +890,20 @@ class TestCreateSubmission:
                     host_to_service=get_hosts[2],
                     actual_fe_release=actual_fe_release_before_create_submission
                 )
-                # create_submission_payload.delete_optional_fields(
-                #     "submission.requirementResponses",
-                #     "submission.candidates.identifier.uri",
-                #     "submission.candidates.additionalIdentifiers",
-                #     "submission.candidates.address.postalCode",
-                #     "submission.candidates.contactPoint.faxNumber",
-                #     "submission.candidates.contactPoint.url",
-                #     "submission.candidates.persones",
-                #     "submission.candidates.details.typeOfSupplier",
-                #     "submission.candidates.details.mainEconomicActivities",
-                #     "submission.candidates.details.bankAccounts",
-                #     "submission.candidates.details.legalForm.uri",
-                #     "submission.documents"
-                # )
+                create_2_submission_payload.delete_optional_fields(
+                    "submission.requirementResponses",
+                    "submission.candidates.identifier.uri",
+                    "submission.candidates.additionalIdentifiers",
+                    "submission.candidates.address.postalCode",
+                    "submission.candidates.contactPoint.faxNumber",
+                    "submission.candidates.contactPoint.url",
+                    "submission.candidates.persones",
+                    "submission.candidates.details.typeOfSupplier",
+                    "submission.candidates.details.mainEconomicActivities",
+                    "submission.candidates.details.bankAccounts",
+                    "submission.candidates.details.legalForm.uri",
+                    "submission.documents"
+                )
                 create_2_submission_payload.prepare_submission_object(
                     position=1,
                     quantity_of_candidates=3,
@@ -926,30 +926,7 @@ class TestCreateSubmission:
             submission_2_id = create_2_submission_message['data']['outcomes']['submissions'][0]['id']
             submission_2_token = create_2_submission_message['data']['outcomes']['submissions'][0]['X-TOKEN']
             allure.attach(str(create_2_submission_message), 'Message for platform.')
-        # ++++++++++++++++++++++++
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Authorization platform one: Withdrawn Submission process.'):
-        #
-        #     platform_one = PlatformAuthorization(get_hosts[1])
-        #     access_token = platform_one.get_access_token_for_platform_one()
-        #     withdrawn_submission_operation_id = platform_one.get_x_operation_id(access_token)
-        # ++++++++++++++++++++++++++++
-        # step_number += 1
-        # with allure.step(f'# {step_number}. Send a request to create an Withdrawn Submission process.'):
-        #
-        #     synchronous_result = PlatformQueryRequest().withdraw_submission_process(
-        #         host_to_bpe=get_hosts[1],
-        #         access_token=access_token,
-        #         x_operation_id=withdrawn_submission_operation_id,
-        #         ap_cpid=ap_cpid,
-        #         ap_ocid=fe_ocid,
-        #         submission_id=submission_2_id,
-        #         submission_token=submission_2_token,
-        #         test_mode=True,
-        #     )
-        #     withdrawn_submission_message = get_message_for_platform(create_submission_operation_id)
-        #     allure.attach(str(withdrawn_submission_message), 'Message for platform.')
-        # ===================================
+
         time.sleep(15)
         actual_fe_release_before_submission_period_end = requests.get(url=fe_url).json()
         actual_ap_release_before_submission_period_end = requests.get(url=ap_url).json()
@@ -1007,14 +984,9 @@ class TestCreateSubmission:
 
             with allure.step(f'# {step_number}.3. Check FE release.'):
                 """
-                Compare actual FE release before and after Create Submission process.
+                Check actual FE release after Submission Period End process.
                 """
                 actual_fe_release_after_submission_period_end = requests.get(url=fe_url).json()
-
-                print("\nactual_fe_release_before_submission_period_end")
-                print(json.dumps(actual_fe_release_before_submission_period_end))
-                print("\nactual_fe_release_after_submission_period_end")
-                print(json.dumps(actual_fe_release_after_submission_period_end))
 
                 try:
                     """
@@ -1033,307 +1005,47 @@ class TestCreateSubmission:
                         list_of_submission_payloads=[create_submission_payload, create_2_submission_payload],
                         list_of_submission_messages=[create_submission_message, create_2_submission_message],
                         actual_fe_release=actual_fe_release_after_submission_period_end,
-                        actual_message=actual_message
+                        actual_message=actual_message,
+                        previous_ms_release=cpb_actual_ms_release_before_submission_period_end
                     ))
                     expected_fe_release = expected_release.build_expected_fe_release()
-                    print("\nexpected_fe_release")
-                    print(json.dumps(expected_fe_release))
+
                 except ValueError:
                     raise ValueError("Impossible to build expected FE release.")
 
+                # with allure.step("Check actual FE release and expected FE release, the Submission Period End process."):
+                #     allure.attach(json.dumps(actual_fe_release_after_submission_period_end), "Actual result.")
+                #     allure.attach(json.dumps(expected_fe_release), "Expected result.")
+                #
+                #     assert actual_fe_release_after_submission_period_end == expected_fe_release, \
+                #         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                #                       f"cpid = '{ap_cpid}' ALLOW FILTERING;",
+                #                       "Cassandra DataBase: steps of process.")
 
-                # actual_result_of_comparing_releases = dict(DeepDiff(
-                #     actual_fe_release_before_submission_period_end,
-                #     actual_fe_release_after_submission_period_end
-                # ))
-                #
-                # dictionary_item_added_was_cleaned = \
-                #     str(actual_result_of_comparing_releases['dictionary_item_added']).replace('root', '')[1:-1]
-                #
-                # actual_result_of_comparing_releases['dictionary_item_added'] = dictionary_item_added_was_cleaned
-                # actual_result_of_comparing_releases = dict(actual_result_of_comparing_releases)
-                #
-                # try:
-                #     """
-                #     Prepare expected parties array.
-                #     """
-                #     expected_release = copy.deepcopy(SubmissionPeriodEndRelease(
-                #         environment=parse_environment,
-                #         host_to_service=get_hosts[2],
-                #         country=parse_country,
-                #         language=parse_language,
-                #         pmd=parse_pmd,
-                #         actual_fe_release=actual_fe_release_after_submission_period_end
-                #     ))
-                #     expected_parties_array_with_candidate_role = list()
-                #
-                #     temp_parties_array_with_candidate_role = expected_release.prepare_parties_object(
-                #         submission_payload=create_submission_payload
-                #     )
-                #
-                #     # Sort 'releases[0].parties' array, for party with candidate role:
-                #     actual_parties_array_with_candidate_role = list()
-                #     for p_0 in range(len(actual_fe_release_after_submission_period_end['releases'][0]['parties'])):
-                #         if actual_fe_release_after_submission_period_end['releases'][0]['parties'][p_0]['roles'] == \
-                #                 ["candidate"]:
-                #             actual_parties_array_with_candidate_role.append(
-                #                 actual_fe_release_after_submission_period_end['releases'][0]['parties'][p_0])
-                #
-                #     if len(temp_parties_array_with_candidate_role) == len(actual_parties_array_with_candidate_role):
-                #         for q in range(len(actual_parties_array_with_candidate_role)):
-                #             for q_1 in range(len(temp_parties_array_with_candidate_role)):
-                #
-                #                 if actual_parties_array_with_candidate_role[q]['id'] == \
-                #                         temp_parties_array_with_candidate_role[q_1]['id']:
-                #
-                #                     expected_parties_array_with_candidate_role.append(
-                #                         temp_parties_array_with_candidate_role[q_1]['value'])
-                # except Exception:
-                #     raise Exception("Impossible to prepare expected parties array.")
-                #
-                # actual_criteria_array = actual_fe_release_after_submission_period_end[
-                #     'releases'][0]['tender']['criteria']
-                # try:
-                #     """
-                #     Prepare expected criteria array, where source == procuringEntity.
-                #     """
-                #     expected_criteria_array_source_procuring_entity = \
-                #         [expected_release.prepare_criteria_object_source_procuring_entity(
-                #             phase="qualification",
-                #             submission_period_end_message=actual_message
-                #         )]
-                # except Exception:
-                #     raise Exception("Impossible to prepare expected criteria array, where source == procuringEntity.")
-                #
-                # actual_submission_object = actual_fe_release_after_submission_period_end['releases'][0]['submissions']
-                # try:
-                #     """
-                #     Prepare expected submission object.
-                #     """
-                #     expected_submissions_object = {
-                #         "details": []
-                #     }
-                #     submissions_details_array = []
-                #
-                #     submission_details_object_from_moldova = \
-                #         expected_release.prepare_submission_object(
-                #             submission_payload=create_submission_payload,
-                #             create_submission_feed_point_message=create_submission_message)
-                #
-                #     submissions_details_array.append(submission_details_object_from_moldova)
-                #
-                #     # Sort 'releases[0].submission[*].details' array:
-                #     if len(submissions_details_array) == \
-                #             len(actual_fe_release_after_submission_period_end['releases'][0]['submissions']['details']):
-                #
-                #         for q in range(len(actual_fe_release_after_submission_period_end[
-                #                                'releases'][0]['submissions']['details'])):
-                #
-                #             for q_1 in range(len(submissions_details_array)):
-                #
-                #                 if actual_fe_release_after_submission_period_end[
-                #                         'releases'][0]['submissions']['details'][q]['id'] == \
-                #                         submissions_details_array[q_1]['id']:
-                #
-                #                     expected_submissions_object['details'].append(submissions_details_array[q_1]['value'])
-                # except Exception:
-                #     raise Exception("Impossible to prepare expected submission object.")
-                #
-                # actual_qualifications_array = actual_fe_release_after_submission_period_end[
-                #     'releases'][0]['qualifications']
-                # try:
-                #     """
-                #     Prepare expected qualifications array.
-                #     """
-                #     expected_qualifications_array = []
-                #     qualifications_array = []
-                #
-                #     qualification_object_for_first_submission = \
-                #         expected_release.prepare_qualification_object(
-                #             fe_payload=fe_payload,
-                #             submission_id=submission_id,
-                #             submission_period_end_feed_point_message=actual_message
-                #         )
-                #     qualifications_array.append(qualification_object_for_first_submission)
-                #
-                #     # Sort expected 'releases[0].qualifications' array:
-                #     if len(qualifications_array) == \
-                #             len(actual_fe_release_after_submission_period_end['releases'][0]['qualifications']):
-                #
-                #         for q in range(len(
-                #                 actual_fe_release_after_submission_period_end['releases'][0]['qualifications'])):
-                #
-                #             for q_1 in range(len(qualifications_array)):
-                #
-                #                 if actual_fe_release_after_submission_period_end[
-                #                         'releases'][0]['qualifications'][q]['id'] == qualifications_array[q_1]['id']:
-                #
-                #                     expected_qualifications_array.append(qualifications_array[q_1]['value'])
-                # except Exception:
-                #     raise Exception("Impossible to prepare expected qualifications array.")
-                #
-                # actual_qualification_period_object = actual_fe_release_after_submission_period_end[
-                #     'releases'][0]['preQualification']['qualificationPeriod']
-                # try:
-                #     """
-                #     Prepare expected preQualification.qualificationPeriod object.
-                #     """
-                #     expected_qualification_period_object = \
-                #         expected_release.prepare_pre_qualification_qualification_period_object(
-                #             submission_period_end_feed_point_message=actual_message
-                #         )
-                # except Exception:
-                #     raise Exception("Impossible to prepare expected preQualification.qualificationPeriod object.")
-                #
-                # expected_result_of_comparing_releases = {
-                #     "dictionary_item_added": "['releases'][0]['submissions'], "
-                #                              "['releases'][0]['qualifications'], "
-                #                              "['releases'][0]['tender']['criteria'], "
-                #                              "['releases'][0]['preQualification']['qualificationPeriod']",
-                #     "values_changed": {
-                #         "root['releases'][0]['id']": {
-                #             "new_value": f"{fe_ocid}-"
-                #                          f"{actual_fe_release_after_submission_period_end['releases'][0]['id'][46:59]}",
-                #             "old_value": actual_fe_release_before_submission_period_end['releases'][0]['id']
-                #         },
-                #         "root['releases'][0]['date']": {
-                #             "new_value": actual_message['data']['operationDate'],
-                #             "old_value": actual_fe_release_before_submission_period_end['releases'][0]['date']
-                #         },
-                #         "root['releases'][0]['tender']['statusDetails']": {
-                #             "new_value": "qualification",
-                #             "old_value": "submission"
-                #         }
-                #     },
-                #     "iterable_item_added": {
-                #         "root['releases'][0]['parties'][2]": expected_parties_array_with_candidate_role[0]
-                #     }
-                # }
-                #
-                # print("\nactual_parties_array_with_candidate_role")
-                # print(json.dumps(actual_parties_array_with_candidate_role))
-                # print("expected_parties_array_with_candidate_role")
-                # print(json.dumps(expected_parties_array_with_candidate_role))
-                #
-                # print("\nactual_result_of_comparing_releases")
-                # print(json.dumps(actual_result_of_comparing_releases))
-                # print("expected_result_of_comparing_releases")
-                # print(json.dumps(expected_result_of_comparing_releases))
-                #
-                # print("\nactual_submission_object")
-                # print(json.dumps(actual_submission_object))
-                # print("expected_submissions_object")
-                # print(json.dumps(expected_submissions_object))
-                #
-                # print("\nactual_qualifications_array")
-                # print(json.dumps(actual_qualifications_array))
-                # print("expected_qualifications_array")
-                # print(json.dumps(expected_qualifications_array))
-                #
-                # print("\nactual_criteria_array")
-                # print(json.dumps(actual_criteria_array))
-                # print("expected_criteria_array_source_procuring_entity")
-                # print(json.dumps(expected_criteria_array_source_procuring_entity))
-                #
-                # print("\nactual_qualification_period_object")
-                # print(json.dumps(actual_qualification_period_object))
-                # print("expected_qualification_period_object")
-                # print(json.dumps(expected_qualification_period_object))
-                #
-                # with allure.step("Check differences into actual FE release before and after "
-                #                  "Submission Period End process."):
-                #     allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-                #     allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
-                #
-                #     assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-                #         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                #                       f"cpid = '{ap_cpid}' ALLOW FILTERING;",
-                #                       "Cassandra DataBase: steps of process.")
-                #
-                # with allure.step("Compare actual and expected 'releases[0].submissions' object"):
-                #     allure.attach(json.dumps(actual_submission_object), "Actual result.")
-                #     allure.attach(json.dumps(expected_submissions_object), "Expected result.")
-                #
-                #     assert actual_submission_object == expected_submissions_object, \
-                #         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                #                       f"cpid = '{ap_cpid}' ALLOW FILTERING;",
-                #                       "Cassandra DataBase: steps of process.")
-                #
-                # with allure.step("Compare actual and expected 'releases[0].qualifications' array"):
-                #     allure.attach(json.dumps(actual_qualifications_array), "Actual result.")
-                #     allure.attach(json.dumps(expected_qualifications_array), "Expected result.")
-                #
-                #     assert actual_qualifications_array == expected_qualifications_array, \
-                #         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                #                       f"cpid = '{ap_cpid}' ALLOW FILTERING;",
-                #                       "Cassandra DataBase: steps of process.")
-                #
-                # with allure.step("Compare actual and expected 'releases[0].tender.criteria' array"):
-                #     allure.attach(json.dumps(actual_criteria_array), "Actual result.")
-                #     allure.attach(json.dumps(expected_criteria_array_source_procuring_entity), "Expected result.")
-                #
-                #     assert actual_criteria_array == expected_criteria_array_source_procuring_entity, \
-                #         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                #                       f"cpid = '{ap_cpid}' ALLOW FILTERING;",
-                #                       "Cassandra DataBase: steps of process.")
-                #
-                # with allure.step("Compare actual and expected 'releases[0].preQualification.qualificationPeriod' "
-                #                  "object."):
-                #     allure.attach(json.dumps(actual_qualification_period_object), "Actual result.")
-                #     allure.attach(json.dumps(expected_qualification_period_object),
-                #                   "Expected result.")
-                #
-                #     assert actual_qualification_period_object == \
-                #            expected_qualification_period_object, \
-                #         allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-                #                       f"cpid = '{ap_cpid}' ALLOW FILTERING;",
-                #                       "Cassandra DataBase: steps of process.")
-        #
-        #     with allure.step(f'# {step_number}.4. Check AP release.'):
-        #         """
-        #         Compare actual AP release before and after Create Submisison process.
-        #         """
-        #         actual_ap_release_after_create_submission = requests.get(url=ap_url).json()
-        #
-        #         actual_result_of_comparing_releases = dict(DeepDiff(
-        #             actual_ap_release_before_create_submission,
-        #             actual_ap_release_after_create_submission
-        #         ))
-        #
-        #         expected_result_of_comparing_releases = {}
-        #
-        #         with allure.step('Check differences into actual AP release before and after '
-        #                          'Create Submission process.'):
-        #             allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-        #             allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
-        #
-        #             assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-        #                 allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-        #                               f"cpid = '{ap_cpid}' ALLOW FILTERING;",
-        #                               "Cassandra DataBase: steps of process.")
-        #
-        #     with allure.step(f'# {step_number}.5. Check MS release of CPB.'):
-        #         """
-        #          Compare actual MS release of CPB before and after Create Submission process.
-        #         """
-        #         cpb_actual_ms_release_after_create_submission = requests.get(url=cpb_ms_url).json()
-        #
-        #         actual_result_of_comparing_releases = dict(DeepDiff(
-        #             cpb_actual_ms_release_before_create_submission,
-        #             cpb_actual_ms_release_after_create_submission
-        #         ))
-        #
-        #         expected_result_of_comparing_releases = {}
-        #
-        #         with allure.step('Check differences into actual MS release before and after '
-        #                          'Create Submission process.'):
-        #             allure.attach(json.dumps(actual_result_of_comparing_releases), "Actual result.")
-        #             allure.attach(json.dumps(expected_result_of_comparing_releases), "Expected result.")
-        #
-        #             assert actual_result_of_comparing_releases == expected_result_of_comparing_releases, \
-        #                 allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
-        #                               f"cpid = '{ap_cpid}' ALLOW FILTERING;",
-        #                               "Cassandra DataBase: steps of process.")
+            with allure.step(f'# {step_number}.4. Check MS release of CPB.'):
+                """
+                 Check actual MS release after Submission Period End process.
+                """
+                cpb_actual_ms_release_after_submission_period_end = requests.get(url=cpb_ms_url).json()
+                print("\nPrevious MS release")
+                print(json.dumps(cpb_actual_ms_release_before_submission_period_end))
+                print("\nActual MS release")
+                print(json.dumps(cpb_actual_ms_release_after_submission_period_end))
+
+                expected_ms_release = expected_release.build_expected_ms_release()
+
+                print("expected_ms_release")
+                print(json.dumps(expected_ms_release))
+
+                with allure.step("Check actual MS release and expected MS release, the Submission Period End process."):
+                    allure.attach(json.dumps(cpb_actual_ms_release_after_submission_period_end), "Actual result.")
+                    allure.attach(json.dumps(expected_ms_release), "Expected result.")
+
+                    assert actual_fe_release_after_submission_period_end == expected_fe_release, \
+                        allure.attach(f"SELECT * FROM orchestrator.steps WHERE "
+                                      f"cpid = '{ap_cpid}' ALLOW FILTERING;",
+                                      "Cassandra DataBase: steps of process.")
+
         #
         #         try:
         #             """

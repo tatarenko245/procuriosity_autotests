@@ -13,7 +13,7 @@ class SubmissionPeriodEndRelease:
 
     def __init__(self, environment, host_to_service, country, language, pmd, cpid, ap_ocid, fe_ocid,
                  previous_fe_release, list_of_submission_payloads, list_of_submission_messages, actual_fe_release,
-                 actual_message):
+                 actual_message, previous_ms_release):
 
         self.__host = host_to_service
         self.__country = country
@@ -23,6 +23,7 @@ class SubmissionPeriodEndRelease:
         self.__ap_ocid = ap_ocid
         self.__fe_ocid = fe_ocid
         self.__previous_fe_release = previous_fe_release
+        self.__previous_ms_release = previous_ms_release
         self.__list_of_submission_payloads = list_of_submission_payloads
         self.__list_of_submission_messages = list_of_submission_messages
         self.__actual_fe_release = actual_fe_release
@@ -374,6 +375,99 @@ class SubmissionPeriodEndRelease:
             ]
         }
 
+        self.__expected_ms_release = {
+            "uri": self.__previous_ms_release['uri'],
+            "version": self.__previous_ms_release['version'],
+            "extensions": self.__previous_ms_release['extensions'],
+            "publisher": {
+                "name": self.__previous_ms_release['publisher']['name'],
+                "uri": self.__previous_ms_release['publisher']['uri']
+            },
+            "license": self.__previous_ms_release['license'],
+            "publicationPolicy": self.__previous_ms_release['publicationPolicy'],
+            "publishedDate": self.__previous_ms_release['publishedDate'],
+            "releases": [
+                {
+                    "ocid": self.__previous_ms_release['releases'][0]['ocid'],
+                    "id": self.__previous_ms_release['releases'][0]['id'],
+                    "date": self.__previous_ms_release['releases'][0]['date'],
+                    "tag": self.__previous_ms_release['releases'][0]['tag'],
+                    "language": self.__previous_ms_release['releases'][0]['language'],
+                    "initiationType": self.__previous_ms_release['releases'][0]['initiationType'],
+                    "tender": {
+                        "id": self.__previous_ms_release['releases'][0]['tender']['id'],
+                        "title": self.__previous_ms_release['releases'][0]['tender']['title'],
+                        "description": self.__previous_ms_release['releases'][0]['tender']['description'],
+                        "status": self.__previous_ms_release['releases'][0]['tender']['status'],
+                        "statusDetails": self.__previous_ms_release['releases'][0]['tender']['statusDetails'],
+                        "value": {
+                            "amount": self.__previous_ms_release['releases'][0]['tender']['value']['amount'],
+                            "currency": self.__previous_ms_release['releases'][0]['tender']['value']['currency']
+                        },
+                        "procurementMethod": self.__previous_ms_release['releases'][0]['tender']['procurementMethod'],
+                        "procurementMethodDetails": self.__previous_ms_release['releases'][0]['tender'][
+                            'procurementMethodDetails'],
+                        "procurementMethodRationale": "",
+                        "mainProcurementCategory": self.__previous_ms_release['releases'][0]['tender'][
+                            'mainProcurementCategory'],
+                        "hasEnquiries": self.__previous_ms_release['releases'][0]['tender']['hasEnquiries'],
+                        "eligibilityCriteria": self.__previous_ms_release['releases'][0]['tender'][
+                            'eligibilityCriteria'],
+                        "contractPeriod": {
+                            "startDate": self.__previous_ms_release['releases'][0]['tender']['contractPeriod'][
+                                'startDate'],
+                            "endDate": self.__previous_ms_release['releases'][0]['tender']['contractPeriod'][
+                                'endDate']
+                        },
+                        "procuringEntity": {
+                            "id": self.__previous_ms_release['releases'][0]['tender']['procuringEntity']['id'],
+                            "name": self.__previous_ms_release['releases'][0]['tender']['procuringEntity']['name']
+                        },
+                        "acceleratedProcedure": {
+                            "isAcceleratedProcedure": self.__previous_ms_release['releases'][0]['tender'][
+                                'acceleratedProcedure']['isAcceleratedProcedure']
+                        },
+                        "classification": {
+                            "scheme": self.__previous_ms_release['releases'][0]['tender']['classification']['scheme'],
+                            "id": self.__previous_ms_release['releases'][0]['tender']['classification']['id'],
+                            "description": self.__previous_ms_release['releases'][0]['tender']['classification'][
+                                'description']
+                        },
+                        "designContest": {
+                            "serviceContractAward": self.__previous_ms_release['releases'][0]['tender'][
+                                'designContest']['serviceContractAward']
+                        },
+                        "electronicWorkflows": {
+                            "useOrdering": self.__previous_ms_release['releases'][0]['tender'][
+                                'electronicWorkflows']['useOrdering'],
+                            "usePayment": self.__previous_ms_release['releases'][0]['tender'][
+                                'electronicWorkflows']['usePayment'],
+                            "acceptInvoicing": self.__previous_ms_release['releases'][0]['tender'][
+                                'electronicWorkflows']['acceptInvoicing']
+                        },
+                        "jointProcurement": {
+                            "isJointProcurement": self.__previous_ms_release['releases'][0]['tender'][
+                                'jointProcurement']['isJointProcurement']
+                        },
+                        "legalBasis": self.__previous_ms_release['releases'][0]['tender']['legalBasis'],
+                        "procedureOutsourcing": {
+                            "procedureOutsourced": self.__previous_ms_release['releases'][0]['tender'][
+                                'procedureOutsourcing']['procedureOutsourced']
+                        },
+                        "dynamicPurchasingSystem": {
+                            "hasDynamicPurchasingSystem": self.__previous_ms_release['releases'][0]['tender'][
+                                'dynamicPurchasingSystem']['hasDynamicPurchasingSystem']
+                        },
+                        "framework": {
+                            "isAFramework": self.__previous_ms_release['releases'][0]['tender'][
+                                'framework']['isAFramework']
+                        },
+                    },
+                    "relatedProcesses": self.__previous_ms_release['releases'][0]['relatedProcesses']
+                }
+            ]
+        }
+
     def build_expected_fe_release(self):
         """Build FE release."""
 
@@ -386,7 +480,8 @@ class SubmissionPeriodEndRelease:
             f"{self.__fe_ocid}-{self.__actual_fe_release['releases'][0]['id'][46:59]}"
 
         # FR.COM-3.2.23 (https://ustudio.atlassian.net/wiki/spaces/ES/pages/1258717251/R10.3.2+eNotice+Create+FE+v1)
-        self.__expected_fe_release['releases'][0]['language'] = self.__previous_fe_release['releases'][0]['language']
+        self.__expected_fe_release['releases'][0]['language'] = self.__previous_fe_release['releases'][0][
+            'language']
 
         # FR.COM-3.2.4 (https://ustudio.atlassian.net/wiki/spaces/ES/pages/1258717251/R10.3.2+eNotice+Create+FE+v1)
         self.__expected_fe_release['releases'][0]['initiationType'] = \
@@ -416,7 +511,8 @@ class SubmissionPeriodEndRelease:
         for p_0 in range(len(self.__list_of_submission_payloads)):
             temp_new_parties_array = list()
             for p_1 in range(len(self.__list_of_submission_payloads[p_0]['submission']['candidates'])):
-                temp_new_parties_array.append(copy.deepcopy(self.__expected_fe_release['releases'][0]['parties'][0]))
+                temp_new_parties_array.append(
+                    copy.deepcopy(self.__expected_fe_release['releases'][0]['parties'][0]))
                 candidate_from_payload = self.__list_of_submission_payloads[p_0]['submission']['candidates'][p_1]
 
                 temp_new_parties_array[p_1]['id'] = \
@@ -445,8 +541,8 @@ class SubmissionPeriodEndRelease:
 
                 try:
                     f"""
-                    Prepare 'addressDetails' object for temp_new_parties_array[{p_1}]['address'].
-                    """
+                Prepare 'addressDetails' object for temp_new_parties_array[{p_1}]['address'].
+                """
                     country_data = get_value_from_country_csv(
                         country=candidate_from_payload['address']['addressDetails']['country']['id'],
                         language=self.__language
@@ -494,7 +590,8 @@ class SubmissionPeriodEndRelease:
 
                     temp_new_parties_array[p_1]['address']['addressDetails']['country'] = expected_country_object[0]
                     temp_new_parties_array[p_1]['address']['addressDetails']['region'] = expected_region_object[0]
-                    temp_new_parties_array[p_1]['address']['addressDetails']['locality'] = expected_locality_object[0]
+                    temp_new_parties_array[p_1]['address']['addressDetails']['locality'] = expected_locality_object[
+                        0]
                 except ValueError:
                     raise ValueError(f"Impossible to prepare Prepare 'addressDetails' object for "
                                      f"temp_new_parties_array[{p_0 + p_1}]['address']")
@@ -527,7 +624,8 @@ class SubmissionPeriodEndRelease:
 
                 # Prepare 'contactPoint' object:
                 temp_new_parties_array[p_1]['contactPoint']['name'] = candidate_from_payload['contactPoint']['name']
-                temp_new_parties_array[p_1]['contactPoint']['email'] = candidate_from_payload['contactPoint']['email']
+                temp_new_parties_array[p_1]['contactPoint']['email'] = candidate_from_payload['contactPoint'][
+                    'email']
 
                 temp_new_parties_array[p_1]['contactPoint']['telephone'] = \
                     candidate_from_payload['contactPoint']['telephone']
@@ -573,7 +671,8 @@ class SubmissionPeriodEndRelease:
                                 candidate_from_payload['details']['mainEconomicActivities'][m_0]['uri']
                         else:
                             del main_economic_activities_array[m_0]['uri']
-                    temp_new_parties_array[p_1]['details']['mainEconomicActivities'] = main_economic_activities_array
+                    temp_new_parties_array[p_1]['details'][
+                        'mainEconomicActivities'] = main_economic_activities_array
                 else:
                     del temp_new_parties_array[p_1]['details']['mainEconomicActivities']
 
@@ -657,8 +756,9 @@ class SubmissionPeriodEndRelease:
                                         'addressDetails']['locality']['scheme'],
                                     "id": candidate_from_payload['details']['bankAccounts'][b_0]['address'][
                                         'addressDetails']['locality']['id'],
-                                    "description": candidate_from_payload['details']['bankAccounts'][b_0]['address'][
-                                        'addressDetails']['locality']['description']
+                                    "description":
+                                        candidate_from_payload['details']['bankAccounts'][b_0]['address'][
+                                            'addressDetails']['locality']['description']
                                 }]
 
                             bank_accounts_array[b_0]['address']['addressDetails']['country'] = \
@@ -683,7 +783,8 @@ class SubmissionPeriodEndRelease:
                             candidate_from_payload['details']['bankAccounts'][b_0]['accountIdentification']['id']
 
                         bank_accounts_array[b_0]['accountIdentification']['scheme'] = \
-                            candidate_from_payload['details']['bankAccounts'][b_0]['accountIdentification']['scheme']
+                            candidate_from_payload['details']['bankAccounts'][b_0]['accountIdentification'][
+                                'scheme']
 
                         if "additionalAccountIdentifiers" in candidate_from_payload['details']['bankAccounts'][b_0]:
                             additional_account_identifiers = list()
@@ -704,7 +805,8 @@ class SubmissionPeriodEndRelease:
                                     candidate_from_payload['details']['bankAccounts'][b_0][
                                         'additionalAccountIdentifiers'][b_1]['id']
 
-                            bank_accounts_array[b_0]['additionalAccountIdentifiers'] = additional_account_identifiers
+                            bank_accounts_array[b_0][
+                                'additionalAccountIdentifiers'] = additional_account_identifiers
                         else:
                             del bank_accounts_array[b_0]['additionalAccountIdentifiers']
 
@@ -801,7 +903,8 @@ class SubmissionPeriodEndRelease:
                             if "documents" in candidate_from_payload['persones'][cp_0]['businessFunctions'][cp_1]:
                                 bf_documents = list()
                                 for cp_2 in range(len(
-                                        candidate_from_payload['persones'][cp_0]['businessFunctions'][cp_1]['documents']
+                                        candidate_from_payload['persones'][cp_0]['businessFunctions'][cp_1][
+                                            'documents']
                                 )):
                                     bf_documents.append(copy.deepcopy(
                                         self.__expected_fe_release['releases'][0]['parties'][0]['persones'][0][
@@ -819,15 +922,17 @@ class SubmissionPeriodEndRelease:
 
                                     if "description" in candidate_from_payload['persones'][cp_0][
                                             'businessFunctions'][cp_1]['documents'][cp_2]:
-                                        bf_documents[cp_2]['description'] = candidate_from_payload['persones'][cp_0][
-                                            'businessFunctions'][cp_1]['documents'][cp_2]['description']
+                                        bf_documents[cp_2]['description'] = \
+                                            candidate_from_payload['persones'][cp_0][
+                                                'businessFunctions'][cp_1]['documents'][cp_2]['description']
                                     else:
                                         del bf_documents[cp_2]['description']
 
                                     bf_documents[cp_2]['url'] = \
                                         f"{self.__metadata_document_url}/{bf_documents[cp_2]['id']}"
 
-                                    bf_documents[cp_2]['datePublished'] = self.__actual_message['data']['operationDate']
+                                    bf_documents[cp_2]['datePublished'] = self.__actual_message['data'][
+                                        'operationDate']
 
                                 business_functions[cp_1]['documents'] = bf_documents
                             else:
@@ -850,7 +955,8 @@ class SubmissionPeriodEndRelease:
                     if temp_array[exp]['id'] == self.__actual_fe_release['releases'][0]['parties'][act]['id']:
                         expected_parties_array.append(temp_array[exp])
         else:
-            raise ValueError("The quantity of actual 'releases[0].parties' array != expected 'releases[0].parties'.")
+            raise ValueError(
+                "The quantity of actual 'releases[0].parties' array != expected 'releases[0].parties'.")
         self.__expected_fe_release['releases'][0]['parties'] = expected_parties_array
 
         # Build 'releases[0].tender' object:
@@ -919,7 +1025,8 @@ class SubmissionPeriodEndRelease:
                 if len(criteria_groups_from_mdm['data']) > 0:
                     for ec_1 in range(len(criteria_groups_from_mdm['data'])):
                         new_criteria_array[ec_0]['requirementGroups'].append(copy.deepcopy(
-                            self.__expected_fe_release['releases'][0]['tender']['criteria'][0]['requirementGroups'][0]
+                            self.__expected_fe_release['releases'][0]['tender']['criteria'][0]['requirementGroups'][
+                                0]
                         ))
 
                         new_criteria_array[ec_0]['requirementGroups'][ec_1]['id'] = \
@@ -942,9 +1049,10 @@ class SubmissionPeriodEndRelease:
                         if len(requirements_from_mdm['data']) > 0:
                             for ec_2 in range(len(requirements_from_mdm['data'])):
                                 new_criteria_array[ec_0]['requirementGroups'][ec_1]['requirements'].append(
-                                    copy.deepcopy(self.__expected_fe_release['releases'][0]['tender']['criteria'][0][
-                                                      'requirementGroups'][0]['requirements'][0]
-                                                  )
+                                    copy.deepcopy(
+                                        self.__expected_fe_release['releases'][0]['tender']['criteria'][0][
+                                            'requirementGroups'][0]['requirements'][0]
+                                    )
                                 )
 
                                 new_criteria_array[ec_0]['requirementGroups'][ec_1]['requirements'][ec_2]['id'] = \
@@ -980,7 +1088,8 @@ class SubmissionPeriodEndRelease:
                     raise ValueError(f"Empty array from MDM database: 'criteria[{ec_0}].requirementGroups[*]'.")
 
         if len(old_criteria_array + new_criteria_array) > 0:
-            self.__expected_fe_release['releases'][0]['tender']['criteria'] = old_criteria_array + new_criteria_array
+            self.__expected_fe_release['releases'][0]['tender'][
+                'criteria'] = old_criteria_array + new_criteria_array
         else:
             del self.__expected_fe_release['releases'][0]['tender']['criteria']
 
@@ -1045,7 +1154,8 @@ class SubmissionPeriodEndRelease:
 
                         for q_0 in range(len(self.__list_of_submission_payloads)):
                             candidates_array = list()
-                            for q_1 in range(len(self.__list_of_submission_payloads[q_0]['submission']['candidates'])):
+                            for q_1 in range(
+                                    len(self.__list_of_submission_payloads[q_0]['submission']['candidates'])):
                                 candidates_array.append(
                                     copy.deepcopy(self.__expected_fe_release['releases'][0]['submissions'][
                                                       'details'][0]['candidates'][0]
@@ -1130,8 +1240,9 @@ class SubmissionPeriodEndRelease:
                                                 'requirementResponses'][r_0]:
 
                                             evidences = list()
-                                            for r_1 in range(len(self.__list_of_submission_payloads[q_0]['submission'][
-                                                                     'requirementResponses'][r_0]['evidences'])):
+                                            for r_1 in range(
+                                                    len(self.__list_of_submission_payloads[q_0]['submission'][
+                                                            'requirementResponses'][r_0]['evidences'])):
 
                                                 evidences.append(copy.deepcopy(
                                                     self.__expected_fe_release['releases'][0]['submissions'][
@@ -1208,8 +1319,9 @@ class SubmissionPeriodEndRelease:
                                                 'documents'][0]
                                         ))
 
-                                        documents[d_0]['id'] = self.__list_of_submission_payloads[q_0]['submission'][
-                                            'documents'][d_0]['id']
+                                        documents[d_0]['id'] = \
+                                            self.__list_of_submission_payloads[q_0]['submission'][
+                                                'documents'][d_0]['id']
 
                                         documents[d_0]['documentType'] = self.__list_of_submission_payloads[q_0][
                                             'submission']['documents'][d_0]['documentType']
@@ -1225,8 +1337,10 @@ class SubmissionPeriodEndRelease:
                                         else:
                                             del documents[d_0]['description']
 
-                                        documents[d_0]['url'] = f"{self.__metadata_document_url}/{documents[d_0]['id']}"
-                                        documents[d_0]['datePublished'] = self.__actual_message['data']['operationDate']
+                                        documents[d_0][
+                                            'url'] = f"{self.__metadata_document_url}/{documents[d_0]['id']}"
+                                        documents[d_0]['datePublished'] = self.__actual_message['data'][
+                                            'operationDate']
 
                                     submission_details[act_s]['documents'] = documents
                                 else:
@@ -1237,10 +1351,12 @@ class SubmissionPeriodEndRelease:
         # (https://ustudio.atlassian.net/wiki/spaces/ES/pages/890601483/R10.7.11+eQualification+Create+Qualifications)
         qualifications_array = list()
         for qu_0 in range(len(self.__list_of_submission_messages)):
-            qualifications_array.append(copy.deepcopy(self.__expected_fe_release['releases'][0]['qualifications'][0]))
+            qualifications_array.append(
+                copy.deepcopy(self.__expected_fe_release['releases'][0]['qualifications'][0]))
 
             # FR.COM-7.11.1:
-            qualifications_array[qu_0]['id'] = self.__actual_message['data']['outcomes']['qualifications'][qu_0]['id']
+            qualifications_array[qu_0]['id'] = self.__actual_message['data']['outcomes']['qualifications'][qu_0][
+                'id']
 
             # FR.COM-7.11.2:
             qualifications_array[qu_0]['status'] = "pending"
@@ -1262,7 +1378,8 @@ class SubmissionPeriodEndRelease:
             scoring = 1
 
             # FR.COM-7.11.6:
-            if self.__expected_fe_release['releases'][0]['tender']['otherCriteria']['reductionCriteria'] == "scoring" \
+            if self.__expected_fe_release['releases'][0]['tender']['otherCriteria'][
+                'reductionCriteria'] == "scoring" \
                     and self.__expected_fe_release['releases'][0]['tender']['otherCriteria'][
                     'qualificationSystemMethods'] == ["automated"]:
                 # FR.COM-7.11.7:
@@ -1275,7 +1392,8 @@ class SubmissionPeriodEndRelease:
                             for qu_3 in range(len(self.__list_of_submission_payloads[qu_2][
                                                       'submission']['requirementResponses'])):
 
-                                for c in range(len(self.__expected_fe_release['releases'][0]['tender']['criteria'])):
+                                for c in range(
+                                        len(self.__expected_fe_release['releases'][0]['tender']['criteria'])):
                                     if self.__expected_fe_release['releases'][0]['tender'][
                                            'criteria'][c]['classification']['id'][:19] == "CRITERION.SELECTION" and \
                                             self.__expected_fe_release['releases'][0]['tender'][
@@ -1289,7 +1407,8 @@ class SubmissionPeriodEndRelease:
                                                         'criteria'][c]['requirementGroups'][g]['requirements'])):
 
                                                 if self.__expected_fe_release['releases'][0]['tender'][
-                                                    'criteria'][c]['requirementGroups'][g]['requirements'][r]['id'] == \
+                                                    'criteria'][c]['requirementGroups'][g]['requirements'][r][
+                                                    'id'] == \
                                                         self.__list_of_submission_payloads[qu_2][
                                                             'submission']['requirementResponses'][qu_3][
                                                             'requirement']['id']:
@@ -1310,9 +1429,9 @@ class SubmissionPeriodEndRelease:
                                                                             'coefficients'])):
 
                                                                 if self.__list_of_submission_payloads[qu_2][
-                                                                        'submission']['requirementResponses'][qu_3][
-                                                                        'value'] == self.__expected_fe_release[
-                                                                        'releases'][0]['tender']['conversions'][conv_0][
+                                                                    'submission']['requirementResponses'][qu_3][
+                                                                    'value'] == self.__expected_fe_release[
+                                                                    'releases'][0]['tender']['conversions'][conv_0][
                                                                         'coefficients'][conv_1]['value']:
 
                                                                     data_type = self.__expected_fe_release[
@@ -1387,7 +1506,6 @@ class SubmissionPeriodEndRelease:
                                 if temp_qualifications[q_0]['relatedSubmission'] == \
                                         self.__list_of_submission_messages[me_0][
                                             'data']['outcomes']['submissions'][0]['id']:
-
                                     date_list.append(self.__list_of_submission_messages[me_0][
                                                          'data']['operationDate'])
                         min_date = self.__date.get_min_date(date_list)
@@ -1398,14 +1516,12 @@ class SubmissionPeriodEndRelease:
                                     if temp_qualifications[q_1]['relatedSubmission'] == \
                                             self.__list_of_submission_messages[me_0][
                                                 'data']['outcomes']['submissions'][0]['id']:
-
                                         temp_qualifications[q_1]['statusDetails'] = "awaiting"
 
                     for q_0 in range(len(qualifications_array)):
                         for q_1 in range(len(temp_qualifications)):
                             if qualifications_array[q_0]['id'] == temp_qualifications[q_1]['id']:
                                 if temp_qualifications[q_1]['statusDetails'] == "awaiting":
-
                                     qualifications_array[q_0]['statusDetails'] = \
                                         temp_qualifications[q_1]['statusDetails']
 
@@ -1432,7 +1548,6 @@ class SubmissionPeriodEndRelease:
                                 if temp_qualifications[q_0]['relatedSubmission'] == \
                                         self.__list_of_submission_messages[me_0][
                                             'data']['outcomes']['submissions'][0]['id']:
-
                                     date_list.append(self.__list_of_submission_messages[me_0][
                                                          'data']['operationDate'])
                         min_date = self.__date.get_min_date(date_list)
@@ -1443,7 +1558,6 @@ class SubmissionPeriodEndRelease:
                                     if temp_qualifications[q_1]['relatedSubmission'] == \
                                             self.__list_of_submission_messages[me_0][
                                                 'data']['outcomes']['submissions'][0]['id']:
-
                                         temp_qualifications[q_1]['statusDetails'] = "consideration"
 
                         for q_0 in range(len(qualifications_array)):
@@ -1461,7 +1575,6 @@ class SubmissionPeriodEndRelease:
                         for q_1 in range(len(temp_qualifications)):
                             if qualifications_array[q_0]['id'] == temp_qualifications[q_1]['id']:
                                 if "statusDetails" in temp_qualifications[q_1]:
-
                                     qualifications_array[q_0]['statusDetails'] = \
                                         temp_qualifications[q_1]['statusDetails']
             else:
@@ -1469,7 +1582,7 @@ class SubmissionPeriodEndRelease:
                     del qualifications_array[q_0]['statusDetails']
 
         elif self.__expected_fe_release['releases'][0]['tender']['otherCriteria']['reductionCriteria'] == \
-            "scoring" and self.__expected_fe_release['releases'][0]['tender']['otherCriteria'][
+                "scoring" and self.__expected_fe_release['releases'][0]['tender']['otherCriteria'][
                 'qualificationSystemMethods'] == ["manual"]:
             if "criteria" in self.__expected_fe_release['releases'][0]['tender']:
                 is_source_procuring_entity = False
@@ -1493,7 +1606,7 @@ class SubmissionPeriodEndRelease:
                     del qualifications_array[q_0]['statusDetails']
 
         elif self.__expected_fe_release['releases'][0]['tender']['otherCriteria']['reductionCriteria'] == \
-            "none" and self.__expected_fe_release['releases'][0]['tender']['otherCriteria'][
+                "none" and self.__expected_fe_release['releases'][0]['tender']['otherCriteria'][
                 'qualificationSystemMethods'] == ["automated"]:
             if "criteria" in self.__expected_fe_release['releases'][0]['tender']:
                 is_source_procuring_entity = False
@@ -1517,7 +1630,7 @@ class SubmissionPeriodEndRelease:
                     del qualifications_array[q_0]['statusDetails']
 
         elif self.__expected_fe_release['releases'][0]['tender']['otherCriteria']['reductionCriteria'] == \
-            "none" and self.__expected_fe_release['releases'][0]['tender']['otherCriteria'][
+                "none" and self.__expected_fe_release['releases'][0]['tender']['otherCriteria'][
                 'qualificationSystemMethods'] == ["manual"]:
             if "criteria" in self.__expected_fe_release['releases'][0]['tender']:
                 is_source_procuring_entity = False
@@ -1544,7 +1657,8 @@ class SubmissionPeriodEndRelease:
         # Build 'releases[0].relatedProcesses' array:
         related_processes = list()
         for n in range(2):
-            related_processes.append(copy.deepcopy(self.__expected_fe_release['releases'][0]['relatedProcesses'][0]))
+            related_processes.append(
+                copy.deepcopy(self.__expected_fe_release['releases'][0]['relatedProcesses'][0]))
             try:
                 """Set permanent id."""
                 is_permanent_id_correct = is_it_uuid(
@@ -1554,8 +1668,9 @@ class SubmissionPeriodEndRelease:
                     related_processes[n]['id'] = \
                         self.__actual_fe_release['releases'][0]['relatedProcesses'][n]['id']
                 else:
-                    raise ValueError(f"The 'self.__actual_fe_release['releases'][0]['relatedProcesses'][{n}]['id']' "
-                                     f"must be uuid.")
+                    raise ValueError(
+                        f"The 'self.__actual_fe_release['releases'][0]['relatedProcesses'][{n}]['id']' "
+                        f"must be uuid.")
             except KeyError:
                 raise KeyError("Mismatch key into path "
                                "'self.__actual_fe_release['releases'][0]['relatedProcesses'][{n}]['id']'")
@@ -1582,3 +1697,13 @@ class SubmissionPeriodEndRelease:
         self.__expected_fe_release['releases'][0]['preQualification']['qualificationPeriod']['startDate'] = \
             self.__actual_message['data']['operationDate']
         return self.__expected_fe_release
+
+    def build_expected_ms_release(self):
+        """Build MS release."""
+        if "procurementMethodRationale" in self.__previous_ms_release['releases'][0]['tender']:
+            self.__expected_ms_release['releases'][0]['tender']['procurementMethodRationale'] = \
+                self.__previous_ms_release['releases'][0]['tender']['procurementMethodRationale']
+        else:
+            del self.__expected_ms_release['releases'][0]['tender']['procurementMethodRationale']
+
+        return self.__expected_ms_release

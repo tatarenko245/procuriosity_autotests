@@ -756,7 +756,7 @@ class TestUpdateAggregatedPlan:
 
             with allure.step(f'# {step_number}.6. Check MS release of CPB.'):
                 """
-                Compare actual MS release of CPB before and after UpdateAggregatedPlan process.
+                Compare actual MS release of CPB beflore and after UpdateAggregatedPlan process.
                 """
                 actual_result_of_comparing_releases = dict(DeepDiff(
                     cpb_actual_ms_release_before_updateAggregatedPlan,
